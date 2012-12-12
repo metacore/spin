@@ -1,0 +1,40 @@
+<html><head><title>SPIN Distribution: Overview</title></head>
+<body bgcolor="#fafafa">
+<P>
+<center>
+<table width=590>
+<tr><td>
+<center>
+<font face="helvetica" size=5>
+iX86 <b>SPIN Distribution</b>
+</font>
+</center>
+<hr>
+<p>
+<font face="helvetica" size=3>
+<b><u>Overview</u></b>
+<p>
+This is the initial release of SPIN and we have attempted to minimize the difficulties involved with obtaining, building and booting the operating system.  Nevertheless there is a certain amount of work involved in this process.  This is a brief explanation of the install/build/boot process.  Detailed instructions are provided throughout this guide as well as in the <a href="user_docs.html">source tree documentation</a>.
+<P><ul>
+<li>
+The compiler used to build SPIN is written in Modula-3.  Part of the SPIN build process is building this modified Modula-3 compiler.  This requires that you have the Modula-3 compiler and libraries which are provided in release 3.6 of <a href="http://www.research.digital.com/SRC/modula-3/html/install-POSIX.html">DEC SRC Modula-3</a> which is available here at our site as well as other sites. SRC Modula-3 v3.6 is available as three files (boot-LINUXELF.tar.gz, m3cc.tar.gz, m3.tar.gz), and information on obtaining and installing them is provided in the <a href="ix86_build.html#mod3">Installing and Building</a> section of this guide.
+<p>
+<li>
+The device driver layer of x86-SPIN utilizes code from the <a href="http://www.freebsd.org/">FreeBSD</a> Operating System.  For this reason SPIN has to be booted on a machine that has a FreeBSD file system.  We get this by doing a minimal install of FreeBSD on the x86 machines where SPIN will be run.  In addition we have a boot loader program (salboot.com) that runs either from a dos partition on the disk or from a floppy.  
+<p>
+<li>
+For historic reasons x86 SPIN needs to be built on a <a href="http://www.linux.org">Linux</a> machine.  The new version of libc (glibc-2.0.x aka libc-6) is not compatible with the Modula-3 compiler used to build SPIN.  <B>For this reason it is necessary to use a version of Linux that provides libc-5.</B>  Redhat version 4.2 is known to work.  It may be possible to build x86-SPIN in a different posix environment but we have not attempted this and couldn't provide help if you ran into problems.  In order to build the  FreeBSD portions of SPIN on Linux, some cross development tools are required. These are available as a single file (bsdtools.tar.gz) here at our site.
+</ul>
+<P>
+Now that you have the source code you can begin <a href="ix86_build.html">building SPIN</a>.
+<P>
+<CENTER><a href="mailto:spin-support@cs.washington.edu"><FONT SIZE=2>Questions/Comments</FONT></a></CENTER>
+<hr>
+<FONT SIZE=2>
+<P>Copyright (c) 1997 The University of Washington. All rights reserved.
+</P>
+</FONT>
+</td></tr></table>
+</center>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<html><head><title>Using GDB with SPIN </title></head>
+<body LINK="#0000ff" VLINK="#800080" BGCOLOR="#fefefe">
+<B><FONT FACE="helvetica" SIZE=5><P ALIGN="CENTER">Remote Debugging for SPIN
+</FONT> </P></B>
+<P ALIGN="CENTER">
+<CENTER>
+<TABLE width=590>
+<TR><TD> 
+<p><font face="helvetica" size=5>Overview</font></p>
+<P><FONT FACE="helvetica">
+Spin supports an Ethernet debugging protocol called TTD that stands for "Topaz Teledebugging Protocol".  TTD allows you to debug your SPIN kernel or user-level program over the network.  If you know how to use gdb then you shouldn't have much trouble getting started. 
+<P>
+The basic idea is that you run a modified version of gdb called <b>m3gdbttd</b> on your development (Linux) machine and you connect to the <b>target</b> machine, which is your crashbox running SPIN, over the network.
+<hr>
+<P>
+<font size=5>
+Getting Started
+</font>
+<P>
+The executable you need to run is <b><i>spin/local/LINUXELF/bin/m3gdbttd</i></b>.  When you start up m3gdbttd you need to specify the kernel image with debugging symbols, this is <b><i>spin/kernel/sal/i386_freebsd/compile/SPIN/kernel.withsyms</i></b>.
+<P>
+For this example let's pretend the SPIN source tree is located in <b><i>/home/myspin/</i></b>.
+<p>
+<b>Start gdb like this:</b><br><br></FONT>
+#cd /home/myspin/spin &nbsp; 
+<FONT FACE="helvetica">(This is so the next command isn't so long)<br></FONT>
+#local/LINUXELF/bin/m3gdbttd &nbsp; kernel/sal/i386_freebsd/compile/SPIN/kernel.withsyms
+<P><FONT FACE="helvetica">
+Now you should see something like this:<br><br></FONT>
+<i>
+GDB is free software and you are welcome to distribute copies of it<br>
+ under certain conditions; type "show copying" to see the conditions.<br>
+There is absolutely no warranty for GDB; type "show warranty" for details.<br>
+GDB 4.13 (i486--linuxelf --target freebsd386), Copyright 1994 Free Software Foundation, Inc...Naming default domain 'default': /spin/kernel/sal/i386_freebsd/compile/SPIN/kernel.withsyms
+<br><br>
+(gdb)
+</i>
+<P><FONT FACE="helvetica">
+<b>
+Specify the target machine</b>:</FONT>
+<P>
+(gdb) target ttd loom16<br><FONT FACE="helvetica"> (Substitute your crashbox for loom16)</FONT>
+<p><FONT FACE="helvetica">
+Now you will see something like:</FONT>
+<p>
+Attaching to remote machine across net...<br>
+Attached to loom16, an AT386<br>
+Connected to SPIN<p>
+
+Current language:  auto; currently c<P>
+
+ttd_intr_called () at ../../../ttd/ttd_i386.c:104<br>
+104     }<br>
+(gdb)
+<P><FONT FACE="helvetica">
+</ul>
+You are now connected to your target machine and can begin debugging your kernel.  Listed below are some useful commands.  For more detailed information on using the ttd debugger, look at the <a href="../local/m3gdbttd/doc/index.html">user documentation</a> provided with the source code.
+<hr>
+<P>
+<font size=5>Some Useful Commands</font>
+<p>
+<dl><b>thread sweep</b>
+<dd>probes the target for all known threads
+</dl>
+<dl><b>backtrace (bt)</b>
+<dd>backtraces the call stack of the current thread
+</dl>
+<dl><b>thread <i>number</i></b>
+<dd>changes the current thread to that designated by <i>number</i>
+</dl>
+<dl><b>thread apply all <i>command</i></b>
+<dd>applies <i>command</i> to all known threads
+</dl>
+A useful command is:<br> &nbsp; &nbsp; &nbsp; <b>thread apply all bt</b><br>
+This will give a backtrace for all known threads.
+<P>
+<CENTER><a href="mailto:spin-support@cs.washington.edu"><FONT SIZE=2>Questions/Comments</FONT></a></CENTER>
+<HR></P>
+<FONT SIZE=2><P>Copyright (c) 1997 The University of Washington. All rights reserved. </FONT>
+</FONT>
+</TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+</BODY>
+</HTML>

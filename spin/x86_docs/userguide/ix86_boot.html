@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<TITLE>Booting ix86 SPIN</TITLE>
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080" BGCOLOR="#fefefe">
+<B><FONT FACE="helvetica" SIZE=5><P ALIGN="CENTER">Booting SPIN <BR>
+on the X86.</FONT> </P></B>
+<P ALIGN="CENTER">
+<CENTER>
+<TABLE CELLSPACING=0 BORDER=0 WIDTH=590>
+<TR><TD>
+<p><FONT FACE="helvetica" size=5>Boot Set-up</font></p>
+<p><FONT FACE="helvetica">If you haven't already done so, you will have to do some <a href="ix86_bootsetup.html">set-up</a> prior to booting your SPIN kernel.</FONT></p>
+<P><FONT FACE="helvetica"><a name="netboot"><FONT FACE="helvetica"  SIZE=5>Network Booting</FONT></a> </FONT></P>
+<P><FONT FACE="helvetica">At the UW we routinely boot the SPIN kernel on remote machines over the network. This allows the user to watch the boot process as it occurs and, if necessary, remotely debug the kernel.  Doing this requires at least two machines and some set-up effort.
+
+<p>Once you have set up your <a href="ix86_bootsetup.html#crash">crash box</a>, <a href="ix86_bootsetup.html#rcon">rconsole</a> client/server, <a href="ix86_bootsetup.html#bootp">bootp</a> server, <a href="ix86_bootsetup.html#nfs">nfs</a> server, and (optionally) your <a href="ix86_bootsetup.html#http">http</a> server, you are ready to boot SPIN over the network.
+</FONT></p>
+<p>
+<FONT FACE="helvetica">
+<ul>
+<li>To save some typing, you might want to create a symbolic link to your kernel image.  For the following example I'll use <b><i>/home/myspin/spin</i></b> as the location of the SPIN tree.
+<blockquote>#cd /home/myspin<br>
+	    #ln -s spin/kernel/sal/i386_freebsd/compile/SPIN/kernel kernel<br>
+</blockquote>
+<li>Connect to your crashbox via <a href="ix86_bootsetup.html#runrconsole">rconsole</a>.  This will give you the <b>>>></b> prompt.
+<blockquote>
+	    #rconsole loom16 (Replace loom16 with your crashbox name)<br>
+	    Attempting to connect to loom16 (via /dev/ttyS0) ... Connected<BR>
+rconsole: Type '^_{q|e}' to exit.<br>
+	    (Type return to see the prompt.)<br>
+</blockquote>
+<li>Type the <b>boot</b> command followed by your kernel image.  This is where the symbolic link comes in handy.
+<blockquote>
+	    >>> boot /home/myspin/kernel<br>
+            (This can be shortened to "b /home/myspin/kernel") 
+	    
+</BLOCKQUOTE>
+</FONT>
+</ul>
+<P>
+<FONT FACE="helvetica">
+You should see a message something like this:
+<blockquote>
+mount 128.95.2.49:/home<br>
+fetch myspin/kernel<br>
+Got /home/myspin/kernel.  1945600 bytes in 2 secs 7219 Kbps
+</blockquote>
+Notice the IP address in the first line.  This should be the IP address of the machine where your SPIN kernel is located.  If it isn't then execute the "bootp" command.  For more on the bootp command visit our <a href="http://velvet.cs.washington.edu/spin/docs/ix86_faq.html#boot">FAQ</a> page.
+</FONT>
+<p>
+<FONT FACE="helvetica">
+Momentarily SPIN should boot on your crashbox and you should see the boot messages displayed on your machine via the rconsole connection.  If your kernel doesn't boot you should look at our <a href="http://velvet.cs.washington.edu/spin/docs/ix86_faq.html#boot">FAQ</a> page under "Common Boot Errors".
+<p>The boot process involves fetching a number of extensions from the machine where you built your spin kernel.  These extensions are specified in <b><i>spin/user/scripts/init.IX86_SPIN</i></b>.  The method for fetching the extensions is also specified in init.IX86_SPIN.  By default the fetch method is set to NFS.
+<P>
+Once the boot process completes you will see the shell prompt.  Which looks like this:
+</FONT>
+<blockquote>
+	<b>(140) loom16><br></b>
+<FONT FACE="helvetica">
+(Here the machine name is loom16. 140 is the strand ID number)
+</blockquote>
+<P>
+Now that you've booted your SPIN kernel, you can begin creating and running <a href="ix86_exten.html">extensions</a>.
+</FONT>
+<P>
+<CENTER><a href="mailto:spin-support@cs.washington.edu"><FONT SIZE=2>Questions/Comments</FONT></a></CENTER>
+<HR>
+<FONT FACE="helvetica"  SIZE=2><P>Copyright (c) 1997 The University of Washington. All rights reserved. </FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P>&nbsp;</P></BODY>
+</HTML>

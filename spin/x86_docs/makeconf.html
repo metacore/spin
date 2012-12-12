@@ -1,0 +1,134 @@
+<html>
+<body bgcolor="#efefef">
+<pre>
+#
+# make.conf
+#	Site specific make variables.  This makefile is included by most 
+#	of the makefiles in the spin tree.
+#
+
+#
+# Boottime Configuration
+#
+# MOUNT_POINT is the directory available for NFS mounting
+# MOUNT_PAD is the path from MOUNT_POINT to the directory containing
+#  the SPIN distribution.
+#  Include the trailing "/".
+# FETCH_METHOD is the protocol used to fetch the initial extensions.
+#  Values can be: tftp, http, or, nfs.
+# HTTP_ADDR is the address of the http server for SPIN extensions
+# HTTP_PORT is the tcp port of the http server for SPIN extensions
+#
+
+MOUNT_POINT=/home
+MOUNT_PAD=
+FETCH_METHOD=http
+HTTP_ADDR=128.95.2.184
+HTTP_PORT=80
+
+
+#
+# Build Configuration
+#
+
+# INSTALL_DIR is the dir where the BSD tools are installed and
+#		where the original M3 distribution from DEC is installed
+# ORIGINAL_M3 is the top dir of the DEC SRC m3 installation (INSTALL_ROOT)
+# ORIGINAL_M3BUILD is the path to m3build in the DEC SRC m3 distribution
+# ORIGINAL_QUAKE is the path to quake in the DEC SRC m3 distribution
+# PERL is the perl executable (v4 or v5)
+# BISON is the path to the GNU clone of yacc
+
+INSTALL_DIR=/usr/local
+ORIGINAL_M3=$(INSTALL_DIR)
+ORIGINAL_M3BUILD=$(ORIGINAL_M3)/bin/m3build
+ORIGINAL_QUAKE=$(ORIGINAL_M3)/bin/quake
+PERL=/usr/bin/perl
+BISON=/usr/bin/bison
+
+# BISON is the path to the GNU clone of yacc
+# TARGET_LIB is the path to libc.a and crt0.o for the target architecture
+TARGETLIB=$(INSTALL_DIR)/lib
+
+BSD_PREFIX=$(INSTALL_DIR)/bin/bsd-
+TARGETCC=$(BSD_PREFIX)cc -B$(BSD_PREFIX)
+TARGETLD=$(BSD_PREFIX)ld
+TARGETAS=$(BSD_PREFIX)as
+TARGETAR=$(BSD_PREFIX)ar
+TARGETCPP=$(BSD_PREFIX)cpp
+TARGETSTRIP=$(BSD_PREFIX)strip
+TARGETSIZE=$(BSD_PREFIX)size
+TARGETCONFIG=$(BSD_PREFIX)config
+
+
+# M3ARCH is the target type.
+#	Use IX86_SPIN, or ALPHA_SPIN for DEC alphas.
+# LOCALTARGET is the build host type.
+#	Use LINUXELF for PCs, or ALPHA_OSF on DEC alphas.
+
+M3ARCH=IX86_SPIN
+LOCALTARGET=LINUXELF
+
+#
+# FULLTREE is the path to a fully built spin tree.
+#	The Makefiles and m3makefiles are designed to look in FULLTREE
+#	for directories/files not in THISTREE.
+# If your source tree is fully populated, set FULLTREE to $(THISTREE).
+FULLTREE=$(THISTREE)
+
+# THISTREE is the dir prefix of the local source tree.  Our convention
+#	is to set THISTREE in each Makefile.  We could try to guess here
+#	what the prefix is from pwd, but it was simpler to set it exactly in
+#	every makefile 
+#	
+ifndef THISTREE
+You must define THISTREE before including make.conf
+endif
+
+
+#
+# TREEFLAGS is an argumnet for m3build to pass it FULLTREE and THISTREE
+#	for use in the m3makefiles and quake templates 
+#	Tack on -DCAPTURE_M3 to create .M3ARGS file with full m3 command line.
+#
+TREEFLAGS=-DFULLTREE=$(FULLTREE)  -DTHISTREE=$(THISTREE) # -DCAPTURE_M3
+
+
+
+ifdef PROFILE
+    BUILD_DIR:=$(M3ARCH)_PROF
+else
+    BUILD_DIR:=$(M3ARCH)
+endif
+
+ifdef WRITEBARRIER
+    BUILD_DIR:=$(M3ARCH)_WB
+endif
+
+
+ifdef REFCOUNT
+    BUILD_DIR:=$(M3ARCH)_REF
+endif
+
+# the architectures that are currently supported
+ALPHAARCHES = ALPHA_SPIN ALPHA_SPIN_PROF ALPHA_SPIN_REF ALPHA_SPIN_PROF_REF ALPHA_SPIN_HACK ALPHA_SPIN_WB
+X86ARCHES = IX86_SPIN IX86_SPIN_PROF
+M3ARCHES= $(ALPHAARCHES) $(X86ARCHES)
+LOCALTARGETS=LINUXELF ALPHA_OSF ALPHA_OSF_REF
+
+# names of all the possible m3.deps files
+ALPHAM3DEPS = $(patsubst %, m3.deps.%, $(ALPHAARCHES))
+X86M3DEPS = $(patsubst %, m3.deps.%, $(X86ARCHES)) m3.deps.LINUXELF
+ALLM3DEPS = $(ALPHAM3DEPS) $(X86M3DEPS)
+</pre>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

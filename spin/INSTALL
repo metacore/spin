@@ -1,0 +1,55 @@
+
+X86-SPIN installation sheet
+---------------------------
+
+****************************************************************
+PLEASE NOTE: This software is not supported.
+Please send problem reports to spin-bugs@cs.washington.edu
+****************************************************************
+
+Installation Guide
+------------------
+
+Detailed instructions on building, booting, and running SPIN are
+provided in html format.  Access the file "x86_docs/index.html" 
+with your web browser to get started.
+
+Prerequisites
+-------------
+
+Module-3
+	To build the SPIN version of the m3 compiler, you need to have
+	the DEC SRC Modula-3 installed.
+GNU make
+	All the SPIN Makefile use features specific to GNU make.
+
+Linux --> FreeBSD cross compilation tools.  Available from the SPIN
+distribution site as bsdtools.tar.gz
+
+
+Building SPIN
+-------------
+
+To construct the full system run
+	make world
+
+
+Products of gmake world
+-----------------------
+
+The completed SPIN kernel is
+	kernel/sal/i386_freebsd/compile/SPIN/kernel
+
+The SPIN version of Modula-3, the debugger and other local programs are in
+	local/
+
+The SPIN user programs and their kernel extensions are in
+	user/
+
+
+Partial installation
+--------------------
+
+To construct pieces of the system, the full SPIN tree must be built
+somewhere.  Put this location in FULLTREE in spin/make.conf
+

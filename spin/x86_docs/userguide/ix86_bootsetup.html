@@ -1,0 +1,277 @@
+<HTML>
+<HEAD>
+<TITLE>Boot Set-Up for x86 SPIN</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FAFAFA" LINK="#0000ff" VLINK="#800080">
+
+<B><FONT SIZE=5 FACE="helvetica"><P ALIGN="CENTER">Boot Set-up for<br>
+iX86 SPIN.</P>
+</FONT></B>
+<center>
+<table width=590>
+<tr><td><font face="helvetica">
+<p>
+<ul>
+  <li><a href="#fbsd">Installing FreeBSD</a>
+  <li><a href="#salboot">Installing salboot.com</a>
+  <li><a href="#rcon">Setting up rconsole</a>
+  <li><a href="#bootp">Setting up a bootp Server</a>
+  <li><a href="#nfs">Setting up an nfs Server</a>
+  <li><a href="#http">Setting up an http Server</a>
+</ul>
+</font>
+<p>
+<FONT SIZE=5 FACE="helvetica"><A NAME="overview">Overview</A></FONT> </P>
+<FONT FACE="helvetica">
+<p>SPIN is setup to boot over a network utilizing a few different network protocols.  At the UW we have certain machines that are dedicated to booting and running SPIN.  These machines are referred to as <a href="#crash">crashboxes</a>.  The setup and configuration of all the services listed here, including the crashboxes, is described in greater detail later in this document.
+<table width=450>
+<tr>
+<td colspan=2><b><FONT FACE="helvetica"><u>Required Services</u></FONT></td>
+</tr><tr>
+<td valign=top><FONT FACE="helvetica"><a href="#bootp">BOOTP</FONT></td>
+<td><FONT FACE="helvetica">This is used to provide the crashbox with the IP address of the bootp server as well as its own IP address.</FONT></TD>
+</tr><tr>
+<td valign=top><FONT FACE="helvetica"><a href="#http">HTTP</FONT></td>
+<td><FONT FACE="helvetica">By default this is the method used to fetch the initial script file during kernel booting.  If you don't wish to use http for some reason, be sure you set your <a href="ix86_build.html#spinvars"> build variables</a> accordingly.</FONT></td>
+</tr><tr>
+<td valign=top><FONT FACE="helvetica"><a href="#nfs">NFS</FONT></td>
+<td><FONT FACE="helvetica">You must have an nfs server running on the machine where your SPIN tree resides.  Most (or all if you don't use http) of the extensions are fetched via this protocol.</FONT></td>
+</tr><tr>
+<td valign=top><FONT FACE="helvetica"><a href="#rcon">RCONSOLE</FONT></td>
+<td><FONT FACE="helvetica">This is a tool that facilitates remote connections between machines.  To run this you will have to have the rconsole server running on a machine that has a serial line connection to your crashbox.</FONT></td>
+</tr><tr>
+</tr></table>
+<p>
+It is possible to set all of this up using just two machines.  One machine serves as the crashbox and the other provides all of the other services.  This second machine can be the same Linux machine where you build your SPIN kernel.</p>
+<p>
+<FONT SIZE=5><P><A NAME="crash">Setting Up a Crash Box</A></FONT> </P>
+<P>The device driver layer, called sal, in the iX86 version of SPIN is taken from the <a href="http://www.freebsd.org/">FreeBSD</a> operating system. In order to load and boot your SPIN kernel, you need to have a FreeBSD file system in place. At the UW we achieve this by installing FreeBSD on the machines where we boot SPIN. In addition to FreeBSD, your machine also needs a DOS partition where we install <B><I>salboot.com</B></I>. This set up procedure explains how to partition and format your hard disk as well as install salboot.com and FreeBSD, and is intended for a machine that will predominantly be used for booting and running the SPIN kernel. </P>
+<P>It is possible to use a machine on which you already have FreeBSD installed provided there is an existing DOS Partition as well. If this is the case for you, you can take a look a our FAQ: <A HREF="http://velvet.cs.washington.edu/spin/docs/ix86_faq.html#faq1">What if I already have FreeBSD?</A>. </P>
+<B><a name="salboot"><U><P>Before You Begin</B></U></a> </P>
+<P>You will need two boot diskettes; one for salboot.com and one for FreeBSD. You can get the FreeBSD boot diskette (boot.flp) by following their <A HREF="http://www.freebsd.org/handbook/install.html">installation instructions</A>. </P>
+<P>Get the (1.5MB) dos.salboot boot image <A HREF="http://velvet.cs.washington.edu/spin/download/dos.salboot">here</A>. Once you have the dos.salboot image you can place it on a diskette using <B>dd</B>. </P>
+<BLOCKQUOTE>Insert a diskette into your machine.<BR>
+# dd if=dos.salboot of=<I>disk device</I> bs=512k<BR>
+Here <I>disk device</I> is the /dev entry for the floppy drive, probably <B><I>/dev/fd0</B></I>. </BLOCKQUOTE>
+<P>Once you have these two boot diskettes you are ready to set-up your "crashbox". </P>
+<B><U><P>Create a DOS Partition</B></U> </P>
+<P>At this point you should already have your two boot diskettes - dos.salboot and boot.flp. Now boot your pc with the dos.salboot diskette. </P>
+<P>Create a 1MB DOS partition for salboot.com using fdisk. </P>
+<BLOCKQUOTE>A:fdisk </BLOCKQUOTE>
+<P>Select 3 "Delete Partition or Logical DOS Drive" and delete ALL partitions. </P>
+<P>Select 1 "Create Primary DOS Partition". Type "N" then "1" to create a small DOS partition (this is actually rounded up to 8MB). Return to the root menu. </P>
+<P>Select 2 "Set Active Partition" then type "1" to activate partition 1. Return to the root menu. </P>
+<P>Select 4 "Display Partition Information" this looks something like: </P>
+</FONT>
+<PRE>
+	Partition   Status   Type      VolumeLabel   Mbytes   System   Usage
+	c:1         A        PRI DOS                 8&#9;      UNKNOWN  0%
+</PRE>
+<FONT FACE="helvetica">
+<P>Exit fdisk.  When asked to insert DOS system diskette, just press any key to continue.<P> At this point DOS may tell you: Invalid media type reading device drive c.<BR>
+Abort, Retry, Fail? You can just abort. </P>
+<P>Next you want to format your c: drive and run install.bat to install all the files for salboot.com. </P>
+<BLOCKQUOTE>A:format c:<BR>
+A:install </BLOCKQUOTE>
+<P>Now remove the dos.salboot diskette and reboot your machine. You should see "c:\salboot.com". Now you have a formatted 8MB partition with salboot.com installed. The next step is to install FreeBSD. </P>
+<B><a name="fbsd"><U><P>Installing FreeBSD</B></U></a> </P>
+<P>These instructions will walk you through a "minimal install" of FreeBSD. If you are interested in any other type of installation you may want to take a look at the <A HREF="http://www.freebsd.org/handbook/install.html">real instructions</A>. </P>
+<P>Insert your boot.flp diskette and reboot the machine. </P>
+<P>At the "Kernel Configuration Menu" select "Skip kernel configuration and continue with installation". </P>
+<P>At the main menu, select 7 "Custom". </P>
+<P>At the "Choose Custom Installation Options" menu, select 2 "Partition". </P>
+<P>You should see something like this: </P>
+</FONT>
+<PRE>
+Disk name: sd0
+Disk Geometry: .....
+
+Offset     Size     End       Name     Ptype    Desc   Subtype   Flags
+    0          63       62       -        6   unused     0
+   63       16002   160064   sd0s1        2   fat        1
+16065     4181340  4197404       -        6   unused     0</PRE>
+<FONT FACE="helvetica">
+<BLOCKQUOTE>*Some of these values will be different for you depending on your available disc space. </BLOCKQUOTE>
+<P>The last partition should be selected. Type "C" (C-Create) to create a slice then hit return twice. This will allocate all the remaining disk space for FreeBSD. </P>
+<B><P>Q</B>uit the partition editor. </P>
+<P>At the "Install boot manager" screen, select "None: Leave the Master Boot Record Untouched". 
+<br>(<b>Use the spacebar to select, then return</b>.) </P>
+<P>At the "Choose Custom Installation Options" menu, select 3 "Label". </P>
+</FONT>
+<PRE>
+Disk:  sd0&#9;Partition Name: sd0s2&#9;Free:  4176900  blocks 
+
+Part&#9;Mount&#9;Size&#9;Newfs
+----&#9;-----&#9;----&#9;-----
+sd0s1&#9;none&#9;7MB&#9;DOS</PRE>
+<FONT FACE="helvetica">
+<P>Type "C" (C-Create). Specify "1024M", "FS A file system", and "/" as the mount point. Type "C" again. Hit return this will select all remaining space, then select "SWAP A Swap Partition". </P>
+</FONT>
+<PRE>
+Part&#9;Mount&#9;Size &#9;Newfs
+----&#9;-----&#9;----&#9;-----
+sd0s1&#9;none&#9;7MB&#9;DOS
+sd0s2a&#9;/&#9;1024MB&#9;UFS Y
+sd0s2b&#9;swap&#9;1015MB&#9;SWAP</PRE>
+<FONT FACE="helvetica">
+<B><P>Q</B>uit from the DiskLabel Editor. </P>
+<P>At the "Choose Custom Installation Options" menu, select 4 "Distributions". <br></P>
+<P>At the "Choose Distributions" menu, select 6 "Minimal".<BR>
+(<b>Use the spacebar to select, then return</b>) </P>
+<P>At the "Choose Custom Installation Options" menu, select 5 "Media". </P>
+<P>At the "Choose Installation Media" menu, you can take your pick. If you have a CD-ROM, this will be much faster than installing via ftp. If you are going to install via ftp you will need to provide IP address, gateway, and DNS information. </P>
+<P>At the "Choose Custom Installation Options" menu, select 6 "Commit"<BR>
+(<b>Use the spacebar to select, then return</b>)</p>
+<P>After the installation is complete, you will be back at the "Choose Custom Install Options" menu.  Just choose "Exit" and then "Exit Install".  At this point your machine will reboot.  In order to be sure that the install was successful,  press the "F2" key at the prompt to boot FreeBSD. </P>
+
+<P>Once you reboot your machine, press the "F1" key at the prompt to run salboot.com.  This machine is now set up as a "crashbox". </P>
+
+<FONT SIZE=5><P><A NAME="nfs">Setting Up an NFS Server</A></FONT> </P>
+<P>You will need to set up your development (Linux) machine to work as an NFS server. RedHat provides a nice <A HREF="http://www.redhat.com/linux-info/ldp/HOWTO/NFS-HOWTO-3.html">guide</A> for doing this. You want to be able to mount your SPIN build directory over the network so that the SPIN kernel can be booted on a remote machine. Here is a condensed version of the necessary steps for setting up the NFS server on your development box: </P>
+
+<UL>
+<LI>Start <B>portmap</B> or <B>rpc.portmap</B>. You will find this in <B>/usr/sbin/</B>. </LI></UL>
+<DIR>
+<DIR>
+
+<BLOCKQUOTE>#/usr/sbin/portmap (/usr/sbin/rpc.portmap)</BLOCKQUOTE></DIR>
+</DIR>
+
+
+<UL>
+<LI>Edit <B>/etc/exports</B> so that you export the top level directory of where your <B>spin</B> directory is located; this is the same as MOUNT_POINT in <b>the make.conf</b> file you edited earlier. Using the earlier example of <B>/home/myspin</B>, add this line to the <B>/etc/exports</B> file: </LI></UL>
+<DIR>
+<DIR>
+
+<BLOCKQUOTE>/home &nbsp; loom16.cs.washington.edu<BR>
+(Here loom16 is the crashmachine and /home is made available to loom16.) </BLOCKQUOTE></DIR>
+</DIR>
+
+
+<UL>
+<LI>Start <B>mountd</B> or <B>rpc.mountd</B> AND <B>nfsd</B> or <B>rpc.nfsd</B>. Look in <B>/usr/sbin/</B> to see what your versions are called. </LI></UL>
+<DIR>
+<DIR>
+
+<BLOCKQUOTE>#/usr/sbin/mountd (/usr/sbin/rpc.mountd)<BR>
+#/usr/sbin/nfsd (/usr/sbin/rpc.nfsd)</BLOCKQUOTE></DIR>
+</DIR>
+
+
+<UL>
+<LI>Check that these programs are running by typing <B>rpcinfo -p</B>. You should see something like this: </LI></UL>
+</FONT>
+<PRE>
+    program vers proto   port
+    100000    2   tcp    111  portmapper
+    100000    2   udp    111  portmapper
+    100005    1   udp   1009  mountd
+    100005    1   tcp   1011  mountd
+    100003    2   udp   2049  nfs
+    100003    2   tcp   2049  nfs</PRE>
+<FONT FACE="helvetica">
+<UL>
+<LI>Note that you have just manually started these processes. If you want them to run at system start-up, you will have to modify your system <I>rc</I> files. If you have questions about any of this, you might try the <A HREF="http://www.redhat.com/linux-info/ldp/HOWTO/NFS-HOWTO-3.html">RedHat Guide</A> for more details. </LI></UL>
+
+<FONT SIZE=5><P><A NAME="http">Setting Up an HTTP Server</A></FONT> </P>
+<P>It is possible to fetch some or all of the SPIN extensions via http. The default configuration fetches the initial script file via http and the remaining extensions via nfs. It is <B>not necessary to have an http server</B>, so you don't have to continue with this. If you don't provide an http server, you will have to define <B>FETCH_METHOD=nfs</B> in your <B>spin/make.conf</B> file. See <A HREF="ix86_build.html#spinvars">Pre-Build Modifications</A> for more details. </P>
+<P>We have used both Netscape server and Apache server at the UW. The Apache server is available free from <A HREF="ftp://www.apache.org/apache/dist/">www.apache.org/apache/dist/</A>. </P>
+<P>After setting up your http server according to the instructions provided by the supplier i.e. Netscape, Apache etc, do the following. </P>
+
+<UL>
+<LI>Inside the http server's web-document root directory, create a symbolic link to your nfs mount point with the same name as your mount directory. For example, if your nfs mount directory is <B>/home</B>, do this in your http document directory: </LI></UL>
+<DIR>
+<DIR>
+
+<BLOCKQUOTE>#ln -s /home home</BLOCKQUOTE></DIR>
+</DIR>
+
+<P>That is all there is to it. </P>
+<FONT SIZE=5><P><A NAME="bootp">Bootp</A></FONT> </P>
+<P>You also need to set up a <B>bootp</B> server on your development (Linux) machine. Look for <B>/usr/sbin/bootpd</B> to see that you have bootp installed. If you don't then you can get <B>bootp-2.4.3.tar.gz</B> from <A HREF="ftp://ftp.warwick.ac.uk:/pub/inet/bootp/">ftp.warwick.ac.uk:/pub/inet/bootp/</A>. </P>
+
+<UL>
+<LI>Edit <B>/etc/services</B> on your Linux machine to include the lines: </LI></UL>
+</FONT>
+<PRE>
+        bootps          67/udp          bootp           # bootp server
+        bootpc          68/udp                          # bootp client</PRE>
+<FONT FACE="helvetica">
+
+<UL>
+<LI>Edit <B>/etc/inetd.conf</B> on your Linux machine to include one of the following lines: </LI></UL>
+
+<PRE>
+  	bootps dgram   udp     wait    root     /usr/sbin/bootpd        bootpd
+  	bootps dgram   udp     wait    root     /usr/sbin/bootpd        in.bootpd
+</PRE>
+
+<UL>
+<LI>Create the file <B>/etc/bootptab</B>. This file specifies how bootp operates and what machines it will serve. Look at and/or copy this <A HREF="bootptab.html">bootptab example</A>. </LI></UL>
+
+<FONT SIZE=5><P><A NAME="rcon">Rconsole</A></FONT> </P>
+<P>At the UW we use <B>rconsole</B> to create a remote connection to another machine on the network. The rconsole facility allows access to the console of a remote machine via a hardwired tty line. To set up rconsole, you need to download and and build the sources. </P>
+<B><U><P>Installing/Building</B></U> </P>
+
+<UL>
+<LI>Download the file:
+<table><tr>
+<td>
+<FONT FACE="helvetica">
+<a href="http://velvet.cs.washington.edu/spin/download/rconsole.tar.gz"><B>rconsole.tar.gz</B></a></FONT></TD>
+<td>(3.7Mb) </TD>
+<td><FONT FACE="helvetica"><P>remote console (rconsole) sources</FONT></TD>
+</tr></table>
+<LI>Unpack this file and build: </LI></UL>
+<DIR>
+<DIR>
+
+<BLOCKQUOTE># gunzip < rconsole.tar.gz | tar xf -<BR>
+# <I>(Optional)</I>rm rconsole.tar<BR>
+# cd rconsole<BR>
+# make </BLOCKQUOTE></DIR>
+</DIR>
+
+<P>This will build the <B>rconsole</B> and <B>rconsoled</B> and place them in <B><I>/usr/local/bin</B></I>. You can read <B>rconsole.doc</B> for a more detailed explanation of the rconsole utility. </P>
+<P>The build process also copies the <B>rconsoles</B> file into <B><I>/etc/</B></I>. This file specifies the remote machines and name of the rconsole server. There is a single entry in this file that can be used as an example.  If you are going to have more than one crashbox connected to your rconsole server, you will need an entry in this file similar to the following for each of the crashboxes. </P>
+<PRE>
+&#9ttyS0   13      loom20  2500    loom16  loom16.cs.washington.edu</PRE>
+<P>Fields:
+
+<UL>
+<LI>ttyS0: Serial line corresponding to COM1 port.<BR>
+This may differ on your machine.  For example if  you use COM2 in place of COM1, this would be ttyS1 </LI>
+<LI>13: Baud (You shouldn't need to change this.) </LI>
+<LI>loom20: Name of the machine that will be the rconsole server (Your Linux machine). </LI>
+<LI>2500: Port number (You shouldn't need to change this.) </LI>
+<LI>loom16: Name of the remote machine you will connect to. (Your crashbox) </LI>
+<LI>The last entry is just the full name of the remote machine. </LI></UL>
+
+<B><U><P>Connecting Your Machines</B></U> </P>
+<P>You will need to connect your crashbox to the rconsole server using one of the COM ports. On our machines this required a null-modem cable with female DB9 connections at each end. I actually took a standard RS-232C cable that had female DB9 connections and added a DB9 male x female null-modem adapter to one end.  At the UW we also have multiple machines connected to a single rconsole server through a serial module.  Here is a <a href="rconsole.html">diagram</a> of the set-up</P>
+<a name="runrconsole"><B><U><P>Running rconsole</U></B></a> </P>
+<P>At this point you should be able to run rconsoled and connect to your crashbox. In this example I will use the machines from the <B>rconsoles</B> file above.
+<P>
+First execute the following command so that the rconsole prompt remains left aligned. </P>
+<BLOCKQUOTE>#stty -icrnl &lt; /dev/ttyS0<BR>
+(This assumes you are using the ttyS0 serial connection) </BLOCKQUOTE>
+<P>Now you can start the rconsole daemon and connect to your crashbox. </P>
+<BLOCKQUOTE>#rconsoled loom16 & (Probably needs to be done as root)<BR>
+#rconsole loom16<BR>
+Attempting to connect to loom16 (via /dev/ttyS0) ... Connected<BR>
+rconsole: Type '^_{q|e}' to exit. </BLOCKQUOTE>
+<P>Hit return and you will see the prompt: </P>
+<blockquote>>>></blockquote>
+To exit rconsole, type <b>(Ctrl Shift Minus)</b> then <b>q</b>.
+<p>
+Now you are ready to <a href="ix86_boot.html">boot</a> SPIN.</p>
+<P>
+<CENTER><a href="mailto:spin-support@cs.washington.edu"><FONT SIZE=2>Questions/Comments</FONT></a></CENTER>
+<HR></P>
+<FONT SIZE=2><P>Copyright (c) 1997 The University of Washington. All rights reserved. </FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<P>&nbsp;</P></BODY>
+</HTML>

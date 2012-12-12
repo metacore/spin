@@ -1,0 +1,64 @@
+<html><head><title>bootptab example</title></head>
+<body bgcolor="#efefef">
+<center>
+<font size=5>Example <b>bootptab</b> file</font>
+</center>
+<p>
+[<a href="ix86_build.html">Build</a> | <a href="ix86_boot.html">Boot</a>]
+<hr>
+<pre>
+# /etc/net/bootptab: database for bootp server (/usr/net/in.bootpd)
+# Last update Mon 11/7/88 18:03
+# Blank lines and lines beginning with '#' are ignored.
+#
+# Legend:
+#
+#       first field -- hostname
+#                       (may be full domain name and probably should be)
+#
+#       hd -- home directory
+#       bf -- bootfile
+#       cs -- cookie servers
+#       ds -- domain name servers
+#       gw -- gateways
+#       ha -- hardware address
+#       ht -- hardware type
+#       im -- impress servers
+#       ip -- host IP address
+#       lg -- log servers
+#       lp -- LPR servers
+#       ns -- IEN-116 name servers
+#       rl -- resource location protocol servers
+#       sm -- subnet mask
+#       tc -- template host (points to similar host entry)
+#       to -- time offset (seconds)
+#       ts -- time servers
+#
+# Be careful about including backslashes where they're needed.  Weird (bad)
+# things can happen when a backslash is omitted where one is intended.
+#
+
+
+
+# First, define a global entry which specifies the stuff every host uses.
+# NOTE: THE VALUES BELOW ARE MEANT AS AN EXAMPLE!
+#allhost:hd=/tmp:bf=null:\
+#       :ds=145.71.35.1 145.71.32.1:\
+#       :sm=255.255.254.0:\
+#       :gw=145.71.35.1:\
+#       :ts=145.71.35.1:\
+#       :lp=145.71.35.1:\
+#       :to=-7200:
+# Define all individual entries.
+#hostname:ht=1:ha=ether_addr_in_hex:ip=ip_addr_in_dec:tc=allhost:
+
+spindefaults    :ht=ether:bf=null:hd=/spin
+
+# 
+loom16          :tc=spindefaults:ha=0060971c01c7:ip=128.95.2.170
+</pre>
+<hr>
+[<a href="ix86_build.html">Build</a> | <a href="ix86_boot.html">Boot</a>] 
+<p>
+</body>
+</html>

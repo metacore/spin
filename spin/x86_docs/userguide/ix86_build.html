@@ -1,0 +1,364 @@
+<HTML>
+<HEAD>
+<TITLE>Installing and Building SPIN</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FAFAFA" LINK="#0000ff" VLINK="#800080">
+
+<B><FONT FACE="helvetica" SIZE=5><P ALIGN="CENTER">Installing and Building SPIN<BR>
+for the X86</P>
+</FONT></B>
+<CENTER>
+<TABLE WIDTH=590>
+<TR><TD>
+<P>
+<FONT FACE="helvetica" SIZE=4><B>Applicability</B></FONT></P>
+<FONT FACE="helvetica">
+<P>This document is designed for anyone wishing to obtain, build and run the X86 version of the SPIN Operating System. The document covers setting up your build environment, getting the SPIN sources, and building SPIN. Information on other aspects of SPIN can be obtained on the web at:<a href="http://www.cs.washington.edu/research/projects/spin/www/"> http://www.cs.washington.edu/research/projects/spin/www/</a>.</P></FONT>
+<P>
+<FONT FACE="helvetica" SIZE=4><B>Overview</B></FONT>
+</P><P>
+<FONT FACE="helvetica">
+The first stage of this process is building the SRC Modula-3 release 3.6.  To do this you will retrieve three tar.gz files via ftp.  You will then run m3build and m3ship to build and install Modula-3.  All of this is described below.
+</P><p>
+Next you will install and build some auxiliary tools that are required to build SPIN.  These are available from the SPIN distribution site as a single tar.gz file.
+<p>The last step outlined in this document is building SPIN itself.  This is actually the least complicated portion of the entire process.
+</P><P>
+At the end of this process you will have a fully built SPIN kernel.  The next step is <a href="ix86_bootsetup.html">booting</a> this kernel.
+</FONT>
+<FONT FACE="helvetica" SIZE=4><B><P>System Requirements</P></B></FONT>
+<FONT FACE="helvetica"><P>
+The x86 version of SPIN needs at least a Pentium/PentiumPro class processor.  The operating system uses features that are not available on 468 and below processors.  We have only tried running SPIN on Intel Pentium and PentiumPro processors.  Whether SPIN will work with x86 processors from other vendors is unknown.
+<BR>
+<a href="ix86_hardware.html">List of known working hardware</a>.
+<P>The fully built spin tree takes up <b>~220MB</b> of disk space.  This is a lot of space but if you are building SPIN on more than one machine, you only need one fully built tree.  Other users can get by with a subset of the full tree.  This is described later in the description of FULLTREE in <a href="#spinvars">below</a>.
+</P>
+<P>
+<FONT color="#ff0000">
+Please note that the version of libc (glibc-2.0.x aka libc-6) that comes with the newer distributions of Linux is not compatible with the Modula-3 compiler used to build SPIN.  For this reason you need to use a version of Linux that includes libc-5.  Redhat version 4.2 is known to work.</P></FONT>
+<hr>
+</FONT><FONT FACE="helvetica" SIZE=4><B><P>Setting Up Your Environment</P></B>
+</FONT><FONT FACE="helvetica"><B><P><U>Install Linux</U></P></B>
+<P>The build environment for X86-SPIN is currently Linux. This document was prepared using <a href="http://www.redhat.com/">Redhat</a>'s distribution of Linux. This is not to say that other distributions won't provide the necessary environment.</P>
+<P><FONT color="#ff0000">
+Please note that the newer version of libc (glibc-2.0.x aka libc-6) is not compatible with the Modula-3 compiler used to build SPIN.  For this reason you need to use a pre 5.0 version of Linux that includes libc-5.  Version 4.2 is known to work.</P></FONT>
+<P>The first thing to do is install Linux on your machine. Be sure to install the development tools so that your system has all the libraries and binaries for the build environment.</P>
+<!--
+<P>You will need the static libc files which may not be included in your installation. Look for "/usr/lib/libc.a" and "/usr/lib/libm.a". If these files are not present, you can get them from the <a href="http://velvet.cs.washington.edu/spin/download/download.html">SPIN distribution site</a>.  Retrieve <b>libc.a</b> and <b>libm.a</b> and place them both in <b>/usr/lib/</b>.
+/-->
+<B><P><U>Install and Build Modula-3 from SRC</U></P>
+</B><P>The Modula-3 distribution comes as three tar.gz files.  You can either download them from one of the sites listed below or you can download them from our site by clicking on the file names a little further below.  You should choose the location nearest you.
+<ul>
+<li><a href="ftp://gatekeeper.dec.com/pub/DEC/Modula-3/release-3.6/">gatekeeper.dec.com/pub/DEC/Modula-3/release-3.6/</a>
+<li><a href="ftp://ftp-i3.informatik.rwth-aachen.de/pub/Modula-3/release-3.6">ftp-i3.informatik.rwth-aachen.de/pub/Modula-3/release-3.6/</a>
+<li><a href="ftp://src.doc.ic.ac.uk/computing/programming/languages/modula-3/DEC/release-3.6/">src.doc.ic.ac.uk/computing/programming/languages/modula-3/DEC/release-3.6/</a>
+</ul>
+</P>
+<P>The files are:
+<center>
+<table border=0 width=400>
+<td><b><a href="http://velvet.cs.washington.edu/spin/download/boot-LINUXELF.tar.gz">boot-LINUXELF.tar.gz</a></td><td width=10></td><td> (5.0Mb) </td><td width=10></td><td> bootstrap archives</td>
+</tr><tr>
+<td><b><a href="http://velvet.cs.washington.edu/spin/download/m3cc.tar.gz">m3cc.tar.gz</a></td><td></td><td> (7.0Mb) </td><td></td><td> compiler back end</td>
+</tr><tr>
+<td><b><a href="http://velvet.cs.washington.edu/spin/download/m3.tar.gz">m3.tar.gz</a></td><td></td><td> (7.3Mb) </td><td></td><td> Modula-3 sources</td>
+</tr></table>
+</center>
+
+<P>The rest of these instructions for building Modula-3 are derived from those provided by Digital at <a href=" http://www.research.digital.com/SRC/modula-3/html/install-POSIX.html"><B><I>http://www.research.digital.com/SRC/modula-3/html/install-POSIX.html</B></I></a>.</P>
+<OL>
+
+<LI>Unpack all the archives:</LI>
+<blockquote>&#9;# gunzip &lt; boot-LINUXELF.tar.gz | tar xf -
+<br>&#9;# gunzip &lt; m3cc.tar.gz | tar xf -
+<br>&#9;# gunzip &lt; m3.tar.gz | tar xf -&nbsp;</blockquote>
+<LI>(Optional)<BR>Remove the tar.gz files - </LI>
+<blockquote>&#9;# rm boot-LINUXELF.tar.gz
+<br>&#9;# rm m3cc.tar.gz
+<br>&#9;# rm m3.tar.gz</blockquote>
+<LI>Move m3cc to boot-LINUXELF -</LI>
+<blockquote>&#9;# mv m3cc boot-LINUXELF</blockquote>
+<LI>Next you have to configure Modula-3 for Linux by editing the template file: <br><b><i>boot-LINUXELF/m3build/templates/LINUXELF</i></b>.  Here is an <a href="LINUXELF.html">example template</a> with changes already made, use this as a guide for understanding the instructions below.  Be sure you edit this file based on your particular Linux system.
+<P> 
+<UL>
+<LI>Define INSTALL_ROOT to be the location where you want Modula-3 installed. By default it is installed in <B><I>/usr/local/</B></I>; this has worked fine for us and there is a little less work during the install if you use the default location.</LI>
+
+<LI>Define the location of the X libraries. In older Linux distributions, these libraries were stored in the directory <b>"/usr/X11/lib/elf"</b>; in newer distributions, they are stored in <b>"/usr/X11/lib"</b> or <b>"/usr/X11R6/lib"</b>. If your libraries are stored in one of the latter directories rather than the former one, you should change all (eight) occurrences of the former name to the appropriate latter name.</LI>
+
+<LI>Define the location of your ELF executables.  In older Linux distributions they are in the directory <b><i>/usr/i486-linuxelf/bin/</b></i>; in newer distributions, they are stored in <b><i>/usr/bin/</b></i>. Look to see where the executables <b>ar</b>, and <b>as</b> are on your machine.  If these executables are stored in the latter directory, you should change the two occurrences of the former directory name to the latter name.</LI>
+
+<LI>Define the name of your gnu C compiler.  In older Linux distributions it was <b><i>gcc-elf</i></b>; in newer distributions, it is named <b><i>gcc</i></b>. If you have a program named <b><i>gcc</i></b> in your executable directory (namely, the directory determined in the previous step), you should change all (nine) occurrences of the former name to the latter name. </LI>
+
+<LI>Define CC, LINK, and BOOT_CC to point to your c-compiler (either cc or gcc).  These are now set to either <b>"gcc-elf"</b> or <b>"gcc"</b>; change this to include the full path.  For example "/usr/bin/gcc-elf" or "/usr/bin/gcc".</LI>
+
+<LI>Define MAKELIB to point to your archiver (ar).  This is now set to either <b>/usr/i486-linuxelf/bin/</b> or <b>"/usr/bin/ar"</b>, this may already be correct.  Check the location of <b>ar</b> on your machine and change the definition of MAKELIB if necessary.
+<LI>Define RANLIB to point to <b>ranlib</b>, which converts libraries into more efficient random-access libraries.  This is currently defined as "touch".  If your machine has <b>ranlib</b>, change this to the full path to <b>ranlib</b> on your machine.</LI>
+
+<LI>Define ASM to point to your assembler (as).  This is now set to either <b>/usr/i486-linuxelf/bin/</b> or <b>"/usr/bin/as"</b>.  Check to see that this is the location of <b>as</b> on your machine, and make the appropriate change if it is not.
+</UL>
+<LI>Wheeew...those were some confusing instructions.
+</OL>
+<P>Now you are ready to build.</P>
+<OL>
+<LI>Go to <B><I>boot-LINUXELF</B></I>, run <B><I>./m3boot</B></I>, then run <B><I>./m3ship</B></I>. The m3ship step will copy the essential pieces of the bootstrap system to the directories (BIN_INSTALL, LIB_INSTALL, ...) specified in <B><I>m3build/templates/LINUXELF</B></I>.</LI>  Note that the <b>m3ship</b> command will have to be executed as <b><i>root</i></b>.
+<blockquote>&#9;# cd boot-LINUXELF
+<br>&#9;# ./m3boot
+<br>&#9;# ./m3ship
+<br>&#9;# cd ..</blockquote>
+<LI>Now you should add BIN_INSTALL to your path. For example, if you are installing Modula-3 in <B><I>/usr/local</B></I>, add <B><I>/usr/local/bin</B></I> to your path (if it's not already there). If you're running csh, this is done by adding the following line to your .cshrc file:</LI>
+<blockquote>setenv PATH $PATH:/usr/local/bin </blockquote>
+<P>If you change your .cshrc (or .tcshrc) file, you will need to reload it into your shell, and then run "rehash" to notify the shell of the changes to PATH.</P>
+<blockquote># source ~/.cshrc
+<br># rehash</blockquote>
+<LI>At this point you have installed the Modula-3 compiler and driver. If everything went well and if you are pressed for space, you can now delete the bootstrap directory:</LI>
+<blockquote>&#9;# cd ../<br>
+            &#9;# rm -rf boot-LINUXELF</blockquote>
+<LI>By default, the release is configured to build a large collection of packages. You only need to build the <B><I>m3core</B></I> and <B><I>libm3</B></I> libraries. In the file <B><I>m3/src/m3makefile</B></I>, comment out the <I>BuildChunk</I> lines associated with packages other than <b><i>m3core</i></b> and <b><i>libm3.</i></b></LI>
+<P>
+<LI>Go into the Modula-3 source directory and run m3build:</LI>
+
+<blockquote>&#9;# cd m3
+<br>&#9;# m3build
+</blockquote>
+</OL>
+Congratulations, you are done building SRC Modula-3 release 3.6.
+
+<B><P><U>Installing and Building the bsdtools</U></P>
+</B><P>Now you need to get the Linux->FreeBSD cross development tools.  Some of these were created here at the UW, others might be available from the internet.  Again, this step is only needed as long as we are doing development on Linux.  In the future this will not be a requirement.  These tools are available as a single tar.gz file from our distribution site.
+
+<UL>
+<LI>Download the file: 
+<table border=0 width=400>
+<td><b><a href="http://velvet.cs.washington.edu/spin/download/bsdtools.tar.gz">bsdtools.tar.gz</a></td><td width=10></td><td> (3.7Mb) </td><td width=10></td><td> cross development tools</td>
+</tr></table>
+</LI></UL>
+<UL>
+<LI>Unpack this file:
+
+<blockquote>&#9;# gunzip &lt; bsdtools.tar.gz | tar xf -</blockquote>
+</LI></UL>
+<UL>
+<LI><i>(Optional)</i> Remove the tar.gz file:
+
+<blockquote>&#9;# rm bsdtools.tar.gz</blockquote>
+</LI></UL>
+<UL>
+<LI>Change to the bsdtools directory:
+
+<blockquote>&#9;# cd bsdtools</blockquote>
+</LI></UL>
+<UL>
+<LI>If you installed Modula-3 in the default location, <B><I>/usr/local/,</I></B> then you can skip this step and go to the next.
+<P>If you didn't install Modula-3 in <B><I>/usr/local/</I></B>, then in the <b><i>bsdtools/Makefile:</i></b>
+<TABLE><TR>
+<TD ALIGN=RIGHT>Change: </TD> <TD>BUILDDIR=/usr/local</TD>
+</TR><TR>
+<TD ALIGN=RIGHT VALIGN=TOP>To: </TD> <TD>BUILDDIR=<b>YOUR</b> Modula-3 build directory<br>
+(This is the same as INSTALL_ROOT in the LINUXELF template file above).
+</TD>
+</TR></TABLE>
+</LI></UL>
+
+<UL>
+<LI>Build the bsdtools: (<i>You will have to perform this operation as <b>root</b></i>)
+
+<blockquote># make</blockquote>
+
+<P>This will create the following executables and place them in <B><I>/usr/local/bin/</B></I> (unless you changed your "Makefile" above).
+</P>
+
+<TABLE CELLSPACING=0 BORDER=0 CELLPADDING=3 WIDTH=400>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<P><FONT FACE="helvetica">bsd-ar</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P>bsd-as</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P>bsd-cc</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P>bsd-cc1</FONT></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P>bsd-config</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P>bsd-cpp</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P>bsd-ld</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P>bsd-nm</FONT></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P>bsd-ranlib</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P>bsd-size</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<FONT FACE="helvetica"><P></FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>&nbsp;</TD>
+</TR>
+</TABLE>
+<P>
+This also copies three library files into <B><I>/usr/local/lib/</b></i> , <b><i>libc.a</i></b> and <b><i>libm.a</i></b>, <b><i>crt0.o</i></b>.
+</P>
+</LI></ul>
+
+<UL>
+<LI><i>(Optional)</i>  You can now remove the <B><I>bsd-tools</B></I> source directory.
+
+<blockquote>&#9;# cd ..
+<br>&#9;# rm -rf bsdtools</blockquote>
+</LI></UL>
+<!--
+<UL>
+<LI>Change directories to <b><i>/usr/local/bin</i></b> or the directory you specified in the Makefile above.
+
+<blockquote>&#9;# cd /usr/local/bin</blockquote>
+</LI></UL>
+<UL>
+<LI>Create a new directory named <b><i>LINUXELF</i></b> and change to this new directory:
+
+<blockquote>&#9;# mkdir LINUXELF
+<br>&#9;# cd LINUXELF</blockquote>
+</LI></UL>
+<UL>
+<LI>In this new directory you want to create symbolic links to all of the standard Linux versions that correspond to the <b><i>bsd-*</i></b> executables you created above:
+
+<BLOCKQUOTE>&#9;# ln -s /usr/bin/ar ar
+<BR>&#9;# ln -s /usr/bin/as as
+<BR>&#9;# ln -s /usr/bin/cc cc
+<BR>&#9;# ln -s /lib/cpp cpp
+<BR>&#9;# ln -s /usr/bin/ld ld
+<BR>&#9;# ln -s /usr/bin/nm nm
+<BR>&#9;# ln -s /usr/bin/ranlib ranlib
+<BR>&#9;# ln -s /usr/bin/size size
+<BR>&#9;# ln -s /usr/bin/strip strip</blockquote>
+</LI></UL>
+/-->
+<hr>
+</FONT><B><FONT FACE="helvetica" SIZE=4><P>Install and Build SPIN</P>
+</B></FONT><FONT FACE="helvetica"><P>
+<!--
+<B><U>Install</U></B>
+<P>If you already downloaded the SPIN sources you can skip down to the <a href="#spinvars">Pre-Build Modifications</a>.  For the rest of these instructions,  I'll pretend that the SPIN source tree will be installed in <b><i>/home/myspin/</i></b>.
+<UL>
+<LI>Select where you want SPIN to reside on your system.
+<BLOCKQUOTE>&#9;#cd /home/myspin</BLOCKQUOTE>
+</LI></UL>
+<UL>
+<LI>Get the file <b><i>spin.XX.tar.gz</i></b> from the SPIN <a href="http://velvet.cs.washington.edu/spin/download/download.html">distribution</a> page, and  place it in the directory you selected above; in our example this is <b><i>/home/myspin</i></b>.  (Here XX is a release number).
+</LI></UL>
+<UL>
+<LI>Unpack the SPIN sources:
+<BLOCKQUOTE>&#9;# gunzip &lt; spin.XX.tar.gz | tar xf -<br>
+</blockquote>
+</LI></UL>
+/-->
+<P>
+<B><u>Directory Structure</u></B>
+<P>
+As an example, I'll pretend that the SPIN sources are installed in <b>/home/myspin/</b>.
+<P>
+This is what your SPIN tree should look like at this point.
+</FONT>
+<pre>
+                         /home/myspin
+			          |
+			        spin
+			          |
+           ------------------------------------------------------------------
+	  |             |         |	     |	        |	   |         |
+    various files   make.conf    doc/      local/    kernel/     user/    x86_docs/
+   
+</pre>
+<FONT FACE="helvetica">
+<P>
+<B><a name="spinvars"><P><U>Pre-Build Modifications</U></P></a></B>
+
+<P>
+<UL>
+<LI>Edit the file: <b>/home/myspin/spin/make.conf</b>.
+<P>There are seven variables that you will need to define according to the way you set up your system. You may need to install and configure your <A HREF="ix86_bootsetup.html#nfs">nfs server</A> before you do this so that you know what values to use. Here are the variables and a description of their functions.
+<table>
+<TR>
+<TD VALIGN="TOP"><FONT FACE="helvetica">
+<P><B>MOUNT_POINT</B></TD>
+<TD><FONT FACE="helvetica">
+<P>This is the nfs mount point you export to the machine where you will boot SPIN. We refer to this machine as a <A HREF="ix86_bootsetup.html#crash">crashbox</A>. This will be the top-level directory underneath which your SPIN tree is located. For example, if your SPIN sources are located in <B><I>/home/myspin/spin</B></I> then <B>MOUNT_POINT=/home</B>.</FONT></TD>
+</TR>
+<TR><TD VALIGN="TOP"><FONT FACE="helvetica">
+<B><P>MOUNT_PAD</B></FONT></TD>
+<TD><FONT FACE="helvetica">
+<P>This is the path from MOUNT_POINT to the directory that contains your <B>spin</B> tree. For example, if you unpacked your SPIN sources in <B><I>/home/myspin/</B></I>, <B>MOUNT_PAD</B> is the empty string, that is, <B>MOUNT_PAD=</B>. However, if your source tree is further removed from MOUNT_POINT for example, if you unpacked your SPIN sources in <B>/home/mydir/myspin/</B>, then <B>MOUNT_PAD=mydir/</B>(and MOUNT_POINT=/home). DON'T FORGET THE TRAILING "<B>/</B>" IN THE SECOND CASE.</FONT></TD>
+</TR>
+<TR><TD VALIGN="TOP"><FONT FACE="helvetica">
+<B><P>FETCH_METHOD</B></FONT></TD>
+<TD><FONT FACE="helvetica">
+<P>This determines how the initial extensions are fetched at boot time. By default this is set to <B>http</B>. If you don't wish to set up and configure an <A HREF="ix86_bootsetup.html#http">http server</A> then you may want to change this to <B>nfs</B>. Even with the default setting only the initial fetch is done via http, the rest via nfs.</FONT></TD>
+</TR>
+<TR><TD VALIGN="TOP"><FONT FACE="helvetica">
+<B><P>HTTP_ADDR</B></FONT></TD>
+<TD><FONT FACE="helvetica">
+<P>This defines the IP address of the http server you will use to fetch extensions during and after booting SPIN.  In the two-machine scenario this will be the IP address of your development (Linux) machine.  It is not absolutely necessary to use an http server for this purpose as it can all be done via nfs.  See the <a href="ix86_bootsetup.html#http">boot set-up page</a> for details.</FONT></TD>
+</TR>
+<TR><TD><FONT FACE="helvetica">
+<B><P>HTTP_PORT</B></FONT></TD>
+<TD><FONT FACE="helvetica">
+<P>The port number for the  http server identified above. </FONT></TD>
+</TR><TR>
+<TD VALIGN="TOP"><FONT FACE="helvetica">
+<B>INSTALL_DIR</B></FONT></TD>
+<TD><FONT FACE="helvetica">
+<P>This is the path to your Modula-3 build directory.  It is the same as INSTALL_ROOT in the LINUXELF template file above.  If you installed Modula-3 SRC in the default location this will already be defined correctly as <b>INSTALL_DIR=/usr/local</b>.</TD>
+</TR><TR>
+<TD VALIGN="TOP"><FONT FACE="helvetica">
+<B>FULLTREE</B></FONT></TD>
+<TD><FONT FACE="helvetica">
+<P>This variable describes the location of a fully built SPIN tree.  If you are building the entire SPIN tree on your machine, you can use the default definition - <B>FULLTREE=$(THISTREE)</B>.  If you are not building the full SPIN tree and you expect to use some portion of a remote, fully-built tree, you will need to define <b>FULLTREE</b> to be the path to this remote tree.  This variable specifies where to find those portions of the tree that you don't have locally.  The entire tree must be built on at least one node on your network.</FONT></td>
+</tr><TR>
+<TD colspan=2><FONT FACE="helvetica">Take a look at an <a href="makeconf.html">example make.conf</a> that is based on the following environment parameters.
+<ul><li>The <b><i>spin</i></b> directory is located in <b><i>/home/myspin</i></b>.
+    <li>The development (Linux) machine's IP address is 128.95.2.184.
+    <li>Modula-3 was installed in the default location (/usr/local).
+</ul>
+</FONT></TD>
+</TR>
+</table>
+</UL>
+<B><P><U>Build SPIN</U></B>&nbsp;</P>
+<P>
+<UL>
+<LI>Change directories to <B><I>spin</B></I> and type make!</P>
+<BLOCKQUOTE>&#9;# cd /home/myspin/spin
+<BR>&#9;# make </BLOCKQUOTE>
+</LI></UL>
+<p>
+The next step is to perform some <a href="ix86_bootsetup.html">set-up</a> prior to <a href="ix86_boot.html">booting</a> your kernel.</p>
+<p>
+<hr>
+<b><u>Cleaning Commands</u></b>
+<p>
+<b><font color="#ff0000">Note: This is not part of building SPIN</font></b>.
+<p>
+<ul>
+<li>To remove all files created as a result of building:
+<blockquote>#make clobber</blockquote>
+<li>To remove all files created as a result of building while keeping those files necessary for building other parts of the system:
+<blockquote>#make clean</blockquote>
+This command will remove all intermediate generated files in the local and kernel trees.  The object files are not removed in the user tree because they are loaded as extensions.  The programs built in local remain in local's bin directory and the kernel images remain in their build directory.<p>
+<li><b>make clean</b> in any subtree will remove only the platform-specific objects and binaries in that subtree.
+</ul>
+<CENTER><a href="mailto:spin-support@cs.washington.edu"><FONT SIZE=2>Questions/Comments</FONT></a></CENTER>
+<hr>
+<FONT SIZE=2>
+<P>Copyright (c) 1997 The University of Washington. All rights reserved.
+</P>
+</FONT>
+</TD></TR>
+</TABLE>
+</center>
+</FONT><FONT FACE="helvetica" SIZE=2><P>&#9;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&#9;&#9;</P></FONT></BODY>
+</HTML>
