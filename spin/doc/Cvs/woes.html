@@ -1,0 +1,89 @@
+<html>
+<title>CVS WOE Page</title>
+
+
+<h1> What to do when things don't work </h1>
+
+Yes, yes, we know you've read the cvs web page, and the cvs faq, and you've
+for sure done everything you were supposed to, but you're still having trouble
+checking out, committing, updating or merging through CVS.  So, you've come
+here, to the CVS WOE page, to learn what's going wrong.
+
+<h2> Help. cvs update doesn't work. </h2>
+
+Reminder. You use cvs update when you want to bring your branch up to date with
+someone else's tag, or with the main repository. To bring up to date with the
+main repository, type:
+<pre>
+cd <top of your spin tree>
+cvs update
+</pre>
+
+<p>
+to update with someone else's branch, or an intermediate tag named,
+some-branch, you would type:
+<pre>
+cd <top of your spin tree>
+cvs update -j some-branch
+</pre>
+
+<h3> CVS is complaining that it can't find the CVS directory under sal</h3>
+
+In all likelihood, you have forgotten to unimport all that sal crap before you
+<pre>
+gmake unimport
+</pre>
+from the top of your spin tree.
+
+<h3> CVS is telling me that sal files are not in my branch.</h3>
+For example, you might see something like:
+<pre>
+Merging differences between 1.3 and 1.3.20.1 into files
+cvs update: Updating sal/data
+cvs update: file ace_data.c only in revision s6-mef-s7-1
+cvs update: file autoconf_data.c only in revision s6-mef-s7-1
+cvs update: file bt_data.c only in revision s6-mef-s7-1
+cvs update: file cons_sw_data.c only in revision s6-mef-s7-1
+cvs update: file eisa_option_data.c only in revision s6-mef-s7-1
+cvs update: file fb_data.c only in revision s6-mef-s7-1
+</pre>
+
+Curious as you are, you even check what the status of those files are in the
+named branch with
+<pre>
+cvs stat sal/data/bt_data.c
+</pre>
+and you get back nothing.
+<p>
+In all likelihood, the person who made the tag failed to do the unimport before
+they tagged. Even though those files are not part of the repository, they can
+be found in the Attic (since they at one time were part of the repository).
+CVS, in it's wisdom, decides that the files should be part of the tree, somehow
+and sort of, but not entirely, and then yells at other people who try to update
+based on that tree.  Of course, the person who performed the tag thinks
+everything is hunky dorey.
+
+<h3> CVS is telling me that a file which I know doesn't exist anymore exists in
+the update tag </h3>
+
+Neither CVS nor us are very good at keeping track of files that we've removed,
+and so the result is that deleted files often reappear in the repository and in
+intermediate branches. Just as a reminder, to delete a file:
+<pre>
+rm file
+cvs remove file
+cvs commit file
+</pre>
+It's as simple as that!
+<p>
+If the file is not removed properly, it will continue to reappear.  Don't
+worry, just complain to the mergemaster and to the person who was responsible
+for removing the file originally.
+
+</body>
+<p><hr>
+<Address>
+bershad@cs.washington.edu<br>
+</Last updated <date>November 24, 1995</date>
+</html>
+</html>

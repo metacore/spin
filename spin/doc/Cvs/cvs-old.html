@@ -1,0 +1,305 @@
+<html>
+<head>
+<title>Spin CVS</title>
+</head>
+
+<body>
+<h1>Spin Versioning and Branching</h1>
+<date>December 19, 1994</date><br>
+Updated <date>January 24, 1995</date>
+ <P>
+<HR>
+<P>
+ 
+
+The helpful
+<A HREF="cvs-faq">
+CVS FAQ
+</a>
+has lots of hints and
+<A HREF="cvs.ps">
+Version Management with CVS
+</a>
+is pretty thorough.
+<p>
+
+Here is the
+<A href="http://www.winternet.com/~zoo/cvs/">
+CVS Web Page
+</a>
+on the net.
+<p>
+
+The man pages are in the
+<A HREF="directories.html#ContribManPages">
+contrib man page directory
+</a>
+(add that to your MANPATH).  The info pages are in the
+<A HREF="directories.html#ContribInfo">
+contrib info directory</a>.
+<p>
+
+We
+<A href=""
+http://www.cs.washington.edu:80/research/projects/spin/www/internal/Notes/Sys/merge.html>
+were using 
+</a> the
+btools package from the OSF ODE system.  We are still using build
+technology of the 
+<A HREF="ode.html">
+OSF ODE system</a>, including build, odemake and mksb.
+<p>
+
+cvs is in the
+<A HREF="directories.html#ContribBin">
+contrib bin directory</a>.
+To use cvs put the
+<A HREF="directories.html#CvsRoot">
+CVS root directory</a>
+in your CVSROOT environment variable. 
+
+<h2> Using CVS for Spin files </h2>
+
+See the <A href=""
+http://www.cs.washington.edu:80/research/projects/spin/www/internal/Implementation/release.html>
+releases page </a> for the list of SPIN revisions.
+<p>
+
+
+<h3> Starting out </h3>
+The <A HREF="exception.example">exception.c example</a>.
+<p>
+
+Use <samp>cvs checkout -r <em>revision</em> <em>file</em></samp> to get the files
+on which you want to work. <em>revision</em> is the full tree you are
+backing from (see Revisions above).  <em>file</em> can also be a
+directory name which will get all files in the directory tree. Run this in your
+<samp><em>sandbox/</em>src</samp> directory giving <em>file</em> as the
+relative path from src, as in <samp>mk/kernel/alpha/trap.c</samp>.
+<P>
+
+
+<h3> Making your branch </h3>
+First setup a set up a sandbox using mksb.  CVS replaces the btools like
+bco, bci and bcs.  We still have sandboxes, shadowing and build from
+<A HREF="ode.html"> ODE </a>
+which CVS knows nothing about.
+<p>
+To do RCS-like operations on your files without affecting anyone else,
+make your own branch.  The new branch will be a temporary branch that
+is merged back into the mainline when the next release is merged.
+<p>
+Getting a file:
+<pre>
+	cd becker/work/src
+	cvs checkout -r release-4 mk/kernel/alpha/trap.c
+</pre>
+You may now edit, remove, or otherwise mangle the file without affecting
+anyone else or the RCS file where it came from
+<p>
+Committing changes requires you have your own branch:
+<pre>
+	cvs tag -b r4-becker mk/kernel/alpha/trap.c
+	cvs update -r r4-becker mk/kernel/alpha/trap.c
+</pre>
+By convention make branch names like <samp>r4-becker</samp>  where r4
+corresponds to the release from which your files were checked out.
+<p>
+Now you can procede with an edit/commit cycle in your own branch.
+<pre>
+	edit
+	cvs commit -m "rcs log message"  mk/kernel/alpha/trap.c
+	edit
+	cvs commit -m "rcs log message"  mk/kernel/alpha/trap.c
+	...
+</pre>
+	
+
+<p>
+Use <samp>cvs stat -v <em>file</em> </samp> to see all the revisions and
+branches associated with a particular file.  Revision tags are static unless
+you force them to move.  Branch tags always refer to the latest file on
+the branch. 
+<p>
+At merge time, the merger combines everyone's
+branching into a new release so understand how merging happens before
+getting fancy with branching.
+
+
+<h3> Adding a new directory </h3>
+
+When a new directory is needed in the src structure, it also needs to be
+added to the CVS repository.  Also set the current branch (aka sticky
+tag) to the trunk.
+<pre>
+	mkdir dir
+	cvs add dir
+	cvs update -A dir
+</pre>
+
+<h3> Adding a new file </h3>
+
+To make sure new files go into the next merge, they are added on the
+main trunk and then branched.  First, add the new file to the trunk:
+<pre>
+	create file
+	cvs add file
+	cvs update -A file
+	cvs commit file
+</pre>
+
+Then make your own branch just as above:
+<pre>
+	cvs tag -b r4-becker file
+	cvs update -r r4-becker file
+</pre>
+Now the file can be modified as any other on your branch.
+
+
+<h3> Removing files </h3>
+
+When a file is to no longer appear in current or future revisions, use
+the remove subcommand.  The file will be stored in the "Attic"
+subdirectory in the CVS repository so past revisions can still be fully
+checked out.
+
+<pre>
+	cvs update -A file
+	rm file
+	cvs remove file
+	cvs commit file
+</pre>
+
+<h3> Tags versus Branches </h3>
+
+Most cvs operations have a "-r rev" option where rev can be either a
+branch or a tag.  Both branches and tags represent RCS labels stored 
+in the RCS headers in the repository RCS files.  It is CVS, not RCS, that
+intreprets the labels to mean tags or branches.
+<p>
+A <b>branch is a lineage </b>created by cvs tag -b file
+<p>
+
+A <b>tag is a freeze </b> marked by cvs tag file
+<p>
+
+Use 'cvs stat -v file' to examine the branches and tags for "file"
+stat -v shows these labels for mk/kernel/alpha/trap.c:
+<pre>
+	r4-loipc                        (branch: 1.3.2)
+        release-4                       (revision: 1.3)
+        r3-merge                        (revision: 1.3)
+        release-3                       (revision: 1.1.1.2)
+        release-2                       (revision: 1.1.1.1)
+        release-1                       (revision: 1.1.1.1)
+        origin-branch                   (branch: 1.1.1)
+						.
+					       /|\
+						|
+				"revision:" is a tag.  "branch:" is a branch.
+</pre>
+
+Checkout by tag release-3 will retrieve version 1.1.1.2
+<pre>
+	cvs checkout -r release-3 mk/kernel/alpha/trap.c
+</pre>
+
+Checkout from branch r4-loipc will retrieve 1.3.2.x where x is the
+latest version on that branch.
+<pre>
+	cvs checkout -r r4-loipc mk/kernel/alpha/trap.c 
+</pre>
+
+<h3> CVS instead of cp to share code</h3>
+
+Rather than copying code between sandboxes with cp, you can use cvs to
+merge other code into your branch.  Suppose I make a r4-becker branch for
+mk/kernel/alpha/trap.c and commit a new version of trap.c with the
+freeze tag of r4-becker-apr1. 
+To bring this tag into your branch:
+<pre>
+	cvs update -j r4-becker-apr1 mk/kernel/alpha/trap.c
+</pre>
+If there are conflicts, cvs will mark those areas of the file it failed
+to resolve with >>>> ==== <<<<< lines.
+<p>
+
+
+
+<h3> What update and checkout do </h3>
+Update and checkout (alias get) are often interchangeable, hence confusing.
+They will modify your tree, but never ever delete files that are modified.
+Modified (uncommitted) files are reported as "M filename" and are not
+deleted.
+<p>
+<samp>cvs update -r <em>branch</em> </samp> will replace your branch
+with <em>branch</em> adding and deleting files to make the tree look
+like <em>branch</em>.
+<p>
+<samp>cvs update -j <em>branch</em> </samp> will merge the diffs between
+<em>branch</em> and the trunk into your tree.  Previously modified files are
+affectd as well as untouched parts of your branch.
+No files will be added or deleted.  When <em>branch</em>
+has new files, you must add those files to your branch with tag -b and
+update -r as usual.
+<p>
+
+<h3> Weirdness </h3>
+<dl>
+<dt> Ctrl-C
+<dd> CVS uses the system(3) call to run the RCS commands so Ctrl-C often
+only kills the
+subprogram instead of CVS.  Use Ctrl-Z to stop it and then kill CVS
+(kill %).
+<dt> Path names
+<dd> Some commands only work on the current directory (add and release).  
+Sometimes you have to give the whole path (mk/kernel/alpha/trap.c) or
+can work with partial paths (alpha/trap.c) if a CVS subdir already exists 
+the current directory.
+<dt> Current branch
+<dl> CVS's idea of the current branch for a particular file is affected
+by several things.  If it thinks all the files in a dir belong to a
+single branch,  new operations will default to that branch.  If it sees
+a mixture or no files at all, the default is the head of the main trunk.
+The "sticky tag" is the default rev for the -r flag on all the CVS
+operations.  Update -r sets the sticky tag, which is reported by stat -v.  
+</dl>
+
+
+<h3> How to merge </h3>
+First checkout the previous merge.  Since it is possible for main trunk
+commits to have occured, we must merge the head with the old release and
+see if any files got screwed up.
+In an empty sandbox/src dir
+<pre>
+	cvs checkout -j release-1 mk osf
+</pre>
+If the revision labelled release-1 is not the most recent trunk
+revision of that file, it will have 'M' or 'C' status and needs to be
+examined.  Trunk changes should only be done by the merger.
+<p>
+For everyone's branch,
+<pre>
+	cvs update -q -j r1-branchname
+</pre>
+Clean merges are marked 'M'.  Conflicts you have to resolve are marked 'C'
+<p>
+Now make the merge compile and run,  committing as desired to the
+trunk.  Change conf/version.edit in the server and kernel to the new
+version.
+<p>
+
+Once the merge works, check it in and label the new release.
+<pre>
+	cvs commit
+	cvs tag release-2
+</pre>
+
+
+
+</body>
+<p><hr>
+<Address>
+becker@cs.washington.edu<br>
+</address>
+</html>

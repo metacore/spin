@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> C allocated untraced memory</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" C allocated untraced memory">
+<meta name="keywords" value="mem">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html27 HREF="node3.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/homes/mef/figs/next_motif.gif"></A>   <A NAME=tex2html25 HREF="mem.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/homes/mef/figs/up_motif.gif"></A>   <A NAME=tex2html19 HREF="node1.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/homes/mef/figs/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html28 HREF="node3.html"> M3 passing traced </A>
+<B>Up:</B> <A NAME=tex2html26 HREF="mem.html">SPIN Storage Management Issues</A>
+<B> Previous:</B> <A NAME=tex2html20 HREF="node1.html"> The perils of </A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00020000000000000000> C allocated untraced memory</A></H1>
+<P>
+Much of our C code relies on various memory allocators: malloc,
+kalloc, zalloc, sal_malloc, and spin_malloc.  Many of which are
+implemented in terms of the basic bsd/kern_malloc support.  The
+problem is that they create untraced references to memory.
+<P>
+There were two memory leaks introduced by the networking code (mbufs
+datastructures):
+<P>
+<OL><LI> C allocated untraced memory was not disposed properly in
+  net_spoof.c:internal_accept().  (Classical mistake.)
+<P>
+<LI> M3 code dropped a reference due to an erroneous use of the WITH
+  statement in EtherPacket.m3:Deliver(), thereby slowing leaking
+  256byte mbufs.
+<P>
+</OL>
+<P>
+<H3> Solution</H3>
+<P>
+Redirect all C untraced allocations to the traced heap, and rely on
+the garbage collector to catch memory leaks.  For the allocations to
+be GC safe requires that the memory being referenced is immobilized
+before being passed to C.  This approach requires that the M3
+allocator functions even when called from an interrupt handler, and
+that it is available early in the boot phase.
+<P>
+Alternatively, a conservative garbage collector for untagged memory
+could be used that runs over the untraced heap.
+<P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Marc Fiuczynski <BR>
+Thu Dec 28 15:39:17 PST 1995</I>
+</ADDRESS>
+</BODY>

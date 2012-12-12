@@ -1,0 +1,268 @@
+<html>
+<head>
+<title>Merging</title>
+</head>
+
+<body>
+<h1>
+<img align=right  src="http://www.cs.washington.edu/research/projects/spin/www/pics/merger.gif"></a> Merging
+</h1>
+
+
+A merge takes all of the changes done by everyone in the group and
+combines them into a single new release.  We try to merge as often as
+possible (minimally, once a week) to keep people from working in
+branches that diverge too far from one another.  Each week, someone
+new is appointed mergemaster and is responsible for coordinating the
+new merge.  Merges typically happen on Friday morning and are
+intended to be ready by Friday around noon.  
+
+<H2>The role of the mergemaster (MM) </H2>
+
+MM has several responsibilities:
+
+<DL>
+<DT> Determining what goes into the merge.  
+<DD> An MM will only put into a merge tags that have been tested,
+committed, and properly submitted through the merge procedure. Proper
+submission is described below.  
+
+<DT> Creating a buildable, bootable system.
+<DD> The MM will take each tag and merge it against successively
+advanced branches off of the mainline.  With each tag, the MM is
+counseled to ensure that the merge results in a buildable, bootable
+system.  Tags that come equipped with code that tests new features, or
+exercise old ones, should work.
+
+<DT> Coordinating the organization of the
+ documentation describing the features, bugs, and fixes in the current
+release.
+<DD> Each release comes with a set of "how to use" pages that describe
+how to checkout, build, and boot the system. Most releases follow a
+boilerplate pattern. It is the MM's job to collect this information
+together.  Submitters should ensure that this goes smoothly by clearly
+describing their contributions in pages that become part of the merge.
+
+
+<DT> Announcing the new release
+<DD> The MM will announce the new release to the group.
+
+</DL>
+
+The MM may find it useful to deputize a Co-MM to help debug the distribution.
+
+
+<H2>Procedures for merging</H2>
+
+Merging is a two-way street.  People submitting tags for the merge
+need to follow a couple of simple procedures to ensure that their tags
+make it into the new merge with a minimal of effort, and ensure that
+their tag, once merged, cna be easily tested by the MM.  In return,
+the MM will take care to collect the files from each tag and merge
+them into a new release.
+
+<H3>Flakey Tags</H3>
+
+<P>
+At the MM's discretion, tags that appear flakey, inadequately
+documented, create complex conflicts, do not build, or result in a
+build that does not work, may not be included in a merge.  If you
+submit a branch like this, and it's rejected by the MM, you've got to
+try the following week to get your branch accepted by correcting
+whatever wasn't right on the previous submission. You could also
+create an accelerated release with just your stuff added into what the
+MM was able to collect and release that.
+<P>
+
+<H3>Submitting a tag</H3>
+
+To submit a tag for merging, follow the normal CVS procedures for
+creating a tag and then document your tag following these steps:
+<UL>
+<LI> Go to the build web area's upcoming directory under
+/projects/spin/www/internal/howto/Build/upcoming.  
+
+<LI> Copy the standard
+<A HREF="file:/afs/cs/project/spin/www/Internal/howto/Build/templates/newtag-template.html">newtag
+template (newtag-template.html)</A> from that directory into a file of
+your own. For example, Bershad would 
+<pre>cp ../templates/newtag-template.html bershad.html</pre>
+
+<LI> Edit your new tag file, taking care to fill in all of the
+subsections.  While there is no fixed format to this file, if you can
+avoid changing the format, please do. This will make the merger's job
+easier.  If you think there are items which need to be in the
+newtag-template file, please discuss it with the group before making
+any changes.  If your page is getting a little long, create your own
+subdirectory in the upcoming directory and put additional pages there.
+Documentation pages (for example, describing new shell commands)
+should go in your new directory.
+
+<LI> If your new tags requires that the merge run any special programs
+or tests, make your own subdirectory under the upcoming directory and
+include the scripts that run those tests there. In your new tag page,
+include a discussion of how to run those scripts and what the output
+should be.
+
+
+<LI> Add your tags page to the <A
+HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/howto/Build/upcoming/tags.html">upcoming
+tags page</A>.
+
+</UL>
+
+
+<H3>Collecting tags</H3>
+
+Here are the steps the MM will follow in creating the merge:
+
+<OL> 
+
+<LI> Announce to the group that a merge has started by sending out
+mail message to <A HREF="mailto:spin-m3@cs">spin-m3</a>, and marking the <A
+HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/howto/Build/upcoming/tags.html">upcoming
+page</A> in the build area as closed.
+
+
+<LI> Visit the <A
+HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/howto/Build/upcoming/tags.html">upcoming
+page</A> in the build area to determine what tags people have decided
+should go into the upcoming merge.  This file contains pointers to
+HTML pages in the upcoming directory which describe the contents of
+each submitted tag.
+
+
+<LI> Review each submitted tag page to ensure that it contains all of
+the necessary information about each new tag.  If you have any
+questions about the tag, send mail to the submitter and try to get an
+answer before you finish your merge.
+
+
+<LI> Start merging.  The easiest way to do this is to check out the
+trunk, and then apply each tag in succession against your checked out
+trunk. For example, suppose the latest trunk version is spin-X, and you want
+to merge in bershad-spin-X and mef-spin-X to make a new trunk version spin-Y:
+<pre>
+cvs checkout -r spin-X spin	# get the latest
+cvs update -A spin		# gt rid of sticky-magic-tags and move to trunk
+cvs update -j spin-X -j bershad-spin-X # merge new code onto trunk
+# build and test, if all works, continue. If it doesn't work, back out.
+# DAVID B !??! HOW TO BACK OUT??
+#
+# 
+# Tag and commit current intermediate branch.
+cvs commit -m "bershad-spin-X spin-X" spin
+cvs tag spin-X-bershad spin
+
+#
+# Each new tag generates its own intermediate branch
+cvs update -j spin-X-bershad -j mef-spin-X # merge new code onto trunk
+
+</pre>
+
+<p>
+
+At any point, you can back out of the merge to a previous tag.  This
+should help with debugging and in determining where interactions are
+causing failure.  It also gives you a snapshot that you can hand back
+to a submitter that will let them work with you to determine where a
+failing conflict has occurred.
+
+<LI> After you merged a tag and conclude that the tag will make it
+into the new release, modify the tag's HTML file provided by the
+submitter to reflect its new status.  Also, modify the upcoming.html
+page to reflect that the tag has been accepted.
+
+
+<LI> Once you've merged all of the tags, go to a fresh build area,
+checkout, and try to build from scratch. This should work.  If it
+doesn't, either figure out what's wrong and try to fix it (not always
+possible without a wizard), or figure out some temporary workaround
+that will let people make progress on the new release while a fix to
+the configuration is determined.  The configuration fix can be
+released subsequently in a special patch tag.
+
+<LI> Create a new directory in the web Build area named after the
+current release.  For example, if you are merging spin-10, then create
+a /projects/spin/www/internal/howto/Build/spin-10 directory.  The
+easiest thing to do is rename the upcoming directory to spin-10 (or
+whatever the release is).  In the release directory go these files
+(for which templates can be found in the .../Build/templates
+directory):
+
+<DL>
+<DT> <A HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/Howto/Build/templates/index.html">index.html</A>.
+<DD> The index page containing pointers to more detailed pages.
+
+<DT> <DT> <A HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/Howto/Build/templates/tags.html">tags.html</A>.
+<DD> The tags file that was jointly created by all submitters.
+
+<DT> <DT> <A HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/Howto/Build/templates/whats-new.html">whats-new.html</A>.
+<DD> A page containing a high level description of
+the new release.  This information can just be a summary of the
+information from each submitted tag page's overview section. This
+information should be detailed enough though to enable a caveman to
+determine the major points about the new release.
+
+<DT> <A HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/Howto/Build/templates/checkout.html">checkout.html</A>.
+<DD> Information on how to checkout the new release.
+
+<DT> <A HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/Howto/Build/templates/build.html">build.html</A>.
+<DD> Information on how to build.
+
+<DT> <A HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/Howto/Build/templates/boot.html">boot.html</A>.
+<DD> How to boot.
+
+<DT> <A HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/Howto/Build/templates/bugs.html">bugs.html</A>.
+<DD> Major problems. Detailed bug information can be found on each tag
+submitter's page.
+
+<DT> <A HREF="http://www.cs.washington.edu/research/projects/spin/www/internal/Howto/Build/templates/merge-info.html">merge-info.html</A>.
+<DD> Information about what happened during the merge. What got
+screwed up, what was difficult, what got dropped on the floor,
+why... This information will help us refine the merge procedures over
+time.  
+</DL>
+
+
+<LI> Export the new merge into the afs build area.
+<pre>
+David, can you describe the steps required here. Thanks.
+</pre>
+
+<LI> Update the build.html page in the .../howto/Build page to contain
+a link to the new release.
+
+<LI> Create a new upcoming directory in the web Build area that
+contains a newtag-template.html and a tags.html that can be used by
+the next merger. 
+
+<LI> Send mail to the <A HREF="mailto:spin-m3@cs">group</A>
+ announcing the new release.
+
+</OL>
+
+<H2>What happens after a merge</H2>
+
+After a merge has been announced, it is in everybody's best interests
+to get back onto the trunk.  Follow the procedures in the
+checkout.html page from the release tree.
+
+<H3>What if my tag didn't make it into the merge?</H3>
+
+Talk to the MM and find out why your code didn't make it in.  Fix
+whatever was wrong, and then create a new branch which merges yours
+with the trunk.  If your tag is critical, then you can create an
+additional release containing only your trunk (in other words, follow
+all of the above procedures).  We should try to avoid interim
+patches except for configuration stuff.
+
+
+</body>
+<p><hr>
+<address>
+bershad@cs.washington.edu<br>
+</address>
+<date>November 27, 1995</date>
+
+</html>

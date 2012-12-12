@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>Dynamic Linker implementation</title>
+</head>
+
+<body>
+<h1>Safe Dynamic Linker Implementation for M3</br></h1>
+<date>November 10, 1995</date>
+<P>
+
+Extensions are written in Modula-3 and are integrated with the rest of the
+kernel via dynamic linking.
+
+<p>
+The overall process is conceptually very similar
+to static linking. Instead of filenames to specify which pieces of code to
+link together, the programmer uses domains to specify which code to combine.
+Instead of a Main.m3 that initializes the program, the module bodies (the 
+BEGIN ... END block of a module) are used to initialize an
+extension. And instead of linking against a system library, the extension
+programmer links against the Spin public domains which contain user-accessible
+code exported by the system.
+
+<p>
+The similarities are slightly misleading, however, in that to keep the
+overall process simple for the programmer, a whole bunch of mechanisms
+must conspire transparently under the covers. A review of these
+mechanisms follows, which explains the terms used in the problems
+section.
+
+<h2>Dynamic Linking Basics.</h2>
+
+<p>
+The bulk of the dynamic linker is concerned with interpreting COFF
+files. The major components of a coff file are <i>sections</i>,
+<i>relocations</i>, and <i>symbols</i>.
+
+<p>Sections house data, code and symbols. There are about 15 different
+types of sections. There is a
+section for text, data, small initialized data, constants,
+4, 8-byte and "A" literals, procedure data, BSS, small BSS,
+etc. Each section contains some data belonging to the program at
+hand. For instance, the text section will contain machine
+instructions. However, the instructions will generally not be
+complete, since they might depend, for instance, on the location of
+the lita section in virtual memory. Until the lita section is assigned
+a spot in memory by the linker, the instructions cannot be patched to
+working order. The dynamic linker first reads in all the sections, and
+assigns each section to some virtual address in memory.
+
+<p><i>Relocations</i> are then used to patch the section contents with
+the runtime values that are assigned by the linker. The relocation
+language is very powerful - there is even a little stack based
+calculation mechanism that allows the calculation of arbitrary
+formulas. Each relocation modifies a particular piece of section
+data. It also describes what to modify that bit of data to. For
+instance, a relocation might say, "put the value on top of the
+calculator stack in the low 32 bits of this instruction." Usually,
+the relocation will involve a calculation based on the value in the
+to-be-patched field. This value is quite often a coff address, which
+has to be translated from coff offsets into the virtual location that
+now corresponds to that coff offset. The type and class fields in the
+relocation entry describe when such translations have to be performed.
+Finally, some relocation entries will refer to symbols.
+
+<p>
+<i>Symbols</i> allow one to specify a precise location in a coff
+section. The generator of the coff file, usually a compiler, assigns a
+symbol to reside at a particular section and creates a symbol entry
+saying "Procedure X resides at offset 35 in the text segment."
+Relocations can then say something like "Patch this lda instruction to
+point to symbol X." The dynamic linker then has to look up X, and
+subsequently calculate the assigned address of the text segment, and
+return the new value for X.
+
+<p>
+There are two symbol tables, one for internal use by the coff module
+that the symbol appears in (e.g. labels etc. are internal symbols), 
+and an external one for use by other coff modules. The 
+external symbols are visible by other coff modules (domains), who can
+use that symbol to patch their own relocation entries.
+
+<p>
+All strings in a coff file are in one large glob, and all
+textual names appear as offsets into this string table.
+
+<p>
+Caveats: This is a simplified view of what happens. There are some quite
+complicated cases, such as a symbol that appears to be exported but is
+not, or section types which require one to modify the values of the
+symbols found within, that are too lengthy to go into in a primer. The
+gp offset calculation deserves a whole treatise on how an innocent
+little feature can become a boondoggle.
+
+<h2>M3 linking</h2>
+
+<p>
+Once a module has been downloaded and linked into the system, two
+things have to happen: (1) the types it has introduced must be 
+registered with the runtime, (2) the main bodies of the extension have
+to be executed. This is done in a phase in Domain.Initialize. The
+types are assigned typecodes and integrated, and some type problems
+are detected at this stage. Then the main bodies of the M3 modules in
+the extension are executed in collection order.
+
+<A name=errors><h2>Problems with extensions</h2>
+
+<p>
+It is necessary to bear in mind that the entire dynamic linker was
+written with only an outdated coff spec (which has almost nothing
+to do with the extended coff used on alphas and mipses) and a lot of
+reverse engineering. It is thanks to a group of persistent extension
+writers that the dynamic linker is as robust as it is. M3 type linking
+has not had the benefit of either stability (shifting the compiler base from
+3.3 to 3.5) or a large number of dynamically linked M3
+extensions.
+
+<dl>
+
+<dt>The dynamic linker does not handle "ld -r" output.
+<dd><b>Synopsis:</b> "ld -r" changes the coff addresses of the coff
+sections to some pretty unusual values. It also 
+reorganizes their layout in memory. The dynamic linker refuses to
+link such a file, since some coff offsets become negative.
+<dd><b>Work-around:</b> Do not use ld -r. Use gld -r if you really
+must do a partial link, or let the new domain interface generate a
+(possibly self-extracting) binary for you.
+<dd><b>Solution Strategy:</b> I will change the domain templates to not
+run ld -r on extensions. This will also eliminate our dependency (and
+trust) on gld and ld. This is waiting for spin-6.
+
+<p>
+<dt>Subtypes introduced by an extension do not admit NARROW.
+<dd><b>Synopsis:</b> NARROW checks are done by doing a range
+comparison between assigned typecodes. When a new subtype is
+introduced, it needs to get "inserted" into this range, which is not
+possible without walking the whole heap and changing every
+pre-existing typecode (as well as a whole bunch of other changes).
+<dd><b>Work-around:</b> Use a LOOPHOLE temporarily. Type equality
+still works.
+<dd><b>Solution Strategy:</b> Pardy has implemented a different typecode scheme
+where there is a level of indirection in the typecode lookup that
+occurs before the range check. This fix is currently being tested.
+
+<p>
+<dt>Interface checking is not performed.
+<dd><b>Synopsis:</b>Interfaces are not checked to ensure that an
+interface Foo that was compiled against is the same interface Foo that
+is linked against. This might lead to type and safety errors.
+<dd><b>History:</b>This feature used to exist in the 3.3 compiler, but
+got dropped in 3.5.
+<dd><b>Solution Strategy:</b>We need to reimplement the previous
+scheme, which relied on stealing some code from m3linker, and placing
+some information in the object files at compile time that m3linker
+needs later on.
+
+<p>
+<dt>Type consistency checking is not performed.
+<dd><b>Synopsis:</b>Revelation consistency is not performed for
+dynamically linked code. A revelation may not match a partial
+revelation, and the user might not get a warning.
+<dd><b>Work-around:</b>Use a "program" directive in the extension 
+m3makefile, which will force the m3linker to perform this consistency
+check for you at static compile time.
+<dd><b>Solution Strategy:</b>The fix for interface checking will take
+care of this manifestation of the same problem.
+
+<p>
+<dt>Domain destroy does not reclaim any resources 
+<dd><b>Synopsis:</b>Domain destroy does not reclaim any resources or
+uninstall nameserver handlers.
+<dd><b>Solution Strategy:</b>Breaking nameserver bindings requires a 
+change to the templates. Implementing reuse of resources from Domain.Destroy 
+requires that domains keep track of linkage information (at least). We need a
+spec for domain destroy. This item has been low on the queue since it doesn't
+directly affect safety or performance, but will pop to the top when the
+interface checking is added.
+
+</DL>
+
+<HR>
+<P>
+<Address>
+egs@cs.washington.edu
+</address>
+</html>

@@ -1,0 +1,223 @@
+<!-- <BASE HREF="http://www.cs.washington.edu/homes/egs/"> -->
+
+<html>
+<head>
+	<title>Kernel hacking primer for SPIN</title>
+</head>
+
+<body>
+<table width=590>
+<tr><td>
+<h1> <a name="top">Kernel hacking primer for SPIN</a></h1>
+<hr> <p>
+
+This page is intended to get first-time 
+<a href="http://www.cs.washington.edu/research/projects/spin/www">SPIN</a>
+hackers off the ground. At the end of this page, you will have checked
+out the SPIN kernel, built it, created a hello world extension, and
+downloaded it into the kernel. From there, you should go on to
+building more interesting and useful extensions.
+
+<p>
+Before you can do any of this, you need to overcome some basic
+logistical problems.
+
+<h4>Logistics for UW</h4>
+
+To build a spin kernel, you will need at a minimum:
+<ul>
+	<li> a spin login and an AFS home directory (talk with support@cs)
+	<li> have access to DEC OSF sources to compile device drivers in SPIN (talk to Nancy Burr)
+	<li> be a member of the AFS spin group, (talk to David Becker)
+	<li> have a project directory in which to store your work, (talk to David Becker),
+</ul>
+
+To get the AFS account, you need to fill out an account request card,
+get it signed by a faculty person, then turn it in to whoever <b>support@cs</b> specifies. When this is ready, send a request to David Becker saying
+that you want spin group membership and a project directory.
+Finally, send a request to Nancy Burr for reading osf
+sources. She will email you a license agreement, to which you can
+agree and email back.
+
+<p>
+All of this will likely take more than a day to acquire, so please
+make sure that you have these down early on. Let me know if you have a
+problem at this stage.
+
+<h4>Logging in</h4>
+
+To compile the kernel you will need to select a machine for your platform, choose one from the list below.
+<center>
+<table cellspacing=3 border=1><tr>
+<th>Alpha</th><th>iX86</th>
+</tr><tr>
+<td>chiffon, daffy, porky</td><td>loom00, loom01, loom02, loom03</td>
+</tr></table>
+</center>
+<p>
+Once logged on, you may have to acquire an AFS token to access your
+files. <tt><b>/usr/afsws/bin/tokens</tt></b> lists your active tokens and
+<tt><b>/usr/afsws/bin/klog</tt></b> lets you get a new one. Check out the 
+<a href="http://www.transarc.com/afs/transarc.com/public/www/Product/AFS/FAQ/faq.html">
+AFS FAQ</a> when you want to know more about AFS, but AFS
+sufficiently like NFS that it probably doesn't matter now.
+<p>
+
+<h4>Setting up your environment</h4>
+
+You need to tell CVS where the kernel source tree is by setting 
+an environment variable in one of your startup scripts (e.g. .login):
+<dd><tt><b>	setenv CVSROOT /afs/cs/project/spin/cvsroot </tt></b>
+
+<p>
+Your path needs to contain
+	<dd><tt><b>/usr/contrib/bin</tt></b> (to access cvs)
+	<dd><tt><b>/afs/cs/project/spin/bin</tt></b> (to access the debugger)
+	<dd><tt><b>/usr/afsws/bin</tt></b> (to access afs commands)
+<p>
+Make sure that you DO NOT use the cvs in /uns/cvs.
+
+<p>
+If you want to see a typical path
+on our systems, check out mine in /homes/gws/egs/.rcrc.
+
+<h4>Checking out SPIN</h4>
+***PLEASE NOTE***<BR>
+CVS checkout does not work properly when done on a PC.  If you are going to build on the iX86 platform, do your CVS operations on one of the alpha machines, then build on the PC.
+<P>
+
+We have weekly releases of the kernel. Each week, the release is tested
+to make sure that it passes all of the obvious tests. These releases
+are compiled and kept for archival in
+<tt><b>/afs/cs/project/spin/build.</tt></b> As of today, the most recent
+release is spin-29. You should go into the build directory and make
+sure that spin-29 is still current. If not, modify all subsequent
+commands with the name of the most recent release.
+
+<pre>
+cd /afs/cs/project/spin/YOU
+mkdir s29
+cd s29
+cvs co -r spin-29 -l spin
+cvs co -r spin-29 spin/kernel
+cvs co -r spin-29 spin/user
+#go grab some coffee... the checkout will take 5 minutes
+cd /afs/cs/project/spin/YOU
+ln -s s29/spin
+ln -s s29/spin/kernel/sal/ALPHA_SPIN/SPIN/spin.boot
+cd ~ && ln -s /afs/cs/project/spin/YOU/spin spin
+</pre>
+At this point if you are planning on building for the iX86, you want to switch to that platform if you haven't already done so.  The build command on the PC is "make" rather than "gmake".
+<pre>
+cd spin
+gmake 
+#go and grab some more coffee
+</pre>
+
+<p>
+You are wired from the coffee at this point, and the kernel is
+hopefully built. Since a tested release <i>should</i> build out of the
+box without problems, you should not encounter any. It is best to ask
+someone if you do, since that indicates that something serious is
+broken.
+
+<h4>Booting the kernel</h4>
+
+You have a copy of the SPIN kernel and all of the extensions.
+Now you need to find a crash machine, connect to it, and boot it
+with the kernel you have just built. The more detailed 
+<a href="boot.html">alpha</a>, or <a href="../kernel/sal/IX86_SPIN/boot/doc/boot.html">iX86</a> boot page, and <a href="../user/stcp/doc/index.html">loading extensions page</a> are here in case you need it.
+
+<p>
+All of the crash machines are accessible over the net. They have been
+configured to use a serial line instead of a console (keyboard
+and/or monitor). At the other end of the serial line, there is a host
+that acts as a remote console (rconsole). What you'll end up doing is
+sending network packets to that host, which will relay them to the
+crash box for you.
+
+<p>
+To do this, just type <b><tt>rconsole machinename</tt></b>, where
+machine name is the name of some crash box. Here's the 
+<a href="file:/afs/cs/project/spin/www/Internal/Environment/Equipment/rconsole.html">list
+of crash boxes.</a> All except www-spin are fair game. If
+someone else is using a crash box, rconsole will let you know.
+
+<p>
+You need to type in an rconsole password. I, or anyone else in SPIN, can
+tell this to you when you get to this stage.
+
+<p>
+When you connect to a machine, hopefully it will be in some decent
+state. If it is at the PROM prompt, ">>>", you are set. Otherwise,
+type halt. If it doesn't respond to that, try 
+<a href="Debug/gdb.html#disconnect">connecting
+with the debugger and halting via gdb.</a> If that doesn't
+work, someone has to press a button on the machine. The rconsole page
+shows where the machines are.
+
+<p>
+To boot your kernel, type
+	<b><tt>b -filename "/spin/YOU/spin.boot" ez0</tt></b>
+or
+	<b><tt>b -filename "/spin/YOU/spin.boot" ewa0</tt></b>
+
+<p>
+The TurboChannel alphas refer to their network interface as ez0, and the
+PCI alphas call it ewa0. To determine whether you are on a PCI box or
+a TurboChannel alpha, press return at the PROM prompt (i.e. ">>>"). PCIs
+will print another prompt on the next line, whereas TurboChannel alphas
+will print an empty line before the next prompt.
+
+<p>
+Once booted, your kernel should come up to the 
+<a href="../user/shell/doc/index.html">kernel
+shell prompt.</a> You can type <tt><b>help</b></tt> and go on from there.
+
+<h4>Building and downloading an extension</h4>
+
+</b>
+This stage involves making some changes to a hello world extension and 
+downloading it. The hello world extension, like all other SPIN
+extensions, is written in 
+<a href="http://www.research.digital.com/SRC/modula-3/html/home.html">Modula-3</a>.
+The Harbison Modula-3 book is a good primer for the language, and to
+become familiar with it, it helps to go through the motions of
+learning a new language. There is a useful online 
+<a href="http://www.cs.columbia.edu/graphics/modula3/tutorial/www/m3_toc.html">tutorial</a>
+for Modula-3 provided by Columbia University that you should definitely
+check out. 
+
+<p>
+The hello world extension can be found in user/hello. Compile it with gmake.
+Once you have changed it to your liking, you can download it by typing
+	<b><tt>script ~/spin/user/hello/ALPHA_SPIN/hello.rc</tt></b>
+at the shell. 
+
+<p>
+Once it is pulled into the kernel over the network, it should get
+initialized and do whatever you asked it to do.
+
+<h4> The End</h4>
+
+Congrats. You have built and compiled the kernel, as well as an
+extension. The gruntwork is over - there are no more obstacles
+to building interesting, high-performance and complex subsystems
+within the kernel. Good luck.
+
+<h4> Where to go from here</h4>
+
+There are other extensions that are more interesting than the hello world
+one. Check out httpd (web server), fs/wfs (http based file system),
+sync/rwlock (synchronization), net/udp (UDP networking protocol),
+threat (thread operations), vm/mach (virtual memory), shell/version
+(shell commands).
+<hr>
+</td></tr></table>
+</body>
+<hr><p>
+Emin G&uuml;n Sirer
+<address>
+<a href="mailto:egs@cs.washington.edu">egs@cs.washington.edu</a>
+</address>
+</html>

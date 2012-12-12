@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>User-Level Programs on SPIN </title>
+</head>
+
+<body>
+
+<br><img align=right src="./at-work.gif"><h1>User-Level Programs
+on SPIN</br></h1>
+<date>Wed Oct 23 12:33:47 1996</date>
+
+<hr>
+
+<p>
+
+<h2>Getting Started</h2>
+
+User-level SPIN applications can be written in any programming language.
+They execute in separate address spaces protected "by the hardware".
+There are three ways you can write user-level programs for SPIN.  These
+methods differ primarily in how user-level programs interact with the 
+kernel.  Each has its advantages and disadvantages.
+
+<h4><a href="../user/sphinx/doc/index.html">Sphinx</a></h4>
+
+Sphinx is a UNIX service written as an in-kernel extension.
+It can run OSF/1 binaries(either statically or dynamically linked) on
+Alpha, and FreeBSD binaries(statically linked) on x86.
+
+<p>
+Alpha version is more mature than x86 version, and we are now able to
+run nontrivial applications including many X clients on Alpha. On x86,
+only helloworld works.
+
+<p>
+However, lots of features are still missing. There is no uid/gid mechanism;
+character device control is very weak(especially signals). 
+
+<p>
+Sphinx provides some features not present in other UNIX systems. Those include
+profiling control and add-on systemcall
+extension support. The doc is in Yaz's mind only. Bug him. 
+
+<h4><a href="../user/mach/doc/index.html">OSF/1 Unix Server</a></h4>
+
+The OSF/1 Server layers Unix functionality on the SPIN kernel.  It is
+based on a Mach emulation, which is constructed in a set of SPIN dynamically
+linked extensions.  The OSF/1 Server provides binary compatibility with
+DEC OSF/1 3.2 executables.  In addition, it is fairly easy for programmers
+to build their own programs which run on the OSF/1 Unix server.  The Mach
+emulation extensions also support multi-threaded progams through the 
+CThreads interface.
+<p>
+The OSF/1 Server is a complicated piece of code.  It arguably stresses 
+SPIN services harder than any other application.  For this reason, it is
+not as stable as Dlib.  It will continue to evolve as the SPIN kernel
+evolves.  At this point, it can be booted into single-user mode, where
+it can run simple OSF/1 3.2 programs.
+
+<h4>Do it yourself</h4>
+
+You are not required to use one of Sphinx or the OSF/1 server to run
+user-level programs on SPIN.  The SPIN 
+<a href="../user/shell/doc/index.html">shell</a> has an <b>exec</b>
+command which allow programs to be run in a user-level address
+space.
+
+<p>
+The easiest way for user-level programs to interact with the kernel is
+through <i>system calls</i>.  By default, SPIN handles a very small
+number of system calls via <a href="../user/usyscall/doc/index.html">
+usyscall</a> service(usyscall has to be loaded beforehand by typing
+<code>nanny touch USyscall</code> from the shell).
+
+<p>
+Sphinx and the Mach/OSF Server emulations provide
+handlers for additional system calls.  Users can specify kernel routines 
+for new system calls by installing a handler on the <b>MachineTrap.Syscall</b>
+event.  <a href="../local/sieg/doc/index.html">SIEG</a> is a tool which 
+simplifies writing system call handlers and transferring data across the 
+user-kernel boundary. Sphinx systemcall interface and
+<a href="../user/trans/doc/index.html">transaction</a> systemcall interface
+are written using SIEG.
+
+<p>
+The primary advantage to building your user-level program from scratch
+is that you can fine-tune user-kernel interaction to the needs of your
+application.  For instance, you could optimize argument marshalling to
+pass small record datatypes through argument registers.  The primary 
+disadvantage is that you have to work out many machine-dependent details
+which are already worked out in Sphinx, SIEG, and Unix server.
+
+<h2>Conventions</h2>
+
+<h4>Reflecting Errors and Exceptions to User-Level Programs</h4>
+
+Both Sphinx and the OSF/1 server emulation have adopted UNIX conventions
+for passing error conditions from the kernel to the user.  Each system
+call has both a return value and an error code.  The return value is
+visible to the caller and can be used for a variety of purposes.  By
+convention, a negative return value signals an error.
+
+<ul>
+  <li> 
+On the alpha,
+this return value is passed from the kernel to the user via the return
+register, <b>v0</b>.  The error code is a bit more tricky, and its
+implementation details are typically hidden from the user.  A nonzero
+error code indicates an error condition.  On the Alpha, it is passed
+from the kernel to the user via register <b>a3</b>.  System call stubs
+generated on the user side usually place this error code into the
+global variable <b>errno</b>.  If this register is not 0, the system
+call stubs will often interpret the result as an error, regardless of
+the value in register <b>v0</b>.
+
+  <li> On x86, <code>eax</code> is used as return value reg.
+       <code>cflag</code> is set when error happens, and 
+       <code>edx</code> is set to hold the <code>errno</code>.
+</ul>
+
+<ul> 
+<pre> 
+int fd; extern int errno;
+
+if ((fd = open("/etc/passwd", O_RDWR, 0)) < 0) {
+	/* ERROR! */
+	printf("Error! errno = %d\n", errno);
+} else {
+	printf("File open. fd = %d\n", fd);
+}
+</pre>
+</ul>
+
+<p>
+
+SPIN also allows programs to react to specify low-level reaction to 
+faults in user-space.  For instance, an application can install an
+handler on the 
+<a href="../kernel/spincore/src/machine/ALPHA_SPIN/MachineTrap.m3">Access Violation</a>
+ event.  Then, if the application attempts an illegal memory access, the 
+handler will be notified and it can perform application specific duties to 
+clean up the fault.
+<p>
+Because of the flexibility SPIN offers, clients can define arbitrary
+mechanisms for communicating error conditions between their extensions
+and user-level programs.  Sphinx and the OSF/1 extensions have adopted
+the UNIX approach for compatibility with existing UNIX applications.
+
+<h2>See Also</h2>
+<ul>
+<li><a href="../user/sphinx/doc/index.html">Sphinx</a>
+<li><a href="../user/mach/doc/index.html">OSF/1 Unix Server</a>
+<li><a href="../local/sieg/doc/index.html">SIEG</a>
+<li><a href="../user/usyscall/doc/index.html">USyscall</a>
+<li><a href="../kernel/spincore/src/utils/doc/externref.html">Externalized
+    References</a>
+<li><a href="../kernel/spincore/src/machine/ALPHA_SPIN/MachineTrap.m3">MachineTrap.i3</a>
+</ul>
+
+</body>
+<p>
+<hr>
+<Address>
+ddion@cs.washington.edu<br>
+yasushi@cs.washington.edu<br>
+</address>
+</html>
+
+

@@ -1,0 +1,69 @@
+<html>
+<title>Dates in CVS</title>
+<h1>Dates in CVS</h1>
+
+<body>
+
+Dates can be specified in all of the following ways:
+<pre>
+                   1 month ago
+                   2 hours ago
+                   400000 seconds ago
+                   last year
+                   last Monday
+                   yesterday
+                   a fortnight ago
+                   3/31/92 10:00:07 PST
+                   January 23, 1987 10:05pm
+                   22:00 GMT
+</pre>  
+  
+  Dates seem to be completely orthogonal to tag names; they form
+  another name space of tags.  In fact, they are even sticky like
+  tags: when you checkout a file from a particular date, cvs keeps that
+  on the file when you commit it.  (You must "cvs update -A" to remove
+  the sticky date.)  To checkout from a particular
+  date,
+
+<pre>    
+    cvs co -D"January 25" spin/compiler/Makefile
+</pre>    
+  
+  "cvs history" can be used to find out when files were committed.
+  Unfortunately, it seems that this includes commits to local branches.
+  However, the output indicates in which directory the commit occurred,
+  so it's pretty easy to tell if the commit was in a merge or for a
+  branch.
+
+<pre>    
+    cvs history -c -a spin/compiler/Makefile
+</pre>    
+ 
+  The "-c" means report on commits; the "-a" means all users; Here are
+  some sample output lines from the above command:
+
+ 
+<pre>    
+  M 01/28 06:58 +0000 pardy   1.6.116.4           Makefile spin/compiler == /af
+  s/cs.washington.edu/project/spin/pardy/spin-13
+  M 01/28 22:47 +0000 savage  1.7                 Makefile spin/compiler == /af
+  s/cs.washington.edu/project/spin/savage/s13
+  M 01/29 23:36 +0000 savage  1.8                 Makefile spin/compiler == /af
+  s/cs.washington.edu/project/spin/savage/s13
+  M 10/31 07:26 +0000 whsieh  1.5.4.1             Makefile spin/compiler == /af
+  s/cs.washington.edu/project/spin/whsieh/s5/spin/compiler
+</pre>    
+  
+  
+<pre>    
+    cvs history -c -a -t spin-15 spin/compiler/Makefile
+</pre>    
+  
+  can be used to get all commit records after spin-15.
+
+</body>
+<p><hr>
+<Address>
+whsieh@cs.washington.edu<br>
+</Last updated <date>February 26, 1996</date>
+</html>

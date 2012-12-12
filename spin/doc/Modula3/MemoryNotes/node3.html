@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> M3 passing traced reference to C</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" M3 passing traced reference to C">
+<meta name="keywords" value="mem">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html37 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/homes/mef/figs/next_motif.gif"></A>   <A NAME=tex2html35 HREF="mem.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/homes/mef/figs/up_motif.gif"></A>   <A NAME=tex2html29 HREF="node2.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/homes/mef/figs/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html38 HREF="node4.html"> M3 passing compiler </A>
+<B>Up:</B> <A NAME=tex2html36 HREF="mem.html">SPIN Storage Management Issues</A>
+<B> Previous:</B> <A NAME=tex2html30 HREF="node2.html"> C allocated untraced </A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00030000000000000000> M3 passing traced reference to C</A></H1>
+<P>
+Traced data being referenced by GC unsafe modules must be immobilized
+using the StrongRef interface.  Determining when to release the strong
+reference is difficult.  Ideally the strong reference is released by
+the GC unsafe code when all actual reference are dropped.  However, it
+is intractable to determine where and when to release the strongref in
+all of the imported device drivers, tcp, socket, and SAL C code.
+<P>
+<H3> Solution</H3>
+<P>
+Use strong references in conjunction with treating the untraced heap
+as a source of ambiguous roots.  Once there are no more references to
+the memory in the traced heap, the collector can scan the untraced
+heap to determine whether there are any ambiguous roots left.  The
+collector may move the data once there are no ambiguous roots, thereby
+compacting the heap, or delete it if the strongref has the last
+outstanding reference.
+<P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Marc Fiuczynski <BR>
+Thu Dec 28 15:39:17 PST 1995</I>
+</ADDRESS>
+</BODY>

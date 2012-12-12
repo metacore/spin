@@ -1,0 +1,150 @@
+<html>
+<head>
+<title>CVS-creamy-commands</title>
+</head>
+
+<body>
+<h1>
+<IMG align=right  src="http://www.cs.washington.edu/research/projects/spin/www/pics/scream.gif"> CVS-creme-de-la-creme</a>
+</h1>
+
+In space, no one can hear you scream.  Unfortunately, in Sieg, they
+can.  This page describes a collection of simple to use, and generally
+correct wrapper scripts that make it much more difficult to screw
+up in CVS.
+</br>
+
+<H2>Simple Scripts</H2>
+
+The scripts live in /afs/cs/project/spin/bin/cvsjr.  Their purpose is
+to handle all of the "niggly" little tasks that come up all the time
+in the day of the life of a spinner.  Most are just simple
+combinations of sequences that we do all the time, and most of those
+come directly from the CVS web pages in the SPIN tree.
+
+<H2>Sounds great. How do I get started?</H2>
+
+The only things you need to use these scripts are 1) a sense of
+adventure, and 2) a CVSBRANCHTAG environment variable set to the name
+of your branch tag.
+
+<H2>Wow. That was easy. What can I do?</H2>
+
+Whoaa... slow down pardner... before you use these scripts, you need
+to understand that they are based on one poor caveman's interpretation
+of the CVS pages and commands. THEY ARE NOT GUARANTEED TO BE CORRECT
+nor are THEY SUPPORTED.  If one of them fails, and it fails on you,
+then you need to take quick action to find out what happened and
+repair the script as quickly as possible. Ask not what these scripts can do for you. Instead, ask what you can do for these scripts!
+
+<H3>On with the scripts...</H3>
+
+For the examples below, I'll assume that your CVSBRANCHTAG is s6-caveman.
+
+<DL>
+<DT> cvs-mkbranch release-name target-name
+<DD> Creates a new tag in the repository called $CVSBRANCHTAG and checks
+ out all of the files from the target module of the named release.  By
+ default, the target module is spin. This is 
+obviously useful if you plan to write code.  For 
+example, to create a tag named s6-caveman that contains all of the files 
+in the spin-6 release, you might use it as:
+<pre>
+cvs-mkbranch spin-6
+</pre>
+Other targets include:
+<DL>
+<DT> kernel
+<DD> Enough to build only the kernel.
+
+<DT> libs
+<DD> Only the libraries
+
+<DT> compiler
+<DD> Only the compiler
+
+<DT> spindles
+<DD> Only spindles
+
+<DT> gdb
+<DD> Only gdb
+
+<DT> dlib
+<DD> Only dlib
+
+</DL>
+
+
+<DT> cvs-exists filename
+<DD> Tells you if the specified filename exists in the CVS repository.
+This is useful for figuring out if you've got some bogus files that
+you're trying to merge. The filename will be echoed with a preceding
+letter.  For example, cvs-exists sirpa.m3, could return
+
+<DL>
+<DT> U
+<DD> the file is undefined in the repository.
+
+<DT> F
+<DD> the file has been found in the repository.
+
+<DT> N
+<DD> the filename contains a non-existent directory.
+</DL>
+
+
+<DT> cvs-forcetag filename 
+<DD> forces filename to be tagged as part
+of your branch.  I forget why you need to do this, but it came up a
+couple of times. I think this may be obsolete.
+
+
+<DT> cvs-mkdir dirname
+<DD> makes the specified directory in your branch, and adds it to the
+repository.  It does a final cvs update -A, which I always forget, and
+I even forget why it's necessary.  But, it's there for you.
+
+
+<DT> cvs-newfile filename
+<DD> adds and commits the specified file to your branch. The file is
+also added into the repository. This is useful when you need to make a
+new file.
+
+
+<DT> cvs-remove filename
+<DD> removes the named file from your branch
+and from the repository.  In your branch, the file is physically moved
+into filename.cvs-removed so you can recover it if necessary.
+
+
+<DT> cvs-sticky filename
+<DD> forces the name file to be made "sticky" with your CVSBRANCHTAG.
+I can't remember why this was necessary, so it may be obsolete.
+
+<DT> cvs-getfile release filename 
+<DD> gets the single file from the
+named release and puts it into your branch. This is useful for
+properly picking up new files into your branch.
+
+<DT> cvs-check path_to_top_level path_from_top_level
+<DD> This command will check your tree against
+the latest tree, and flag all the files that have either changed,
+been removed, or created.
+
+<DT> cvs-inlatest filename
+<DD> Will check if "filename" (or path to filename) is in latest.
+<DD> Eg, cvs-inlatest sys/src/shell 
+
+</DL>
+
+
+
+</body>
+<p><hr>
+<Address>
+bershad@cs.washington.edu<br>
+</Last updated <date>November 24, 1995</date>
+</html>
+<P>
+<HR>
+<P>

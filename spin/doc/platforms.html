@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>SPIN Platforms</title>
+<!-- Changed by: Wilson Hsieh, 10-Feb-1997 -->
+</head>
+
+<body>
+<h1>SPIN Platform Documentation</br></h1>
+<date>February 5, 1997</date>
+
+
+<hr>
+
+<H2>Platforms</H2>
+
+SPIN currently supports two target architectures: ALPHA_SPIN and
+IX86_SPIN.  Each of these is referred to as BASETARGET in the
+Makefiles.
+
+Under an architecture XX, several platforms may be supported.
+These are:
+
+<dl>
+
+<dt> XX_PROF
+<dd> <A HREF="../kernel/spincore/src/utils/doc/profile.html">Profiling</A>
+
+<dt> XX_REF
+<dd> Reference counting
+
+<dt> XX_PROF_REF
+<dd> Profiled, with reference counting
+
+<dt> XX_HACK
+<dd> Intended for hacking
+
+</dl>
+
+The binaries for a platform are placed in a directory named after the
+platform.  The binaries for each of these platforms is different;
+therefore, having multiple platforms allows us to better manage
+different binary trees.  If you want to use XX_HACK, you'll have to go
+in and modify some critical files:
+
+<dl>
+
+<dt> m3build templates
+<dd> modify local/m3support/m3build/templates/XX_HACK to call the
+ compiler with the appropriate arguments
+
+<dt> kernel configuration
+<dd> modify kernel/sal/BASETARGET/conf/XX_HACK to create the kernel
+with the correct configuration
+
+</dl>
+
+<p><hr>
+<Address>
+whsieh@cs.washington.edu<br>
+</address>
+</body>
+</html>

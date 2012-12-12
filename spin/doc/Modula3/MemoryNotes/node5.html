@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Plan of Action</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Plan of Action">
+<meta name="keywords" value="mem">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html57 HREF="node6.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/homes/mef/figs/next_motif.gif"></A>   <A NAME=tex2html55 HREF="mem.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/homes/mef/figs/up_motif.gif"></A>   <A NAME=tex2html49 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/homes/mef/figs/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html58 HREF="node6.html">   About this document </A>
+<B>Up:</B> <A NAME=tex2html56 HREF="mem.html">SPIN Storage Management Issues</A>
+<B> Previous:</B> <A NAME=tex2html50 HREF="node4.html"> M3 passing compiler </A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00050000000000000000> Plan of Action</A></H1>
+<P>
+<OL><LI> Obsolete the <em> unstrong reference</em> interface.
+<P>
+<LI> Change the m3 collector to scan the untraced heap and treat it
+  is source of ambiguous roots.
+<P>
+<LI> Change the m3 collector to remove strong reference if there are
+  no ambiguous roots to the data.  This effectively <em> mobilizes</em> the
+  data, allowing the collector to defragment the heap.
+<P>
+<LI> Change the m3 collector to delete the data if there are no ambiguous
+  roots and there are no references from the traced heap.  Note that at
+  this point the strong reference will already have been removed by the
+  above point.
+<P>
+<LI> Change the m3 compiler to automatically create a strong
+  reference when passing traced data to GC unsafe modules.  I.e., a call
+  to the above Enqueue() procedure would automatically emit code to
+  create a strong reference to the que head and que arguments.
+<P>
+<LI> Change the m3 compiler to emit warnings when using untraced
+  references in safe module.
+<P>
+<LI> Change compiler to disallow allocation of untraced data in safe
+  module.
+<P>
+<LI> Allocate all data out of the traced heap and rely on the garbage
+  collector.
+<P>
+  <UL><LI> m3 allocation subsystem must be initialized earlier in the
+    boot phase.  (This may conflict with our requirement of being
+    able to debug all of our code with ttd.)
+<P>
+  <LI> traced allocation needs to work from interrupt handlers.
+    (requires support to atomically update state in the allocator path.)
+<P>
+  <LI> reserve type headers and type codes to allocate
+    <em> bucket</em> sized data for foreign code data.
+    One solution might be to use the sixteen
+    different data sizes that the bsd/kern_malloc.c function uses
+    for its buckets.
+<P>
+  <LI> Automatic strongref'ing of data allocated for foreign code.
+<P>
+  </UL>
+<P>
+<LI> Change layout of typeheader for traced data.  Don't just prepend
+  it, but instead use a hash function to locate it, for example.
+<P>
+<LI> Obsolete M3 UNTRACED REF type, eliminating memory dichotomy.
+<P>
+</OL><BR> <HR><A NAME=tex2html57 HREF="node6.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/homes/mef/figs/next_motif.gif"></A>   <A NAME=tex2html55 HREF="mem.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/homes/mef/figs/up_motif.gif"></A>   <A NAME=tex2html49 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/homes/mef/figs/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html58 HREF="node6.html">   About this document </A>
+<B>Up:</B> <A NAME=tex2html56 HREF="mem.html">SPIN Storage Management Issues</A>
+<B> Previous:</B> <A NAME=tex2html50 HREF="node4.html"> M3 passing compiler </A>
+<BR> <HR> <P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Marc Fiuczynski <BR>
+Thu Dec 28 15:39:17 PST 1995</I>
+</ADDRESS>
+</BODY>

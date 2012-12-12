@@ -1,0 +1,108 @@
+<PRE>
+Date:    Mon, 10 Jun 1996 10:07:08 -0700
+From:    egs@june (Emin Gun Sirer)
+To:      ericc@june
+cc:      bershad@june, mef@june
+Subject: Re: merging lfs code
+
+
+Eric,
+
+Marc's instructions are good, but ommitted some details of
+step 4. In order to add your new code to the potato, you have
+to type "cvs add" for each new directory. Then you need to
+cd into that directory, and type "cvs add" for all files
+within that directory. Then "cvs commit" all the files. You
+can use shell expansion to ease the task of checking in files,
+and use the -m option to supply a checkin message, e.g. -m 'LFS
+checkin'. You have to be in the same directory as the files when
+you type "cvs add" for some dumb reason.
+
+Also, please make sure that all files you are checking in
+have an appropriate copyright banner with some attribution 
+of proper credit. I know you did this for your files, but doing
+a pass over Scott's and Tim's files would be great. 
+
+I remember setting the FULLTREE variable in your spin/make.conf
+config file to something not standard to be able to bring you
+up to date last time we updated. You should probably get a new        
+version of make.conf when you do the checkout and discard the
+old one.
+
+This should be it. Good luck,
+Gun.
+
+
+------- End of Forwarded Message
+
+
+
+
+(Message inbox:552)
+From mef@wile-e-coyote  Sun Jun  9 11:59:22 1996
+Delivery-Date: Sun, 09 Jun 1996 11:59:23 PDT
+Return-Path: mef@wile-e-coyote
+Received: from wile-e-coyote.cs.washington.edu (wile-e-coyote.cs.washington.edu [128.95.2.83]) by whistler.cs.washington.edu (8.7.5/7.2ws+) with ESMTP id LAA10980 for <bershad@whistler.cs.washington.edu>; Sun, 9 Jun 1996 11:59:22 -0700
+Received: (mef@localhost) by wile-e-coyote.cs.washington.edu (8.7.2/7.2ws+) id LAA10966; Sun, 9 Jun 1996 11:59:20 -0700 (PDT)
+Date: Sun, 9 Jun 1996 11:59:20 -0700 (PDT)
+From: mef@wile-e-coyote
+Message-Id: <199606091859.LAA10966@wile-e-coyote.cs.washington.edu>
+To: ericc@cs
+CC: bershad@cs, egs@cs
+Subject: merging lfs code
+
+Eric,
+
+Please let me know when you will have time to merge the LFS code.  I'm
+available until 3:30pm today (sunday) and again around 8pm.  We can
+meet anytime on Monday to do the merge.
+
+Attached is a rough outline of what you have to do.  Don't hesitate to
+contact me if you run into trouble.
+
+Merging your code into the potato.  These instructions assume that
+your source code is on the CVS trunk and not a CVS branch.  Stop
+reading here if your code isn't in CVS at all.
+
+1) update to the latest potato
+
+cd ~
+
+cvs co -A spin/user >& ~/user.update
+#gets the latest stuff from spin/user and redirects output to a file
+
+cvs co -A spin/kernel >& ~/kernel.update
+#gets the latest kernel changes and redirects output to a file
+
+Look in the *.update files and resolve all conflicts (look for lines
+starting with "C").  Then compile the kernel and user area and test if
+your code still works.
+
+
+2) grab the potato
+
+/spin/bin/cvsjr/grabhotpotato
+
+3) swing your spin symlink over to the potato
+
+cd /spin/ericc
+ln -fs /spin/build/hotpotato/spin spin
+
+4) update the potato with your changed code
+
+cd ~/spin && pwd
+#you should now be in the potato, since you've updated your symlink
+
+cd ..     
+#you are now one directory above potato's spin directory
+
+cvs co -A spin
+#This will update the potato to whatever is latest in the cvs trunk,
+#which  should only suck in your source code, unless someone else
+#committed to the trunk without updating the potato.  
+	
+
+Marc
+
+
+</PRE>

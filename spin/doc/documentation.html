@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>Writing SPIN Documentation</title>
+</head>
+
+<body>
+
+<br><img align=right src="./at-work.gif"><h1>Writing SPIN 
+    Documentation</br></h1>
+<date>21 May 1997</date>
+
+<hr>
+
+<h2>Overview</h2>
+
+Providing clients with informative, well-written documentation is 
+instrumental in expanding the popularity of SPIN.  If cavemen cannot
+figure out how to write applications for SPIN, they will write applications
+for something else.  They may even write entire operating systems for
+the Exokernel.
+
+<h2>Structure</h2>
+
+Sections of code are very different.  Some are huge and critical to
+the entire system (e.g. 
+<a href="../kernel/spincore/src/strands/doc/index.html">Strands</a> or 
+<a href="../kernel/spincore/src/dispatch/doc/index.html">Dispatcher</a>), 
+while others are small and provide only one service (e.g. 
+<a href="../kernel/spincore/src/utils/doc/externref.html">External 
+References</a>).  Accordingly, documentation will be very different.
+There is no <i>concrete</i> standard on how documentation should be 
+formatted.  This <a href="./template.html">template</a> is a rough 
+guideline on what kind of information should appear in your documentation.  
+The closer we adhere to this standard, the easier it will be to read.
+
+<p>
+
+The SPIN documentation tree is part of the source tree.  This
+allows easy referencing of source code and other documentation without
+absolute path names (hence, the whole tree can be moved without updating
+links!).  <b>Please avoid URLs with absolute pathnames</b> 
+(e.g. use ../../src/Foo.i3 rather than file:/afs/cs/project/..../src/Foo.i3)
+<b>whenever possible!</b>  Documentation 
+is typically contained in a <b>doc</b> directory
+underneath or next to the <b>src</b> directory for the code being 
+documented.
+
+<h2>Tricks</h2>
+
+<h4>Pathnames</h4>
+
+There has been some interest in providing tools which simplify typing
+long relative pathnames.  Several possibilities have been shot down for
+varying reasons.  These include:
+<ul>
+<li><b>Filtering:</b>  Run a script over .html files which changes all
+    occurrences of e.g. FULLTREE with the absolute pathname to the top
+    of the source tree.  The problem is what to do with filtered files.
+    Create whole new copies?  What happens if a filtered file accidentally
+    gets checked in?</li>
+<li><b>Directory of Links:</b>  Have a flat directory at the top level
+    with links to all other files.  The problem is that no two files
+    represented in the link directory could have the same name.</li>
+<li><b>Links in Each Doc Directory:</b>  Put a link to the top of the
+    source tree in each <b>doc</b> directory.  This would eliminate
+    climbing up the tree with relative path names.  The problem is that
+    adding links to CVS is no trivial matter.  A potential solution is
+    to insert links in the build process (i.e. the documentation writer
+    instruments the subdir Makefile to place a link to the toplevel in
+    the doc directory).</li>
+</ul>
+
+<h4>Pretty Printing</h4>
+
+SRC has a few tools which beautify Modula-3 code.  At this time, the 
+simplest to use is <b>m3totex</b>, which combined with <b>latex2html</b>
+can produce html code.  (More info to come on using these.  In the
+meantime, this <a href="./Example.i3">sample</a> .i3 file illustrates the
+Modula-3 coding style which <b>m3totex</b> assumes.)  In my humble 
+opinion, these tools are more trouble than they are worth.  The 
+<a href="../kernel/spincore/src/dispatch/doc/index.html">Dispatcher</a>
+documentation is a good example of incorporating code into documentation
+without any fancy tools.
+
+<h2>Exporting Documentation</h2>
+
+Occasionally it may be nice to extract documentation from the <i>SPIN</i>
+source tree and create a free-standing documentation tree.  A tool to
+extract documentation is the Perl script <tt>/spin/bin/docexport.pl</tt>.
+<tt>docexport.pl</tt> copies all HTML files in <tt>doc</tt> directories
+from a <i>SPIN</i> source tree to a new directory.  <tt>docexport.pl</tt>
+will also copy any source files linked to from these HTML files, as well
+as pictures in <tt>/projects/spin/www/pics</tt> and papers in 
+<tt>/projects/spin/www/papers</tt>.  The idea is to create a hierarchy
+of HTML files and supplementary files that is as self-contained as possible.
+<p>
+<tt>docexport.pl</tt> has several command-line options to control the 
+documentation export:
+<ul>
+<li><b>-dir <doc dir>:</b> directory in which to place the new 
+    documentation tree.  The default is <tt>./SPINDocs</tt></li>
+<li><b>-source <source dir>:</b> SPIN source directory from which to
+    get docs.  This should be a top-level <tt>spin</tt> directory.  The
+    default is the potato: <tt>/afs/cs/project/spin/build/merge/spin</tt>.</li>
+<li><b>-nosrcfiles:</b> disallow the export of <tt>.m3</tt> and <tt>.c</tt>
+    files.  The default is to allow <tt>.m3</tt> and <tt>.c</tt> files.</li>
+<li><b>-exturl:</b> allow references to external URLs (e.g. the Modula-3 
+    home page at SRC).  The default is to not allow external URLs.</li>
+<li><b>-q:</b> quiet mode.  This will cause bad URL and other messages not
+    to be displayed.  The default is not quiet.</li>
+<li><b>-h:</b> print a message describing the command-line options.</li>
+</ul>
+<p>
+<tt>docexport.pl</tt> has some limitations and features in parsing HTML:
+<ul>
+<li>It cannot yet parse references which span multiple lines.  e.g.
+<pre>
+    Click &lt;a
+    href="../../foo/doc/index.html"&gt;here&lt;/a&gt; for more information.
+</pre>
+    This is unfortunate and largely a function of my poor Perl skills.
+    It is on the queue to be fixed.</li>
+<li><tt>docexport.pl</tt> can be told to ignore entire HTML files as well
+    as sections of certain files.  In order to ignore an entire HTML file,
+    place the following comment at the top:
+<pre>
+    &lt;!-- SPIN DOC EXPORT IGNORE --&gt;
+</pre>
+    In order to ignore a section of an HTML file, bracket the section 
+    with lines which have these comments:
+<pre>
+    &lt;!-- SPIN DOC EXPORT SECTION IGNORE START --&gt;
+
+    ... (ignored text) ...
+
+    &lt;!-- SPIN DOC EXPORT SECTION IGNORE END --&gt;
+</pre>
+    This technique is crude, but I wrote it quickly and I wanted it to
+    be blatantly obvious what was going on.  To see an example of its
+    use, view the source of <a href="./index.html">spin/doc/index.html</a>.  
+    The release notes and CVS notes are ignored because they are dependent 
+    on too many local <tt>file:</tt> links.</li>
+<li>Pages which use latex2html icons pointing to the CSE Department
+    default (http://www.cs.washington.edu/general/latex2html_icons/...)
+    will be switched to use icons in the <i>SPIN</i> documentation tree.
+    This makes the documentation more self-contained, and improves the
+    presentation of documents when external URLs are not allowed.</li>
+<li>Unfortunately, <tt>docexport.pl</tt> cannot be run reliably on only
+    a subdirectory of <i>SPIN</i> documentation (e.g. to test you 
+    documentation to make sure it is parseable).  Many documentation files
+    use relative paths that assume the presence of the entire source 
+    directory structure.</li>
+<li><tt>docexport.pl</tt> will parse <i>all</i> HTML files under <i>all</i> 
+    <tt>doc</tt> directories in the soruce tree.  It performs no 
+    reachability tests before parsing an HTML files.  Thus, even if the 
+    link to an HTML file is explicitly ignored, or if the file is obsolete
+    and no longer pointed to, it will be parsed and errors will be reported.
+    This is okay, because if the file is unreachable than the errors will
+    not be noticed in the exported documentation, but it's still annoying.
+    The solution for obsolete files is to remove them from the tree!
+</ul>
+
+</body>
+<p>
+<hr>
+<Address>
+ddion@cs.washington.edu<br>
+</address>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> The perils of untraced memory</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" The perils of untraced memory">
+<meta name="keywords" value="mem">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html17 HREF="node2.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/homes/mef/figs/next_motif.gif"></A>   <A NAME=tex2html15 HREF="mem.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/homes/mef/figs/up_motif.gif"></A>   <A NAME=tex2html9 HREF="mem.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/homes/mef/figs/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html18 HREF="node2.html"> C allocated untraced </A>
+<B>Up:</B> <A NAME=tex2html16 HREF="mem.html">SPIN Storage Management Issues</A>
+<B> Previous:</B> <A NAME=tex2html10 HREF="mem.html">SPIN Storage Management Issues</A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00010000000000000000> The perils of untraced memory</A></H1>
+<P>
+It should be unnecessary to allocate untraced data in M3 modules
+(though we still do this in a few modules).  Note that safe M3 modules
+cannot deallocate these structures with <em> DISPOSE</em>, thereby
+consuming system memory without being able reallocate it to another M3
+type.
+<P>
+Another critical point against untraced memory is that for memory
+safety reasons it cannot be deallocated once passed to an untrusted
+extension.  C and <tt> UNSAFE</tt> m3 code in our system are considered as
+trusted modules.  Therefore, passing an untraced memory reference to
+these modules is a safe operations as long as it is not deallocated
+and subsequently used by the potentially untrusted caller.  Further,
+the use of untraced memory even in trusted modules invites the
+possibility of memory leaks and unsafe access, and should be
+discouraged.
+<P>
+The bottom line is that the allocation of untraced memory is a
+potential source of memory leaks, and the deallocation of it is a
+source of breaching memory safety required by the system.
+<P>
+<H3> Solution</H3>
+<P>
+Disallow the allocation of untraced memory in safe modules.  This can
+be statically enforced by adding the ``NOT Module.IsSafe()''
+requirement to the M3 compiler builtin NEW operator for untraced
+memory.  A drastic approach is to disable the allocation of untraced
+memory in m3 modules, and eventually eliminating the UNTRACED REF type
+from the language.  There is no need for the memory dichotomy
+introduced by M3, especially when the type header of traced memory can
+placed out-of-line.
+<P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Marc Fiuczynski <BR>
+Thu Dec 28 15:39:17 PST 1995</I>
+</ADDRESS>
+</BODY>

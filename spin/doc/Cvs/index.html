@@ -1,0 +1,372 @@
+<html>
+<head>
+<title>Spin CVS</title>
+</head>
+
+<body>
+<h1>Spin Versioning and Branching With CVS</h1>
+
+<P>
+<HR>
+<P>
+
+Click <A HREF="QuickAndDirty.html">here</a> if you just want to know
+how merge your stuff in.
+
+
+<A NAME="TOC"><H2>Table of Contents</H2></A>
+
+<UL>
+<LI> <A HREF="#TOC">Table of contents</A>
+<LI> <A HREF="refs.html">Other references</A>
+<LI> <A HREF="#gettingStarted">Getting Started</A>
+<LI> <A HREF="#usingCVS">Using CVS</A>
+<LI> <A HREF="#tagsVsBranches">Tags vs Branches</A>
+<LI> <A HREF="#makeBranch">Making a branch</A>
+<LI> <A HREF="#distBranch">Distributing your branch</A>
+<LI> <A HREF="#updateAndCheckout">What update and checkout do</A>
+<LI> <A HREF="#shortcuts">Shortcuts for managing the tree</A>
+<LI> <A HREF="#addingNewFiles">Adding new files</A>
+<LI> <A HREF="#addingNewDirectories">Adding new directories</A>
+<LI> <A HREF="#removingOldFiles">Removing obsolete files</A>
+<LI> <A HREF="#reorganizingTree">Reorganizing the tree</A>
+<LI> <A HREF="#mergingTagsIntoYourBranch">Merging tags into your branch</A>
+<LI> <A HREF="merging.html">Doing the merge</a>
+<LI> <A HREF="#weirdness">Wierdnesses</A>
+<LI> <A HREF="woes.html">Woes and problems</a>
+<LI> <A HREF="cvsjr.html">cvs-jr... ARGH! There's got to be an easier way!</A>
+<LI> <A HREF="ode.html">Notes on the old ODE system</A>
+<LI> <A HREF="dates.html">Using dates instead of tags</A>
+</UL>
+
+<A NAME="gettingStarted"><H2>Getting started with CVS</H2>
+
+<DL>
+
+<DT> CVS is in the <A HREF="http://www.cs.washington.edu:80/research/projects/spin/www/internal/howto/directories.html#ContribBin"> contrib
+bin directory</a>.
+<DD> To use it, make sure you have this directory in your path.
+
+<DT> Also, make sure that you set the <A HREF="http://www.cs.washington.edu:80/research/projects/spin/www/internal/howto/directories.html#CvsRoot">
+CVS root directory</a> in your CVSROOT environment variable.
+<DD> Not doing this will make most commands fail.
+
+<DT> <A HREF="http://www.cs.washington.edu:80/research/projects/spin/www/internal/howto/directories.html#ContribManPages"> man pages </a>
+<DD> The man pages are in the contrib man page directory
+(add that to your MANPATH).
+</DL>
+
+
+<A NAME="usingCVS"><h2> Using CVS </h2>
+
+The latest greatest SPIN source tree resides in the CVS trunk. 
+The trunk is the version of our files that are checked out by default,
+ie. no branch is specified.
+But in general, we never get code (checkout) direct from the trunk.
+<p>
+SPIN development always takes place on branches from the trunk to allow
+concurrent development.  Each developer starts out with a private
+copy(branch) of the source tree. A branch can be modified without
+interfering with any other branch.
+At regular intervals all the work in the branches is merged together
+to form a new trunk.  
+
+<A NAME="makeBranch"><h3> Making your branch </h3>
+The first step in this development environment is creating your own
+branch of code on which to work.   Remember to set the environment
+variable CVSROOT to <samp>/afs/cs/project/spin/cvsroot</samp>.
+Create a branch with a command following this form
+<pre>
+	cvs rtag -r spin-4 -b s4-becker spin
+</pre>
+<p>
+s4-becker will be the name of this branch (often the name is, confusingly,
+called a tag in the cvs docs).  This is the naming convention for branches
+<dd> s<em>VersionNumber</em>-<em>User</em>
+<p>
+Getting your code tree is a seperate step from creating your branch.
+This command checks out a tree in the subdir <samp>spin</samp> in the
+current directory.
+<pre>
+	cvs checkout -r s4-becker spin
+</pre>
+<p>
+This is your own tree you can freely change.  Each file is backed by
+an RCS file in CVSROOT.  To restore a file to its checked out condition,
+remove it and restore it with update.
+<pre>
+	rm file
+	cvs update file
+</pre>
+<p>
+Branches must be created from the new trunk after every merge.
+<p>
+
+<A NAME="tagsVsBranches"><h3> Tags versus Branches </h3>
+
+Most cvs operations have a "-r rev" option where rev can be either a
+branch or a tag.  Both branches and tags represent RCS labels stored 
+in the RCS headers in the repository RCS files.  It is CVS, not RCS, that
+intreprets the labels to mean tags or branches.
+<p>
+A <b>branch is a lineage </b>created by cvs tag -b file
+<p>
+
+A <b>tag is a freeze </b> marked by cvs tag file
+<p>
+
+Use 'cvs stat -v file' to examine the branches and tags for "file"
+stat -v shows these labels for mk/kernel/alpha/trap.c:
+<pre>
+	r4-loipc                        (branch: 1.3.2)
+        release-4                       (revision: 1.3)
+        r3-merge                        (revision: 1.3)
+        release-3                       (revision: 1.1.1.2)
+        release-2                       (revision: 1.1.1.1)
+        release-1                       (revision: 1.1.1.1)
+        origin-branch                   (branch: 1.1.1)
+						.
+					       /|\
+						|
+				"revision:" is a tag.  "branch:" is a branch.
+</pre>
+
+Checkout by tag release-3 will retrieve version 1.1.1.2
+<pre>
+	cvs checkout -r release-3 mk/kernel/alpha/trap.c
+</pre>
+
+Checkout from branch r4-loipc will retrieve 1.3.2.x where x is the
+latest version on that branch.
+<pre>
+	cvs checkout -r r4-loipc mk/kernel/alpha/trap.c 
+</pre>
+
+
+<A NAME="distBranch"><h3> Distributing code from your branch </h3>
+
+As frequently as every two days, we may merge the branches into a new
+trunk.  To contribute your code to the trunk, or to distribute it to
+other branches, it must be commited and tagged. 
+<p>
+You may commit   to the RCS files in CVSROOT as often as you want.
+<samp> cvs commit</samp> corresponds to the RCS ci command.  A commit is a good way to preserve
+a file before experimenting with a radical change.  You can always
+restore previous versions using <samp>cvs update</samp> as described above.
+<p>
+In your working directory, commit files with a command of this form
+<pre>
+	cvs commit -m "log message" files/dirs
+</pre>
+You can commit individual files or entire directories.  Directories are
+committed recursively unless you use the -R flag.
+The message goes into the $Log: index.html,v $
+The message goes into the Revision 1.2  1996/09/13 22:39:16  rgrimm
+The message goes into the Fixed links.
+The message goes into the
+The message goes into the Revision 1.1  1996/06/11 21:44:51  bershad
+The message goes into the New doc structure.
+The message goes into the area and RCS log of each file commited.
+If the message is omitted, commit will start an editor so you can enter
+the log message.
+Read log messages with <samp>cvs log file</samp>.
+<p>
+In the top direcotry, make a tag with a command of this form
+<pre>
+	cvs tag s4-becker-apr1 spin
+</pre>
+The tag command puts a label in every RCS file to identify the
+revision that corresponds with the file in your branch.
+<p>
+When your branch is committed and tagged, advertise that tag to the
+merger or others interested in picking up your code.
+
+
+<A NAME="updateAndCheckout"><h3> What update and checkout do </h3>
+Update and checkout (alias get) are often interchangeable, hence confusing.
+They will modify your tree, but never ever delete files that are modified.
+Modified (uncommitted) files are reported as "M filename" and are not
+deleted.
+<p>
+<samp>cvs update -r <em>branch</em> </samp> will replace your branch
+with <em>branch</em> adding and deleting files to make the tree look
+like <em>branch</em>.
+<p>
+<samp>cvs update -j <em>branch</em> </samp> will merge the diffs between
+<em>branch</em> and the trunk into your tree.  Previously modified files are
+affectd as well as untouched parts of your branch.
+No files will be added or deleted.  When <em>branch</em>
+has new files, you must add those files to your branch with tag -b and
+update -r as usual.
+<p>
+
+<p>
+if you want your file to be updated from the trunk type "cvs upd <file-name>"
+if you want to update it and move it back from your current branch 
+to the trunk type "cvs upd -A <filename>"
+you do not have to remove the file to do it
+
+<A NAME="shortcuts"><h3> Shortcuts </h3>
+
+The SPIN tree is large so whole tree commands can take 15 minutes.
+To save time, you can apply the commands discussed so far to just the
+code subtrees
+your are interested in, such as only sal and sys.  In particular the gdb
+part of the tree is very large and often untouched.
+<p>
+One option for major subtrees, is to branch and checkout everything, then
+<samp>rm -rf subtree</samp>.  Then cvs commands will ignore that subtree.
+<p>
+Working on subtrees can speed up cvs ops but there are caveats.
+Be sure you, and anyone you hand tags to, knows you are not working
+on a complete tree.
+<p>
+Doing cvs operations after the fact on parts of the tree you did not
+expect to change can be very time consuming and frustrating.
+A good way to stay aware of the CVS status of your branch is with this
+command
+<pre>
+	cvs update -q dirs
+</pre>
+The update command will report files in <em>dirs</em> that cvs does not
+know about and report the modifications that have not been commited.
+The list it generates displays these code characters next to the filenames.
+<dd>M Modified and not commited.
+<dd>A Added and not commited.
+<dd>R Removed and not commited.
+<dd>? New unknown file.  Possibly needs to be added.
+<p>
+
+<A NAME="addingNewFiles"><h3> Adding new files </h3>
+
+To add a new file to the cvs system, first create the file.  Then
+add it to the trunk with this sequence
+<pre>
+	create file
+	cvs add file
+	cvs update -A file
+	cvs commit file
+</pre>
+And add the new file to your branch 
+<pre>
+	cvs tag -b s4-becker file
+	cvs update -r s4-becker file
+</pre>
+Other people can add the new file to their branch the same way
+<pre>
+	cvs rtag -b s4-savage spin/path/file
+	cvs update -r s4-savage file
+</pre>
+
+
+<A NAME="addingNewDirectories"><h3> Adding new directories </h3>
+Add a new directory with these commands
+<pre>
+	mkdir dir
+	cvs add dir
+	cvs update -A dir
+</pre>
+
+<A NAME="removingOldFiles"><h3> Removing obsolete files </h3>
+Remove a file from future versions of the trunk with these commands
+<pre>
+	cvs update -A file
+	rm file
+	cvs remove file
+	cvs commit file
+</pre>
+The file remains in CVSROOT so older versions of the trunk can be
+recreated.  It also remains in the current branches until the next branch off
+the next trunk.  To remove files from current branches, use this sequence
+<pre>
+	cvs tag -d s4-becker file
+	cvs update file
+</pre>
+
+
+
+<A NAME="reorganizingTree"><h3> Reorganizing the tree </h3>
+
+This is CVS's major weakness.  Renaming files or directories, or moving
+files around in the tree can be done, but is a pain, and is not for the
+faint of heart.  At merge time,
+when no branches exist, in CVSROOT <strong>copy</strong> the RCS files from the old name or
+location to the new name.  Use the normal cvs remove commands to delete
+the file with old name.
+
+<A NAME="mergingTagsIntoYourBranch"><h3> Merging Tags into Your Branch </h3>
+
+Merging is best left to the merger who creates new trunks, but on
+occasion you just can't wait.
+It is important to
+keep track of what tags you have merged into your branch and tell the
+merger what tags you have picked up.
+The simplest scenario is where you never
+distributed a tag or merged any tags into your branch. 
+More complex scenarios
+require careful tracking of who has merged what where.
+File adds and removes must also be tracked by hand.
+<p>
+Suppose you want to merge s4-becker-apr1 into your branch.  Further you
+know that s4-becker-apr1 has had no other tags merged into it and you
+have not merged anything else into your branch.  Merge with a command of
+this form
+<pre>
+	cvs update -j spin-4 -j s4-becker-apr1 spin
+</pre>
+The update -j (for join) applies the diffs it finds between spin-4 and
+s4-becker-apr1 to all the files in the spin tree.  The actual merging
+is done with rcsmerge and diff3.
+<p>
+Now suppose s4-becker-apr15 is announced and you need to again merge it
+into your branch.  Merge with a command of this form
+<pre>
+	cvs update -j s4-becker-apr1 -j s4-becker-apr15 spin
+</pre>
+This will merge into your code only the differences between the april 1 tag
+and the april 15 tag.  This avoids applying the spin-4 to april1 mods
+yet again.  Those would be duplicate changes/conflicts and you would have
+to go edit the conflicts out.
+<p>
+When you have modified a patch of code yourself and then merge someone
+elses change to that same code, a conflict results the automatic tools
+cannot resolve.  Both versions of that patch of code will appear in the
+merged file marked with banner lines like this
+<pre>
+	<<<<<<< filename
+	your existing version of code segment
+	=======
+	version form the tag being merged (tag happens to be version 1.7 of filename)
+	>>>>>>> 1.7
+</pre>
+Search for the banner lines with grep and resolve them by hand.
+
+
+<A NAME="weirdness><h3> Weirdness </h3>
+<dl>
+<dt> Ctrl-C
+<dd> CVS uses the system(3) call to run the RCS commands so Ctrl-C often
+only kills the
+subprogram instead of CVS.  Use Ctrl-Z to stop it and then kill CVS
+(kill %).
+<dt> Path names
+<dd> Some commands only work on the current directory (add and release).  
+Sometimes you have to give the whole path (mk/kernel/alpha/trap.c) or
+can work with partial paths (alpha/trap.c) if a CVS subdir already exists 
+the current directory.
+<dt> Current branch
+<dl> CVS's idea of the current branch for a particular file is affected
+by several things.  If it thinks all the files in a dir belong to a
+single branch,  new operations will default to that branch.  If it sees
+a mixture or no files at all, the default is the head of the main trunk.
+The "sticky tag" is the default rev for the -r flag on all the CVS
+operations.  Update -r sets the sticky tag, which is reported by stat -v.  
+</dl>
+
+
+</body>
+<p><hr>
+<Address>
+becker@cs.washington.edu<br>
+</Last updated <date>November 24, 1995</date>
+</html>

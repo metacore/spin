@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>Bugs found in Modula-3 compiler and runtime</title>
+</head>
+
+<body>
+<h1>Bugs</br></h1>
+<P>
+
+<dl>
+
+<dt> Linear search to find the length of contiguous chunk of free
+memory.
+
+<dd><b> Synopsis: </b> Allocator asks for chunks of free
+memory containing at least <i>n</i> pages.  It maintains a list of all
+such chunks sorted by size in ascending order.  A chunk is represented
+as a linked list of page descriptors.  The allocator searches the list
+linearly until a chunk of size at least <i>n</i> pages is found.  For
+each chunk the allocator computes the length on the fly by following
+the linked list of page descriptors.  
+
+<dd><b> Fix: </b> Precompute the lenght of a chunk of free memory each
+time its size changes and store it in the page descriptor of the first
+page of that chunk. 
+
+<dd><b> Files: (m3core) </b> RTHeapDep.i3, RTHeapRep.m3, RTCollector.m3
+
+<dd><b> Modified: </b> August 15th, 1995, </b> Przemek Pardyak (pardy@cs.washington.edu)
+
+<p>
+
+<dt> Subranges represented by too few bits.
+<dd><b> Problem: </b>
+<dd><b> Fix: </b>
+<dd><b> Files: </b>
+<dd><b> Modified: </b> November 13th, 1995, Przemek Pardyak (pardy@cs.washington.edu)
+</dl>
+
+<dt> Packed subranges extracted incorrectly.
+<dd><b> Problem: </b>
+<dd><b> Fix: </b>
+<dd><b> Files: </b>
+<dd><b> Modified: </b> November 13th, 1995, Przemek Pardyak (pardy@cs.washington.edu)
+</dl>
+
+<HR>
+
+<Address>
+pardy@cs.washington.edu
+</address>
+</html>

@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>Bootflags and PROM commands</title>
+</head>
+
+<h1>Boot flags and PROM commands</h1>
+
+
+<H2>Network boot</H2>
+
+The alpha boot PROMs support the bootp and mop network boot protocols.
+We use bootp to boot spin with bootpd and tftpd running on silk.
+The TFTP server exports a root filesystem
+starting with /afs/cs/project.  Filenames that you specify to the TFTP
+server are then resolved against that root. For example,
+/spin/bershad/spin.boot refers to the file
+/afs/cs/project/spin/bershad/spin.boot.
+<p>
+On TURBOCHANNEL alphas use the ez0 device for network boots and on PCI
+alphas use the ewa0 device.
+<p>
+Here are the steps to net boot.
+<UL>
+
+<LI> Put a bootable kernel image someplace high into silk's file
+system. We usually put a symbolic link from your real kernel image
+(for me, that's
+/afs/cs/project/spin/bershad/spin/sal/SPIN/spin_kernel.sys). Call the bootable image something short (spin.boot is a good choice).
+The reason you have to move spin.boot is that the PROM will take
+only very short path names.  
+
+
+<LI> From the BOOT PROM, type:<br>
+<PRE>b -fi "/spin/YOU/spin.boot" ez0<br></pre><br>
+
+<LI> Wait about 30 seconds as the dots go flying by...
+
+</UL>
+
+<H2>Debug boot</H2>
+
+Use the t flag to stop the boot process as soon as ttd debugging is
+initialized.  The t stands for TTD.  Use T if you prefer.
+The -fl must be <em>after</em> the -fi flag.
+<PRE>
+b -fi "/spin/YOU/spin.boot" -fl t ez0
+</pre>
+
+<H2>Interactive boot</H2>
+
+Interactive booting lets you specify BOTH an image to run and an
+initial set of bootflags.
+
+<pre>
+b -fl i<br>
+>> "what image you want to run"<br>
+   spin_kernel boothowto=0xffffffffff<br>
+</pre>
+<p>
+
+
+</body>
+<p><hr>
+<Address>
+bershad@cs.washington.edu<br>
+</address>
+</html>
+
+
+

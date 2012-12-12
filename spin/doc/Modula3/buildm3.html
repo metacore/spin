@@ -1,0 +1,351 @@
+<html>
+<head>
+<title>Building Modula-3</title>
+</head>
+
+<body>
+<h1>Building Modula-3 for SPIN</br></h1>
+<date> July 15, 1995 </date>
+ <P>
+<HR>
+<P>
+
+<h2> NOTE: THIS NOTE IS HOPELESSLY OUT OF DATE. </h2>
+ 
+<pre>
+
+I've completed the reorg of the compiler and libraries and managed to get
+everything checked in and working.    My version is based on s2-egs-jul14. This
+is what I did.  
+	cvs checkout -r s2-egs-jul14 spin
+	cvs import --all of my compile stuff --
+	cvs tag -b s2-bershad-comp
+	cvs commit -r s2-bershad-comp 
+
+I've checked things out again, and it seems to work.   Of course, CVS emptor.
+
+This is a long note because it tries to completely describe the structure of
+the new compiler, how it works, AND make it clear what you need to do if you
+want to work within the context of what it can support with regard to working
+from a set of possible libs and compilers.  (our basic problem is that the SRC
+distribution assumes that changes to the compiler are not something that people
+do, so they tend to hardcode a lot of the relationships between compilers and
+libraries).
+
+To use this stuff, I suggest that you:
+	first make a complete copy of your tree (just in case).
+	checkout my compiler
+		cvs checkout -r s2-bershad-comp spin/compiler spin/conf
+	update your standard makefiles
+		cvs update -r s2-bershad-comp spin/sal spin/sys spin/Makefile
+		(the only changes here are to makefiles and m3makefiles; I'm
+		assming that cvs will do the right thing w.r.t. diffing, but I
+		never totally understand. Becker may know how to do this
+		better. The goal is to just get the new makefiles however).
+
+	gmake compiler
+		# if you want to make the compiler
+
+
+	If you only want to make the libs, you can
+		cvs checkout -r s2-bershad-comp spin/compiler/libs
+		cd spin/compiler
+		gmake build_libs
+
+	BUT DON'T FORGET TO CHANGE YOUR OTHER MAKEFILES and M3MAKEFILES
+	TO REFLECT THE NEW LOCATION OF THINGS.
+
+I've tried this a bunch of different times with different configurations and it
+seems to work... although this stuff is tricky, so you might run into a
+problem. Let me know...
+
+YOU DO NOT NEED m3build ON YOUR PATH ANYMORE.  TO BE SAFE, I SUGGEST YOU GET
+RID OF IT.  It's better to fail than to bring in nonsense.
+
+
+WHAT HAPPENED?
+---------------
+My goal in the reorg was to allow fine-grained control over which pieces 
+of the compiler tree you used.  
+To this end, things are set up now so that you can
+choose to check out and build all, some, or none of the compiler and still get
+the rest of your tree to build.
+
+A second goal was to keep from having to use overrides in any of the
+m3makefiles directly.
+
+A third goal was to ensure that the full compiler tree, if you did choose to
+build it, was part of the release . For 
+this, the compiler now includes m3build, quake,
+and necessary templates (which people should feel free to update over time; we
+will eventually use an ALPHA_SPIN template I imagine).
+
+A final goal was to allow people to easily share libraries and compilers
+without having to explicitly compile, check in, and rebuild.
+
+The basic mechanism for doing all of this is a conf directory in the top level
+spin. conf presently contains two things:
+	link		--> a symbolic link to the export directory that
+			    contains whatever compiler facilities you are NOT
+			    providing in your own build tree.
+	whichexport	--> a shell script that walks your build tree and the
+			    link build tree looking for a particular target.
+
+For example, suppose I checkout s2-bershad-comp but do not check out the
+compiler arm.  I would then set conf/link to point to
+/afs/cs/project/spin/bershad/freeze/spin/export, which (yes, it really does)
+contains a complete compiler and lib build that I promise won't change unless
+we discover a problem.  The makefiles and m3makefiles will
+import m3build, libm3core_sa, etc from there.
+
+
+This should give you a flavor about what's going on.
+
+Here are some more details about how it works and how to use it.
+
+At the top level, the checked in spin directory now contains:
+
+CVS
+	You know what this is.
+Makefile
+	The master makefile.  This does not build the compiler by default.
+	It builds spin_kernel only.  To build the compiler wholesale (assuming
+	you've checked it out)
+	whatever pieces out
+compiler
+	Contains
+		libs
+			libm3core_sa
+			m3core_sa
+		m3
+			the full compiler
+		support
+			m3build and quake
+		templates
+			templates for building libs
+		
+	You can check out any subset of these and the makefiles will "fill in
+	the blanks" for what you choose not to build by looking at conf/link
+	file.
+
+	You must ALWAYS check out the templates directory if you are going to
+	build any part of the compiler tree. (don't worry, if you fail to do
+	this, then the build will fail).
+
+	You should always build from the Makefile in compiler (targets
+	supported are:
+		all
+		build_support
+		build_libs
+			m3core_sa
+			libm3_sa
+		build_m3
+	as there are a few games it has to play with setting up the templates
+	and finding the right version of m3build.
+
+	Basically, here's what happens:
+		if you check everything out, build_support runs first, which
+		will build m3build and quake, installing itself into your
+		export tree.  The m3build that gets installed will have
+		hardwired into it the path to the templates which are also
+		installed under export.  These templates specify that your
+		INSTALL_ROOT is your export tree, so that anything that you
+		build and ship will go into the export tree that also contains
+		the m3build you use.  It will also expect that the libs and
+		additional support programs (like m3) will come from your
+		export tree.
+
+		Of course, while you are building the stuff in compiler, you're
+		screwed since you haven't yet populated your export.
+		The Makefile deals with this by specifying a special set of
+		templates that distinguish between a USE_ROOT and an
+		INSTALL_ROOT. The USE_ROOT is "where to get the compiler and
+		libs from when building the compiler."  The INSTALL_ROOT is
+		where to put it when you're done.  The templates in compiler
+		say that USE_ROOT is /afs/cs/project/spin, which gets you to
+		the native m3 compiler. (note that sm3 is now defunct; the spin
+		version of the compiler is called m3 as well, which means that
+		we don't need anything special in our m3build and templates )
+
+		As long as you build and ship from the compiler Makefile, the
+		appropriate templates and INSTALL_ROOTs are defined.  If you
+		build directly with m3build and HAVE BORROWED IT FROM SOMEONE
+		ELSE AND do an m3ship, then your library will try to ship to
+		where their m3build came from. To avoid this, you need to
+		be explicit about where the ship should go.
+		For example,	
+			m3ship -DINSTALL_ROOT=/afs/cs/project/spin/bershad/spin/export
+		*** For a very small reason this doesn't work right 
+		now though, so
+		you can't actually ship anything which didn't get built from
+		compiler unless you have built the whole compiler.
+
+		** So if you are "borrowing" someone else's compiler, you can't
+		be shipping your stuff into their tree.
+
+conf
+	link
+	whichexport
+		-- described above. As I said, the Makefiles are smart enough 
+		so that, if you try to build the compiler or any of the 
+		libraries and what you need is not in your 
+		own export tree or link, it will bring
+
+		When you check out spin/Makefile for the first time, you should
+		edit the Makefile and set up the init target so that the link
+		points to where you want to get compiler support from if you
+		don't plan to build it yourself.  Presently, it points to my
+		freeze directory.
+		When we do a merge, it will point to the release area.
+		in the native compilers from /afs/cs/project/spin.
+	READMEs and friends.
+
+export
+	gets filled in with compiler and spin_kernel. Once I fix
+	one more problem in the templates, we'll also be able to ship libspin.a
+	and we can use the same "mix and match" approach specifying that
+	library.
+	*** My sense is that we ought to really have a libsal.a, with the
+	master kernel build being a squash together of
+		libsal.a
+		libspin.a
+		libm3core_sa.a
+		libm3_sa.a
+	where you only need to check out the subtree (package)
+	that you actually plan to work with, and use the link facility to get
+	to the libraries you need, but don't plan to build.  This is not the
+	same as using LPATH which uses a search path, since in that case, it's
+	very hard to tell what got pulled in. With the link, it's clear what
+	you got from where.
+	For the next rev, though...
+
+sal
+	The usual.
+	I changed obj/Makefile so that it uses whichexport to find the right
+	libm3core_sa.a and libm3_sa.a.  (it should be clear now that we could
+	use the same thing to find the right libspin.a as well).
+
+sys
+	The usual.
+	Note that there are no overrides necessary in the m3makefile here. If
+	you want to use overrides, then put them in sys/src/m3overrides.
+	(we invoke m3build from top level with -O, if you want to invoke from
+	sys directly, and want to use overrides, then the -O will scan for
+	src/m3overrides.
+
+	m3build from HERE is not smart enough to find your libm3core and
+	libm3_sa.a if you have it in a different place than m3build. The basic
+	reason is that the templates want to look in ONLY ONE PLACE for all
+	libraries UNLESS you override them explicitly with an overrides
+	statement. (WE do not have this problem when building the libs or the
+	compiler because in that case we get all of our libraries from the same
+	place; wherever m3build comes from; the issue with the compiler is
+	where we ship TO, with libspin.a it's where we import FROM...).
+
+	With some more hacking, I could probably fix up the templates so that
+	it looks in more than one place automatically for importing, but I'm
+	reluctant to do that since that's what m3overrides is for.
+
+	For example, here's what I put in my sys/src/m3overrides when 
+	I want to have my own libm3_sa.a in some scratch space I was using:
+		override("libm3_sa", "/playground/bershad/spin/export/lib/m3/pkg/")
+	Note that the library name is now libm3_sa and NOT m3_sa.  This also
+	means that the import statements from sys/src/m3makefile  now say:
+		import ("m3core_sa")
+		import ("libm3_sa"
+
+	
+	
+user
+	the usual
+
+spindle:
+	the usual
+
+	NOTE: I DID NOT MAKE CHANGES TO spindle. If you are using non standard
+	libraries then you will need to add your own m3overrides to each src
+	directory and invoke m3build with -O.
+	(it's easy to have -O be the default; let me know if we want this; I
+	tend to put the m3build invocations in makefiles however, so I can't
+	forget how to invoke them).
+
+
+Some questions:
+
+Did you change any standard tools?
+-----------------------------------
+
+	I had to make a few changes to m3build in order to allow you
+	to put packages in different places than where you get them from.
+	The primary problem was that command line arguments passed to quake
+	were being parsed AFTER you read scripts from the templates directory.
+	So, if you said:
+		m3build -DFOO=bar
+	FOO would not get set to bar until AFTER the templates directory was
+	read.  This made it tough to override behavior from the command line
+	(note that you could do this all with an m3overrides file, but that
+	made it necessary to cons up one of these files even if all you wanted
+	to do was redefine a flag; a judgement call...)
+
+	Arguments for quake are now defined in order as:
+		quake <All "unknown m3build arguments"> templates overrides
+	(before it was:
+		quake templates overrides <All "unknown m3build arguments"> 
+	which made it hard to override from the command line!)
+
+	Unfortunately, there is one problem with this new ordering. If you want
+	to override a variable in templates or in your m3overrides file, you
+	can't.  We need support in m3build to specify before args and after
+	args. I won't add this until someone says "I can't do this because..."
+	
+
+I'm confused about all the templates directories.  Help!
+--------------------------------------------------------
+	Yes. I agree. There are too many templates directories, but you
+	shouldn't need to worry about them unless you need to make changes.
+	Here's the story:
+		compiler/support/m3build/templates
+			- contains the templates that get shipped when you
+			build the support code. This is the "default" template
+			set you will use whenever you invoke the m3build which
+			you ship.
+
+		.../spin/export/lib/m3/pkg/m3build/templates
+			This is what actually gets read in when you run an
+			m3build from .../spin/export/bin/m3build
+
+		compiler/templates
+			This is what gets used to build libm3core_sa, libm3_sa
+			and m3.  The primary point of these is to allow you to
+			SHIP to a different directory from which you obtain 
+			your m3 support.
+
+Overrides, -Dflags, templates?  When do I use what?
+---------------------------------------------------
+	In general, when you are IMPORTING m3 libraries, you should use
+	m3overrides to control which ones you get.
+
+	When you are exporting m3core and libm3, you should use the special
+	override INSTALL_ROOT with the special templates from compiler.
+
+
+Why is this all so complicated?
+--------------------------------
+	As I said, the compiler infrastructure is not really set up to support
+	combined compiler AND code modifications.  Compiler modifications need
+	to be isolated just like code modifications.  
+	
+	In addition, being able to ALWAYS get yourself bootstrapped into a
+	working m3, and libs, required a teeny amount of additional mechanism.
+	However, it's now pretty hard to get yourself to the point where you've
+	toasted your compiler to the point of not being able to build a new
+	one.
+
+
+
+Have fun...
+
+	Brian
+		
+
+</pre>

@@ -1,0 +1,40 @@
+<HTML>
+<HEAD>
+<TITLE>SPIN PRMS SERVER</TITLE>
+</HEAD>
+<BODY>
+<H1>SPIN PRMS Server</H1>
+
+Click <a href="http://velvet.cs.washington.edu:8080/gnats-bin/wwwgnats.pl">here</a> for the <i>SPIN</i>
+problem report management system (<code>PRMS</code>).  The goal of the
+<i>SPIN</i> <code>PRMS</code> is to address the problem of organizing
+the large amount of problem reports by defining a database made up
+entirely of messages filed automatically by electronic mail.
+
+<p>The database itself is an ordered repository for problem reports
+(<i>PRs</i>). Each PR, sent in by the submitter, receives a unique
+<i>PR number</i> which identifies it throughout its lifetime.  Upon
+receipt of the problem report, <code>PRMS</code> will automatically
+respond to the submitter indicating receipt with assignment of a
+number unique to the problem report.  Submitters can send large files,
+if necessary, to reproduce the problem; <code>PRMS</code> keeps track
+of them.  <code>PRMS</code> will keep the submitter up to date on what
+changes are made to the PR, when and why the change was made.  All
+parties involved in a PR are notified of state changes.
+<code>PRMS</code> will notify the submitter of any errors made in
+submitting problems for unsupported software applications.  An
+improperly submitted PR will be placed into a pending state to be
+corrected by the PRMS administrator.  Finally, Maintainers' bug fixes
+do not close out the bug report until the submitter confirms that
+their problem is really handled.
+
+<p>The following figure shows the different states a PR goes through
+before being closed.
+
+<p><center><img src="http://www.cygnus.com/data/prms.gif"></center><p>
+
+</BODY>
+<hr><p>
+<a href="mailto:mef@cs.washington.edu">mef@cs.washington.edu</a>
+
+</HTML>

@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <title>SPIN Documentation Template</title>
+    </head>
+
+<body>
+
+<h2><i>SPIN</i> Documentation Template</h2>
+
+This file is a possible template to use in writing documentation for
+a <i>SPIN</i> extension or service.  The topics included are just 
+ideas -- they can be expanded or pruned where appropriate.
+
+<hr>
+
+<h3>Motivation</h3>
+
+Why have this service? What are its goals? What services are
+provided to meet these goals? Why is the SPIN version of this service
+different from any other OS?
+
+<h3>Overview</h3>
+
+Where does this service fit into SPIN? Is it a core service?
+Extension? Language feature? Library?
+<p>
+What is the basic design? What important algorithms or data
+structures are used? Code snippets or pointers may be appropriate
+here. In addition, some low-level details may be of interest. For
+instance, the strand documentation can mention RAS regions and
+FastLists.
+
+<h3>Using the service</h3>
+
+What are the interfaces provided? (once again, code snippets or
+pointers may be appropriate). If there is more than one interface,
+what purpose does each serve? (e.g. Sched as opposed to Strand as
+opposed to ThreadExtra). 
+<p>
+An example of how to use the interface may help out. For instance,
+how would a dispatcher client install a handler on the syscall event?
+<p>
+The service might require some build or link instructions. For
+instance, dlib and the Unix server documentation will need to contain
+more than descriptions of interfaces.
+<p>
+Finally, some services, like Strands and Plexus, are specifically
+designed to be extended. Instructions, caveats, and examples may be
+appropriate. 
+
+<h3>Remaining Issues</h3>
+
+Where does this design or implementation fall short? Which features
+are designed but not yet implemented? What features have not yet been
+designed, but will be added in future work?
+
+<hr>
+
+<address> ddion@cs.washington.edu </address>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<html>
+<head>
+<title>
+Rconsole Alphas
+</title>
+
+<body>
+<h1>
+Alphas with remote console
+</h1>
+<date>
+Fri Feb 23 13:18:59 PST 1996
+</date>
+ <P>
+<HR>
+<P>
+ 
+<P>
+<pre>
+The list of remote console machines is duplicated in each of these files:
+	<a href="file:/usr/contrib/lib/rconsole/rconsoles"> /usr/contrib//lib/rconsole/rconsoles </a>
+	<a href="file:/uns/lib/rconsole/rconsoles"> /uns/lib/rconsole/rconsoles </a>
+	~rconsoles/rconsoles on owl
+</pre>
+
+<h2> Some Convenient Commands</h2>
+
+<code>/spin/bin/checkrc</code> polls all the crash machines and
+display their status.<br>
+
+<code>/spin/bin/xrconsole</code> is an interactive version of
+<code>checkrc</code>. It displays the status of machines on
+X window continuously, and by clicking any machine names, you can
+start a rconsole xterm on that machine.
+
+
+<h2> 
+Crash Machines
+</h2>
+
+Not all rconsole hosts are crashable.  The non-crashable machines
+will say NOT A CRASH MACHINE at the console login prompt.
+<p>
+These are the crash machines:
+<p>
+<pre>
+			Type	Room	Server 
+	alpo		400	433	owl
+	spincycle 	400	433	owl
+	spinoff		400	433	owl
+	tweed		300x	433	owl
+	spandex		300x	433	owl
+	calico		300x	433	owl
+
+	linen		pci	433	owl  # usually linen is a 300L
+
+	bugs		pci	117	denim
+	chintz		300x	223	wool
+</pre>
+
+<h3> 
+Using rconsole
+</h3>
+Crash machines have a serial line connection to an rconsole server.  You can run
+rconsole from anywhere in the network, and connect to the appropriate rconsole
+server.
+<p>
+You rconsole to one of the crash machines listed on the 
+<a href="file:/afs/cs/project/spin/www/Internal/Environment/Equipment/rconsole.html"> rconsole page </a>
+by typing
+
+<pre>
+	% rconsole (machinename)
+</pre>
+For example,
+<pre>
+	% rconsole tweed
+</pre>
+
+<p>
+You will need to know the rconsole password.  If you don't know it
+already, you will have to talk to one of us in person, as we don't
+send passwords via email.  If all of them are taken you can zephyr to
+spin-m3 and ask if someone could make one available, since people tend to
+hang on to an rconsole even when its idle. 
+<p>
+<h3>Quitting rconsole</h3>
+The sequence to exit rconsole is (contrl)(shift)(dash) and then the char "q".
+
+
+<h3> 
+Setting up the serial console
+</h3>
+By default, the alpha PROMs want to use their graphics head and keyboard as
+the console. 
+The way to change the system from graphics console to the
+serial console  varies by machine type.
+DEC sometimes calls the serial console the Alternate
+Console.
+<dl>
+<dt> DEC3000/300L,300LX,300X temporary
+<dd> Leave the keyboard disconnected at power up.  The powerup test
+messages will appear and when it does not detect the keyboard, the PROM
+will say "switching to rconsole".  This remains in effect only until the
+next power cycle.
+<dt> DEC3000/300L,300LX,300X jumper
+<dd> The console jumper is a 4 pin jumper labeled W2 close to the internal
+SCSI connector in the center of the machine.  Serial console is the
+center two pins (2&3), and graphics console is are pins towards the
+power supply (1&2).
+<dt> DEC3000/400 DEC3000/700
+<dd> The console serial line is the modular connector (/dev/tty01 normally).
+A switch next to the connector determines console mode: up is serial
+console and down is graphics console. Power cycle to have the switch
+setting take effect.
+<dt> AlphaStation 250 (PCI)
+<dd> At the PROM, type "set console serial" and then "init".  If a
+serial line is connected to COM1 (/dev/tty00, the upper 9-pin
+connector), the PROM will switch to serial console mode.
+By default you cannot use bootp. To use bootp, type "set ewa0_protocols bootp".
+These settings are stored in CMOS so they survive power cycling.
+</dl>
+
+<h3> 
+Setting up the rconsole server
+</h3>
+Once you have a serial connection to the crash machine, it needs to be
+listed in both
+	<a href="file:/usr/contrib//lib/rconsole/rconsoles"> rconsoles </a>
+files.  Both the server (rconsoled) and the client (rconsole) use this
+file to coordinate the service.  Start the server like this:
+<pre>
+	% rconsoled -a HOSTNAME &
+</pre>
+The server will look up in rconsoles the tty connected to the serial
+console and the port where it will serve rconsole connections.
+<p>
+Be sure the rconsoles files are the same in /usr/contrib and /uns.  The
+/usr/contrib files are in AFS for reliability.  We cannot just delete
+the /uns version so the binaries and rconsoles file is there too.
+
+<h3> 
+Trouble Shooting
+</h3>
+
+Occasionally you cannot connect because the rconsole daemon died on owl.  
+Restart the rconsoled thusly:
+<pre>
+	rlogin owl -l rconsole
+	passwd: (use the rconsole passwd)
+	% ps ax | grep rconsoled
+	 (see what daemons are up)
+	% rconsoled -a HOSTNAME &
+	% logout
+</pre>
+
+</body>
+<p><hr>
+<Address>
+becker@cs.washington.edu<br>
+</address>
+</html>

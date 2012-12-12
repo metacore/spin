@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> M3 passing compiler produced pointers (VAR/READONLY) to C module</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" M3 passing compiler produced pointers (VAR/READONLY) to C module">
+<meta name="keywords" value="mem">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html47 HREF="node5.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/homes/mef/figs/next_motif.gif"></A>   <A NAME=tex2html45 HREF="mem.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/homes/mef/figs/up_motif.gif"></A>   <A NAME=tex2html39 HREF="node3.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/homes/mef/figs/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html48 HREF="node5.html"> Plan of Action</A>
+<B>Up:</B> <A NAME=tex2html46 HREF="mem.html">SPIN Storage Management Issues</A>
+<B> Previous:</B> <A NAME=tex2html40 HREF="node3.html"> M3 passing traced </A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00040000000000000000> M3 passing compiler produced pointers (VAR/READONLY) to C module</A></H1>
+<P>
+The SRC M3 implementation produces pointers for VAR/READONLY
+parameters.  To maintain memory safety GC unsafe code should not treat
+these compiler produced pointers as a M3 references to heap memory.
+That is, they may also point to stack resident memory.  If the
+intention of the GC unsafe code is to hold on to the reference, then
+the M3 interface to the external C code should have used as its
+parameter type a traced or untraced REF rather than VAR/READONLY.
+Using the correct interface prevents M3 modules from passing pointers
+to stack resident data, and serves as documentation that the GC unsafe
+code may hold on to the reference.
+<P>
+The following example should illustrate what may go wrong when using
+VAR/READONLY:
+<P>
+<PRE>&lt;* EXTERNAL *&gt;   (* Holds on to elt as a reference *)
+PROCEDURE Enqueue(VAR que: Queue.T; VAR elt: QueueEntry.T); 
+
+/*
+ *      Insert element at head of queue.
+ */
+void Enqueue(queue_t que, queue_entry_t elt)
+
+        queue_entry_t nxt;
+        nxt = que-&gt;next; 
+        elt-&gt;next = nxt; 
+        elt-&gt;prev = que; 
+        nxt-&gt;prev = elt; /* unsafe if elt is on stack, or if elt is */
+        que-&gt;next = elt; /* traced and not strongref'd, for example */
+}
+
+The above C code may cause improper memory usage for future operations
+that involve elt.  Instead, the proper interface to Enqueue should be:
+
+&lt;* EXTERNAL *&gt; (* Assumes that the REF's are strongref'd *)
+PROCEDURE Enqueue(que: REF Queue.T; elt: REF QueueEntry.T)
+and
+&lt;* EXTERNAL *&gt; 
+PROCEDURE Enqueue(que: UNTRACED REF Queue.T; elt: UNTRACED REF QueueEntry.T)
+</PRE>
+<P>
+The latter two interfaces provide some form of documentation that the
+C code treats its arguments as heap data.
+<P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Marc Fiuczynski <BR>
+Thu Dec 28 15:39:17 PST 1995</I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>SPIN Bug Museum</title>
+</head>
+
+<h1>SPIN Bug Museum</h1>
+
+This page is a memorial to the nasty bugs we have solved in the course
+of constructing SPIN.  To qualify as <em>nasty</em>, a problem must of
+the hard to reproduce variety -- it makes the system ``flakey''.
+Easily reproduced problems do not qualify since you can solve it simply
+by putting the circumstances under the microscope.  Elusive bugs that do
+not sit still under the microscope make the hunt much more challenging.
+Other bugs that may qualify include those that occur in situations, such as
+boot, when most of the usual debugging tools are unavailable.
+<p>
+Do not understimate the difficulty and hard work that solved these bugs
+just because their descriptions are short and the solution clear cut and
+the moral is cute.
+
+
+<h3> Flakey TCP </h3>
+<dl>
+<dt> Symptoms
+<dd>
+TCP connections mysteriously failed and device drivers
+handling specifically tcp packets would fail.
+<dt> Tracking
+<dd>
+Since substituting spls for the locks improved the
+situation, Marc figured implementing the lock as in osf solve it. The
+problem with spls was that tcp would sleep and spl drops during the
+context switch.
+<dt> Moral of the story
+<dd>
+a lock does not an spl make
+</dl>
+
+<h3> NARROW failed </h3>
+<dl>
+<dt> Symptoms
+<dd> The same NARROW call would raise an exception <em> for the same
+variable
+</em>  sometimes and not at other times.
+<dt> Tracking
+<dd> Stepped throught the NARROW assembly often enough to
+catch it fail.  Turns out that a dyn link was in progress in another
+thread the times it failed and the problem was that not all of the new
+m3 runtime state was protected by a lock.
+<dt> Moral of the story
+<dd> messing with runtime globals considered harmful
+</dl>
+
+<h3> GC clobbered memory </h3>
+<dl>
+<dt> Symptoms
+<dd> When GC was enabled, pointers would occasionally get NIL,
+badaddr, or unaligned faults and kernel data was occasionally corrupted.
+<dt> Tracking
+<dd> Follow on each occurance as closely as possible.  Usually
+the extra debug info or gdb usage changed the symptoms, so most attempts
+led nowhere.  Finally a chain of events was devised that led to a
+reproducible fault that still faulted when prints were added to find the
+location.  Turned out that GC was not looking at the entire thread stack
+for pointers and was collecting objects in use higher in the stack.
+<dt> Moral of the story
+<dd> GC is hard
+</dl>
+
+<h3> Bad Access </h3>
+<dl>
+<dt> Symptoms
+<dd> 
+<dt> Tracking
+<dd> 
+<dt> Moral of the story
+<dd> Don't mess with Texas or UX.
+</dl>
+
+<h3> Template </h3>
+<dl>
+<dt> Symptoms
+<dd>
+<dt> Tracking
+<dd>
+<dt> Moral of the story
+<dd>
+</dl>
+
+<p>
+
+</body>
+<p><hr>
+<Address>
+becker@cs.washington.edu<br>
+</address>
+</html>

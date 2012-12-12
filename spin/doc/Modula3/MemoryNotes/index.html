@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95.1 (Fri Jan 20 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE>SPIN Storage Management Issues</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value="SPIN Storage Management Issues">
+<meta name="keywords" value="mem">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html1 HREF="node1.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/homes/mef/figs/next_motif.gif"></A>   <IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/homes/mef/figs/up_motif_gr.gif">   <IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/homes/mef/figs/previous_motif_gr.gif">         <BR>
+<B> Next:</B> <A NAME=tex2html2 HREF="node1.html"> The perils of </A>
+<BR> <HR> <P>
+<P>
+                                
+<P>
+                                
+<P>
+For the past few months we have been fighting against various memory
+problems. Preventing memory leaks with careful coding strategies and
+maintaining memory safety in our mixed language environment has become
+a <em> show stopper.</em>  We observe that many of the memory problems are
+caused by sharing data between M3 and C modules.  In particular,
+memory safety may be breached if passing a traced reference to C code
+without immobilizing the traced data. For example, C code accessing
+data that has been moved by the collector is memory unsafe and
+violates the correctness of the system.  Further, the allocation of
+untraced memory may be unrecoverable if passed to untrusted extension,
+or may cause a memory leak if not deallocated.  It is critical that we
+can ensure both memory safety and prevent memory leaks to maintain
+system stability.
+<P>
+What follows is a list of things that one should be aware of to
+maintain memory safety and prevent leaks.  There are several cases
+that can introduce memory problems:
+<P>
+<BR> <HR>
+<UL> 
+<LI> <A NAME=tex2html3 HREF="node1.html#SECTION00010000000000000000"> The perils of untraced memory</A>
+<LI> <A NAME=tex2html4 HREF="node2.html#SECTION00020000000000000000"> C allocated untraced memory</A>
+<LI> <A NAME=tex2html5 HREF="node3.html#SECTION00030000000000000000"> M3 passing traced reference to C</A>
+<LI> <A NAME=tex2html6 HREF="node4.html#SECTION00040000000000000000"> M3 passing compiler produced pointers (VAR/READONLY) to C module</A>
+<LI> <A NAME=tex2html7 HREF="node5.html#SECTION00050000000000000000"> Plan of Action</A>
+<LI> <A NAME=tex2html8 HREF="node6.html#SECTION00060000000000000000">   About this document ... </A>
+</UL>
+<BR> <HR>
+<P><ADDRESS>
+<I>Marc Fiuczynski <BR>
+Thu Dec 28 15:39:17 PST 1995</I>
+</ADDRESS>
+</BODY>
