@@ -1,0 +1,23 @@
+41a42,45
+> #ifndef SPIN
+> 	/*
+> 	 * SPIN uses relative gp and doesn't support backpatching
+> 	 */
+46c50
+< 
+---
+> #endif /* SPIN */
+48a53,61
+> #ifdef SPIN
+> /*
+>  * We don't check premeption here in SPIN
+>  */
+> LEAF(swap_ipl_preempt_check)
+> 	call_pal PAL_swpipl 
+> 	ret     zero,(ra)
+> 	END(swap_ipl_preempt_check)
+> #else /* SPIN */
+99c112
+< 
+---
+> #endif /* SPIN */

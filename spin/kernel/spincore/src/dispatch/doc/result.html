@@ -1,0 +1,165 @@
+<html>
+<head>
+<title>Default handler and result handling</title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top"> Default handler and result handling </a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+<h2> Overview </h2>
+
+If an event returns a result then some mechanism must be used to
+determine what the final result of the invocation is in case more than
+one handler is invoked.  In <i>SPIN</i>, the result handling protocol
+is specified as a procedure (called <b> result handler </b>) installed
+to process handlers' results.  Results from all the handlers are
+passed to that procedure one by one as each of the invoked handlers
+return, and the procedure returns the final result of the
+invocation.  If no result handler is installed then the result from
+the last invoked handler is returned as the final result of event
+invocation.
+
+<p>
+
+The dispatcher raises an exception in case no handler is invoked in
+response of raising an event that should return a result.  Otherwise
+an unspecified result would be returned violating typesafety of
+invocation.  To avoid the exception, and return a meaningful result in
+this case, a handler (called <b> default handler </b>) can be
+installed to run in case no other handler is called.
+
+<p>
+
+Because all the callers and handlers depend on result handler and the
+default handler, they can be changed only by the primary implementation
+module for that event.
+
+<p>
+
+The default state of result handling is no result handler and no
+default handler.
+
+<h2> Interface </h2>
+
+<pre>
+PROCEDURE InstallResultHandler (event   : PROCANY;
+                                handler : PROCANY;
+                                module  : RTCode.Module;
+                                closure : REFANY := NIL) 
+                               RAISES { Error };
+
+PROCEDURE InstallDefaultHandler (event   : PROCANY;
+                                 handler : PROCANY;
+                                 module  : RTCode.Module;
+                                 closure : REFANY := NIL) 
+                                RAISES { Error };
+</pre>
+
+<h2> Typing rules </h2>
+
+The dispatcher dynamically checks the types of result and default
+handlers at the time of their installation according to the following
+rules:
+
+<ul>
+<li> Procedure types:
+<ul>
+<li> default handler and result handler must be procedures (be of type
+	PROCANY) and must be legal.
+</ul>
+<li> Taking closure:
+<ul>
+<li> a handler must take a closure is the closure argument is not
+	<i>NIL</i>, 
+<li> a handler can take a closure if the closure argument is
+	<i>NIL</i>, 
+</ul>
+<li> No closure:
+<ul>
+<li> a default handler that does not take a closure must have the same type as
+	the event, 
+<li> a result handler that does not take a closure must take two
+	arguments of the same type as the result of the event and
+	return a result of the same type as the result of the event.
+</ul>
+<li> With closure:
+<ul>
+<li> if a default or result handler takes a closure than it must have an
+	additional argument (first, before all other arguments) of the
+	type which is a subtype of <i>REFANY</i>,
+</ul>
+<li> Closure:
+<ul>
+<li> a closure argument must be a subtype of the type of the first
+	argument of the corresponding procedure argument.
+</ul>
+</ul>
+
+<h2> Usage </h2>
+
+A result handler is installed using the <i>InstallResultHandler</i>
+procedure in the <i>Dispatcher</i> interface and the default handler
+is installed using the <i>InstallDefaultHandler</i> procedure in that
+interface.  Their arguments are the event for which the handler is
+being installed, the handler, and the identification of a primary
+implementation module for that event.  Optionally, a closure may be
+added for the handler.  Both procedures raise an exception if the
+module argument is not the primary implementation module for the
+event, if the types of the event, the handler, and the closure do not
+match, or if either the event or the handler is not a legal procedure.
+
+<p>
+
+If <i>NIL</i> is passed as either of the handlers then the default
+state of result handling is reinstated.
+
+<h2> Example </h2>
+
+Consider an event that returns a <i>BOOLEAN</i> result.  The module
+that implements the event installs the procedure <i>HandleResult</i>
+as a result handler to ensure that the final result of the event
+invocation or a logical <i>OR</i> and <i>DefaultResult</i> as the
+default handler to ensure that <i>FALSE</i> is returned if no handler
+is invoked as result or event raise.
+
+<pre>
+MODULE Example;
+
+PROCEDURE Event(...): BOOLEAN =
+  BEGIN
+    ...
+  END Event;
+
+PROCEDURE HandleResult(result: BOOLEAN; prevResult: BOOLEAN): BOOLEAN =
+  BEGIN
+    RETURN result OR prevResult;
+  END HandleResult;
+
+PROCEDURE DefaultResult(...): BOOLEAN =
+  BEGIN
+    RETURN FALSE;
+  END DefaultResult;
+
+BEGIN
+  Dispatcher.InstallResultHandler(Event, HandleResult, THIS_MODULE());
+  Dispatcher.InstallDefaultHandler(Event, DefaultResult, THIS_MODULE());
+END Example.
+</pre>
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>

@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>VMTaskSupport Interface</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> VMTaskSupport Interface</a> </br>
+</h1>
+<date>March 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+The VMTaskSupport interface helps emulate a Mach virtual memory environment.
+The SPIN <a href=
+"../../vm/space/src/Space.i3">
+Space</a> extension interface does support inheritance or allocation at
+an unspecified address.  The VMTaskSupport interface provides this 
+functionality.
+<p>
+The VMTaskSupport module maintains a data structure of all the user-space
+memory allocation.  The data structure is a table of address space records.
+Each address space record contains a table of allocations in its space as
+well as its current allocation pointer.  Each allocation field records the
+begin address and size of the allocation, an inheritance attribute, and a
+SPIN capability for that region of virtual memory.
+<p>
+Each user-space allocation must be registered in the allocation table.  If
+the location for the allocation is unspecified, the current allocation 
+pointer for the address space is used and then incremented.  When a new
+address space is created, it may inherit from an existing address space.
+In this case, the allocation table for the existing space is traversed, 
+and all regions are aggressively copied into the new address space.  Sharing
+and copy-on-write are not implemented.
+
+<p>
+The VMTaskSupport interface is <a href="../src/VMTaskSupport.i3">
+VMTaskSupport.i3</a>.
+
+<p>
+<b>Note:</b>  <i>VMTaskSupport was made obsolete by the
+<a href="../../vm/doc/index.html">Address Space</a> extensions.
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

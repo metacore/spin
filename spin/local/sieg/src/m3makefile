@@ -1,0 +1,48 @@
+
+if equal(TARGET, "LINUXELF")
+# local m3 does not work under LINUXELF so we use the pristine compiler
+# instead.  See local/Makefile.
+else
+overridepath = [ THISTREE, FULLTREE ]
+importfrompath ("local", "m3core", overridepath)
+importfrompath ("local", "libm3", overridepath)
+import ("libm3")
+end
+
+THISTK = THISTREE & "/local/m3tk" 
+TKTREE = THISTREE & "/local" 
+if stale(THISTK ,THISTK )
+  TKTREE = FULLTREE & "/local"
+end
+% write (" ",THISTK,CR)
+% write (" ",TKTREE,CR)
+override("m3tk", TKTREE)
+import("m3tk")    % m3 parser kit.
+
+implementation("Main")
+module("NameSeq")
+interface("NameSeqRep")
+interface("Declaration")
+module("ParamAddr")
+module("Module")
+module("TypeTable")
+module("Type")
+implementation("UserDefinedType")
+interface("Target")
+module("IWr")
+module("Pass1")
+module("UserI3")
+interface("UserM3")
+module("ExtensionM3")
+module("Pragma")
+module("ExtensionI3")
+module("UserCHeader")
+module("ExtInfo")
+module("RegSchedule")
+module("Msg")
+
+include_dir(TARGET)
+
+build_standalone()
+
+Program("sieg")

@@ -1,0 +1,143 @@
+22a23,24
+> 
+> 
+27d28
+< 
+68a70
+> #ifndef SPIN
+69a72,82
+> #else
+> /*
+>  * flags for ioflag
+>  */
+> #define IO_UNIT		0x01		/* do I/O as atomic unit */
+> #define IO_APPEND	0x02		/* append write to end */
+> #define IO_SYNC		0x04		/* do I/O synchronously */
+> #define IO_NODELOCKED	0x08		/* underlying node already locked */
+> #define	IO_NDELAY	0x10		/* FNDELAY flag set in file table */
+> #define	IO_NONBLOCK	0x80		/* FNONBLOCK flag set in file table */
+> #endif
+78a92
+> #ifndef SPIN
+79a94
+> #endif
+87a103,106
+> /*#ifdef SPIN
+> #undef COMPAT_43
+> #endif*/
+> 
+122a142
+> #ifndef SPIN
+126a147
+> #endif
+136a158
+> #ifndef SPIN
+141a164
+> #endif
+239c262
+< 		ttwakeup(tp);
+---
+> 		ttwakeup(tp, -1);
+350a374
+> #ifndef SPIN
+413a438
+> #endif /* SPIN */
+420d444
+< 
+457d480
+< 
+531a555
+> #ifndef SPIN
+544a569
+> #endif /* SPIN */
+607c632
+< 					ttwakeup(tp);
+---
+> 					ttwakeup(tp, -1);
+627a653,657
+> #ifdef SPIN
+> 	case TIOCSPGRP:
+> 		tp->t_pgrp = data;
+> 		break;
+> #else
+743a774,775
+> #endif /* SPIN */
+> 
+756a789
+> #ifndef SPIN
+781a815
+> #endif /* SPIN */
+932c966
+< 
+---
+> #ifndef SPIN
+947c981
+< 
+---
+> #endif /* SPIN */
+988a1023
+> #ifndef SPIN
+1006a1042
+> #endif
+1045a1082
+> #ifndef SPIN
+1054a1092
+> #endif
+1063c1101
+< 		ttwakeup(tp);
+---
+> 		ttwakeup(tp, -1);
+1081a1120
+> #ifndef SPIN
+1093a1133
+> #endif
+1246a1287
+> 		        int signo  = CCEQ(cc[VINTR],c) ? SIGINT : SIGQUIT;
+1250,1251c1291
+< 			pgsignal_tty(tp->t_pgrp,
+< 				CCEQ(cc[VINTR],c) ? SIGINT : SIGQUIT, 1, 0,
+---
+> 			pgsignal_tty(tp->t_pgrp, signo, 1, 0,
+1252a1293,1294
+> 			/* yas hack */
+>                         ttwakeup(tp, signo);
+1259a1302,1303
+> 			/* yas hack */
+>                         ttwakeup(tp, SIGTSTP);
+1265a1310,1311
+> 			/* yas hack */
+>                         ttwakeup(tp, SIGINFO);
+1321c1367
+< 				    ttwakeup(tp);
+---
+> 				    ttwakeup(tp, -1);
+1430c1476
+< 			ttwakeup(tp);
+---
+> 			ttwakeup(tp, -1);
+1755a1802
+> #ifndef SPIN
+1783a1831
+> #endif
+1969a2018
+> #ifndef SPIN
+1983a2033
+> #endif
+2031a2082
+> #ifndef SPIN
+2065a2117
+> #endif
+2400c2452
+< ttwakeup(tp)
+---
+> ttwakeup(tp, why)
+2401a2454
+> 	int why;
+2409c2462
+< 	
+---
+> 	tp->t_last_signal = why;
+2751c2804
+< 	ttwakeup(tp);
+---
+> 	ttwakeup(tp, -1);

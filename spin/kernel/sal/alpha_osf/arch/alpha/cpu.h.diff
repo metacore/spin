@@ -1,0 +1,4 @@
+111c111
+< #define splvm()		swap_ipl(SPLDEVHIGH)
+---
+> #define splvm()		swap_ipl(SPLEXTREME)

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Strand Interface</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Strand Interface">
+<meta name="keywords" value="strands">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html46 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/general/latex2html_icons//next_motif.gif"></A>   <A NAME=tex2html44 HREF="index.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/general/latex2html_icons//up_motif.gif"></A>   <A NAME=tex2html38 HREF="node2.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/general/latex2html_icons//previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html47 HREF="node4.html"> Events Handled by </A>
+<B>Up:</B> <A NAME=tex2html45 HREF="index.html">Strands</A>
+<B> Previous:</B> <A NAME=tex2html39 HREF="node2.html"> SPIN Architecture Overview </A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00030000000000000000> Strand Interface</A></H1>
+<P>
+A strands package should handle the following set of events.
+The examples section describes some mundane uses of these events to
+implement functionality commonly found in today's schedulers.
+<P>
+All the events described below appear in the interface definition for
+the module Strand and should be prefixed with ``<tt> Strand.</tt>''.
+The strand parameters are REFANY's because the precise definition of
+a strand is not relevant to the system. The handlers with sufficient
+interest can attempt a narrow operation at run time.
+<P>
+The events described below are raised by various system entities to
+signal changes in crucial system state and to request some sort of a
+response from involved parties. Thus, the failure mode describes what
+happens when an involved party (e.g. a strand scheduler tending a
+particular strand) fails to take appropriate steps to cope with the
+change in system state (e.g. reschedules the strand even though it
+is currently not runnable). There is no detection of failure, since
+such detection is in general impossible; however, the Strand interface
+has been designed such that failures only affect the parties that
+trust the failed module. The failure mode for each event is described
+in detail below.
+<P>
+All events in the strand interface are bounded.
+<P>
+<BR> <HR>
+<UL> 
+<LI> <A NAME=tex2html48 HREF="node4.html#SECTION00031000000000000000"> Events Handled by Strand Packages</A>
+<LI> <A NAME=tex2html49 HREF="node5.html#SECTION00032000000000000000"> Events Handled by Strand Schedulers</A>
+</UL>
+<BR> <HR>
+<P><ADDRESS>
+<I>Emin Gun Sirer <BR>
+Sat Jun 22 19:01:37 PDT 1996</I>
+</ADDRESS>
+</BODY>

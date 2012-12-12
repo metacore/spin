@@ -1,0 +1,14 @@
+685a686
+> #ifndef SPIN
+688a690
+> #endif
+1122a1125
+> #ifndef SPIN
+1125a1129
+> #endif
+1388a1393,1395
+> #ifdef SPIN
+> 	so->so_state |= SS_PRIV;
+> #else
+1398a1406
+> #endif

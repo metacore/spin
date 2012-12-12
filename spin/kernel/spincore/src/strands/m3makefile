@@ -1,0 +1,74 @@
+#
+# Copyright 1994, 1995, 1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 29-Jul-96  Charles Garrett (garrett) at the University of Washington
+#	Created a separate directory for Thread code that contains extra
+#	 profiling information. This is included only when the target is
+#	 ALPHA_SPIN_PROF. 
+#
+# 07-Jul-96  Brian Bershad (bershad) at the University of Washington
+#	Added  ThreadException.
+#
+# 10-Dec-94  Emin Gun Sirer (egs) at the University of Washington
+#	Created.
+
+# global scheduler
+Interface("SchedPrivate")
+Module ("Sched")
+Interface("StrandExtern")
+c_source("StrandExtern")
+
+# strands
+Module ("Strand")		# strand interface
+Interface ("StrandPrivate")	# strand private interface
+Interface ("StrandRep")		# strand representation
+Interface ("ThreadExtra")	# additions to the standard thread interface 
+
+interface ("ThreadExtern")	# the current profiling stack is an EXTERNAL
+Interface ("ThreadPrivate")	# privileged additions to thread interface 
+Interface ("ThreadRep")	# kernel thread representation
+implementation ("Thread")	# kernel threads
+
+Module("ThreadException")	# client interface and impl of exceptions
+
+# synchronization
+Module ("FastList")
+Array_sort("Region", "Region")
+Module ("Region")
+Module ("CodeRegions")
+Interface ("KernelRegionsPrivate")
+Module ("KernelRegions")
+Module ("Sema")
+Interface ("SemaRep")
+Module ("SpinLock")
+Module ("Mutex")
+Module ("Condition")
+
+Module ("TrackStrand")
+Module(LightMutex)
+Interface(LightMutexPrivate)
+
+DomainExport("SpinPublic","LightMutex")
+DomainExport("SpinPublic","Condition")
+DomainExport("SpinPublic","FastList")
+DomainExport("SpinPublic","Mutex")
+DomainExport("SpinPublic","Sched")
+DomainExport("SpinPublic","Sema")
+DomainExport("SpinPublic","Strand")
+DomainExport("SpinPublic","StrandRep")
+DomainExport("SpinPublic","Thread")
+DomainExport("SpinPublic","ThreadExtra")
+DomainExport("SpinPublic","ThreadException")
+DomainExport("SpinPublic","CodeRegions")
+DomainExport("SpinPublic","Region")
+DomainExport("SpinPublic","TrackStrand")
+
+
+DomainExport("SpinTrusted","KernelRegions")
+DomainExport("SpinTrusted","SchedPrivate")
+DomainExport("SpinTrusted","SpinLock")
+DomainExport("SpinTrusted","ThreadPrivate")
+DomainExport("SpinTrusted","LightMutexPrivate")

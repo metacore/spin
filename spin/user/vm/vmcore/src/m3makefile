@@ -1,0 +1,50 @@
+#
+# Copyright 1994, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+#
+# HISTORY
+# 19-Mar-96  Stefan Savage (savage) at the University of Washington
+#       Created.
+#
+# 
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+
+Package("VMCore")
+m3_option("-A")
+Module("MemoryObject")
+interface("MemoryObjectRep")
+Dequeue(AddressMap, AddressMapEntry)
+Table(OffsetPhysAddr,Integer,PhysAddr)
+
+Module("CacheObject")
+Module("DefaultCache")
+
+#Module("ProtectionDomain")
+#Interface ("ProtectionDomainRep")
+
+Interface(AddressMapEntry)
+#Module(AddressMapKey)
+#Table(AddressMap,AddressMapKey, AddressMapEntry)
+#Sorted_table(AddressMap,AddressMapKey, AddressMapEntry)
+#Module ("AddressMap")
+#Interface ("AddressMapRep")
+
+Module("AddressSpace")
+Interface ("AddressSpaceRep")
+Module("PageFault")
+
+Interface("VMTypes")
+Module("PagerObject")
+Module("DefaultPager")
+Module("VMCore")
+Module("VMDebug")
+Module(ExternalRef)
+Interface("VMStat")
+Module("Bitmap")
+
+Extension({})

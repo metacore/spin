@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>ThreadHandlers Interface</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> ThreadHandlers Interface</a> </br>
+</h1>
+<date>March 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+The ThreadHandlers interface provides thread support to the OSF/1 server 
+extensions.  When the Syscall module catches a syscall event corresponding 
+to a Thread request, it is redirected to the ThreadHandlers module.
+<p>
+The ThreadHandlers interface also exports the Rendezvous() procedure.
+Rendezvous() is part of the support required by the Mach CThreads package.
+<p>
+The ThreadHandlers interface is <a href="../src/ThreadHandlers.i3">
+ThreadHandlers.i3</a>.
+
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

@@ -1,0 +1,147 @@
+# HISTORY
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Change ALPHA_SPIN to variable $target which can be either
+#	 ALPHA_SPIN or ALPHA_SPIN_PROF.
+#
+
+echo
+echo ***** INITIALIZE THE CONFIGURATION *****
+echo
+
+script -b
+
+echo
+echo ***** LOAD AND RUN REGRESION TESTS *****
+echo
+
+script regress.rc
+regress -all
+# eats up too much memory
+# regress -all
+# regress -all
+regress -clean
+
+echo
+echo ***** LOAD AND RUN REGRESION TESTS (second time) *****
+echo
+
+script regress.rc
+regress -all
+# eats up too much memory
+# regress -all
+# regress -all
+regress -clean
+
+echo
+echo ***** RUN THE SIMPLEST USER LEVEL PROGRAM *****
+echo
+
+#
+# these don't work
+#
+# exec /spin/pardy/hw1
+# exec /spin/pardy/hw2
+
+echo
+echo ***** SIMPLE SPHINX TESTS *****
+echo
+
+nanny touch Sphinx
+
+sphinx exec ~/spin/user/sphinx/progs/hello
+sphinx exec ~/spin/user/sphinx/progs/timetest
+sphinx exec ~/spin/user/sphinx/progs/fptst 123.34567 f 3
+sphinx exec ~/spin/user/sphinx/progs/bindtest 1000
+sphinx exec ~/spin/user/sphinx/progs/brktest
+sphinx exec ~/spin/user/sphinx/progs/fstat
+sphinx exec ~/spin/user/sphinx/progs/openclose
+sphinx exec ~/spin/user/sphinx/progs/printtest
+sphinx exec ~/spin/user/sphinx/progs/test_time
+sphinx exec ~/spin/user/sphinx/progs/uname
+sphinx exec ~/spin/user/sphinx/progs/writetest
+sphinx exec ~/spin/user/sphinx/progs/writevtest
+sphinx exec ~/spin/user/sphinx/progs/inettest
+sphinx exec ~/spin/user/sphinx/progs/isatty
+
+
+echo
+echo ***** FILE I/O SPHINX TESTS *****
+echo
+
+nanny touch Mount
+
+sphinx exec ~/spin/user/sphinx/progs/failopen /etc/hosts
+sphinx exec ~/spin/user/sphinx/progs/failopen /etc/sirpa
+sphinx exec ~/spin/user/sphinx/progs/cat /etc/hosts 
+sphinx exec ~/spin/user/sphinx/progs/cat /etc/sirpa
+
+#
+# these don't work:
+#
+# sphinx exec ~/spin/user/sphinx/progs/getenvtest
+# sphinx exec ~/spin/user/sphinx/progs/regress
+# sphinx exec ~/spin/user/sphinx/progs/selecttest
+# sphinx exec ~/spin/user/sphinx/progs/spawntest
+# sphinx exec ~/spin/user/sphinx/progs/io
+# ? sphinx exec ~/spin/user/sphinx/progs/dsh 
+# ? sphinx exec ~/spin/user/sphinx/progs/stupidshell
+
+#
+# these require instruction
+#
+# ? sphinx exec ~/spin/user/sphinx/progs/client
+# ? sphinx exec ~/spin/user/sphinx/progs/bigclient
+# ? sphinx exec ~/spin/user/sphinx/progs/bigserver
+# ? sphinx exec ~/spin/user/sphinx/progs/bucket
+# ? sphinx exec ~/spin/user/sphinx/progs/bucketnb
+# ? sphinx exec ~/spin/user/sphinx/progs/sockioc
+# ? sphinx exec ~/spin/user/sphinx/progs/httpbench
+# ? sphinx exec ~/spin/user/sphinx/progs/mouser
+# ? sphinx exec ~/spin/user/sphinx/progs/pump
+# ? sphinx exec ~/spin/user/sphinx/progs/tcp_server
+# ? sphinx exec ~/spin/user/sphinx/progs/trackioctl
+# ? sphinx exec ~/spin/user/sphinx/progs/ttyclient
+# ? sphinx exec ~/spin/user/sphinx/progs/ttyserver
+# ? sphinx exec ~/spin/user/sphinx/progs/udp_server
+
+echo
+echo ***** TEST TRANSACTIONS *****
+echo
+
+script trans.rc
+sphinx exec ~/spin/user/trans/rvmbench/spin/rvmbench -R -n     100 -a     100
+sphinx exec ~/spin/user/trans/rvmbench/spin/rvmbench -R -n    1000 -a    1000
+sphinx exec ~/spin/user/trans/rvmbench/spin/rvmbench -R -n   10000 -a   10000
+sphinx exec ~/spin/user/trans/rvmbench/spin/rvmbench -p -n     100 -a     100
+sphinx exec ~/spin/user/trans/rvmbench/spin/rvmbench -p -n    1000 -a    1000
+sphinx exec ~/spin/user/trans/rvmbench/spin/rvmbench -p -n   10000 -a   10000
+# runs out of traced heap
+# sphinx exec ~/spin/user/trans/rvmbench/spin/rvmbench -R -n  100000 -a  100000
+# sphinx exec ~/spin/user/trans/rvmbench/spin/rvmbench -p -n  100000 -a  100000
+
+sphinx exec ~/spin/user/trans/oo7/spin/OO7 -g -R /efs/rds_data ~/spin/user/trans/oo7/Config.tiny
+sphinx exec ~/spin/user/trans/oo7/spin/OO7 -b -R /efs/rds_data ~/spin/user/trans/oo7/Config.tiny 1 t1 t2a t2b
+
+sphinx exec ~/spin/user/trans/oo7/spin/OO7 -g -R /efs/rds_data ~/spin/user/trans/oo7/Config.teeny
+sphinx exec ~/spin/user/trans/oo7/spin/OO7 -b -R /efs/rds_data ~/spin/user/trans/oo7/Config.teeny 1 t1 t2a t2b
+           
+sphinx exec ~/spin/user/trans/oo7/spin/OO7 -g -R /efs/rds_data ~/spin/user/trans/oo7/Config.small
+sphinx exec ~/spin/user/trans/oo7/spin/OO7 -b -R /efs/rds_data ~/spin/user/trans/oo7/Config.small 1 t1 t2a t2b
+
+# too big to fit in memory           
+# sphinx exec ~/spin/user/trans/oo7/spin/OO7 -g -R /efs/rds_data ~/spin/user/trans/oo7/Config.medium
+# sphinx exec ~/spin/user/trans/oo7/spin/OO7 -b -R /efs/rds_data ~/spin/user/trans/oo7/Config.medium 1 t1 t2a t2b
+# sphinx exec ~/spin/user/trans/oo7/spin/OO7 -g -R /efs/rds_data ~/spin/user/trans/oo7/Config.large
+# sphinx exec ~/spin/user/trans/oo7/spin/OO7 -b -R /efs/rds_data ~/spin/user/trans/oo7/Config.large 1 t1 t2a t2b
+           
+
+echo
+echo ***** LOAD WEB SERVER *****
+echo
+
+script $httpdrc
+
+echo
+echo ***** DONE *****
+echo
+

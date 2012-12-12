@@ -1,0 +1,4 @@
+echo CVS
+echo wfs.rc
+echo more character
+exit -10

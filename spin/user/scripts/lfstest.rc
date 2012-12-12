@@ -1,0 +1,27 @@
+# HISTORY
+# 16-Dec-97  Przemek Pardyak (pardy) at the University of Washington
+#	Created.
+#
+
+#
+# Driver for Simplified Andrew Benchmark
+# 
+
+echo ">>> Test lfs\n"
+
+echo ">>> AFS ==> LFS\n"
+set ORIGINAL /spin/pardy/Andrew/ab/fscript
+mkdir test1
+cd test1
+script sab.rc
+echo ">>> AtoL done\n"
+
+echo ">>> LFS ==> LFS\n"
+set ORIGINAL ../test1/testfs1
+cd ..
+mkdir test2
+cd test2
+script sab.rc
+echo ">>> LtoL done\n"
+
+echo ">>> done

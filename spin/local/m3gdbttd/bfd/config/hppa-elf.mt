@@ -1,0 +1,2 @@
+DEFAULT_VECTOR=bfd_elf32_hppa_vec
+SELECT_ARCHITECTURES=bfd_hppa_arch

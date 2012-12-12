@@ -1,0 +1,11 @@
+
+SigTramp.i3: $(OBJDIR)/gensigcode
+	$(OBJDIR)/gensigcode $(OBJDIR)/SigTramp.i3
+
+$(OBJDIR)/gensigcode:	$(OBJDIR)/sigcode_main.o $(OBJDIR)/sigcode.o
+	$(CC) -static -o $@ $^
+
+$(OBJDIR)/sigcode.o: sigcode.s
+	/lib/cpp $^ | as -o $@
+$(OBJDIR)/sigcode_main.o: sigcode_main.c
+	cc -c -o $@ sigcode_main.c

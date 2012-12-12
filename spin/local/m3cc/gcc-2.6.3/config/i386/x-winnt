@@ -1,0 +1,15 @@
+RANLIB = :
+RANLIB_TEST = false
+CLIB = libc.lib kernel32.lib
+CC = cl -D_SYSV -DWINNT -D_M_IX86 -D_X86_ -D__STDC__=0 -DALMOST_STDC
+LDFLAGS = -align:0x1000 -subsystem:console -entry:mainCRTStartup \
+  -stack:1000000,1000000
+
+EXTRA_PROGRAMS=ld-winnt
+ 
+ld.o: $(srcdir)/config/winnt/ld.c
+	$(CC) -I. -I$(srcdir) -I$(srcdir)/config -c $(srcdir)/config/winnt/ld.c
+ 
+ld-winnt: ld.o
+	$(CC) -o ld-winnt ld.o
+	copy ld-winnt.exe ld.exe

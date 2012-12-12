@@ -1,0 +1,47 @@
+126a127,141
+> /* MEF HACK 
+>  * 
+>  * To avoid allocation of open array headers the mh_len and mh_data
+>  * fields are going to be used for M3 open array headers.  A M3 open
+>  * array for SRC Modula3 3.5.2 is of the form:
+>  * struct openarray {
+>  *	unsigned long start;
+>  *	unsigned long size;
+>  * };
+>  * 
+>  * On an alpha we need to make the mh_len field a 64bit field for it
+>  * to correspond with the structure of a M3 open array.
+>  *   
+>  */
+> 
+130a146,149
+> #ifdef __alpha && SPIN
+> 	caddr_t	mh_data;		/* location of data */
+> 	long    mh_len;			/* amount of data in this mbuf */
+> #else
+132a152
+> #endif 
+152a173,175
+> #ifdef __alpha && SPIN
+> 	long	len;		/* total packet length */
+> #else
+153a177,178
+> #endif
+> 
+164a190,193
+> #ifdef SPIN
+> 	u_long	ext_size;		/* size of buffer, for ext_free */
+> 	caddr_t ext_m3oa;               /* m3 open array header */
+> #else
+165a195
+> #endif
+202a233
+> #define	M_M3METHODS	0x0010	/* free external storage asap */
+392a424,430
+> 
+> #ifdef SPIN
+> /* we must avoid lowering spl while in polling mode, so we check first */
+> #undef splimp
+> #define splimp() ((getspl()<SPLIMP) ?swap_ipl(SPLIMP):getspl())
+> #endif
+> 

@@ -1,0 +1,14 @@
+if not defined("sphinx_defined")
+Generic_module(Dequeue)
+readonly proc Dequeue (nm, elt) is
+  local tab = nm & "Q"
+  build_generic_intf (tab, "Dequeue", [elt], VISIBLE)
+  build_generic_impl (tab, "Dequeue", [elt])
+end
+readonly proc dequeue (nm, elt) is
+  local tab = nm & "Q"
+  build_generic_intf (tab, "Dequeue", [elt], HIDDEN)
+  build_generic_impl (tab, "Dequeue", [elt])
+end
+end
+sphinx_defined=1

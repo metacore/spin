@@ -1,0 +1,14 @@
+0a1,11
+> #ifdef SPIN
+> #include <sys/types.h>
+> #include <machine/endian.h>
+> #define enum_t int /* from rcp/types.h */
+> #include <rpc/types.h>
+> #include <rpc/xdr.h>
+> #if defined(LASSERT)
+> #undef LASSERT
+> #define LASSERT(a)
+> #endif /*LASSERT*/
+> #else
+87a99
+> #endif

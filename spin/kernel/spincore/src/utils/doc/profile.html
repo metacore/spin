@@ -1,0 +1,464 @@
+<html>
+<head>
+<title>SPIN Operating System Documentation</title>
+</head>
+
+<body>
+<html>
+<head>
+<title>Profiling</title>
+</head>
+
+<body>
+<h1>Profiling in SPIN.</br></h1>
+ <P>
+<HR>
+<P>
+
+<h2> Motivation </h2>
+
+When you want to know where your system is spending its time, you have
+to profile it. 
+
+<h2> Overview </h2>
+
+The two options we offer for profiling SPIN are PC sampling
+which is slightly intrusive and provides less information or call graph
+profiling a la <i> gprof </i> which is very intrusive and provides complete
+information about which procedure called which and how many times. This
+documentation will cover.
+
+<ol> <li> PC sampling.
+     <ol> <li> How to use it.
+	<li> How it is implemented.
+     </ol>
+     <li> Call graph profiling.
+     <ol> <li> How to use it.
+	<li> How it is implemented.
+     </ol>
+</ol>
+
+<h2> Using the SPIN profiling support </h2>
+
+<h3> 1. PC sampling </h3>
+PC sampling means that the value of the program counter is periodically 
+inspected and stored in a table which records how many times that PC
+value occured. For some programs, these counts of PC values can provide
+a useful picture of how much time is spent in a procedure.
+
+<h3> 1.1 Using PC sampling </h3>
+
+You can use PC sampling with any SPIN kernel by doing three things,
+turning sampling on, turning it off and then reading out the information
+with the debugger.
+
+<h3> Turning sampling On/Off </h3>
+
+Inside the kernel, there is an interface called ProfileSupport which 
+exports the functions On() and Off(). When you call ProfileSupport.On(),
+the profiling begins and it will last until you call ProfileSupport.Off().
+If you wish to control profiling from the SPIN shell, you may use the commands
+<pre>
+	profile on
+	profile off
+</pre>
+which call the ProfileSupport functions for you. After you call 
+ProfileSupport.Off(), the collected PC counts are stored in memory
+so that they can be read by the debugger.
+
+<p>
+If you want to turn profiling on and off rapidly from the shell,
+you can say:
+<pre>
+	profile cmd <any shell command>
+</pre>
+This starts profiling immediately before running the shell command 
+and stops it immediately after, which reduces the amount of extraneous
+code that is profiled.
+
+<h3> Reading the profile information </h3>
+
+The SPIN kernel does not know how to resolve an arbitrary PC value to
+a symbolic name, so we have to rely on the m3gdbttd debugger
+which can read in symbol table information and resolve the names for us.
+The easiest way to do that is to call the Perl script FlatProfile.perl
+which will start the debugger, connect to a crash machine, read the
+profile information from it and print the PC counts with symbolic names.
+The script takes two arguments, the name of the machine to connect to
+and the name of the SPIN kernel which is running there. For example,
+
+<pre>
+	FlatProfile.perl tweed kernel/sal/SPIN/spin_kernel.sys > profile
+</pre>
+
+The script will print its results to standard output so you can redirect
+it to a file or a pipe. The output of FlatProfile.perl looks like this:
+
+<pre>
+Count   Percent         Procedure
+-----   -------         ---------
+47072   81.62           scc_putc
+9146    15.86           MachineCPUPrivate__RestoreInterruptLevel
+788     1.37            MachineCPUPrivate__SetInterruptLevel
+476     0.83            Thread__Idle
+31      0.05            sccputc
+30      0.05            prf
+     .... continues ....
+</pre>
+
+The Count column is the raw number of ClockTick events in that procedure, so
+47072 ticks * 1 millisecond/tick = 47.072 seconds. The Percent column is the
+percentage of ClockTick events in that procedure and the last column is
+the symbolic name of the procedure.
+
+<h3> 1.2 How PC sampling is implemented </h3>
+
+PC sampling support is compiled into every SPIN kernel. It doesn't impose
+any overhead unless it is turned on.
+
+<h3> How we gather PC counts </h3>
+SPIN exports the ClockTick event from the SpinTrusted domain. This event
+is raised every millisecond and delivered as soon as the interrupt level
+is low enough to permit it. When profiling is turned on, a handler is 
+installed on the ClockTick event and a sorted table object (defined in the
+libm3_sa library) is allocated. When our ClockTick handler is called, it
+looks up the table entry for the current PC value and increments the
+counter in the table.
+
+<h3> Caveats </h3>
+There are several features of PC sampling which interfere with getting
+accurate frequency counts. First, some code in the kernel runs at high
+interrupt level. If a ClockTick event occurs at high interrupt level, it
+will not be delivered until the interrupt level is lowered, and the PC
+value will be the value of the instruction which lowers the interrupt level,
+not the value of the instruction where the ClockTick originally happened.
+The ClockTick handler which is installed for sampling checks whether this
+was a delayed tick or not. If it was delayed, then we increment a counter
+for the caller of the current procedure, instead of the procedure itself.
+The caller of the current procedure will usually be a caller of the 
+procedure where the ClockTick really happened, but there is no guarantee 
+that it is. Delayed clock ticks are counted separately from regular ones
+and the profile output gives you three listings, one for all clock ticks,
+one for non-delayed ticks and one for delayed ticks.
+
+<p>
+The second problem with PC sampling is that you have to collect large
+frequency counts to get accurate information. For example, if you have
+a procedure which usually takes less than one millisecond to execute,
+then it will most likely not receive a ClockTick every time it runs.
+You will need to ensure that the procedure runs many times in order
+to get a statistically meaningful number of ClockTick events.
+
+<hr>
+
+<h3> 2. Call graph profiling </h3>
+Call graph profiling records the caller and callee procedure every time
+a procedure call is made. Each pair of caller and callee is one link in the
+call graph and by knowing the individual links of the graph, the profiler
+can build up a picture of the entire graph. The call graph information can
+also be combined with PC sampling data to give a more complete picture of
+where time is spent than PC sampling by itself can provide.
+
+<h3> 2.1 Using call graph profiling. </h3>
+
+<h3> Compiling </h3>
+The most annoying thing about call graph profiling is that you must
+recompile every procedure that you want to have counted. The SPIN 
+build environment has been changed to allow you to keep both a profiled
+and an unprofiled version of SPIN in the same directory structure.
+
+<p>
+In order to build a profiled version of SPIN or of some subpart
+of SPIN, give a definition (any definition) for the variable 
+PROFILE on the gmake command line. For example,
+
+<pre>
+	gmake PROFILE=TRUE kernel
+</pre>
+
+will build the kernel with profiling.
+
+<pre>
+	gmake PROFILE=ON 
+</pre>
+
+will build everything. The profiled code is built in separate
+directories from unprofiled code. For Modula-3 sources, this
+happens by defining a new target called ALPHA_SPIN_PROF. Within
+sal, we have a new configuration called SPIN_PROF. The final
+bootable kernel is called kernel/sal/SPIN_PROF/spin.boot.
+
+<p>
+To build the unprofiled code, just type the same commands as
+before, such as "gmake kernel" and "gmake user." 
+
+
+<h3> Dynamic linking </h3>
+When you build spincore with call graph profiling enabled,
+you presumably want to load extensions that are also compiled
+with profiling enabled. In order to make this automatic, the
+shell now defines a variable called "target" which is set to
+ALPHA_SPIN or ALPHA_SPIN_PROF to indicate what target you used
+to build spincore. The .rc scripts now use the "target" variable
+to find extensions that were built with the same target as your
+spincore. 
+
+<p>
+Even though the system automatically tries to load either all
+profiled or all unprofiled code, you should be able to combine 
+profiled and unprofiled code freely in your system. Let me know
+if there are any problems with this.
+
+<h3> At runtime </h3>
+
+The basic idea is that you turn profiling on, run your code and
+turn it off. After you turn it off, the profile data is kept
+in memory where you can read it out with m3gdbttd. When you turn
+profiling on, you can specify whether to keep the previously
+accumulated data or flush it and start with empty profiling
+buffers. From the command line, say "profile flush" to clear
+the buffers. The "profile on" shell command does not flush
+the buffers.
+
+Boot your kernel and load the extensions you want to profile.
+You can turn profiling on and off either by calling the procedures
+ProfileSupport.On and ProfileSupport.Off or by 
+typing the shell commands "profile on" and "profile off". 
+You can determine whether profiling is on or off by calling
+the ProfileSupport.Enabled procedure. It returns TRUE when 
+profiling is on and FALSE when it is off.
+
+<p>
+There is a new profile option which lets you turn profiling
+on and off quickly for a single shell command. You say 
+"profile cmd <your command here>" and the profiler will be
+turned on just before your command is executed and turned off
+as soon as it is done.
+
+<p>
+You can profile the kernel while it is loading extensions. A revision
+to the profiling implementation has removed the earlier restriction 
+which prevented profiling while linking new code.
+
+<h3> Extracting the profile information </h3>
+
+After you turn off profiling, the information is stored in the
+memory of the crash machine. You need to use m3gdbttd to connect
+to the machine and read it out. First I will describe the individual
+commands that you can use in m3gdbttd and then I'll describe the
+perl script that can do everything for you.
+
+<p>
+When you start m3gdbttd, specify the name of the kernel you are
+running. Connect to your crash machine and run "domain sweep" 
+just like you would to debug your code. Next run "gprof" which
+makes m3gdbttd read the profile information and write it into
+two files in your current directory. The files are called "dlinked.syms"
+and "gmon.out". "dlinked.syms" contains the names and addresses of 
+the procedures in your spin kernel, including all of the dynamically
+linked code. "gmon.out" contains the PC sample counts and procedure
+call counts gathered by the profiling code. You can detach from
+your crash machine and quit after running the "gprof" command.
+
+<p>
+Use the "spinprof" program in spin/local/bin to analyze the two
+files that were written by m3gdbttd. "spinprof" reads in the files
+and prints out a long listing that breaks down the amount of time
+spent in a procedure on behalf of each caller. I'll describe this in
+more detail below. You will probably want to direct the output of 
+"spinprof" to a file since it will be thousands of lines.
+
+<p> 
+Here is an example session of the Unix commands to type to read a
+profile.
+<pre>
+spinach: m3gdbttd kernel/sal/SPIN_PROF/spin_kernel.sys
+
+(gdb) ta t tweed
+(gdb) domain sweep
+(gdb) gprof
+(gdb) det
+(gdb) q
+
+spinach: spinprof > profile.output
+</pre>
+
+<p>
+There is a Perl script which will execute these commands for you
+automatically. You just have to give it the name of your crash machine
+and kernel to be debugged and the profile information will be printed
+on the standard output. So to do the same thing as the last example,
+you would say:
+
+<pre>
+spinach: GraphProfile.perl tweed kernel/sal/SPIN_PROF/spin_kernel.sys > profile.output
+</pre>
+
+<h3> Interpreting the output </h3>
+The "spinprof" program produces the same style of output as "gprof." The 
+procedures are numbered according to how much time was spent in them,
+number 1 being the most time. You will see this number in brackets next
+to the procedure name. First "spinprof"
+prints a description of its own output, then it prints each procedure
+with its callers (parents) and callees (children). Then it prints a flat
+profile which shows the ranking of time spent in each procedure. Finally
+it prints an index of all procedures in alphabetical order.
+
+<p>
+Here is an example of the first type of listing with parent and children
+procedures:
+<pre>
+granularity: each sample hit covers 4 byte(s) for 0.01% of 12.12 seconds
+
+                                  called/total       parents 
+index  %time    self descendents  called+self    name    	index
+                                  called/total       children
+-----------------------------------------------
+
+                0.00        0.00     184/3184        MemoryForSAL__FreePhysPage [145]
+                0.00        0.03    3000/3184        MemoryObject__Destroy [49]
+[79]     0.3    0.01        0.03    3184         PhysAddr__Deallocate [79]
+                0.00        0.02    3184/3184        PhysFreeMem__DeallocatePage [89]
+                0.00        0.00    3184/43330       RTHooks__LockMutex [77]
+                0.00        0.00    3184/55644       RTHooks__UnlockMutex [71]
+</pre>
+This is the listing for PhysAddr.Deallocate which was 79th in the ranking
+of time spent inside it (including its descendants.) PhysAddr.Deallocate
+was called 3184 times and 0.3% of the total time was spent in it and in its
+descendants. The breakdown was 0.01 seconds spent inside PhysAddr.Deallocate and
+0.03 seconds inside of its descendants. 
+<p>
+The procedures listed before PhysAddr.Deallocate are its callers or parents.
+These were MemoryForSAL.FreePhysPage and MemoryObject.Destroy. MemoryForSAL.FreePhysPage
+called PhysAddr.Deallocate 184 times and MemoryObject.Destroy called PhysAddr.Deallocate
+3000 times. 
+<p>
+The procedures listed after PhysAddr.Deallocate are its callees or children.
+These three prcedures, PhysFreeMem.DeallocatePage, RTHooks.LockMutex and
+RTHooks.UnlockMutex were each called 3184 times from PhysAddr.Deallocate.
+The entry 3184/3184 for PhysFreeMem.DeallocatePage shows that 
+PhysAddr.Deallocate called PhysFreeMem.Deallocate 3184 and 
+PhysFreeMem.Deallocate was called a total of 3184 times from all of its
+parents. Compare this to RTHooks.LockMutex which was called 3184 times from
+PhysFreeMem.Deallocate and was called a total of 43,330 times.
+<p>
+If a cycle occurs in the call graph, then you will see a listing for the
+cycle which shows the total time spent in it. There is a cycle which
+occurs in the garbage collector that you will probably see in your own 
+profiles. I verified that this cycle really occurs and is not an artifact of
+a profiling bug.
+<p>
+The second listing is a flat profile ranking the procedure by total time spent
+in them, not counting their descendants. Here is an axample:
+
+<pre>
+granularity: each sample hit covers 4 byte(s) for 0.01% of 12.12 seconds
+
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 66.6       8.06     8.06                             Thread__Idle [1]
+ 20.3      10.53     2.47     2116     1.17     1.17  scc_putc [13]
+  4.0      11.01     0.48                             swap_ipl [20]
+  0.9      11.12     0.11      424     0.25     0.25  pmap_zero_page [46]
+  0.7      11.20     0.08                             bzero [50]
+  0.4      11.25     0.05      408     0.12     0.13  pmap_destroy [65]
+  0.3      11.29     0.04                             __remq [72]
+</pre>
+You can see that some procedures do not have the number of calls listed
+for them. This happens either because the procedure was never called by 
+another, such as Thread.Idle which starts by a context switch, or because
+the procedure is written in assembly language, such as swap_ipl, bzero
+or __remq. 
+
+
+<h3> 2.2 How call graph profiling is implemented. </h3>
+<h3> Build environment </h3>
+
+At build time, you must specify PROFILE=<something> on the gmake command
+line to build code with profiling enabled. This flag has a number of 
+consequences for Makefiles, m3makefiles, C and assembly language files.
+First, the definition of PROFILE is passed to all recursive invocations 
+of gmake, so the subdirectories are built with the same option as the
+top-level directory. When Modula-3 code is compiled, the target is set
+to either ALPHA_SPIN or ALPHA_SPIN_PROF depending on the definition of
+PROFILE. 
+
+<p> 
+A few C and assembly files need to know whether call graph profiling is 
+enabled. They have statements of the form #ifdef CALL_GRAPH inside them
+and their m3makefiles define CALL_GRAPH when profiling is enabled.
+One of these files is kernel/spincore/src/machine/alpha/Profile.s. It 
+contains the actual procedure which counts the execution of call graph arcs. 
+The procedure is named _mcount. 
+
+<p>
+Some of our kernel code, such as sal and the device driver code is
+compiled with the DEC C compiler. This compiler inserts calls to 
+_mcount in a funny way, it reserves extra space in a procedure that
+is filled in with no-ops. The no-ops are overwritten with calls to _mcount
+by the ld program at link time. This creates a problem for us when compiling
+device driver code because it will be dynamically linked into our kernel
+and will never have profiling calls inserted by ld. To get around this
+problem, there is a special Perl script called InsertMcount.perl which
+is used to compile the device driver code with profiling enabled. 
+
+<h3> Runtime </h3>
+Call graph profiling requires some extra work at runtime when profiling
+is turned on and off. For the most part, this work is to allocate some
+space to hold the call graph arc counts and to set up a table which
+maps PC values into indices in an array of call graph arcs.
+
+<p>
+We have designed a flexible profiling system which can profile PC values
+occuring anywhere in the Alpha's 64 bit address space. This is necessary
+for profiling while dynamically linking new code which can be placed at
+an unpredictable location in memory. The mechanism we use is a series of
+three tables which map from the pair (caller PC, callee PC)
+to the data structure which contains the execution count and elapsed cycles
+for that call arc. Here is a picture of the tables:
+
+<pre>
+
+    Caller PC Hash       Full Caller PC        Callee PC + Profile Info
+   --------------      -------------------     ------------------
+   | unsigned   | -    | struct CallerPC | --> | struct ArcInfo |
+   |------------|  \   |-----------------|     |----------------|
+   |            |   -> |                 |     |                |
+   --------------      -------------------     ------------------
+
+   This table is           This table            This table has
+   keyed by a 16-bit       remembers the         the count of the
+   hash of the             whole caller PC.      number of times the
+   caller PC value.                              call arc occured.
+   
+</pre>
+
+Let's walk through a typical profiling hit to see how these data structures
+work together. We begin with the values ParentPC, ChildPC and Cycles,
+which are the PC of the caller and the callee and the number of cycles
+elapsed since the last invocation of the profiler. We compute a 16-bit
+hash of ParentPC and use it as an index into the Caller PC Hash table.
+This gives us a small integer index, call it ParentIndex, which is
+the offset of the head of a list in the second table. This list contains
+all Caller PC values that have occured which hashed to ParentIndex. We
+walk down the list until we find the PC value that matches ParentPC.
+This element of the list contains an index into the third table,
+call it ChildIndex, which is the offset of a list of Callee PC values
+that have been called from ParentPC. We walk down this list until
+we find the PC value matching ChildPC and then we add the Cycles
+to this entry in the third table.
+
+
+<p>
+The only limit on how long the profiler can run is the size of the 
+second and third tables. I anticipate that the third table is the
+likely bottleneck, so you can change its size with the command
+"profile arcs [size]" from the SPIN shell. The default size is 10000.
+When you turn profiling off, you will get a warning message if you 
+ran out of room in either of the tables,
+
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

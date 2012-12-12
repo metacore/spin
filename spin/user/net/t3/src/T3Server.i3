@@ -1,0 +1,2 @@
+INTERFACE T3Server;
+PROCEDURE Init(); END T3Server.

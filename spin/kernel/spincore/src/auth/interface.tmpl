@@ -1,0 +1,262 @@
+# Copyright 1994-1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+########################################################################
+# HISTORY
+# 28-Feb-97  Wilson Hsieh (whsieh) at the University of Washington
+#	GLOBAL_LINK_CHAR assignment should index using BASETARGET,
+#       not TARGET
+#
+# 25-Sep-96  Marc Fiuczynski (mef) at the University of Washington
+#	With the new INTERFACE_UNIT support it is only necessary to
+#	generate a InterfaceDefs.i3 file.  This template no longer
+#	generates the InterfaceDefs.m3 file.  Further, we don't use the
+#	unsafe M3toC interface to convert a TEXT symbol name to a
+#	char_star.  This conversion is now handled inside of Domain.m3.
+#	
+#	Added a bunch of support for quake integers.  This should
+#	probably get split out of this file.
+#
+# 14-Aug-96  Frederick Gray (fgray) at the University of Washington
+#	Provide leading underscores for symbol names on the Intel x86.
+#
+# 23-Mar-96  Marc Fiuczynski (mef) at the University of Washington
+#	Removed obsolete quake routines.
+#	Cleaned up the build_xxx_interface routines.
+#
+# 29-Feb-96  Brian Bershad (bershad) at the University of Washington
+#	Updated to new NameServer interface. Removed references 
+#	to DomainAuthorizer.
+#
+# 06-Oct-95  Marc Fiuczynski (mef) at the University of Washington
+#	Added support for Domain management at build time.  Just about
+#	any arbitrary data and text symbols can exported using the
+#	DomainExportData() and DomainExportText() directives.  
+#	
+#	NOTE: the "_fpdata" data symbols is treated special.  This will
+#	need to be fixed at some other point.  
+#	
+#	HACKS: I don't know how to count in quake.  So I have to do some
+#	pretty nasty hacks to make things work.  Hope to fix this at some
+#	later point.
+#	
+# 07-Aug-95  Brian Bershad (bershad) at the University of Washington
+#	Created.
+
+########################################################################
+# quake array length support. XXX should consolidate this somewhere
+#
+# taken from the quake.ints template and modified a bit by mef.
+# Quake is weak on integers but since it is turing complete, they can
+# be emulated painfully
+
+INC_NEXT = ["1","2","3","4","5","6","7","8","9","0"]
+DEC_NEXT = ["9","0","1","2","3","4","5","6","7","8"]
+INT_POS = ["5","4","3","2","1","0"]
+
+proc init_int() is
+
+  return ["0","0","0","0","0","0"]
+end
+
+proc inc_int(x) is
+  local carry = " "
+
+  foreach i in INT_POS
+    if carry
+      x[i] = INC_NEXT[x[i]]
+      if equal(x[i],"0")
+        carry = " "
+      else
+        carry = ""
+      end
+    end
+  end
+end
+
+# 
+proc int_to_string(x) is
+  if not (equal (x[4],"0") and equal (x[3],"0") and equal (x[2],"0") and equal (x[1],"0") and equal (x[0],"0"))
+    if not (equal (x[3],"0") and equal (x[2],"0") and equal (x[1],"0") and equal (x[0],"0"))
+      if not (equal (x[2],"0") and equal (x[1],"0") and equal (x[0],"0"))
+        if not (equal (x[1],"0") and equal (x[0],"0"))
+          if not (equal (x[0],"0"))
+            return x[0] & x[1] & x[2] & x[3] & x[4] & x[5]
+          end
+          return x[1] & x[2] & x[3] & x[4] & x[5]
+        end				
+        return x[2] & x[3] & x[4] & x[5]
+      end
+      return x[3] & x[4] & x[5]
+    end
+    return x[4] & x[5]
+  end
+  return x[5]
+end
+
+proc array_length(x) is
+  local l = init_int()
+
+  foreach i in x
+    inc_int(l)
+  end
+  return l
+end
+
+########################################################################
+#
+# Authorization Interface.
+#
+
+##
+## We have to cons up an auxiliary interface that contains the specific names of
+## the external symbols in which we expect to find the information about
+## the symbols in the interface for which the generic is being instantiated.
+## This is all because we can't type parameterize the <* EXTERNAL I *> pragma.
+##
+
+IFACE = "Interface"
+IFACEDEFS = IFACE & "Defs"
+
+proc authinterface (I, vis) is
+    local iface = I & IFACE
+    local ifaceDefs = I & IFACEDEFS
+    build_generic_intf ( iface, "Interface", [], vis)
+    build_generic_impl ( iface, "Interface", [ifaceDefs] )
+end
+
+proc unsafeauthinterface (I, vis) is
+    local iface = I & IFACE
+    local ifaceDefs = I & IFACEDEFS
+    build_generic_intf ( iface, "Interface", [], vis)
+    build_unsafe_generic_impl ( iface, "Interface", [ifaceDefs] )
+end
+
+#proc build_unsafe_generic_impl(iface,ifacedefs) is
+#    local nm   = iface
+#    local file = nm & ".i3"
+#    local tmp  = ".generic.tmp"
+#    if defined ("_all")
+#	> tmp in
+#		write("(*",CR)
+#		write(" * Created from interface.tmpl build_unsafe_generic_inft.",CR)
+#		write(" * Copyright 1994-1996 University of Washington",CR)
+#		write(" * All rights reserved.",CR)
+#		write(" * See COPYRIGHT file for a full description",CR)
+#		write(" *)",CR)
+#		write("(*",CR)
+#		write(" * HISTORY",CR)
+#		write(" * 08-Aug-96  Marc Fiuczynski (mef) at the University of Washington",CR)
+#		write(" *      Unsafe version of Interface.mg to allow imports of unsafe",CR)
+#		write(" *      interfaces.  Darn you Red-Baron.",CR)
+#		write(" *)",CR,CR)
+#		write("(* Generic module for accessing and exporting a particular interface",CR)
+#		write("   through the name server and the domain linkage facilities.  We",CR)
+#		write("   intend to access raw symbol information made available at COMPILE",CR)
+#		write("   TIME.  This requires that we have access to direct linkage symbols,",CR)
+#		write("   as well as auxiliary information on number of symbols and enveloping",CR)
+#		write("   domain name. *)",CR)
+#		write(CR)
+#		write("(* GENERIC *) UNSAFE MODULE ",iface,";",CR,CR)
+#		write("IMPORT Domain, NameServer, Debugger;",CR)
+#		write("IMPORT Auth; <*NOWARN*>",CR)
+#		write("IMPORT IO, Fmt; <*NOWARN*>",CR)
+#		write("IMPORT ",ifacedefs,"; <*NOWARN*>",CR)
+#		write("",CR)
+#		write("PROCEDURE Export (auth: Authorizer := NIL): Authorizer",CR)
+#		write("  RAISES {NameServer.Error} =",CR)
+#		write("  VAR ",CR)
+#		write("    domain    : Domain.T;",CR)
+#		write("    domainDir : NameServer.T;",CR)
+#		write("    component : TEXT;",CR)
+#		write("    parent    : NameServer.TBase;",CR)
+#		write("  BEGIN",CR)
+#		write("    (* XXX broken by mef.",CR)
+#		write("    IF auth = NIL THEN auth := NEW(Auth.AuthAlways); END;",CR)
+#		write("    *)",CR)
+#		write("",CR)
+#		write("    domain := Domain.CreateFromSymbolsArray(",CR)
+#		write("                     THIS_MODULE(),",CR)
+#		write("                     ",ifacedefs,".Brand, ",CR)
+#		write("                     ",ifacedefs,".domainSymbols);",CR)
+#		write("    Debugger.RegisterDomain(domain);",CR)
+#		write("",CR)
+#		write("    domainDir := NameServer.Lookup(NIL,\"/svc/domains\",component,parent);",CR)
+#		write("    domainDir.attach(",ifacedefs,".Brand,domain);",CR)
+#		write("    RETURN auth;",CR)
+#		write("  END Export;",CR)
+#		write("",CR)
+#		write("BEGIN",CR)
+#		write("END ",iface,".",CR)
+#	end
+#	cp_if (tmp, file)
+#	delete_file (tmp)
+#	end
+#	derived_implementation (nm)
+#end
+
+proc build_domain_interface(modules) is
+        local nm        = domain & IFACEDEFS
+        local file      = nm & ".i3"
+        local tmp       = ".generic.tmp"
+        local i         = 0
+	local symbolname=""
+	local PlatformsLinkChars = {
+	  "ALPHA_SPIN": [""],
+	  "IX86_SPIN": ["_"]
+	}
+	local GLOBAL_LINK_CHAR = PlatformsLinkChars{BASETARGET}[0]
+
+	 if defined ("_all")
+	   > tmp in
+		write ("(* Domain interface genereted by m3build.",CR)
+		write (" * Copyright 1994-1996, University of Washington",CR)
+		write (" * All rights reserved.",CR) 
+		write (" *)",CR)
+		if UNSAFEDOMAINS contains domain
+			write ("UNSAFE (* because importing an unsafe interface *)",CR)
+		end
+		write ("INTERFACE ", nm, ";", CR)
+		write ("IMPORT SymbolEntry;", CR)
+		foreach iface in modules
+			foreach sym in iface
+				if not equal(sym, "SymbolEntry")
+					write ("IMPORT ", sym, ";", CR)
+				end
+			end
+		end
+		write ("CONST Brand = \"",domain,"\";",CR)
+
+		################ write out the symentry array with all of the modules in a domain ########
+		write ("(* XXX This should go away when SymbolEntry.T is fixed. (mef) *)",CR)
+		write ("VAR domainSymbols := ARRAY [1..0+")
+		foreach iface in modules 
+			write (int_to_string(array_length(iface)), "+")
+		end
+        	write ("0] OF SymbolEntry.E {",CR)
+		local first = "true"
+		foreach iface in modules 
+			foreach sym in iface 
+				symbolname = DomainSymbolName(sym)
+				if not first 
+				  write (" ,")
+				else
+				  write ("  ")
+				end
+				write ("SymbolEntry.E{")
+                                write ("INTERFACE_UNIT(",sym,"),")             # SE_ptr
+                                write ("\"",GLOBAL_LINK_CHAR,"MI_" , symbolname, "\",")            # SE_name
+                                write ("INTERFACE_UNIT(",sym,"),")             # SE_nvalue
+                                write ("SymbolEntry.",DomainTypeName(sym),",") # SE_nsclass
+                                write ("0}",CR)                                # SE_module
+				first = ""
+                        end
+		end
+		write ("  };",CR)
+		write ("END ", nm, ".", CR)
+	end
+	cp_if (tmp, file)
+	delete_file (tmp)
+	end
+	derived_interface (nm,HIDDEN)
+end

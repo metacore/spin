@@ -1,0 +1,265 @@
+#
+# Copyright 1994, 1995, 1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+#############################################################################
+# HISTORY
+# 28-Dec-97  Przemek Pardyak (pardy) at the University of Washington
+#	Some clean-up in preparation to SMURT.
+#
+# 12-Jun-97  Wilson Hsieh (whsieh) at the University of Washington
+#	export TextRefTbl, RTHeapDep, ThreadRep, DomainRep
+#
+# 31-May-97  David Becker at the University of Washington
+#       added kernel subtree
+#
+# 28-Jan-97  Robert Grimm (rgrimm) at the University of Washington
+#       added SecurityPublic and SecurityTrusted domain creations
+#
+# 22-Dec-96  Wilson Hsieh (whsieh) at the University of Washington
+#	add Boolean to SpinPublic
+#
+# 25-Sep-96  Marc Fiuczynski (mef) at the University of Washington
+#	We now use DomainExportUnsafe to export an unsafe module to a
+#	domain.
+#
+# 07-Aug-96  Marc Fiuczynski (mef) at the University of Washington
+#	Added TextRef table.
+#
+# 10-Jun-96  Brian Bershad (bershad) at the University of Washington
+#	Removed redundant TextRd, added TextArraySort and TextConv.
+#
+# 21-May-96  David Dion (ddion) at the University of Washington
+#       moved build of utils before build of machine because of 
+#       ThreadForSAL.c dependency on Clock.h
+#
+# 21-Apr-96  Wilson Hsieh (whsieh) at the University of Washington
+#	changed order of include_dir for core services so that gmake
+#	 works.  ridiculous.
+#	
+# 18-Apr-96  Emin Gun Sirer (egs) at the University of Washington
+#	Moved m3linker to domain.
+#
+# 17-Apr-96  Stefan Savage (savage) at the University of Washington
+#	Added BootIO so I could do a synchronous write from an extension.  When
+#	we better understand IO you may want to remove this.
+#
+# 07-Apr-96  Stefan Savage (savage) at the University of Washington
+#	Added Random, needed for SortedTable
+#
+# 28-Mar-95  Przemek Pardyak (pardy) at the University of Washington
+#	Added NullWr to SpinPublic.
+#
+# 09-Mar-96  Stefan Savage (savage) at the University of Washington
+#	Added Mach domain
+#
+# 29-Feb-96  Brian Bershad (bershad) at the University of Washington
+#	Eliminate DomainAuthorizer. Replace w/Auth.
+#
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Changed to simpler spindle build functions.
+#
+# 24-Jan-96  Brian Bershad (bershad) at the University of Washington
+#	Added RTCode to SpinPublic.
+#
+# 17-Jan-95  Przemek Pardyak (pardy) at the University of Washington
+#	Exported Regress.
+#
+# 22-Dec-95  Charles Garrett (garrett) at the University of Washington
+# 	Exported ConsoleWr, PipeRd and Wr, TextRd and Wr.
+# 	
+# 22-Dec-95  Brian Bershad (bershad) at the University of Washington
+#	Added Wr, TextWr to SpinPublic
+#
+# 15-Dec-95  David Dion (ddion) at the University of Washington
+#	Added ExternRef to SpinPublic
+#
+# 14-Dec-95  Brian Bershad (bershad) at the University of Washington
+#	Added System to list of exported domains.
+#
+# 13-Dec-95  Brian Bershad (bershad) at the University of Washington
+#	Removed DownLoad, GCShell and DownLoadPrivate as standalone
+#	 domains.
+#
+# 13-Dec-95  Brian Bershad (bershad) at the University of Washington
+#	Removed DownLoad, GCShell and DownLoadPrivate as standalone
+#	 domains.
+#
+# 11-Oct-95  Marc Fiuczynski (mef) at the University of Washington
+#	Creating SpinPublic and SpinTrusted domains automatically.
+#
+# 06-Oct-95  Marc Fiuczynski (mef) at the University of Washington
+#	Cleaned up the m3build environment.  Now sets the right C defines
+#	and include directories for the C code compiled by m3build.
+#
+# 27-Jan-95  Emin Gun Sirer (egs) at the University of Washington
+#	Created.
+
+add_CC_args("","-I/usr/include") % for COFF headers in Interface.h
+
+#############################################################################
+# M3 compiler options
+#m3_option("-verbose") 			# 
+#m3_option("-commands") 		# Look at all m3 commands
+#m3_option("-X1@-v@")			# print gcc details.
+m3_option("-zG@-g3@")                   # lots of debug
+m3_option ("-NoLoopholeWarning")
+# m3_option("-keep") # keeps m3 ir and assembly intermediate files
+
+#############################################################################
+# Turn on profiling for .c files in Spincore
+if equal(PROFILE, "TRUE")
+	m3_option("-cc -pg")
+end
+
+#############################################################################
+# LIBRARIES
+overridepath = [ THISTREE, FULLTREE ]
+# SMURT: importfrompath ("local","libm3",overridepath)
+importfrompath ("kernel","libm3_sa",overridepath)
+
+#############################################################################
+# templates to be exported 
+template("auth/interface")
+
+#############################################################################
+# SPIN Domains to be populated by the various sub directories.
+DomainCreate("SpinPublic")
+DomainCreate("SpinTrusted")
+DomainCreate("SecurityPublic")
+DomainCreate("SecurityTrusted")
+
+#############################################################################
+# meta services 
+
+include_dir ("auth")
+include_dir ("dispatch")
+include_dir ("domain")
+
+#############################################################################
+# core services
+include_dir("utils")		# lib type routines called from M3
+include_dir("machine")		# calls into assembly
+include_dir("sal")		# calls into C land
+include_dir("memory")
+include_dir("strands")
+
+
+#############################################################################
+# Modules exported from the runtime libs
+
+Array_sort (Int,  Integer)
+Table(IntInt, Integer, Integer)
+Table (RefRef,  Refany, Refany)
+Sorted_table (IntInt,  Integer, Integer)
+Sorted_table (TextRef, Text, Refany)
+Sequence (Ref,  Refany)
+List_sort (Ref,  Refany)
+List (Ref,  Refany)
+
+# interfaces from libm3
+DomainExport("SpinPublic","ASCII")
+DomainExport("SpinPublic","Atom")
+DomainExport("SpinPublic","AtomList")
+DomainExport("SpinPublic","Boolean")
+DomainExport("SpinPublic","BootIO")
+DomainExport("SpinPublic","Ctypes")
+DomainExport("SpinPublic","Fmt")
+DomainExport("SpinPublic","Integer")
+DomainExport("SpinPublic","IntArraySort")
+DomainExport("SpinPublic","Lex")
+DomainExport("SpinPublic","MsgRd")
+DomainExport("SpinPublic","MsgWr")
+DomainExport("SpinPublic","NullWr")
+DomainExport("SpinPublic","Random")
+DomainExport("SpinPublic","Rd")
+DomainExport("SpinPublic","RdClass")
+DomainExport("SpinPublic","RefSeq")
+DomainExport("SpinPublic","RefList")
+DomainExport("SpinPublic","RefListSort")
+DomainExport("SpinPublic","RefRefTbl")
+DomainExport("SpinPublic","Refany")
+DomainExport("SpinPublic","Scan")
+DomainExport("SpinPublic","SortedIntIntTbl")
+DomainExport("SpinPublic","Text")
+DomainExport("SpinPublic","TextF")
+DomainExport("SpinPublic","TextRd")
+DomainExport("SpinPublic","TextArraySort")
+DomainExport("SpinPublic","TextConv")
+DomainExport("SpinPublic","TextRefTbl")
+DomainExport("SpinPublic","TextWr")
+#SMURT: DomainExport("SpinPublic","TableF")
+DomainExport("SpinPublic","Word")
+DomainExport("SpinPublic","Wr")
+DomainExport("SpinPublic","WrClass")
+
+DomainExportUnsafe("SpinTrusted","M3toC")
+
+#this is for Benchmark.m3, there should probably a machine independent
+#interface instead (SAL.i3 ???)
+
+DomainExport("SpinPublic","IntIntTbl")
+
+# from m3core
+DomainExportUnsafe("SpinTrusted","RTMisc")
+DomainExport("SpinPublic","Fingerprint")
+DomainExport("SpinPublic","StrongRef")
+DomainExport("SpinPublic","WeakRef")
+DomainExport("SpinPublic","RT0")
+DomainExport("SpinPublic","RTProcedureSRC")
+DomainExport("SpinPublic","RTHeapMap")
+# SMURT: DomainExport("SpinPublic","Spy")
+# SMURT: DomainExport("SpinPublic","SpyF")
+# SMURT: DomainExport("SpinPublic","RTArgs")
+# UNSAFE
+# SMURT: DomainExportUnsafe("SpinPublic","StrongRefF")
+DomainExportUnsafe("SpinPublic","RTStrongRef")
+# UNSAFE - can get typecell
+#        - reinitialize types
+DomainExportUnsafe("SpinPublic","RTTypeSRC")
+# UNSAFE - can get unit descriptor which is not opaque
+DomainExportUnsafe("SpinPublic","RTCode")
+# UNSAFE - can call allocation and dispose bypassing the compiler
+#        - can change exception frames
+DomainExportUnsafe("SpinPublic","RTHooks")
+# UNSAFE - can take-up pages that should be allocated only by GC
+DomainExportUnsafe("SpinPublic","RTMem")
+# UNSAFE - can bypass NEW
+DomainExportUnsafe("SpinPublic","RTAllocator")
+# UNSAFE 
+DomainExportUnsafe("SpinPublic","RTHeapTrace")
+DomainExport("SpinTrusted","DomainRep")
+DomainExport("SpinTrusted","RTIO")
+DomainExport("SpinTrusted","RTCollector")
+DomainExport("SpinTrusted","RTCollectorSRC")
+DomainExport("SpinTrusted","RTHeapDebug")
+DomainExport("SpinTrusted","RTHeapPages")
+DomainExport("SpinTrusted","RTHeapDep")
+DomainExportUnsafe("SpinTrusted","RTHeapRep")
+DomainExport("SpinTrusted","RTHeapStats")
+DomainExport("SpinTrusted","RTOS")
+DomainExport("SpinTrusted","RTutils")
+DomainExportUnsafe("SpinTrusted","RTLinker")
+DomainExportUnsafe("SpinTrusted","RTType")
+DomainExport("SpinTrusted","ThreadRep")
+
+
+DomainExport("SpinPublic","ThreadF")
+
+# UNSAFE 
+DomainExportUnsafe("SpinPublic","RT0u")
+
+Domain("SpinTrusted")
+Domain("SpinPublic")
+Domain("SecurityTrusted")
+Domain("SecurityPublic")
+
+#############################################################################
+# The sys package is unusual because it creates two domains. So we have
+# to call gen_domain_file here, rather than using the usual Extension().
+library("spin")
+gen_domain_file()
+
+#############################################################################
+#check_interface_records("spin")

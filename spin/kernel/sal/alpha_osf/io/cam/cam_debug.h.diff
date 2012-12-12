@@ -1,0 +1,4 @@
+72a73,75
+> #ifdef SPIN
+> #define CAMDEBUG
+> #endif

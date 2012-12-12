@@ -1,0 +1,35 @@
+#
+# HISTORY
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+#DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("VMCore","user/vm","vmcore",overridepath)
+
+Package("FileSystem")
+
+Module("FileSystem")
+interface("FileSystemPrivate")
+
+Module("FileId")
+interface("FileIdPrivate")
+
+Module("File")
+
+Module("Directory")
+interface("DirectoryRep")
+
+table("FileId","FileId","Refany")
+
+Module(FileIO)
+Module(FileRd)
+#Module(FileStat)
+Module(Symlink)
+Module(StatFs)
+Module(FSRoot)
+
+include_dir(BASETARGET)
+
+Extension({})

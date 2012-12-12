@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+<h2> The SortedTable interface </h2>
+
+A "SortedTable(Key, Table(Key, Value)).T", or sorted table, is a
+   "Table(Key, Value).T" together with a total (linear) order on the
+   keys of the table.  Formally, a sorted table "tbl" has the
+   additional component:
+<p>
+| le(tbl) `a total order on the values of "Key.T"`
+<p>
+   The total order "le(tbl)" must be time-invariant.
+<p>
+   The methods have the following specifications: 
+<p>
+   The call "tbl.iterateOrdered(up)" returns an iterator, which is an
+   object that can be used to iterate over all the key-value pairs in
+   "tbl", ordered by key.  The order is increasing if "up" is "TRUE",
+   decreasing otherwise.
+<p>
+   If "i" is the result of the call "tbl.iterateOrdered(up)", then the
+   call "i.next(k, v)" sets "k" and "v" to the key and value of the
+   next pair and returns "TRUE".  If no entries remain, the call
+   returns "FALSE" without setting "k" or "v".  It is a checked
+   runtime error to call "next" or "seek" after "next" has returned
+   "FALSE".  The client must ensure that while an iterator is in use,
+   the parent table is not modified.
+<p>
+   The call "i.seek(k)" skips past zero or more key-value pairs
+   (either forward or backward) so that a subsequent call of "next"
+   returns the first pair with key greater than or equal to "k" if "i"
+   is in increasing order or with key less than or equal to "k" if "i"
+   is in decreasing order.
+<p>
+   The type "Default" is an implementation of "T" using randomized
+   heap-ordered binary trees or ``treaps'' (see \cite{Aragon}).  In
+   this implementation, seeking forward (relative to the iterator's
+   order) is more efficient than seeking backward.  If a forward seek
+   skips over "d" key-value pairs, the expected time for the seek is
+   "O(log d)".  The time for a backward seek is
+   "O(log(table.size()))", no matter how far back it skips.
+<p>
+   The call "dflt.init()" returns "dflt" after initializing it to an
+   empty table.
+<p>
+   The call "dflt.keyCompare(k1, k2)" returns "Key.Compare(k1, k2)".
+   The other methods call "keyCompare" whenever they need to consult
+   "le(tbl)".  This means a subtype of "Default" can determine
+   "le(tbl)" by overriding "keyCompare", providing "keyCompare"
+   implements a total order.
+<p>
+   For efficiency, sorted tables and their iterators are not
+   monitored, so a client accessing a table from multiple threads must
+   ensure that if two operations are active concurrently, then neither
+   of them has side effects on the same table or iterator.  The
+   "T.put", "T.delete", and "Default.init" methods are the only ones
+   with side effects on the table.  An iterator's "next" method has
+   side-effects on the iterator.
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

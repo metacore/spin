@@ -1,0 +1,148 @@
+
+<h2>Overview of cleaner</h2>
+
+Eric Christoffersen, 10/14/96<p>
+
+The cleaner is currently invoked by the user.  It should be invoked by a separate thread.
+
+	The cleaner should be run whenever the file system has been 
+inactive for 2 seconds or so.  Someone is going to tell it to run, the 
+cleaner will then grab a lock on the fs.  While this lock is held, the 
+filesystem is unavailable for other users.  This means that the 
+cleaner had better not need exclusive access for too long.<p>
+	After the cleaner is run, it tries to clean a single segment.  After 
+it is through with this segment, it checks to see if anyone is waiting 
+for the file system.  If not, the cleaner enters a loop of cleaning 
+segments, then checking for use.  If, when the cleaner checks, 
+someone is found waiting for the file system, then it immediately 
+surrenders the file system lock and goes back to sleep.<p>
+	The cleaner must have a way to find out if someone else wants to 
+use the FS.  I propose that there be a timer thread.  Whenever the 
+file system is accessed for read or write, a signal is sent to reset the 
+timer.  If the timer elapses the cleaner is wakes up and grabs a lock 
+on the entire file system. Noone can read or write to the file system 
+until this lock has been given up.  The Seltzer paper lists times of 1.6 
+seconds for the worst case, and average case cleaning times of .5 
+seconds per segment.  This number can be reduced by having the 
+cleaner check for file system requests while cleaning, and yielding the
+file system.  This might would lower the potential cleaner wait time, but
+would also result in the cleaner loosing work.<p>
+
+The cleaning procedure must work as follows:<p>
+
+Cleaner assumes that the write buffer has a segment available 
+on which to write its data.<br>
+If not then the disk is full and it should just abort.<p>
+
+<h3>To Clean a particular segment:</h3><p>
+
+<pre>
+a) Load Segment's Segment Descriptor
+
+b) Loop through segment descriptor, for each entry in
+   descriptor, get inum and blocknum
+
+    1.  Load the inode that the inum refers to
+
+    2. Verify Block's Life Status:
+        a.) Ask inode if the block's diskAddress is refered
+            to by data at blocknum.
+        b.) If not, ask inode if block's diskAddress is
+            refered to by inode's meta-data.
+
+    3. If block is alive:
+        a.) Store inode number and file block number in
+            INodeInfoArray.
+        b.) Increment segment's life count.
+
+c) Determine if segment is dirty enough to require cleaning, if it is:
+
+    1.  Loop through entries in INodeInfoArray, for each entry:
+        a.) Note where next block will be written.
+        b.) Write data block to file system segment buffer.
+        c.)Store block's new location in INodeInfoArray
+
+    2.  Tell each inode in turn where its new blocks are.
+
+d) Notify the free segment list that a segment has been cleaned
+</pre>
+
+<hr>
+
+<h3>Structures Needed by Cleaner:</h3>
+
+System Structures:<br>
+
+<b>IMap:</b> LFS Array that maps inode number to segment and 
+block on disk where Inode is currently stored.<p>
+
+<b>LFS Write Buffer:</b> A segment of memory that will be written
+to disk when it becomes full.  This is a system-wide segment and
+ALL writes of data to disk go through it.<p>
+
+<b>Segment Descriptor:</b> This is an array, each element 
+represents a block in the segment. 
+For each block it stores the inode that contained this 
+block and write time, and this block's position in the file at write time.<p>
+
+<b>Free Segment List:</b> Is used by the system to find the next segment to write to. If this 
+list is empty then the file system is too busy/full and the cleaner is forced into action, 
+to run until a segment is freed.<p>
+
+<h3>Cleaner Structures:</h3>
+<b>Live block counter:</b> An integer, incremented when live blocks 
+are found. Is used after the cleaner's segment scan to 
+determine if the particular segment is ripe for cleaning.<p>
+
+<b>INode Info Array:</b> When the cleaner finds a block the iNode
+that allegedly points to that block must be loaded into memory
+in order to verify the status of 
+the block (dead or alive). If the block is alive, it will be 
+copied to the segment buffer and the block's inode will need to
+be re-written to disk later, at the end of the segment cleaning session.
+In the mean time, the cleaner needs a way to store inode blocks that
+need to be modified and re-written.<br>
+This structure is a sorted array, where elements are sorted by
+iNumber and then by file block offset.  When the cleaner has finished
+with a segment, it passes each modified iNode the section of the array
+that contains the block numbers that that iNode needs to modify.  The
+array passed to the iNode is sorted so that the iNode can modify in
+reverse order, this is required so that the iNode indirect blocks don't
+need to be traversed so often.<p>
+
+
+<pre>
+<b>Disk Superblock:</b>
+Needs to store:
+    Segments on disk
+    Blocks in Segment
+    Bytes in Block
+    Start of first segment on disk
+
+<b>IFile:</b>
+Needs to store:
+    Last written free-list
+    Last written Imap
+    Last written segment
+    Last written block in last written segment
+    Last cleaned segment
+
+<b>Free-list:</b>
+Needs to store:
+    Segments that are clean and ready to be reused.
+    Segments that are dirty and need to have sync called
+    Segments that are stored behind a sync
+
+    To do this, free-list is three lists, segments numbers
+    are moved from list to list as they are cleaned, written to,
+    or synced.
+</pre>
+
+
+<hr>
+<Address>
+ericc@cs.washington.edu<br>
+</address>
+</html>
+
+

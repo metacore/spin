@@ -1,0 +1,25 @@
+# HISTORY
+# 25-Apr-97  Michael Berg (berg) at the University of Washington
+#      Created.
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+
+# Added this domain so we can use the existing support for command modules.
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+
+# This is the 2D drawing package.
+DomainImport("Draw","user","draw",overridepath)
+
+Package("DrawPerf")
+
+# This is all the Modula-3 modules and interfaces.
+Module("DrawPerfTests")
+
+# This is the command module. It parses the command line and calls the
+# requested graphics primitive functionality tests, performance tests,
+# and demos.
+CommandModule("DrawPerfShell")
+
+# This is needed for SPIN extensions.
+Extension({})

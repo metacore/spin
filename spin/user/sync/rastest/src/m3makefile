@@ -1,0 +1,11 @@
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+
+Package("RASTest")
+
+CommandModule("RASTest")
+
+Extension({})

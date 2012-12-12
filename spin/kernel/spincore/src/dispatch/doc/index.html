@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>Events and event dispatcher</title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top"> Events and event dispatcher</a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+Extensible operating systems require an efficient means to dynamically
+bind extensions to existing code.  SPIN provides this functionality
+via an event-based invocation mechanism.  Events in SPIN are typed
+procedure names that decouple the provider of a service from potential
+clients.  Events offer flexible binding via extended procedure call
+semantics that support conditional execution, multicast, and
+asynchrony.  Extensions communicate with a centralized dispatcher
+service to register their interest in handling events.  The dispatcher
+implements the invocation semantics and provides protection
+guarantees.  Events provide a uniform model of extensibility in which
+the configuration of the system can be changed without changing any of
+the individual components.  The model uses a simple procedural syntax
+of declaration and invocation and allows transparent interposition on
+any procedure or object method.  Good performance is obtained through
+the use of run-time code generation and integration of the event
+mechanisms with the compiler and run-time.
+
+<p>
+
+<ul>
+<li> <a href="overview.html"> Overview</a>
+<li> <a href="model.html"> Model and definitions</a>
+<li> <a href="using.html"> Interface and usage </a>
+<li> <a href="issues.html"> Remaining Issues </a>
+</ul>
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>

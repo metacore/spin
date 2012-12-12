@@ -1,0 +1,312 @@
+<html>
+<head>
+<title>Writing a Systemcall Extension : an Example</title>
+</head>
+
+<body>
+<h1>
+<a name="top"></a>
+<h1>Writing a Systemcall Extension : an Example</h1>
+</h1>
+<date>Mon Sep 16 13:29:30 1996</date>
+</br>
+Yasushi Saito
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2>
+
+This chapter demonstrates how you can write a new system call extension and
+how you can use it. This document requires substantial knowledge of
+<a href="index.html">sieg</a>.
+
+The extension explained in this chapter is based on
+<!--href="efs"--><a href="../../../user/fs/efs/doc/index.html"><a href="../../../user/fs/efs/doc/index.html">EFS</a>.
+The EFS systemcall extension provides only two services.
+
+<dl>
+  <dt> <code>void efs_nuke(char *dir);</code>
+  <dd> Clear all the contents under the directory <code>dir</code>.
+  <dt> <code>void efs_create(char *path, unsigned long size);</code>
+  <dd> Create the file <code>path</code>. The size is fixed to
+       <code>size</code>.
+</dl>
+
+<h2>Files</h2>
+
+Here's the list of files you have to write.
+
+<dl>
+  <dt> <!--href="EFSSyscall.i3"--><a href="../../../user/fs/efs/src/EFSSyscall.i3"><a href="../../../user/fs/efs/src/EFSSyscall.i3">EFSSyscall.i3</a>
+  <dd> The system call definition file.
+  <dt> <!--href="EFSSyscall.m3"--><a href="../../../user/fs/efs/src/EFSSyscall.m3"><a href="../../../user/fs/efs/src/EFSSyscall.m3">EFSSyscall.m3</a>
+  <dd> System call Implementation
+  <dt> <!--href="efs/src/m3makefile"--><a href="../../../user/fs/efs/src/m3makefile"><a href="../../../user/fs/efs/src/m3makefile">m3makefile</a>
+  <dd> m3makefile
+  <dt> <!--href="efs/lib/efs.c"--><a href="../../../user/fs/efs/lib/efs.c"><a href="../../../user/fs/efs/lib/efs.c">efs.c</a>
+  <dd> User side library implementation.
+  <dt> <!--href="efs/lib/testefs.c"--><a href="../../../user/fs/efs/lib/testefs.c"><a href="../../../user/fs/efs/lib/testefs.c">testefs.c</a>
+  <dd> User side sample app.
+</dl>
+
+<h2>Interface Design</h2>
+
+The below is the systemcall definition for Hello.
+
+<pre>
+<!--include="EFSSyscall.i3"-->
+(*
+ * Copyright 1994-96 University of Washington
+ * All rights reserved.
+ * See COPYRIGHT file for a full description
+ *
+ * HISTORY
+ * 06-Sep-96  Yasushi Saito (yasushi) at the University of Washington
+ *	Created.
+ *)
+
+(* System call interface to the extent file system. *)
+INTERFACE EFSSyscall;
+IMPORT Error;
+&lt;*PRAGMA AS*&gt;
+&lt;*PRAGMA INTERFACE_PROC_BASE*&gt;
+&lt;*PRAGMA SYNONYMS*&gt;
+&lt;*PRAGMA EPILOG_BRANCH_ON_REGISTER*&gt;
+
+&lt;*EPILOG_BRANCH_ON_REGISTER _Seterrno*&gt;
+&lt;*INTERFACE_PROC_BASE 3500*&gt;
+
+&lt;*SYNONYMS _efs_nuke*&gt;  
+PROCEDURE Nuke(&lt;*AS CTEXT*&gt;dir: TEXT) RAISES {Error.E};
+(* "efs_nuke(dir)" deletes all the files under the EFS directory "dir" *)
+  
+&lt;*SYNONYMS _efs_create*&gt;  
+PROCEDURE Create(&lt;*AS CTEXT*&gt;path: TEXT; size: INTEGER) RAISES {Error.E};
+
+END EFSSyscall.
+<!--/include-->
+</pre>
+
+<h2>Extension Implementation</h2>
+
+The implementation is really straightforward.
+
+<pre>
+<!--include="EFSSyscall.m3"-->
+(*
+ * Copyright 1994-96 University of Washington
+ * All rights reserved.
+ * See COPYRIGHT file for a full description
+ *
+ * HISTORY
+ * 06-Sep-96  Yasushi Saito (yasushi) at the University of Washington
+ *	Created.
+ *)
+MODULE EFSSyscall;
+IMPORT IO;
+IMPORT EFS;
+IMPORT EFSUtils;
+IMPORT FileSystem;
+IMPORT File;
+IMPORT Error;
+
+PROCEDURE Nuke (dir: TEXT) RAISES {Error.E} =
+  VAR fh: File.T;
+  BEGIN
+    fh := FileSystem.Open(0, dir);
+    IF NOT ISTYPE(fh, EFS.T) THEN
+      IO.Put("efs_nuke : the path is not efs partition.\n");
+      RETURN;
+    END;
+    EFS.Nuke(fh);
+    fh.close();
+  END Nuke;
+
+PROCEDURE Create (path: TEXT; size: INTEGER) RAISES {Error.E} =
+  VAR
+    dirName, baseName : TEXT;
+    fh : File.T;
+  BEGIN
+    EFSUtils.SplitPathIntoDirAndBasename(path, dirName, baseName);
+    fh := FileSystem.Open(0, dirName);
+    IF NOT(ISTYPE(fh, EFS.T)) THEN
+      IO.Put("efs_create : the path is not efs partition.\n");
+      RETURN;
+    END;
+
+    EVAL EFS.Create(fh, baseName, size);
+  END Create;
+  
+BEGIN
+END EFSSyscall.
+<!--/include-->
+</pre>
+
+<h2>m3makefile</h2>
+
+As you have noticed, the
+<!--href="EFSSyscall.m3"--><a href="../../../user/fs/efs/src/EFSSyscall.m3"><a href="../../../user/fs/efs/src/EFSSyscall.m3">systemcall implementation</a>
+doesn't do anything about installing the extension.
+This is done by the <!--href="SyscallBoot.m3"--><a href="../../../user/sphinx/src/SyscallBoot.m3">
+SyscallBoot.m3</a> and <!--href="SyscallBootGen.mg"--><a href="../../../user/sphinx/src/SyscallBootGen.mg">
+SyscallBootGen.mg</a> provided by
+<!--href="sphinx"--><a href="../../../user/sphinx/doc/index.html"><a href="../../../user/sphinx/doc/index.html">Sphinx</a>.
+
+All you have to do is to write like below in the <code>m3makefile</code>
+
+<pre>
+1: DomainImport("Sphinx","user", "sphinx", overridepath)
+2: Sieg_interface("EFSSyscall")
+3: sphinx_addon_syscall("EFSSyscall")
+</pre>
+
+<ol>
+  <li> this line imports the Sphinx extension. <code>SystemcallBoot</code>
+       generic and necessary quake templates are also imported here.
+  <li> this line calls <!--href="sieg"--><a href="../../../local/sieg/doc/index.html">Sieg</a>.
+  <li> This line instantiates the <code>SyscallBootGen</code> generic.
+       The generic reads the EFS system call information from the file
+       <code>EFSSyscallInfo.i3</code>, which is a file generated by
+       Sieg, and calls procedures in SyscallBoot.
+</ol>
+
+For your information, below is the complete EFS m3makefile. This file
+contains definitions not related to system calls.
+
+<pre>
+<!--include="efs/src/m3makefile"-->
+# HISTORY
+# 24-Mar-96  Brian Bershad (bershad) at the University of Washington
+#	New build fmt.
+#
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Changed to simpler spindle build functions.
+#
+# WFS
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("Extent", "user", "extent", overridepath)
+DomainImport("Device", "user/dev", "devcore", overridepath)
+DomainImport("Shell","user/shell", "shellcore", overridepath)
+DomainImport("Sieg","user", "sieg", overridepath)
+DomainImport("Sphinx","user", "sphinx", overridepath)
+DomainImport ("UserSpaceThread","user/thread","threadcore",overridepath)
+DomainImport ("VMCore","user/vm","vmcore",overridepath)
+DomainImport ("Space","user/vm","space",overridepath)
+
+Package("EFS")
+Module("EFS")
+Sieg_interface("EFSSyscall")
+sphinx_addon_syscall("EFSSyscall")
+implementation("EFSSyscall")
+Module("EFSUtils")
+CommandModule("EFSCmd")
+
+Extension({})
+
+<!--/include-->
+</pre>
+
+<h2>So, what does SyscallBoot do?</h2>
+
+The quake procedure <code>sphinx_addon_syscall</code> instantiates
+<code>SyscallBootGen.m3</code>. The instatiated module calls
+<!--href="SyscallBoot.m3"--><a href="../../../user/sphinx/src/SyscallBoot.m3">SyscallBoot</a>.
+
+<p>
+<code>SyscallBoot</code> <em>does not</em> install the systemcall
+handler on <!--href="MachineTrap.i3"--><a href="../../../kernel/spincore/src/machine/MachineTrap.i3">MachineTrap.Syscall</a> event
+directly - doing so is prohibited by the authorizer of than event.
+
+<p>
+Instead, <code>SyscallBoot</code> installs a hook on the
+<!--href="usyscall"--><a href="../../../user/usyscall/doc/index.html">usyscall</a> service. It installs a handler on
+<!--href="USyscall.i3"--><a href="../../../user/usyscall/src/USyscall.i3">USyscall.Rendezvous</a> event. Whenever a
+user space app calls <code>USyscall_Rendezvous</code> with the
+extension(domain) name as the argument, the handler in
+<code>SyscallBoot</code> responds, and it installs the systemcall handler
+that is activated only for the current thread.
+
+<p>
+This means that loading the EFS syscall extension itself does not
+activate the service, the user app has to call usyscall to rendezvous
+with the extension.
+
+<h2>User Side Code</h2>
+
+The user side code to call usyscall rendezvous is usually hidden in the
+library code. In our case, <code>efs_nuke</code> and <code>efs_create</code>
+is first indirected to internal procedures, and they do rendezvous.
+
+<p>
+"<code>efs.c</code>" is the user side library module.
+
+<pre>
+<!--include="lib/efs.c"-->
+
+#include &lt;stdio.h&gt;
+#include "efs.h"
+
+static char efs_loaded;
+
+int
+efs_nuke (char *dir) 
+{
+    if (!efs_loaded) {
+	__usyscall_bootstrap("EFS", "efs_nuke");
+	efs_loaded = 1;
+    }
+    printf("nuke.\n");
+    _efs_nuke(dir);
+}
+
+int 
+efs_create (char *path, long size)
+{
+    if (!efs_loaded) {
+	__usyscall_bootstrap("EFS", "efs_create");
+	efs_loaded = 1;
+    }
+    printf("create.\n");
+    _efs_create(path, size);
+}
+<!--/include-->
+</pre>
+
+<h2>Compiling</h2>
+
+<pre>
+<!--include="efs/lib/Makefile"-->
+THISTREE:=$(shell cd ../../../..; pwd)
+include $(THISTREE)/make.conf
+
+
+%:%.c
+	$(CC) -non_shared -o $@ $^ -L. -lefs
+
+all: libefs.a testefs
+
+libefs.a: efs.o ../$(M3ARCH)/EFSSyscallUser.o \
+    ../../../usyscall/$(M3ARCH)/USyscallUser.o \
+    ../../../usyscall/lib/usyscall.o
+	rm -f $@
+	ar q $@ $^
+
+../$(TARGET)/EFSSyscallUser.o:
+	as -o $@ ../$(M3ARCH)/EFSSyscallUser.s
+
+testefs: libefs.a
+<!--/include-->
+</pre>
+
+<P>
+<HR>
+<P>
+<ADDRESS>yasushi@cs.washington.edu</ADDRESS>
+</HTML>

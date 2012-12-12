@@ -1,0 +1,17 @@
+*** /afs/cs/system/os/osfsrc/OSC320/src/kernel/netinet/tcp_var.h	Fri Feb 03 12:45:49 1995
+--- tcp_var.h.mef	Tue May 07 17:35:42 1996
+***************
+*** 163,169 ****
+--- 163,174 ----
+  	u_char  requested_s_scale;
+  	int	t_rptr2rxt;		/* Repeat counter for R2 RXT timer */
+  	int	t_rptr2cur;		/* Current repeat counter for R2 timer */
++ #ifdef SPIN
++ 	int     (*t_timer_upcall)(struct tcpcb*);
++ #endif /* SPIN */
+  };
++ 
++ 
+  
+  #define	intotcpcb(ip)	((struct tcpcb *)(ip)->inp_ppcb)
+  #define	sototcpcb(so)	(intotcpcb(sotoinpcb(so)))

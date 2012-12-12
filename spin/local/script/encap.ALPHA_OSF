@@ -1,0 +1,74 @@
+#!/bin/sh
+#
+# encap
+#	generate assembly to stdout that encapsulates the object files 
+#	as Module-3 openarrays named prefix.file
+#
+#	kernel/start/src/mkextender generates m3 code to extract the objs
+#	ALPHA_SPIN templates generates c code to extract the objs
+#
+# Tue Feb 13 11:38:15 PST 1996
+#
+
+if [ $# -lt 2 ]
+then
+	echo  "usage: $0 <arrayprefix> <object files>+"
+	exit 1
+fi
+
+#
+# Write the object files as giant arrays of longs
+#
+
+echo "	/* created by $0 $*
+	*/"
+prefix=encap_$1
+echo ".data"
+shift 1
+
+#
+for i in $*
+do
+	filename=`basename $i`
+	echo "	.align 3"
+	echo "$filename.bits:"
+	/usr/bin/od -vXw8 $i | \
+		perl -ane 'print "\t.quad 0x@F[2]@F[1]\n" if @F[1]'
+	# perl measured twice as fast as sed
+done
+echo "end_of_objects:"
+
+
+#
+# Create M3 open array records for each file.  M3 implements open arrays
+# as struct {void*array, long bytes};
+#
+
+for i in $*
+do
+	filename=`basename $i`
+	bytes=`perl -e "@a=stat(\\"$i\\"); print \\$a[7]" `
+
+	echo "	.align 3"
+	echo "$filename.openarray:"
+	echo "	.quad $filename.bits"
+	echo "	.quad $bytes"
+	echo "	.globl $prefix.$filename"
+	echo "$prefix.$filename:"
+	echo "	.quad $filename.openarray"
+done
+
+#
+# Create C table of objects ending with 'end_of_objects' and terminated with 0.
+# C can calculate the size of each object with table[i+1]-table[i]
+#
+echo "	.align 3"
+echo "	.globl $prefix""_list"
+echo "$prefix""_list:"
+for i in $*
+do
+	filename=`basename $i`
+	echo "	.quad $filename.bits"
+done
+echo "	.quad end_of_objects"
+echo "	.quad 0"

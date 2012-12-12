@@ -1,0 +1,222 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+<!-- Changed by: Wilson Hsieh,  5-Feb-1997 -->
+</head>
+
+<body>
+<h1>
+Runtime support for Modula-3.
+</h1>
+ <P>
+<HR>
+
+<h2> Overview </h2>
+
+The primary jobs of the Modula-3 runtime support code are conveying type 
+information, linking, module initialization and garbage collection.
+
+<h2> Type information </h2>
+The interfaces which define the representation of type information at
+runtime are RTType.i3, RTTypeSRC.i3 and RTTypeMap.i3.
+Type information is stored for all objects on the heap. Here is the
+initial comment from "RTType.i3", reflecting the original Modula-3
+runtime type information:
+<p>
+
+  "RTType" provides access to the runtime type system.
+<p>
+  Each reference type is assigned a unique typecode.  A typecode is
+  ``proper'' if it lies in the range "[0..MaxTypecode()]".  The proper
+  typecodes include all those that correspond to actual types in the
+  running Modula-3 program.  Other typecodes, proper and improper, may
+  be used internally by the runtime system and garbage collector.
+<p>
+  Although the language requires that typecodes exist only for object
+  types and for traced reference types (including "NULL"), the
+  implementation of "RTType" also provides typecodes for untraced
+  reference types.
+<p>
+  The values returned by the builtin operation "TYPECODE" correspond
+  to (a subset of) the proper typecodes.
+<p>
+<h3> SPIN changes </h3>
+Since SPIN can dynamically link a domain which contains novel types,
+it cannot construct an array of typecells with indices [0..MaxTypecode()]
+the way that SRC Modula-3 usually does. Instead, we introduce another
+level of indirection. Every type of object in the program has both
+a Typecode and a Typeidx. The Typecode is essentially a pointer to 
+a TypeDefn object which contains all of the information known about
+the type. The TypeDefn's are allocated when a new domain is linked
+rather than being allocated all at once during startup. 
+<p>
+The Typecode
+enables you to find type information when you are given an object.
+The Typeidx on the other hand is used to find information about 
+all of the types in the program. It is an integer between 0 and the
+maximum number of types currently known and there is an array of
+TypeDefn's indexed by their Typeidx. Every time a new domain is
+linked, this array is expanded to include the new types.
+
+<h2> Modula-3 Linking </h2>
+By Modula-3 linking, we mean the process of collecting information about
+all of the types used by the program and filling in jtables for interfaces.
+These steps are performed by a call to RTLinker.Reinitialize every time a 
+new domain is linked into the SPIN kernel.
+
+<h2> Initialization </h2>
+
+When SPIN is booting and reaches the Modula-3 initialization phase, it
+calls the main body of the RTLinker module which is part of m3core_sa.
+   RTLinker initializes the runtime and calls all the main bodies of
+   the modules in the system.  
+<p>
+   The major steps of Modula-3 initialization are:
+<ul>
+<li> Placing exported procedures into the right jtable spots.
+<li> Installing signal handlers.
+<li> Initializing the garbage collector.
+<li> Initializing exception handling.
+<li> Starting the services in spincore.
+<li> Running the main bodies of the statically linked domains.
+</ul>
+
+The important interfaces for initialization are RTLinker.i3 and RT0.i3.
+
+<h2> Garbage collection </h2>
+
+The text of the comment from RTCollector.i3 follows.
+<p>
+"RTCollector" provides control over the Modula-3 garbage collector.
+<p>
+ The purpose of a garbage collector is to reclaim unreachable
+   nodes on the traced heap; most Modula-3 programs could not run
+   very long without a collector.  Even so, automatic garbage
+   collection has some practical drawbacks.
+
+   <ol>
+   <li>
+
+      The collector might move heap nodes to different addresses.  This is
+      usually unnoticable to programs, but can cause problems when programs
+      must work with the addresses of heap nodes, since it is not
+      guaranteed that "ADR(x^)" is a constant over the lifetime of
+      "x^".  There are two main cases when programs must work with
+      such addresses.
+
+      <ol>
+      <li>
+
+         To implement hash tables, etc.
+
+      <li>
+
+         To pass addresses to procedures written in other languages,
+         which is inherently unportable.
+
+      </ol>
+   <p>
+   <li>
+
+      Unsafe code can put the traced heap temporarily into an
+      inconsistent state.  If the collector happens to run then, it
+      might delete nodes that seem unreachable but that in fact are
+      accessible.  Of course, unsafe code itself is inherently unportable.
+
+   </ol>
+
+   This interface allows the program to control the Modula-3 collector
+   to avoid such problems, as well as to pass hints to improve
+   performance.
+
+<p>
+<h3> Disabling the collector. </h3>
+
+   The collector is initially enabled; the collector can reclaim
+   storage, and move nodes in memory.  While the collector is
+   disabled, there will be no time spent in the collector.  Allocation
+   in the traced heap may proceed normally, although the heap will
+   grow without bound.  Nodes unreachable by the Modula-3 rules will
+   not be reclaimed, and no nodes will move.
+
+<p>
+<h3>Disabling motion. </h3>
+
+   Disabling motion gives fewer guarantees than disabling the
+   collector; while motion is disabled, it is guaranteed only that no
+   nodes will move.  Disabling motion is no more expensive than
+   disabling the entire collector, and may be cheaper in some
+   implementations.
+
+<p>
+<h3>Collecting. </h3>
+
+   Calling "Collect" is a hint from the program that now would be a
+   good time for a collection (for example, if a large amount of
+   storage has become unreachable, or if the program expects to wait
+   some time for an external event).
+
+<p>
+<h3>Implementation notes.</h3>
+
+   This section describes the implementation of the SRC Modula-3
+   collector, as a guide to SRC Modula-3 programmers and as an
+   indication of how this interface is matched to a particular
+   implementation.  Portable programs must not take advantage of
+   implementation details of the SRC Modula-3 collector.
+<p>
+   The SRC Modula-3 collector is an incremental, generational,
+   conservative mostly-copying collector that uses VM protection on
+   heap pages to be notified of certain heap accesses.
+<p>
+   Because the SRC collector is conservative, an inaccessible node may
+   be considered reachable if a bit-pattern either on a thread's stack
+   or in its registers might be a reference to or into the node.
+   Experience to date has not shown accidental node retention to be a
+   problem.
+<p>
+   The SRC collector will not collect or move a node while any
+   thread's stack or registers contains a reference to or into the
+   node.  The SRC Modula-3 system guarantees that this will include
+   references passed as value parameters.  This guarantee is useful
+   for calling foreign procedures.
+<p>
+   "Disable" completes the current incremental collection, if any, and
+   unprotects all heap pages, so that no page faults will occur while
+   collection is disabled.  No new collections will start while
+   collection is disabled.  The next collection after collection is
+   reenabled will be total, as opposed to partial, since unprotecting
+   the heap loses generational information.
+<p>
+   "DisableMotion" disables further collections from beginning.
+   "DisableMotion" does not finish the current incremental collection,
+   since the collector already guarantees that the program will not
+   see addresses in the previous space.  No new collections will start
+   while motion is disabled, so that the current space will not become
+   the previous space.  It is not necessary to unprotect the heap.
+<p>
+   "Collect" completes the current incremental collection, if any, then
+   performs a total collection before returning to the caller.
+<p>
+   The SRC collector also supports additional operations for
+   controlling the frequency of collection, disabling and reenabling
+   incremental and generational collection, reporting on collector
+   performance, and so on.  These operations are accessible through the
+   implementation-dependent "RTCollectorSRC" interface.
+
+
+<h2>Runtime Hooks</h2>
+
+The file src/runtime/common/RTHooks.i3 describes the runtime hooks
+that the compiler-generated code accesses.  This file cannot be
+changed without a synchronized change to Runtime.i3 and Runtime.m3 in
+the compiler sources.  Also, it should probably be kept in sync with
+the RTHooks.i3 file in the local libraries.  For some reason the
+compiler looks there for the information on hooks at compile-time.
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

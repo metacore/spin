@@ -1,0 +1,27 @@
+126c126
+< extern	struct device	device_list[];
+---
+> extern	struct device	*device_list;
+193a194,196
+> #ifdef SPIN
+>     extern struct tc_option *tc_option;
+> #else
+194a198
+> #endif
+195a200,209
+> #ifdef SPIN
+>     /*
+>      * Don't re-probe when loading e.g. CAM, since that
+>      * will clobber option-slot modules e.g. the video
+>      * card.  No need to re-probe anyhow since it's not
+>      * possible right now to plug stuff in without powering
+>      * down.
+>      */
+>     if ( tc_probed ) return 0;
+> #endif
+1278a1293
+> 
+1483a1499
+> #ifndef SPIN
+1484a1501
+> #endif /* SPIN */

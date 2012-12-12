@@ -1,0 +1,218 @@
+89a90,94
+> #ifdef SPIN
+> extern pmap_t		current_pmap;
+> extern vm_offset_t	bootpcb_va;
+> long faultcrap = 0;
+> #endif /* SPIN */
+372a378
+> #ifndef SPIN
+373a380
+> #endif /* SPIN */
+419a427,429
+> #ifdef SPIN
+> 			pvh = lock_pvh(pa_to_pvh(pg));
+> #else /* SPIN */
+420a431
+> #endif /* SPIN */
+460a472,475
+> #ifdef SPIN
+> 						pvh = lock_pvh(
+> 						   pa_to_pvh(pg));
+> #else /* SPIN */
+462a478
+> #endif /* SPIN */
+486a503,505
+> #ifdef SPIN
+> 			if (put_free_ptepage(PHYS_TO_KSEG(pg)))
+> #else /* SPIN */
+487a507
+> #endif /* SPIN */
+500a521,523
+> #ifdef SPIN
+> 			printf("waiting - get_more_pte_pages(),tell savage\n");
+> #else /* SPIN */
+501a525
+> #endif /* SPIN */
+541a566,575
+> #ifdef SPIN
+> 			/* nobody else is allocating ptepages */
+> 
+> 			simple_unlock(&ptepages_lock);
+> 			get_more_pte_pages();
+> 
+> 			/* must check again */
+> 			continue;
+> 
+> #else /* SPIN */
+570a605
+> #endif /* SPIN */
+631a667,672
+> #ifdef SPIN
+> #define pmap_pte(MAP, ADDR) (vtopte(ADDR)				\
+>  + (((MAP) == kernel_pmap || (MAP) == current_pmap)			\
+>    ? 0									\
+>    : (Othermap - Selfmap)))
+> #else /* SPIN */
+635a677
+> #endif /* SPIN */
+908a951,953
+> #ifdef SPIN
+> simple_lock_t
+> #else /* SPIN */
+909a955
+> #endif /* SPIN */
+917a964,968
+> #ifdef SPIN
+> 	other = in_Othermap(*ptep)
+> 		? &current_pmap->other_lock
+> 		: (simple_lock_t)0;
+> #else /* SPIN */
+920a972
+> #endif /* SPIN */
+1062a1115
+> #ifndef SPIN
+1066a1120
+> #endif /* SPIN */
+1075c1129
+< 		
+---
+> 	
+1093a1148,1159
+> #ifdef SPIN
+> 				scratch.quadword |= PTEQ_MASK_FLTON;
+> 				if (prot & VM_PROT_READ) {
+> 					scratch.pg_for = 0;
+> 				}
+> 				if (prot & VM_PROT_WRITE) {
+> 					scratch.pg_fow = 0;
+> 				}
+> 				if (prot & VM_PROT_EXECUTE) {
+> 					scratch.pg_foe = 0;
+> 				}
+> #else /* SPIN */
+1105a1172
+> #endif /* SPIN */
+1715c1782,1786
+< 	pcb = thread_pcb(th);
+---
+> #ifdef SPIN
+> 		pcb = (struct pcb *)bootpcb_va;
+> #else /* SPIN */
+> 		pcb = thread_pcb(th);
+> #endif /* SPIN */
+2737a2809
+> #ifndef SPIN
+2738a2811,2813
+> #else /* SPIN */
+> 	faultless = &faultcrap;
+> #endif /* SPIN */
+2748a2824
+> #ifndef SPIN
+2749a2826,2828
+> #else /* SPIN */
+> 	pmap = IS_SEG0_VA(va) ? current_pmap : kernel_pmap;
+> #endif /* SPIN */
+3690a3770
+> #ifndef SPIN
+4020,4021c4100
+< 
+< 
+---
+> #endif /* SPIN */
+4070a4150,4243
+> #ifdef SPIN
+> pmap_dump_kernel_map()
+> {
+>   union pv_list_head	*pvh;			
+>   pv_entry_t		 cur;
+>   struct tbl_mapinfo     info_ent;
+>   struct vm_map_entry    map_ent;
+>   int i;
+>   spl_t s;
+> 
+>   s = splextreme();
+>   for (i=pmap_first_phys; i<pmap_last_phys; i+= NBPG) {
+>     pvh = pa_to_pvh(i);
+>     cur = &(pvh->entry);
+> 
+>     while (cur != NULL) {
+>       if (cur->pv_pmap != PMAP_NULL) {
+> 	printf("map = %lx, pa=%lx, va=%lx (",cur->pv_pmap, i, cur->pv_va&(~3));
+> 	
+> 	map_ent.vme_end = cur->pv_va + 8192;
+> 
+> 	if (cur->pv_pmap != PMAP_PTE && cur->pv_pmap != PMAP_KPTE) {
+> 	  pmap_pt_info((pmap_t)kernel_pmap, (vm_offset_t)cur->pv_va&(~3),
+> 		       &map_ent, &info_ent);
+> 	  if (info_ent.mapping == UNMAPPED) {
+> 	    printf("unmapped)\n");
+> 	  }
+> 	  if (info_ent.mapping == SEGMENT) {
+> 	    printf("segment!)\n");
+> 	  }
+> 	  if (info_ent.mapping == MAPPED) {
+> 	    printf("mapped, pfn = %lx)\n", info_ent.pfn[0]);
+> 	  }
+> 	}
+>       }
+>       cur = cur->pv_next;
+>       if (cur != NULL) {
+> 	printf("\t");
+>       }
+>     }
+>   }
+>   (void)splx(s);
+> }
+> 
+> pmap_dump_va(pmap, va, print)
+> 	pmap_t pmap;
+> 	vm_offset_t va;
+> 	int print;
+> {
+>   union pv_list_head	*pvh;			
+>   pv_entry_t		 cur;
+>   struct tbl_mapinfo     info_ent;
+>   struct vm_map_entry    map_ent;
+> 
+>   if (pmap == PMAP_NULL) {
+>     pmap = kernel_pmap;
+>   }
+>   map_ent.vme_end = va + NBPG;
+> 
+>   pmap_pt_info(pmap, va, &map_ent, &info_ent);
+>   
+>   if (info_ent.mapping == UNMAPPED) {
+>     printf("pmap %lx, va %lx, unmapped\n", pmap,va);
+>   }
+>   if (info_ent.mapping == SEGMENT) {
+>     printf("pmap %lx, va %lx, segment!\n", pmap,va);
+>   }
+>   if (info_ent.mapping == MAPPED) {
+>     if (print) {
+>       printf("pmap %lx, va %lx, mapped, pa = %lx\n", pmap,va,
+> 	     info_ent.pfn[0]*NBPG); 
+>     }
+>   }
+> 
+>   pvh = pa_to_pvh((info_ent.pfn[0]*NBPG));
+>   cur = &(pvh->entry);
+>   if (cur->pv_pmap == PMAP_NULL ||
+>     cur->pv_va&(~3) != va || cur->pv_pmap != pmap) {
+>     printf("\n\tERROR: pmap = %lx, va=%lx",cur->pv_pmap, cur->pv_va&(~3));
+>   }
+>   cur=cur->pv_next;
+>   if (cur != NULL) {
+>     printf("Other mappings:\n");
+> 
+>     while (cur != NULL) {
+>       printf("\tpmap = %lx, va = %lx\n", cur->pv_pmap, cur->pv_va&(~3));
+>       cur=cur->pv_next;
+>     }
+>   }
+> }
+>   
+> #endif /* SPIN */
+> 
+> #ifndef SPIN
+4147a4321
+> #endif /* SPIN */

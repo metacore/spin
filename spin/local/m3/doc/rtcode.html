@@ -1,0 +1,127 @@
+<html>
+<head>
+<title>The RTCode Interface</title>
+</head>
+
+<body>
+<h1>Using RTCode to access module descriptors</h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+We need to allow modules to talk about themselves and the interfaces
+they import. We have two examples where this is necessary. First, we
+want to make the module which exports a procedure responsible for
+approving other handlers installed on that procedure.  This requires
+that the module can provide some unforgeable proof of its identity
+when it installs its default handler.  Second, a module which wants to
+create a Domain containing code exported by an interface
+<code>X</code> will be required to have imported <code>X</code>.
+
+<h2>Implementation</h2>
+
+The SRC Modula-3 system already defines symbols called
+<code>MI_*</code> for interfaces and MM_* for modules which have the
+type <code>UNTRACED REF RT0.ModuleInfo</code>, but these symbols are
+not accessible from Modula-3 code. Our solution is to create two new
+builtin functions called <code>THIS_MODULE()</code>, which returns the
+<code>MM_</code> symbol for the module in which the function appears,
+and <code>INTERFACE_UNIT(X)</code> which returns <code>MI_X</code> for
+the named interface. Since <code>THIS_MODULE()</code> takes no
+argument, it is impossible for one module to get the descriptor for a
+second unless the second one explicitly provides it.  Also the only
+names which may be passed to <code>INTERFACE_UNIT()</code> are those
+which are explicitly imported in the calling module.
+
+Additionally, we want to ensure that arbitrary safe programs cannot
+alter the contents of the interface or module descriptors, nor can
+they forge descriptors. So we define two opaque types which are the
+return types of <code>THIS_MODULE()</code> and
+<code>INTERFACE_UNIT(X)</code>.
+
+<pre>
+INTERFACE RTCodeBuiltin;
+TYPE
+    Module <: ADDRESS;      (* return type of THIS_MODULE()    *)
+    Interface <: ADDRESS;   (* return type of INTERFACE_UNIT() *)
+END RTCodeBuiltin.
+</pre>
+
+The revelations of these types occur in RTCode.m3.
+<pre>
+REVEAL RTCodeBuiltin.Module = UNTRACED BRANDED REF RT0.ModuleInfo;
+REVEAL RTCodeBuiltin.Interface = UNTRACED BRANDED REF RT0.ModuleInfo;
+</pre>
+
+We provide a second interface, called <code>RTCode</code>, that is
+imported by callers of <code>THIS_MODULE()</code> and
+<code>INTERFACE_UNIT()</code>.  This interface declares two procedures
+that answer questions about modules.
+<code>ModuleExportsInterface</code> determines if the module
+<code>m</code> exports any of the procedures declared in the interface
+<code>i</code>. <code>ModuleImplementsProcedure</code> determines if
+the procedure referred to by <code>p_ref</code> is defined in the
+module <code>m</code>.
+
+<pre>
+INTERFACE RTCode;
+IMPORT RTCodeBuiltin;
+
+TYPE
+    Module = RTCodeBuiltin.Module;
+    Interface = RTCodeBuiltin.Interface;
+
+(* returns true iff m exports a function declared in i *)
+PROCEDURE ModuleExportsInterface(m: Module; i: Interface): BOOLEAN;
+
+(* return true iff m defines procedure p *)
+PROCEDURE ModuleImplementsProcedure(m: Module; p_ref: PROCANY): BOOLEAN; 
+</pre>
+
+<h2>Caveats</h2>
+
+Our implementation has some quirks of which users should be aware.
+First, you must explicitly import an interface before you can call
+<code>INTERFACE_UNIT()</code> with that interface name.  Just
+exporting an interface from a module is not enough to bring that
+interface's name into the top level scope of a module.  A second
+related problem is that it is impossible to refer to the interface
+exported by a generic module, because you cannot name that interface
+at all. But you may use <code>INTERFACE_UNIT()</code> for other
+interfaces inside a generic module.
+
+The third problem is that the
+<code>RTCode.ModuleExportsInterface</code> function deduces the export
+relationship by looking for exported procedures.  It is possible for a
+module to contain an <code>EXPORTS</code> declaration but not export
+any procedures, in which case this function will return
+<code>FALSE</code>.
+
+<h2>Examples</h2>
+
+These examples show how we expect to use the runtime descriptors
+in the <code>Domain</code> and <code>Dispatcher</code> interfaces.
+
+<pre>
+	Domain.CreateFromInterface(i: RTCode.Interface): T
+	(* safely create a domain *)
+
+	Dispatcher.InstallAuthHandler(THIS_MODULE(), event, authHandler)
+	(* assert authority over event.  Dispatcher checks
+		RTCode.ModuleImplementsProcedure(firstArg, secondArg)
+	*)
+</pre>
+ 
+<P>
+
+</body>
+<p>
+
+<hr>
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>May 20, 1996</date> <br>
+<Address>garrett@cs.washington.edu<br> </address>
+</html>

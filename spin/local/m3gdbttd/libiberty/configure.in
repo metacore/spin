@@ -1,0 +1,19 @@
+# This file is a shell script fragment that supplies the information
+# necessary for a configure script to process the program in
+# this directory.  For more information, look at ../configure.
+
+configdirs=
+srctrigger=getopt1.c
+srcname="-liberty library"
+
+# per-host:
+
+files="alloca-norm.h"
+links="alloca-conf.h"
+
+. ${srcdir}/config.table
+if test -n "${frag}" ; then
+  host_makefile_frag=config/${frag}
+fi
+
+# per-target:

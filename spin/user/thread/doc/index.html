@@ -1,0 +1,113 @@
+<html>
+<body>
+<h1>User Threads</h1>
+
+This directory contains different implementations of user threads. The
+strands page describes in more detail the thread architecture of
+SPIN. This directory contains sample clients of the strand interface
+that we use daily. Three different services are provided by the strand
+clients: (1) Generic user-level threads (2) CThreads and (3) an Exec
+service to populate an address space and start up a thread within it.
+
+<h2>Generic User-Space Threads</h2>
+
+<p>
+The generic user-level thread support is provided by the
+UserSpaceThread package. These threads resemble provide basic thread
+functionality, and export an interface that resembles that of Mach.
+UserSpace threads support clients that perform floating point
+operations. The interface is given below:
+
+<dl>
+<dt><b>Create(space: Space.T) : T</b>
+<dd>
+Create a new UserSpacethread, with space as its address map
+The newly created thread needs to be explicitly activated via the
+Resume call in order to execute.
+
+<dt><b> Destroy(Uthread: T)</b>
+<dd>Release the resources held by a dead thread.
+
+
+<dt><b> Suspend(Uthread: T)</b>
+<dd>Stop the execution of the named thread. A Suspend operation is
+necessary before any Get or SetState calls. 
+Suspend and Resume keep a suspend count and the thread is suspended
+on the 0->1 transition and resumed on the 1->0 transition. That is, 
+nested suspends and resumes work intuitively.
+
+<dt><b> Resume(Uthread: T)</b>
+<dd>Resume the execution of the named thread.
+
+<dt><b> Externalize(Uthread: T; intptr: REFANY;
+        desiredSlot : Word.T := ExternalRef.DontCare) : Word.T</b> 
+<dd>Externalize an in-kernel pointer to pass to user side. The user space
+thread can hold and name in-kernel capabilities by externalizing them.
+
+
+<dt><b> Internalize(Uthread: T; extptr: Word.T) : REFANY</b>
+<dd>Internalize a previously externalized user-side reference to an
+in-kernel reference.
+
+<dt><b> GetState(Uthread: T; VAR state: State)</b>
+<dd>Get the CPU and FPU register state of the thread in question. State is
+an OUT variable.
+
+<dt><b> SetState(Uthread: T; state: State)</b>
+<dd>Set the CPU and FPU register state of the thread in question.
+
+<dt><b> GetSpace(Uthread: T) : Space.T</b>
+<dd>Get the address space that a given thread is running in.
+
+<dt><b>Self(): T</b>
+<dd>Return the user space space thread on whose behalf this kernel thread 
+is running.
+</dl>
+
+<hr>
+<h2>CThreads</h2>
+
+There are two different implementations of cthreads, the threads
+interface originally developed by Cooper and Draves for Mach. One
+implementation is based directly on strand events, using low-level
+strand machinery to implement CThread semantics. The other is a
+layered implementation that uses UserSpaceThreads to implement
+CThreads in the kernel. The latter implementation was made in order to
+compare and quantify the effects of moving code across the user-kernel
+boundary. 
+
+The interface exported by the Cthread packages kernel component is
+given below. The rest of the functionality of CThreads is implemented
+in user space.
+
+<dl>
+
+<dt><b>Fork(th: UserSpaceThread.T; startpc,arg,gp,ra,startsp: Word.T) : T</b>
+<dd> Create a new thread of execution. The newly created thread may begin
+its execution at some point during the course of this call. Hence it
+would be unwise to make any assumptions about the state of the client
+thread without explicitly synchronizing with it. The thread starts at
+address startpc, with argument arg in a0, ra, gp and sp set to the
+values passed in to Fork.
+
+<dt><b>Exit(cthread: T; exitcode: Word.T)</b>
+<dd>Terminate the execution of a CThread. The exitcode is made
+available to clients who can Join with the thread.
+
+<dt><b>Join(cthread: T) : Word.T</b>
+<dd>Wait for a CThread to complete its execution and capture the
+result it returns. More than one client can perform a Join operation.
+
+<dt><b>RegisterRas(cthread: T; beginpc, len: Word.T)</b>
+<dd>Registers a restartable atomic sequence. If the CThread is interrupted
+within this sequence, its pc will be rolled back to the beginning of
+the region. The thread will then resume from the beginning of the
+region when it is next scheduled.
+</dl>
+
+<hr>
+</body>
+<hr>
+<address>
+Emin Gun Sirer, egs@cs.washington.edu
+</html>

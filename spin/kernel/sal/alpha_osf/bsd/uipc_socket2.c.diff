@@ -1,0 +1,50 @@
+449a450,453
+> #ifdef SPIN
+> 		do {
+> 		/* avoid preempting between assert_wait and sleep */
+> 		int spl = splhigh();
+452a457,464
+> 		error = sosleep(so, (caddr_t)0, pri, 0);
+> 		splx(spl);
+> 		if (error) return error;
+> 		} while (0);
+> #else
+> 		assert_wait_mesg((vm_offset_t)&sb->sb_flags,
+> 			(pri & PCATCH) != 0, sowaitmsg(so));
+> 		SOCKBUF_UNLOCK(sb);
+454a467
+> #endif /* SPIN */
+488a502,505
+> #ifdef SPIN	
+> 	int spl; /* Needed because SPIN can preempt between assert_wait and sleep */
+> 	int ret; /* return value from sosleep */
+> #endif /* SPIN */
+494a512,517
+> 
+> #ifdef SPIN
+> 	/* avoid preempting between assert_wait and sleep. */
+> 	spl = splhigh();
+> #endif /* SPIN */
+> 
+514a538,542
+> #ifdef SPIN
+> 	ret = sosleep(so, (caddr_t)0, pri, so->so_timeo);
+> 	splx(spl);
+> 	return ret;
+> #else
+515a544
+> #endif /* SPIN */
+527a557,559
+> #ifdef SPIN 
+> 	int spl;
+> #endif /* SPIN */
+532a565,568
+> #ifdef SPIN
+> 	/* prevent SPIN from preempting between assert_wait and sleep */
+> 	spl = splhigh();
+> #endif /* SPIN */
+539a576,579
+> 
+> #ifdef SPIN
+> 	splx(spl);
+> #endif /* SPIN */

@@ -1,0 +1,45 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+%  08-Feb-96  Charles Garrett (garrett) at the University of Washington
+% 	These modules are now hidden. Change module to Module to export
+% 	 the interfaces from the Plexus domain.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+DomainImport ("EtherServer","user/net","ether",overridepath)
+DomainImport ("Ether6Client","user/net","ether6Client",overridepath)
+DomainImport ("Ip6Server","user/net","ip6",overridepath)
+DomainImport ("IpServer","user/net","ip",overridepath)
+DomainImport ("IcmpServer","user/net","icmp",overridepath)
+DomainImport ("IcmpClient","user/net","icmpClient",overridepath)
+DomainImport ("Icmp6Server","user/net","icmp6",overridepath)
+DomainImport ("Icmp6Client","user/net","icmp6Client",overridepath)
+DomainImport ("TcpServer","user/net","tcp",overridepath)
+DomainImport ("UdpServer","user/net","udp",overridepath)
+
+DomainImport ("Ip6Client","user/net","ip6Client",overridepath)
+DomainImport ("IpClient","user/net","ipClient",overridepath)
+
+Package("")
+interface ("DhtMapping")
+module ("Dht")
+module ("DhtIp")
+module ("DhtIcmp")
+#module ("DhtTcp")
+#module ("DhtUdp")
+module ("DhtIP4")
+module ("DhtIP6")
+# mapping table from v4 -> v6
+table  ("DhtIP4", "DhtIP4", "DhtIP6")
+# mapping table from v6 -> v4
+table  ("DhtIP6", "DhtIP6", "DhtIP4")
+Extension({})

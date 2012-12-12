@@ -1,0 +1,49 @@
+CCC= cxx
+TFLAGS= -xtaso_short -I$(OS_ROOTDIR)/include -DOSTORE
+OSSCHEMA_FLAGS= $(TFLAGS)
+LIBOSC_LD =
+LIBOSTHR_LD=-losthr
+
+CFLAGS=-g -DOSTORE -I$(OS_ROOTDIR)/include
+LDFLAGS= $(OS_LINK_FLAGS) -L$(OS_ROOTDIR)/lib
+LDLIBS=	-los $(LIBOSTHR_LD) $(LIBOSC_LD)
+SCHEMA_SRC= schema.cc
+APP_SCHEMA_SRC= osschema.cc
+APP_SCHEMA_OBJ= osschema.o
+APP_SCHEMA_HDRS= bench.h
+APP_SCHEMA_DB= $(OS_SCHEMA_DB_DIR)rvmbench.adb
+LIB_SCHEMA_DBS=
+
+SRCS=trans.cc work.cc ostore_def.cc
+DB=bench.db
+
+all:: rvmbench
+
+OBJS=$(SRCS:.c=.o)
+
+dbname.h: makefile
+	echo 'static char *example_db_name= "$(DB)";' > dbname.h
+
+%.o : %.c
+	$(CCC) $(CFLAGS) $(TFLAGS) -c $^
+%.o : %.cc
+	$(CCC) $(CFLAGS) $(TFLAGS) -c $^
+
+rvmbench:  $(OBJS)  $(APP_SCHEMA_OBJ)
+	$(CCC) $(TFLAGS) -o $@ $(OBJS) $(APP_SCHEMA_OBJ) $(LDFLAGS) $(LDLIBS)
+	os_postlink $@
+$(APP_SCHEMA_SRC): $(SCHEMA_SRC) $(APP_SCHEMA_HDRS)
+	ossg -assf $(APP_SCHEMA_SRC) -asdb $(APP_SCHEMA_DB) \
+		$(OSSCHEMA_FLAGS) $(CPPFLAGS) $(SCHEMA_SRC) $(LIB_SCHEMA_DBS)
+
+#
+# Build $(APP_SCHEMA_OBJ) from $(APP_SCHEMA_SRC)
+#
+
+$(APP_SCHEMA_OBJ): $(APP_SCHEMA_SRC)
+	$(CCC) $(CPPFLAGS) $(TFLAGS) -c $(APP_SCHEMA_SRC)
+
+make.dep:
+	touch make.dep
+	makedepend -f make.dep $(CFLAGS) $(SRC)
+include make.dep

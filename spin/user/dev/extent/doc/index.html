@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>Disk Extents</title>
+</head>
+
+<body>
+<H1>Disk Extents</H1>
+
+<P>The disk <strong>extent</strong> module implements a low level disk
+manager that safely space-multiplexes disks.</P>
+
+<P>An new extent can be created from scratch using the
+<strong>mkdev</strong> command.  Alternatively, a new extent can be
+created by allocating a new object.  E.g.,
+<strong>extent:=NEW(Extent.T).init("rz3a",32768,0)</strong> creates a
+new extent on the rz3a device spanning 32KB.  This is done to obtain
+the very first extent object that spans an entire device.  It is also
+possible to create child extents, one that is contained within extent,
+by passing the name of the partent extent to the init routine.  E.g.,
+childextent:=NEW(Extent.T).init("extent_rz3a",16384,0) creates a new
+extent on the extent_rz3a device spanning 16KB.</P>
+
+<P>One can read and write to the disk via the read/write interface
+inherited from the Disk.T device object.</P>
+
+<P>An extent can be shared between nontrusting parties.  The object
+acts as a capability.  To reserve a portion of a larger extent in
+order to hand it out to a third party, use the allocate
+method. Using this interface alone, multiple nontrusting parties
+can share a device, knowing that none of them can read or write
+each others' data.</P>
+
+<P>Both size and offset values used by the read/write/init routines
+are in bytes.</P>
+
+<p><hr>
+<Address>
+mef@cs.washington.edu<br>
+</address>
+</body>
+</html>

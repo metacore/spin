@@ -1,0 +1,45 @@
+#
+#
+# HISTORY
+# 4-oct-96  becker at the University of Washington
+#	Added TmpFileSystem import
+#
+# 18-Jul-96  Brian Bershad (bershad) at the University of Washington
+#	Whisted.  Removed 'Exit' and 'Load' and 'Join' commands.
+#
+#
+#
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport ("FileSystem","user/fs","fscore",overridepath)
+DomainImport ("TmpFileSystem","user/fs","tmpfs",overridepath)
+DomainImport ("VMCore","user/vm","vmcore",overridepath)
+
+#CommandModule("Alarm")
+CommandModule("ConsoleIO")
+CommandModule("Disp")
+CommandModule("DomainCmd")
+CommandModule("Echo")
+CommandModule("Fault")
+#CommandModule("Fork")
+implementation("Profile")
+#CommandModule("Preemptive")
+CommandModule("RasControl")
+implementation("Repeat")
+implementation("Script")
+implementation("Set")
+#CommandModule("Show") # soon to be obsolete 
+implementation("SpyControl")
+# CommandModule("Ticks")
+implementation("VMCmd")
+implementation("Time")
+CommandModule("GC")
+
+Module("CoreCommands")
+Module("FsCommands")
+implementation(Od)
+
+Extension({})

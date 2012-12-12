@@ -1,0 +1,217 @@
+53a54
+> #ifndef SPIN
+54a56
+> #endif /* SPIN [syscall.h not generated for us] */	
+55a58
+> #ifndef SPIN
+56a60
+> #endif /* SPIN */	
+142a147,150
+> #ifdef SPIN
+> 	addq	sp, EF_SIZE, v0
+> 	stq	v0,EF_SP*8(sp)
+> #endif /* SPIN */		
+145a154,163
+> #ifdef SPIN
+> 	# Get a GP  -- OSF uses static gp; we do not
+> 	br	t0 ,1f		# get this pc into t0
+> 1:	ldgp	gp,0(t0)	# asm&ld fix this to fill gp with a pc offset
+> 	ldl	t0, ttd_enabled		# are we debugging with ttd
+> 	bne	t0, 1f			# if ne, yes (always trap)
+> 	ldq	t0,EF_PC*8(sp)		 
+> 	lda	t0,-4(t0)
+> 	stq	t0,EF_PC*8(sp)		# roll PC back by 4
+> #else /* SPIN [ always call trap() and rollback pc to bpt ] */
+147a166
+> #endif /* SPIN */	
+150a170
+> #ifndef SPIN
+156a177
+> #endif /* SPIN */	
+227a249
+> #ifndef SPIN
+255a278
+> #else /* SPIN [only restore regs and return] */
+268a292,293
+> #endif /* SPIN */
+> #ifndef SPIN	
+301a327
+> #endif /* SPIN [we don't do all that stuff] */	
+335a362,365
+> #ifdef SPIN /* Try to use standard DEC code one day */
+> 	# Get a GP  -- OSF uses static gp; we do not
+> 	br	t0 ,1f
+>  1:	ldgp	gp,0(t0)
+336a367,447
+> clock_enable:
+> 	cmpeq	a0,6,t0			 
+> 	blbc	t0,1f
+> /*
+>  * Hardclock interrupt
+>  */
+> 
+> 	ldq	a0,EF_PS*8(sp)
+> 	ldq	a1,EF_PC*8(sp)
+> 	and	a0,PSL_CURMOD,a0	# next mode
+> 	beq	a0,7f			# kernel
+> 	ldiq	a0,1			# user mode
+> 7:	jsr	ra,hardclock		# hardclock(user-mode, pc)
+> 	br	zero,exception_exit
+> 
+> 1:
+> 	cmpeq	a0,3,t0			# is this a device interrupt?
+> 	blbc	t0,2f
+> /*
+>  * Device interrupts 
+>  */
+> 	beq	a1,3f			# passive release, dismiss
+> 	mb
+> 	lda	t0,_scb			# get the address of the 
+> 	addq	t0,a1,t0		# index to scbentry
+> 	ldq	t1,(t0)			# get the address of the handler
+> 	ldq	a0,8(t0)		# get the parameter
+> 	or	t1,zero,pv	# SPIN set pv so gp in (pv) gets set	
+> 	jsr	ra,(t1)			# call the routine
+> 	br	zero,exception_exit
+> 
+> 2:      cmpeq	a0,2,t0
+> 	blbc	t0,1f
+> /*
+>  * Machine Checks
+>  */
+> 	mb
+> 	bis	a1,zero,a0		# move vector into a0
+> 	bis	a2,zero,a1		# move logout_addr into k1
+> 	bis	sp,zero,a2		# assign frame pointer parameter
+> 	jsr	ra,mach_error		# mach_error(vector,logout_addr,exfrm)
+> 	br	zero,exception_exit
+> 
+> 1:	bne	a0,1f			# ip interrupts
+> 	mb
+> #if NCPUS > 1
+> 	jsr	ra,cpu_ip_intr		# cpu_ip_intr()
+> #endif
+> 	br	zero,exception_exit
+> 
+> 1:	cmpeq	a0,4,t0
+> 	blbc	t0,1f
+> 
+> /*
+>  * Performance monitor
+>  */
+> 	lda	t0,_scb			# get the address of the 
+> 	addq	t0,a1,t0		# index to scbentry
+> 	ldq	t1,(t0)			# get the address of the handler
+> 
+> 	bis	a2,zero,a0		# counter# -> a0
+> 	ldq	a1,EF_PC*8(sp)
+> 	ldq	a2,EF_PS*8(sp)
+> 	jsr	ra,(t1)			# perfmon(cntr#, pc, ps)
+> 	br	zero,exception_exit
+> 
+> 1:	cmpeq	a0,5,t0
+> 	blbc	t0,1f
+> /*
+>  * Passive release
+>  */
+> 3:
+> 	br	zero,exception_exit
+> 
+> 1:				/* catch case that clock is off */
+> 	cmpeq 	a0,1,t0
+> 	blbc 	t0,1f
+> 	br      zero,exception_exit
+> 
+> #endif /* SPIN */
+> #ifndef SPIN
+395a507
+> #ifndef SPIN
+408a521
+> #endif /* SPIN */	
+470a584
+> #ifndef SPIN
+483a598
+> #endif /* SPIN */	
+491a607
+> #endif /* SPIN */
+495a612
+> #ifndef SPIN
+508c625
+< 
+---
+> #endif /* SPIN */
+525a643,646
+> #ifdef SPIN
+> 	/* Halt on any system calls on bootup */
+> 	call_pal PAL_rti
+> #else /* SPIN [we don't deal with syscalls] */	
+724a846
+> #endif /* SPIN */
+794a917,926
+> #ifdef SPIN
+> 	/*
+> 	 * any unaligned refs during boot will just halt
+> 	 * NOTE: if we want to steal the alignment fixup code then
+> 	 * we need to delete our fake _Xunaexit and 
+> 	 * change SCBCMEND as well
+> 	 */
+> _Xunaexit:
+> 	call_pal PAL_halt
+> #else /* SPIN */
+886a1019
+> _Xunaexit:	
+912a1046
+> #endif /* SPIN */
+940a1075
+> #ifndef SPIN	
+1057a1193
+> #endif /* SPIN */
+1161a1298
+> #ifndef SPIN
+1163a1301
+> #endif /* SPIN */	
+1570a1709,1711
+> #ifdef SPIN	
+> 	ldgp    gp, 0(pv)	# SPIN has relative GP
+> #endif /* SPIN */	
+1575a1717,1719
+> #ifdef SPIN	
+> 	ldgp    gp, 0(pv)	# SPIN has relative GP
+> #endif /* SPIN */	
+1580a1725,1727
+> #ifdef SPIN	
+> 	ldgp    gp, 0(pv)	# SPIN has relative GP
+> #endif /* SPIN */	
+1585a1733,1735
+> #ifdef SPIN	
+> 	ldgp    gp, 0(pv)	# SPIN has relative GP
+> #endif /* SPIN */	
+1590a1741,1743
+> #ifdef SPIN	
+> 	ldgp    gp, 0(pv)	# SPIN has relative GP
+> #endif /* SPIN */	
+1603a1757,1759
+> #ifdef SPIN
+> 	ldgp    gp, 0(pv)	# SPIN has relative GP
+> #endif /* SPIN */	
+1724a1881
+> #ifndef SPIN	
+1732c1889,1890
+< 
+---
+> #endif /* SPIN */
+> 	
+1788a1947,1953
+> #ifdef SPIN
+> 	/*
+> 	 * we just halt if doadump is called.  We could support this 
+> 	 * with a little work if anyone cared about dumps
+> 	 */
+> 	call_pal PAL_halt
+> #else /* SPIN */	
+2102a2268
+> #endif /* SPIN */
+2211a2378
+> #ifndef SPIN
+2268a2436
+> #endif /* SPIN */

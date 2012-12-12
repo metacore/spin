@@ -1,0 +1,1414 @@
+db_access.o: ../../ddb/db_access.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h
+db_aout.o: ../../ddb/db_aout.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ./machine/bootinfo.h ../../ddb/ddb.h \
+  ./machine/db_machdep.h ../../vm/vm_prot.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h \
+  ./machine/psl.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ../../vm/vm_map.h ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h \
+  ./machine/pmap.h ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h \
+  ../../ddb/db_sym.h ../../include/nlist.h ../../include/stab.h
+db_break.o: ../../ddb/db_break.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h \
+  ../../ddb/db_break.h ../../ddb/db_access.h ../../ddb/db_sym.h \
+  ../../vm/vm_kern.h
+db_command.o: ../../ddb/db_command.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h \
+  ../../ddb/db_output.h ../../include/setjmp.h
+db_examine.o: ../../ddb/db_examine.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h \
+  ../../ddb/db_output.h ../../ddb/db_command.h ../../ddb/db_sym.h \
+  ../../ddb/db_access.h
+db_expr.o: ../../ddb/db_expr.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h \
+  ../../ddb/db_access.h ../../ddb/db_command.h
+db_input.o: ../../ddb/db_input.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h \
+  ../../ddb/db_output.h ./machine/cons.h ../../i386/i386/cons.h
+db_lex.o: ../../ddb/db_lex.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../ddb/ddb.h \
+  ./machine/db_machdep.h ../../vm/vm_prot.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h \
+  ./machine/psl.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ../../vm/vm_map.h ../../vm/vm_object.h ../../sys/proc.h ./machine/proc.h \
+  ../../sys/select.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h
+db_output.o: ../../ddb/db_output.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../ddb/ddb.h \
+  ./machine/db_machdep.h ../../vm/vm_prot.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h \
+  ./machine/psl.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ../../vm/vm_map.h ../../vm/vm_object.h ../../sys/proc.h ./machine/proc.h \
+  ../../sys/select.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ./machine/cons.h \
+  ../../i386/i386/cons.h
+db_print.o: ../../ddb/db_print.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h \
+  ../../ddb/db_variables.h ../../ddb/db_sym.h
+db_ps.o: ../../ddb/db_ps.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ./machine/cons.h \
+  ../../i386/i386/cons.h
+db_run.o: ../../ddb/db_run.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h \
+  ../../ddb/db_break.h ../../ddb/db_access.h
+db_sym.o: ../../ddb/db_sym.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_sym.h
+db_trap.o: ../../ddb/db_trap.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h \
+  ../../ddb/db_command.h ../../ddb/db_break.h
+db_variables.o: ../../ddb/db_variables.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h \
+  ../../ddb/db_variables.h
+db_watch.o: ../../ddb/db_watch.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h \
+  ../../ddb/db_watch.h ../../ddb/db_access.h ../../ddb/db_sym.h
+db_write_cmd.o: ../../ddb/db_write_cmd.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/db_lex.h \
+  ../../ddb/db_access.h ../../ddb/db_command.h ../../ddb/db_sym.h
+ttd_server.o: ../../../ttd/ttd_server.c ../../../../sal/salhook.h \
+  ../../../../sal/salnet.h ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/param.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/kernel.h ../../sys/mbuf.h ../../sys/malloc.h \
+  ../../../../sal/ttd/ttd_comm.h ../../../../sal/ttd/ttd_msg.h \
+  ../../../../sal/ttd/ttd_types.h ./machine/ttd_machdep.h ../../vm/vm.h \
+  ../../sys/vmmeter.h ../../sys/queue.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h \
+  ../../vm/vm_prot.h ../../vm/vm_inherit.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../sys/proc.h ./machine/proc.h ../../sys/select.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../sys/systm.h ./machine/stdarg.h ../../sys/libkern.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../../../sal/ttd/kernel_ttd.h \
+  ../../../../sal/ttd/ttd_stub.h ../../../../sal/ttd/ttd_server.h \
+  ../../../../sal/ttd/ttd_thread.h ../../../../sal/ttd/ttd_debug.h \
+  ../../../../sal/ttd/ttd_interface.h
+ttd_stub.o: ../../../ttd/ttd_stub.c ../../../../sal/salnet.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/param.h ../../sys/syslimits.h ../../sys/errno.h \
+  ../../sys/time.h ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h \
+  ../../sys/rtprio.h ../../sys/signal.h ./machine/signal.h ./machine/trap.h \
+  ./machine/param.h ./machine/limits.h ../../sys/kernel.h ../../sys/reboot.h \
+  ../../sys/mbuf.h ../../sys/malloc.h ../../../../sal/ttd/ttd_types.h \
+  ./machine/ttd_machdep.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ./machine/cpufunc.h ./machine/spl.h ./machine/ipl.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../vm/vm_page.h \
+  ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h ../../sys/systm.h \
+  ./machine/stdarg.h ../../sys/libkern.h ../../vm/vm_pager.h \
+  ../../vm/vm_extern.h ../../../../sal/ttd/ttd_msg.h \
+  ../../../../sal/ttd/ttd_stub.h ../../../../sal/ttd/ttd_comm.h \
+  ../../netinet/in.h ../../../../sal/ttd/ttd_server.h \
+  ../../../../sal/ttd/ttd_interface.h ./machine/cpu.h ./machine/frame.h \
+  ./machine/segments.h ./machine/cputypes.h ../../net/if.h ../../sys/socket.h \
+  ../../net/if_arp.h ../../netinet/if_ether.h ../../netinet/in_systm.h \
+  ../../netinet/ip.h ../../net/route.h ../../net/radix.h ../../net/if_types.h \
+  ../../netinet/in_pcb.h ../../netinet/ip_var.h ../../netinet/udp.h \
+  ../../netinet/udp_var.h
+ttd_thread.o: ../../../ttd/ttd_thread.c ../../../../sal/salhook.h \
+  ../../sys/param.h ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h \
+  ./machine/ansi.h ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h \
+  ../../sys/time.h ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h \
+  ../../sys/rtprio.h ../../sys/signal.h ./machine/signal.h ./machine/trap.h \
+  ./machine/param.h ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h \
+  ./machine/spl.h ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h \
+  ../../sys/kernel.h ../../../../sal/ttd/ttd_types.h ./machine/ttd_machdep.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../vm/vm_page.h \
+  ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h ../../vm/vm_pager.h \
+  ../../vm/vm_extern.h ../../../../sal/ttd/ttd_debug.h \
+  ../../../../sal/ttd/ttd_thread.h
+ttd_i386.o: ../../../ttd/ttd_i386.c ../../include/setjmp.h ../../sys/cdefs.h \
+  ../../sys/param.h ../../sys/types.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/user.h ./machine/pcb.h \
+  ./machine/tss.h ./machine/npx.h ./machine/frame.h ../../sys/resourcevar.h \
+  ../../sys/signalvar.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/sysctl.h \
+  ../../sys/acct.h ../../sys/kernel.h ../../sys/syscall.h ../../sys/sysent.h \
+  ../../vm/vm_kern.h ./machine/db_machdep.h ./machine/psl.h \
+  ../../../../sal/ttd/ttd_types.h ./machine/ttd_machdep.h \
+  ../../../../sal/ttd/ttd_debug.h ../../../../sal/ttd/ttd_thread.h \
+  ../../../../sal/ttd/ttd_stub.h ../../../../sal/ttd/ttd_comm.h \
+  ../../../../sal/ttd/ttd_msg.h ../../../../sal/ttd/ttd_interface.h \
+  ./machine/cpu.h ./machine/segments.h ./machine/cputypes.h \
+  ./machine/md_var.h ./machine/reg.h
+freebsd_subr.o: ../../freebsd_subr.c ../../../../sal/salhook.h \
+  ../../sys/param.h ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h \
+  ./machine/ansi.h ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h \
+  ../../sys/time.h ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h \
+  ../../sys/rtprio.h ../../sys/signal.h ./machine/signal.h ./machine/trap.h \
+  ./machine/param.h ./machine/limits.h ../../sys/kernel.h ../../sys/systm.h \
+  ./machine/cpufunc.h ./machine/spl.h ./machine/ipl.h ./machine/stdarg.h \
+  ../../sys/libkern.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../vm/vm_page.h \
+  ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h ../../vm/vm_pager.h \
+  ../../vm/vm_extern.h ../../vm/vm_kern.h ../../../../sal/i386_freebsd/sal.h \
+  ../../sys/timex.h ../../sys/syscall.h ./machine/clock.h ./machine/frame.h \
+  ./machine/cpu.h ./machine/segments.h ./machine/cputypes.h ./machine/psl.h \
+  ./machine/../isa/isa_device.h ../../sys/buf.h ../../sys/malloc.h
+freebsd_netsubr.o: ../../freebsd_netsubr.c ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/kernel.h ../../sys/systm.h ./machine/cpufunc.h \
+  ./machine/spl.h ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h \
+  ../../sys/mbuf.h ../../sys/malloc.h ../../net/if.h ../../sys/socket.h \
+  ../../net/if_arp.h ../../net/if_types.h ../../netinet/in.h \
+  ../../netinet/if_ether.h
+freebsd_data.o: ../../freebsd_data.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/kernel.h ../../vm/vm.h ../../sys/vmmeter.h \
+  ../../sys/queue.h ./machine/cpufunc.h ./machine/spl.h ./machine/ipl.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../vm/vm_page.h \
+  ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h ../../sys/systm.h \
+  ./machine/stdarg.h ../../sys/libkern.h ../../vm/vm_pager.h \
+  ../../vm/vm_extern.h ../../sys/dkstat.h ../../sys/timex.h \
+  ../../sys/syscall.h ../../sys/malloc.h ../../net/if.h ../../sys/socket.h \
+  ../../net/if_arp.h
+sal.o: ../../sal.c ../../sys/param.h ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/syslimits.h \
+  ../../sys/errno.h ../../sys/time.h ../../sys/resource.h ../../sys/ucred.h \
+  ../../sys/uio.h ../../sys/rtprio.h ../../sys/signal.h ./machine/signal.h \
+  ./machine/trap.h ./machine/param.h ./machine/limits.h ../../sys/kernel.h \
+  ../../sys/malloc.h ../../sys/buf.h ../../sys/queue.h ../../vm/vm.h \
+  ../../sys/vmmeter.h ./machine/cpufunc.h ./machine/spl.h ./machine/ipl.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../vm/vm_page.h \
+  ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h ../../sys/systm.h \
+  ./machine/stdarg.h ../../sys/libkern.h ../../vm/vm_pager.h \
+  ../../vm/vm_extern.h ../../vm/vm_kern.h ../../../../sal/i386_freebsd/sal.h
+cyclecount.o: ../../cyclecount.c ../../../../sal/cyclecount.h
+arp.o: ../../../salnet/arp.c ../../../../sal/salnet.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/kernel.h ../../sys/systm.h ./machine/cpufunc.h \
+  ./machine/spl.h ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h \
+  ../../sys/mbuf.h ../../sys/malloc.h ../../sys/ioctl.h ../../sys/ttycom.h \
+  ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h ../../netinet/in.h \
+  ../../net/if.h ../../sys/socket.h ../../net/if_arp.h \
+  ../../netinet/if_ether.h ../../vm/vm_param.h ./machine/vmparam.h
+bootp.o: ../../../salnet/bootp.c ../../../../sal/salnet.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/kernel.h ../../sys/systm.h ./machine/cpufunc.h \
+  ./machine/spl.h ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h \
+  ../../sys/socket.h ../../sys/mbuf.h ../../sys/malloc.h ../../sys/ioctl.h \
+  ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h \
+  ../../netinet/in.h ../../net/if.h ../../net/if_arp.h \
+  ../../netinet/if_ether.h ../../../../sal/salnet/bootp.h
+salnet.o: ../../../salnet/salnet.c ../../../../sal/salnet.h \
+  ../../../../sal/cyclecount.h ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/kernel.h ../../sys/systm.h ./machine/cpufunc.h \
+  ./machine/spl.h ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h \
+  ../../sys/mbuf.h ../../sys/malloc.h ../../sys/queue.h ../../net/if.h \
+  ../../sys/socket.h ../../net/if_arp.h ../../netinet/in.h \
+  ../../netinet/if_ether.h ../../netinet/in_systm.h ../../netinet/ip.h \
+  ../../net/route.h ../../net/radix.h ../../net/if_types.h \
+  ../../netinet/in_pcb.h ../../netinet/ip_var.h ../../netinet/udp.h \
+  ../../netinet/udp_var.h ../../vm/vm_param.h ./machine/vmparam.h
+salnfs.o: ../../../salnet/salnfs.c ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/param.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/kernel.h ./machine/varargs.h ../../sys/mbuf.h \
+  ../../sys/malloc.h ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h \
+  ../../sys/filio.h ../../sys/sockio.h ../../netinet/in.h ../../net/if.h \
+  ../../sys/socket.h ../../net/if_arp.h ../../netinet/if_ether.h \
+  ./machine/spl.h ./machine/ipl.h ../../include/rpc/types.h \
+  ../../include/rpc/xdr.h ../../include/rpc/pmap_prot.h ../../nfs/nfsv2.h \
+  ../../nfs/rpcv2.h ../../../../sal/salnet.h
+tftp.o: ../../../salnet/tftp.c ../../../../sal/salnet.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/kernel.h ../../sys/mbuf.h ../../sys/malloc.h \
+  ../../netinet/in.h ../../net/if.h ../../sys/socket.h ../../net/if_arp.h \
+  ../../netinet/if_ether.h ./machine/spl.h ./machine/ipl.h \
+  ../../include/arpa/tftp.h ../../vm/vm_param.h ./machine/vmparam.h
+dns.o: ../../../salnet/dns.c ../../../../sal/salnet.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/kernel.h ../../sys/mbuf.h ../../sys/malloc.h \
+  ../../netinet/in.h ../../net/if.h ../../sys/socket.h ../../net/if_arp.h \
+  ../../netinet/if_ether.h ./machine/spl.h ./machine/ipl.h \
+  ../../include/arpa/nameser.h ../../../../sal/salnet/resolv.h \
+  ../../include/stdio.h
+res_comp.o: ../../../salnet/res_comp.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../netinet/in.h ../../include/arpa/nameser.h \
+  ../../include/stdio.h ../../include/resolv.h ../../sys/unistd.h \
+  ../../include/string.h
+res_mkquery.o: ../../../salnet/res_mkquery.c ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../netinet/in.h ../../include/arpa/nameser.h \
+  ../../include/stdio.h ../../include/resolv.h ../../include/string.h \
+  ../../include/netdb.h ../../../salnet/res_config.h
+if_vx.o: ../../dev/vx/if_vx.c ./vx.h ./bpfilter.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/devconf.h \
+  ./machine/devconf.h ../../i386/isa/isa_device.h ../../i386/eisa/eisaconf.h \
+  ../../sys/queue.h ../../pci/pcireg.h ../../pci/pcivar.h \
+  ../../scsi/scsi_all.h ../../scsi/scsiconf.h ../../scsi/scsi_debug.h \
+  ../../scsi/scsi_driver.h ../../sys/conf.h ../../sys/kernel.h \
+  ../../sys/mbuf.h ../../sys/malloc.h ../../sys/ioctl.h ../../sys/ttycom.h \
+  ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h ../../net/if.h \
+  ../../sys/socket.h ../../net/if_arp.h ../../netinet/in.h \
+  ../../netinet/in_systm.h ../../netinet/if_ether.h ./machine/clock.h \
+  ./machine/frame.h ../../dev/vx/if_vxreg.h ../../../../sal/salnet.h
+kern_devconf.o: ../../kern/kern_devconf.c ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../vm/vm.h \
+  ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/sysctl.h \
+  ../../sys/devconf.h ./machine/devconf.h ../../i386/isa/isa_device.h \
+  ../../i386/eisa/eisaconf.h ../../pci/pcireg.h ../../pci/pcivar.h \
+  ../../scsi/scsi_all.h ../../scsi/scsiconf.h ../../scsi/scsi_debug.h \
+  ../../scsi/scsi_driver.h ../../sys/conf.h
+kern_malloc.o: ../../kern/kern_malloc.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/kernel.h ../../sys/malloc.h \
+  ../../sys/mbuf.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../vm/vm_kern.h
+kern_physio.o: ../../kern/kern_physio.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/conf.h ../../sys/proc.h ./machine/proc.h \
+  ../../sys/select.h ../../vm/vm.h ../../sys/vmmeter.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h
+kern_subr.o: ../../kern/kern_subr.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/malloc.h ../../sys/queue.h
+subr_diskslice.o: ../../kern/subr_diskslice.c ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/buf.h ../../sys/queue.h ../../sys/disklabel.h \
+  ../../sys/conf.h ../../sys/diskslice.h ../../sys/ioccom.h ../../sys/dkbad.h \
+  ../../sys/fcntl.h ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/filio.h \
+  ../../sys/sockio.h ../../sys/malloc.h ../../sys/stat.h ../../sys/syslog.h \
+  ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h ./machine/ipl.h \
+  ./machine/stdarg.h ../../sys/libkern.h ../../sys/vnode.h ./vnode_if.h
+subr_dkbad.o: ../../kern/subr_dkbad.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/buf.h ../../sys/queue.h ../../sys/disklabel.h \
+  ../../sys/conf.h ../../sys/dkbad.h ../../sys/malloc.h
+subr_prf.o: ../../kern/subr_prf.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/reboot.h \
+  ../../sys/msgbuf.h ../../sys/proc.h ./machine/proc.h ../../sys/select.h \
+  ../../sys/vnode.h ../../sys/queue.h ./vnode_if.h ../../sys/buf.h \
+  ../../sys/tty.h ../../sys/termios.h ../../sys/ttycom.h ../../sys/ioccom.h \
+  ../../sys/ttydefaults.h ../../sys/tprintf.h ../../sys/syslog.h \
+  ../../sys/malloc.h ./machine/cons.h ../../i386/i386/cons.h
+subr_rlist.o: ../../kern/subr_rlist.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/rlist.h ../../sys/proc.h ./machine/proc.h ../../sys/select.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../vm/vm_kern.h
+subr_xxx.o: ../../kern/subr_xxx.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ./machine/cpu.h \
+  ./machine/frame.h ./machine/segments.h ./machine/cputypes.h
+tty.o: ../../kern/tty.c ./snp.h ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/ioctl.h \
+  ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../sys/tty.h \
+  ../../sys/termios.h ../../sys/ttydefaults.h ../../sys/file.h \
+  ../../sys/fcntl.h ../../sys/unistd.h ../../sys/conf.h ../../sys/dkstat.h \
+  ../../sys/kernel.h ../../sys/vnode.h ../../sys/queue.h ./vnode_if.h \
+  ../../sys/buf.h ../../sys/syslog.h ../../sys/signalvar.h \
+  ../../sys/resourcevar.h ../../sys/malloc.h ../../vm/vm.h \
+  ../../sys/vmmeter.h ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h \
+  ../../vm/vm_prot.h ../../vm/vm_inherit.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h
+tty_compat.o: ../../kern/tty_compat.c
+tty_conf.o: ../../kern/tty_conf.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h \
+  ../../sys/filio.h ../../sys/sockio.h ../../sys/proc.h ./machine/proc.h \
+  ../../sys/select.h ../../sys/tty.h ../../sys/termios.h \
+  ../../sys/ttydefaults.h ../../sys/conf.h
+tty_subr.o: ../../kern/tty_subr.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/ioctl.h \
+  ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h \
+  ../../sys/tty.h ../../sys/termios.h ../../sys/ttydefaults.h \
+  ../../sys/select.h ../../sys/clist.h ../../sys/malloc.h
+tty_tty.o: ../../kern/tty_tty.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/conf.h \
+  ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h \
+  ../../sys/sockio.h ../../sys/proc.h ./machine/proc.h ../../sys/select.h \
+  ../../sys/tty.h ../../sys/termios.h ../../sys/ttydefaults.h \
+  ../../sys/vnode.h ../../sys/queue.h ./vnode_if.h ../../sys/buf.h \
+  ../../sys/file.h ../../sys/fcntl.h ../../sys/unistd.h
+uipc_mbuf.o: ../../kern/uipc_mbuf.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/malloc.h ../../sys/mbuf.h \
+  ../../sys/kernel.h ../../sys/syslog.h ../../sys/domain.h \
+  ../../sys/protosw.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h
+uipc_socket.o: ../../kern/uipc_socket.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/file.h ../../sys/fcntl.h \
+  ../../sys/unistd.h ../../sys/malloc.h ../../sys/mbuf.h ../../sys/domain.h \
+  ../../sys/kernel.h ../../sys/protosw.h ../../sys/socket.h \
+  ../../sys/socketvar.h ../../sys/stat.h ../../sys/filedesc.h \
+  ../../sys/resourcevar.h ../../sys/signalvar.h
+uipc_socket2.o: ../../kern/uipc_socket2.c ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/file.h ../../sys/fcntl.h \
+  ../../sys/unistd.h ../../sys/buf.h ../../sys/queue.h ../../sys/malloc.h \
+  ../../sys/mbuf.h ../../sys/protosw.h ../../sys/stat.h ../../sys/socket.h \
+  ../../sys/socketvar.h ../../sys/filedesc.h ../../sys/signalvar.h
+if_loop.o: ../../net/if_loop.c ./loop.h ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ../../sys/mbuf.h ../../sys/malloc.h ../../sys/socket.h ../../sys/ioctl.h \
+  ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h \
+  ./machine/cpu.h ./machine/frame.h ./machine/segments.h ./machine/cputypes.h \
+  ../../net/if.h ../../net/if_arp.h ../../net/if_types.h ../../net/netisr.h \
+  ../../net/route.h ../../net/radix.h ../../net/bpf.h ../../netinet/in.h \
+  ../../netinet/in_systm.h ../../netinet/in_var.h ../../sys/queue.h \
+  ../../netinet/ip.h ./bpfilter.h
+in.o: ../../netinet/in.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/ioctl.h \
+  ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h \
+  ../../sys/malloc.h ../../sys/socket.h ../../sys/socketvar.h \
+  ../../sys/stat.h ../../sys/filedesc.h ../../sys/select.h ../../sys/queue.h \
+  ../../net/if.h ../../net/if_arp.h ../../net/route.h ../../net/radix.h \
+  ../../netinet/in_systm.h ../../netinet/in.h ../../netinet/in_var.h \
+  ../../netinet/if_ether.h ../../netinet/igmp_var.h
+in_pcb.o: ../../netinet/in_pcb.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/mbuf.h ../../sys/protosw.h ../../sys/socket.h \
+  ../../sys/socketvar.h ../../sys/stat.h ../../sys/filedesc.h \
+  ../../sys/select.h ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h \
+  ../../sys/filio.h ../../sys/sockio.h ../../sys/proc.h ./machine/proc.h \
+  ../../sys/queue.h ../../net/if.h ../../net/if_arp.h ../../net/route.h \
+  ../../net/radix.h ../../netinet/in.h ../../netinet/in_systm.h \
+  ../../netinet/ip.h ../../netinet/in_pcb.h ../../netinet/in_var.h \
+  ../../netinet/ip_var.h
+tcp_input.o: ../../netinet/tcp_input.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/mbuf.h ../../sys/protosw.h ../../sys/socket.h \
+  ../../sys/socketvar.h ../../sys/stat.h ../../sys/filedesc.h \
+  ../../sys/select.h ../../sys/queue.h ../../sys/kernel.h ../../net/if.h \
+  ../../net/if_arp.h ../../net/route.h ../../net/radix.h ../../netinet/in.h \
+  ../../netinet/in_systm.h ../../netinet/ip.h ../../netinet/in_pcb.h \
+  ../../netinet/ip_var.h ../../netinet/tcp.h ../../netinet/tcp_fsm.h \
+  ../../netinet/tcp_seq.h ../../netinet/tcp_timer.h ../../netinet/tcp_var.h \
+  ../../netinet/tcpip.h
+tcp_output.o: ../../netinet/tcp_output.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/mbuf.h ../../sys/protosw.h ../../sys/socket.h \
+  ../../sys/socketvar.h ../../sys/stat.h ../../sys/filedesc.h \
+  ../../sys/select.h ../../sys/queue.h ../../net/route.h ../../net/radix.h \
+  ../../netinet/in.h ../../netinet/in_systm.h ../../netinet/ip.h \
+  ../../netinet/in_pcb.h ../../netinet/ip_var.h ../../netinet/tcp.h \
+  ../../netinet/tcp_fsm.h ../../netinet/tcp_seq.h ../../netinet/tcp_timer.h \
+  ../../netinet/tcp_var.h ../../netinet/tcpip.h
+tcp_subr.o: ../../netinet/tcp_subr.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/proc.h ./machine/proc.h ../../sys/select.h \
+  ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h ./machine/ipl.h \
+  ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h ../../sys/mbuf.h \
+  ../../sys/socket.h ../../sys/socketvar.h ../../sys/stat.h \
+  ../../sys/filedesc.h ../../sys/protosw.h ../../sys/queue.h \
+  ../../net/route.h ../../net/radix.h ../../net/if.h ../../net/if_arp.h \
+  ../../netinet/in.h ../../netinet/in_systm.h ../../netinet/ip.h \
+  ../../netinet/in_pcb.h ../../netinet/in_var.h ../../netinet/ip_var.h \
+  ../../netinet/ip_icmp.h ../../netinet/tcp.h ../../netinet/tcp_fsm.h \
+  ../../netinet/tcp_seq.h ../../netinet/tcp_timer.h ../../netinet/tcp_var.h \
+  ../../netinet/tcpip.h
+tcp_timer.o: ../../netinet/tcp_timer.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/mbuf.h ../../sys/socket.h ../../sys/socketvar.h ../../sys/stat.h \
+  ../../sys/filedesc.h ../../sys/select.h ../../sys/protosw.h \
+  ../../sys/queue.h ../../net/if.h ../../net/if_arp.h ../../net/route.h \
+  ../../net/radix.h ../../netinet/in.h ../../netinet/in_systm.h \
+  ../../netinet/ip.h ../../netinet/in_pcb.h ../../netinet/ip_var.h \
+  ../../netinet/tcp.h ../../netinet/tcp_fsm.h ../../netinet/tcp_seq.h \
+  ../../netinet/tcp_timer.h ../../netinet/tcp_var.h ../../netinet/tcpip.h
+tcp_usrreq.o: ../../netinet/tcp_usrreq.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ../../sys/malloc.h ../../sys/mbuf.h ../../sys/socket.h \
+  ../../sys/socketvar.h ../../sys/stat.h ../../sys/filedesc.h \
+  ../../sys/select.h ../../sys/protosw.h ../../vm/vm.h ../../sys/vmmeter.h \
+  ../../sys/queue.h ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h \
+  ../../vm/vm_prot.h ../../vm/vm_inherit.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../sys/proc.h ./machine/proc.h ../../vm/vm_page.h \
+  ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h ../../vm/vm_pager.h \
+  ../../vm/vm_extern.h ../../sys/sysctl.h ../../net/if.h ../../net/if_arp.h \
+  ../../net/route.h ../../net/radix.h ../../netinet/in.h \
+  ../../netinet/in_systm.h ../../netinet/ip.h ../../netinet/in_pcb.h \
+  ../../netinet/in_var.h ../../netinet/ip_var.h ../../netinet/tcp.h \
+  ../../netinet/tcp_fsm.h ../../netinet/tcp_seq.h ../../netinet/tcp_timer.h \
+  ../../netinet/tcp_var.h ../../netinet/tcpip.h
+udp_usrreq.o: ../../netinet/udp_usrreq.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/mbuf.h ../../sys/protosw.h ../../sys/socket.h \
+  ../../sys/socketvar.h ../../sys/stat.h ../../sys/filedesc.h \
+  ../../sys/select.h ../../sys/queue.h ../../vm/vm.h ../../sys/vmmeter.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../sys/proc.h ./machine/proc.h ../../vm/vm_page.h ../../vm/pmap.h \
+  ./machine/pmap.h ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h \
+  ../../sys/sysctl.h ../../net/if.h ../../net/if_arp.h ../../net/route.h \
+  ../../net/radix.h ../../netinet/in.h ../../netinet/in_systm.h \
+  ../../netinet/ip.h ../../netinet/in_pcb.h ../../netinet/in_var.h \
+  ../../netinet/ip_var.h ../../netinet/ip_icmp.h ../../netinet/udp.h \
+  ../../netinet/udp_var.h
+bt9xx.o: ../../pci/bt9xx.c ./pci.h ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/kernel.h ../../scsi/scsi_all.h ../../scsi/scsiconf.h \
+  ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h ../../sys/conf.h \
+  ../../pci/pcireg.h ../../pci/pcivar.h ../../i386/scsi/btreg.h ./bt.h
+if_vx_pci.o: ../../pci/if_vx_pci.c ./pci.h ./vx.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/devconf.h \
+  ./machine/devconf.h ../../i386/isa/isa_device.h ../../i386/eisa/eisaconf.h \
+  ../../sys/queue.h ../../pci/pcireg.h ../../pci/pcivar.h \
+  ../../scsi/scsi_all.h ../../scsi/scsiconf.h ../../scsi/scsi_debug.h \
+  ../../scsi/scsi_driver.h ../../sys/conf.h ../../sys/kernel.h ../../net/if.h \
+  ../../sys/socket.h ../../net/if_arp.h ../../netinet/in.h \
+  ../../netinet/if_ether.h ./machine/clock.h ./machine/frame.h \
+  ../../dev/vx/if_vxreg.h
+pci.o: ../../pci/pci.c ./pci.h ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/kernel.h ../../sys/proc.h ./machine/proc.h ../../sys/select.h \
+  ../../sys/devconf.h ./machine/devconf.h ../../i386/isa/isa_device.h \
+  ../../i386/eisa/eisaconf.h ../../sys/queue.h ../../pci/pcireg.h \
+  ../../pci/pcivar.h ../../scsi/scsi_all.h ../../scsi/scsiconf.h \
+  ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h ../../sys/conf.h \
+  ./machine/cpu.h ./machine/frame.h ./machine/segments.h ./machine/cputypes.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/lock.h ../../vm/vm_prot.h ../../vm/vm_inherit.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../pci/pcibus.h
+pcisupport.o: ../../pci/pcisupport.c ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/param.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/kernel.h ../../sys/devconf.h ./machine/devconf.h \
+  ../../i386/isa/isa_device.h ../../i386/eisa/eisaconf.h ../../sys/queue.h \
+  ../../pci/pcireg.h ../../pci/pcivar.h ../../scsi/scsi_all.h \
+  ../../scsi/scsiconf.h ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h \
+  ../../sys/conf.h ./machine/cpu.h ./machine/frame.h ./machine/segments.h \
+  ./machine/cputypes.h
+scsi_base.o: ../../scsi/scsi_base.c ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/param.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/kernel.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/malloc.h ../../vm/vm.h ../../sys/vmmeter.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../scsi/scsi_all.h \
+  ../../scsi/scsi_disk.h ../../scsi/scsiconf.h ../../scsi/scsi_debug.h \
+  ../../scsi/scsi_driver.h ../../sys/conf.h
+scsi_sense.o: ../../scsi/scsi_sense.c ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ./sd.h ./st.h ./pt.h \
+  ./worm.h ./cd.h ./od.h ./ch.h
+scsi_ioctl.o: ../../scsi/scsi_ioctl.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/buf.h ../../sys/queue.h ../../sys/fcntl.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../vm/vm.h ../../sys/vmmeter.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ./scbus.h ../../scsi/scsi_all.h \
+  ../../scsi/scsiconf.h ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h \
+  ../../sys/conf.h ../../sys/scsiio.h ../../sys/ioctl.h ../../sys/ttycom.h \
+  ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h
+scsiconf.o: ../../scsi/scsiconf.c ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/param.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/stat.h \
+  ../../sys/malloc.h ../../sys/devconf.h ./machine/devconf.h \
+  ../../i386/isa/isa_device.h ../../i386/eisa/eisaconf.h ../../sys/queue.h \
+  ../../pci/pcireg.h ../../pci/pcivar.h ../../scsi/scsi_all.h \
+  ../../scsi/scsiconf.h ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h \
+  ../../sys/conf.h ./machine/clock.h ./machine/frame.h ./machine/cpu.h \
+  ./machine/segments.h ./machine/cputypes.h ./scbus.h ./sd.h ./st.h ./cd.h \
+  ./ch.h ./worm.h ./od.h ./su.h ./sctarg.h
+scsi_driver.o: ../../scsi/scsi_driver.c ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/errno.h \
+  ../../sys/param.h ../../sys/syslimits.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/devconf.h ./machine/devconf.h \
+  ../../i386/isa/isa_device.h ../../i386/eisa/eisaconf.h ../../pci/pcireg.h \
+  ../../pci/pcivar.h ../../scsi/scsi_all.h ../../scsi/scsiconf.h \
+  ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h ../../sys/conf.h \
+  ../../sys/malloc.h ../../sys/fcntl.h ./machine/cpu.h ./machine/frame.h \
+  ./machine/segments.h ./machine/cputypes.h
+uk.o: ../../scsi/uk.c ../../sys/param.h ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/syslimits.h \
+  ../../sys/errno.h ../../sys/time.h ../../sys/resource.h ../../sys/ucred.h \
+  ../../sys/uio.h ../../sys/rtprio.h ../../sys/signal.h ./machine/signal.h \
+  ./machine/trap.h ./machine/param.h ./machine/limits.h ../../scsi/scsi_all.h \
+  ../../scsi/scsiconf.h ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h \
+  ../../sys/conf.h
+sd.o: ../../scsi/sd.c ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h \
+  ./machine/ansi.h ./machine/types.h ../../sys/param.h ../../sys/syslimits.h \
+  ../../sys/errno.h ../../sys/time.h ../../sys/resource.h ../../sys/ucred.h \
+  ../../sys/uio.h ../../sys/rtprio.h ../../sys/signal.h ./machine/signal.h \
+  ./machine/trap.h ./machine/param.h ./machine/limits.h ../../sys/kernel.h \
+  ../../sys/dkbad.h ../../sys/conf.h ../../sys/systm.h ./machine/cpufunc.h \
+  ./machine/spl.h ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h \
+  ../../sys/file.h ../../sys/fcntl.h ../../sys/unistd.h ../../sys/stat.h \
+  ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h \
+  ../../sys/sockio.h ../../sys/buf.h ../../sys/queue.h ../../sys/malloc.h \
+  ../../sys/dkstat.h ../../sys/disklabel.h ../../sys/diskslice.h \
+  ../../scsi/scsi_all.h ../../scsi/scsi_disk.h ../../scsi/scsiconf.h \
+  ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h ../../vm/vm.h \
+  ../../sys/vmmeter.h ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h \
+  ../../vm/vm_prot.h ../../vm/vm_inherit.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../sys/proc.h ./machine/proc.h ../../sys/select.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/devconf.h \
+  ./machine/devconf.h ../../i386/isa/isa_device.h ../../i386/eisa/eisaconf.h \
+  ../../pci/pcireg.h ../../pci/pcivar.h ./machine/md_var.h \
+  ../../i386/i386/cons.h
+ufs_disksubr.o: ../../ufs/ufs/ufs_disksubr.c ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/disklabel.h ../../sys/conf.h \
+  ../../sys/diskslice.h ../../sys/ioccom.h ../../sys/dkbad.h \
+  ../../sys/syslog.h
+bt74x.o: ../../i386/eisa/bt74x.c ./eisa.h
+if_vx_eisa.o: ../../i386/eisa/if_vx_eisa.c ./eisa.h
+autoconf.o: ../../i386/i386/autoconf.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/dkstat.h ../../sys/conf.h ../../sys/dmap.h \
+  ../../sys/reboot.h ../../sys/kernel.h ./machine/cpu.h ./machine/frame.h \
+  ./machine/segments.h ./machine/cputypes.h ./machine/md_var.h \
+  ./machine/pte.h ../../i386/isa/icu.h ./eisa.h ./pci.h ../../pci/pcivar.h \
+  ./isa.h ../../i386/isa/isa_device.h ./scbus.h ../../scsi/scsiconf.h \
+  ../../scsi/scsi_debug.h ../../scsi/scsi_all.h ../../scsi/scsi_driver.h
+conf.o: ../../i386/i386/conf.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h \
+  ../../sys/filio.h ../../sys/sockio.h ../../sys/proc.h ./machine/proc.h \
+  ../../sys/select.h ../../sys/vnode.h ./vnode_if.h ../../sys/tty.h \
+  ../../sys/termios.h ../../sys/ttydefaults.h ../../sys/conf.h ./wd.h ./worm.h \
+  ./sctarg.h ./pt.h ./sd.h ./st.h ./od.h ./ccd.h ./cd.h ./mcd.h ./scd.h ./matcd.h \
+  ./ata.h ./wcd.h ./ch.h ./wt.h ./fd.h ./vn.h ./meteor.h ./qcam.h ./machine/cons.h \
+  ../../i386/i386/cons.h ./sc.h ./vt.h ./pty.h ./snp.h ./bqu.h ./lpt.h ./tw.h \
+  ./psm.h ./snd.h ./bpfilter.h ./speaker.h ./pca.h ./mse.h ./sio.h ./su.h \
+  ./scbus.h ./apm.h ./ctx.h ./ssc.h ./cx.h ./gp.h ./gsc.h ./crd.h ./joy.h ./asc.h \
+  ./tun.h ./spigot.h ./cy.h ./dgb.h ./si.h ./ity.h ./nic.h ./nnic.h ./isdn.h \
+  ./itel.h ./ispy.h ./rc.h ./labpc.h ./stl.h ./stli.h
+cons.o: ../../i386/i386/cons.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/conf.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../sys/tty.h \
+  ../../sys/termios.h ../../sys/ttycom.h ../../sys/ioccom.h \
+  ../../sys/ttydefaults.h ./machine/cons.h ../../i386/i386/cons.h ./sc.h \
+  ./vt.h ./sio.h
+db_disasm.o: ../../i386/i386/db_disasm.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h \
+  ../../ddb/db_access.h ../../ddb/db_sym.h
+db_interface.o: ../../i386/i386/db_interface.c ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../sys/reboot.h \
+  ./machine/md_var.h ./machine/segments.h ./machine/cons.h \
+  ../../i386/i386/cons.h ../../ddb/ddb.h ./machine/db_machdep.h \
+  ../../vm/vm_prot.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/vm_inherit.h ../../vm/lock.h ./machine/frame.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h \
+  ../../include/setjmp.h
+db_trace.o: ../../i386/i386/db_trace.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ./machine/md_var.h ../../vm/vm.h \
+  ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../ddb/ddb.h \
+  ./machine/db_machdep.h ./machine/frame.h ./machine/psl.h \
+  ../../ddb/db_access.h ../../ddb/db_sym.h ../../ddb/db_variables.h
+in_cksum.o: ../../i386/i386/in_cksum.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/mbuf.h \
+  ../../sys/malloc.h
+machdep.o: ../../i386/i386/machdep.c ./npx.h ./isa.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h \
+  ../../sys/signalvar.h ../../sys/kernel.h ../../sys/proc.h ./machine/proc.h \
+  ../../sys/select.h ../../sys/user.h ./machine/pcb.h ./machine/tss.h \
+  ./machine/npx.h ./machine/frame.h ../../sys/resourcevar.h ../../vm/vm.h \
+  ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/sysctl.h ../../sys/buf.h \
+  ../../sys/reboot.h ../../sys/conf.h ../../sys/file.h ../../sys/fcntl.h \
+  ../../sys/unistd.h ../../sys/callout.h ../../sys/malloc.h ../../sys/mbuf.h \
+  ../../sys/mount.h ../../net/radix.h ../../sys/socket.h ../../sys/msgbuf.h \
+  ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h \
+  ../../sys/sockio.h ../../sys/sysent.h ../../sys/tty.h ../../sys/termios.h \
+  ../../sys/ttydefaults.h ../../sys/devconf.h ./machine/devconf.h \
+  ../../i386/isa/isa_device.h ../../i386/eisa/eisaconf.h ../../pci/pcireg.h \
+  ../../pci/pcivar.h ../../scsi/scsi_all.h ../../scsi/scsiconf.h \
+  ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h ../../vm/vm_kern.h \
+  ../../sys/exec.h ./machine/exec.h ../../sys/vnode.h ./vnode_if.h \
+  ../../ddb/ddb.h ./machine/db_machdep.h ./machine/psl.h ../../net/netisr.h \
+  ../../net/if.h ../../net/if_arp.h ../../net/route.h ../../netinet/in.h \
+  ../../netinet/in_systm.h ../../netinet/ip.h ../../netinet/if_ether.h \
+  ../../netinet/ip_var.h ../../netns/ns.h ../../netns/ns_if.h \
+  ../../netiso/iso.h ../../netiso/iso_var.h ../../netccitt/dll.h \
+  ../../netccitt/x25.h ../../netccitt/pk.h ../../sys/socketvar.h \
+  ../../sys/stat.h ../../sys/filedesc.h ../../netccitt/pk_var.h ./ether.h \
+  ./machine/cpu.h ./machine/segments.h ./machine/cputypes.h ./machine/reg.h \
+  ./machine/clock.h ./machine/specialreg.h ./machine/sysarch.h \
+  ./machine/cons.h ../../i386/i386/cons.h ./machine/bootinfo.h \
+  ./machine/md_var.h ../../i386/isa/isa.h ../../i386/isa/rtc.h \
+  ./machine/random.h ../../sys/disklabel.h
+mem.o: ../../i386/i386/mem.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/conf.h ../../sys/buf.h ../../sys/queue.h \
+  ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h ./machine/ipl.h \
+  ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ./machine/cpu.h ./machine/frame.h \
+  ./machine/segments.h ./machine/cputypes.h ./machine/random.h \
+  ../../sys/ioccom.h ../../i386/isa/isa_device.h ./machine/psl.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/lock.h ../../vm/vm_prot.h ../../vm/vm_inherit.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h
+pmap.o: ../../i386/i386/pmap.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/malloc.h ../../sys/user.h \
+  ./machine/pcb.h ./machine/tss.h ./machine/npx.h ./machine/frame.h \
+  ../../sys/resourcevar.h ../../sys/signalvar.h ../../vm/vm.h \
+  ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/sysctl.h \
+  ../../vm/vm_kern.h ./machine/cputypes.h ./machine/md_var.h \
+  ../../i386/isa/isa.h ../../sys/msgbuf.h
+sys_machdep.o: ../../i386/i386/sys_machdep.c ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/user.h ./machine/pcb.h \
+  ./machine/tss.h ./machine/npx.h ./machine/frame.h ../../sys/resourcevar.h \
+  ../../sys/signalvar.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/sysctl.h ./machine/cpu.h \
+  ./machine/segments.h ./machine/cputypes.h ./machine/sysarch.h \
+  ../../vm/vm_kern.h
+userconfig.o: ../../i386/i386/userconfig.c ./pci.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ../../sys/malloc.h ./machine/cons.h ../../i386/i386/cons.h \
+  ./machine/md_var.h ../../i386/isa/isa_device.h ../../pci/pcivar.h ./scbus.h \
+  ../../scsi/scsiconf.h ../../scsi/scsi_debug.h ../../scsi/scsi_all.h \
+  ../../scsi/scsi_driver.h ../../sys/conf.h
+vm_machdep.o: ../../i386/i386/vm_machdep.c ./npx.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/malloc.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/vnode.h ./vnode_if.h ../../sys/user.h \
+  ./machine/pcb.h ./machine/tss.h ./machine/npx.h ./machine/frame.h \
+  ../../sys/resourcevar.h ../../sys/signalvar.h ../../vm/vm.h \
+  ../../sys/vmmeter.h ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h \
+  ../../vm/vm_prot.h ../../vm/vm_inherit.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/sysctl.h \
+  ./machine/clock.h ./machine/cpu.h ./machine/segments.h ./machine/cputypes.h \
+  ./machine/md_var.h ../../vm/vm_kern.h ../../i386/isa/isa.h
+bt5xx-445.o: ../../i386/isa/bt5xx-445.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ../../sys/devconf.h ./machine/devconf.h ../../i386/isa/isa_device.h \
+  ../../i386/eisa/eisaconf.h ../../sys/queue.h ../../pci/pcireg.h \
+  ../../pci/pcivar.h ../../scsi/scsi_all.h ../../scsi/scsiconf.h \
+  ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h ../../sys/conf.h \
+  ../../i386/scsi/btreg.h ./bt.h
+clock.o: ../../i386/isa/clock.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ./machine/clock.h ./machine/frame.h ../../i386/isa/icu.h \
+  ../../i386/isa/isa.h ../../i386/isa/isa_device.h ../../i386/isa/rtc.h \
+  ../../i386/isa/timerreg.h
+diskslice_machdep.o: ../../i386/isa/diskslice_machdep.c \
+  ../../include/stddef.h ./machine/ansi.h ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/buf.h ../../sys/queue.h ../../sys/disklabel.h \
+  ../../sys/conf.h ../../sys/diskslice.h ../../sys/ioccom.h \
+  ../../sys/malloc.h ../../sys/syslog.h ../../sys/systm.h ./machine/cpufunc.h \
+  ./machine/spl.h ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h \
+  ./machine/cpu.h ./machine/frame.h ./machine/segments.h ./machine/cputypes.h
+if_ed.o: ../../i386/isa/if_ed.c ./ed.h ./bpfilter.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/ioctl.h \
+  ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h \
+  ../../sys/mbuf.h ../../sys/malloc.h ../../sys/socket.h ../../sys/syslog.h \
+  ../../sys/devconf.h ./machine/devconf.h ../../i386/isa/isa_device.h \
+  ../../i386/eisa/eisaconf.h ../../sys/queue.h ../../pci/pcireg.h \
+  ../../pci/pcivar.h ../../scsi/scsi_all.h ../../scsi/scsiconf.h \
+  ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h ../../sys/conf.h \
+  ../../net/if.h ../../net/if_arp.h ../../net/if_dl.h ../../net/if_types.h \
+  ../../netinet/in.h ../../netinet/in_systm.h ../../netinet/in_var.h \
+  ../../netinet/ip.h ../../netinet/if_ether.h ./machine/clock.h \
+  ./machine/frame.h ../../i386/isa/isa.h ../../i386/isa/icu.h \
+  ../../i386/isa/if_edreg.h ../../../../sal/salnet.h
+if_ix.o: ../../i386/isa/if_ix.c ./ix.h ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/mbuf.h \
+  ../../sys/malloc.h ../../sys/socket.h ../../sys/ioctl.h ../../sys/ttycom.h \
+  ../../sys/ioccom.h ../../sys/filio.h ../../sys/sockio.h ../../sys/syslog.h \
+  ../../sys/devconf.h ./machine/devconf.h ../../i386/isa/isa_device.h \
+  ../../i386/eisa/eisaconf.h ../../sys/queue.h ../../pci/pcireg.h \
+  ../../pci/pcivar.h ../../scsi/scsi_all.h ../../scsi/scsiconf.h \
+  ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h ../../sys/conf.h \
+  ./machine/clock.h ./machine/frame.h ../../net/if.h ../../net/if_arp.h \
+  ../../net/if_types.h ../../net/if_dl.h ../../netinet/in.h \
+  ../../netinet/in_systm.h ../../netinet/in_var.h ../../netinet/ip.h \
+  ../../netinet/if_ether.h ./bpfilter.h ../../i386/isa/icu.h \
+  ../../i386/isa/if_ixreg.h ../../../../sal/salnet.h
+isa.o: ../../i386/isa/isa.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ../../sys/proc.h ./machine/proc.h ../../sys/select.h ../../sys/conf.h \
+  ../../sys/file.h ../../sys/fcntl.h ../../sys/unistd.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/syslog.h ../../sys/malloc.h ../../sys/rlist.h \
+  ./machine/segments.h ../../vm/vm.h ../../sys/vmmeter.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../i386/isa/isa_device.h \
+  ../../i386/isa/isa.h ../../i386/isa/icu.h ../../i386/isa/ic/i8237.h \
+  ../../i386/isa/ic/i8042.h ../../sys/devconf.h ./machine/devconf.h \
+  ../../i386/eisa/eisaconf.h ../../pci/pcireg.h ../../pci/pcivar.h \
+  ../../scsi/scsi_all.h ../../scsi/scsiconf.h ../../scsi/scsi_debug.h \
+  ../../scsi/scsi_driver.h ./vector.h ./sl.h ./ppp.h
+npx.o: ../../i386/isa/npx.c ./npx.h ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/conf.h \
+  ../../sys/file.h ../../sys/fcntl.h ../../sys/unistd.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ../../sys/devconf.h ./machine/devconf.h \
+  ../../i386/isa/isa_device.h ../../i386/eisa/eisaconf.h ../../sys/queue.h \
+  ../../pci/pcireg.h ../../pci/pcivar.h ../../scsi/scsi_all.h \
+  ../../scsi/scsiconf.h ../../scsi/scsi_debug.h ../../scsi/scsi_driver.h \
+  ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h \
+  ../../sys/sockio.h ../../sys/syslog.h ../../sys/signalvar.h ./machine/cpu.h \
+  ./machine/frame.h ./machine/segments.h ./machine/cputypes.h ./machine/pcb.h \
+  ./machine/tss.h ./machine/npx.h ./machine/clock.h ./machine/specialreg.h \
+  ../../i386/isa/icu.h ../../i386/isa/isa.h
+pcibus.o: ../../i386/isa/pcibus.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ./machine/cpu.h ./machine/frame.h ./machine/segments.h ./machine/cputypes.h \
+  ../../i386/isa/icu.h ../../i386/isa/isa.h ../../i386/isa/isa_device.h \
+  ../../pci/pcivar.h ../../pci/pcireg.h ../../pci/pcibus.h
+random_machdep.o: ../../i386/isa/random_machdep.c ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/kernel.h \
+  ./machine/clock.h ./machine/frame.h ./machine/random.h ../../sys/ioccom.h \
+  ../../i386/isa/isa_device.h ../../i386/isa/icu.h ../../i386/isa/isa.h \
+  ../../i386/isa/timerreg.h
+readMBR.o: ../../i386/isa/readMBR.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/buf.h \
+  ../../sys/queue.h ../../sys/disklabel.h ../../sys/conf.h
+sio.o: ../../i386/isa/sio.c ./sio.h ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/reboot.h \
+  ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h \
+  ../../sys/sockio.h ../../sys/tty.h ../../sys/termios.h \
+  ../../sys/ttydefaults.h ../../sys/select.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/user.h ./machine/pcb.h ./machine/tss.h \
+  ./machine/npx.h ./machine/frame.h ../../sys/resourcevar.h \
+  ../../sys/signalvar.h ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h \
+  ../../vm/vm_param.h ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/sysctl.h \
+  ../../sys/conf.h ../../sys/dkstat.h ../../sys/file.h ../../sys/fcntl.h \
+  ../../sys/unistd.h ../../sys/kernel.h ../../sys/malloc.h ../../sys/syslog.h \
+  ../../sys/devconf.h ./machine/devconf.h ../../i386/isa/isa_device.h \
+  ../../i386/eisa/eisaconf.h ../../pci/pcireg.h ../../pci/pcivar.h \
+  ../../scsi/scsi_all.h ../../scsi/scsiconf.h ../../scsi/scsi_debug.h \
+  ../../scsi/scsi_driver.h ./machine/clock.h ../../i386/isa/icu.h \
+  ../../i386/isa/isa.h ../../i386/isa/sioreg.h ../../i386/isa/ic/ns16550.h \
+  ../../i386/i386/cons.h
+syscons.o: ../../i386/isa/syscons.c ./sc.h ./apm.h ../../sys/param.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/conf.h \
+  ../../sys/ioctl.h ../../sys/ttycom.h ../../sys/ioccom.h ../../sys/filio.h \
+  ../../sys/sockio.h ../../sys/proc.h ./machine/proc.h ../../sys/select.h \
+  ../../sys/user.h ./machine/pcb.h ./machine/tss.h ./machine/npx.h \
+  ./machine/frame.h ../../sys/resourcevar.h ../../sys/signalvar.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../sys/queue.h ../../vm/vm_param.h \
+  ./machine/vmparam.h ../../vm/lock.h ../../vm/vm_prot.h \
+  ../../vm/vm_inherit.h ../../vm/vm_map.h ../../vm/vm_object.h \
+  ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h ./machine/pte.h \
+  ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/sysctl.h ../../sys/tty.h \
+  ../../sys/termios.h ../../sys/ttydefaults.h ../../sys/callout.h \
+  ../../sys/kernel.h ../../sys/syslog.h ../../sys/malloc.h \
+  ../../sys/devconf.h ./machine/devconf.h ../../i386/isa/isa_device.h \
+  ../../i386/eisa/eisaconf.h ../../pci/pcireg.h ../../pci/pcivar.h \
+  ../../scsi/scsi_all.h ../../scsi/scsiconf.h ../../scsi/scsi_debug.h \
+  ../../scsi/scsi_driver.h ./machine/clock.h ./machine/console.h \
+  ./machine/psl.h ./machine/pc/display.h ./machine/apm_bios.h \
+  ./machine/random.h ../../i386/isa/isa.h ../../i386/isa/timerreg.h \
+  ../../i386/isa/kbdtables.h ../../i386/i386/cons.h ../../i386/isa/syscons.h
+bt.o: ../../i386/scsi/bt.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/systm.h ./machine/cpufunc.h ./machine/spl.h \
+  ./machine/ipl.h ./machine/stdarg.h ../../sys/libkern.h ../../sys/malloc.h \
+  ../../sys/buf.h ../../sys/queue.h ../../sys/kernel.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/select.h ./machine/clock.h ./machine/frame.h \
+  ../../vm/vm.h ../../sys/vmmeter.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/lock.h ../../vm/vm_prot.h ../../vm/vm_inherit.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h \
+  ../../scsi/scsi_all.h ../../scsi/scsiconf.h ../../scsi/scsi_debug.h \
+  ../../scsi/scsi_driver.h ../../sys/conf.h ../../i386/scsi/btreg.h ./bt.h
+swapkernel.o: swapkernel.c ../../sys/param.h ../../sys/types.h \
+  ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h ./machine/types.h \
+  ../../sys/syslimits.h ../../sys/errno.h ../../sys/time.h \
+  ../../sys/resource.h ../../sys/ucred.h ../../sys/uio.h ../../sys/rtprio.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/conf.h
+ioconf.o: ioconf.c ../../sys/param.h ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/syslimits.h \
+  ../../sys/errno.h ../../sys/time.h ../../sys/resource.h ../../sys/ucred.h \
+  ../../sys/uio.h ../../sys/rtprio.h ../../sys/signal.h ./machine/signal.h \
+  ./machine/trap.h ./machine/param.h ./machine/limits.h \
+  ../../i386/isa/isa_device.h ../../i386/isa/isa.h ../../i386/isa/icu.h \
+  ../../scsi/scsiconf.h ../../scsi/scsi_debug.h ../../scsi/scsi_all.h \
+  ../../scsi/scsi_driver.h ../../sys/conf.h
+param.o: param.c ../../sys/param.h ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/syslimits.h \
+  ../../sys/errno.h ../../sys/time.h ../../sys/resource.h ../../sys/ucred.h \
+  ../../sys/uio.h ../../sys/rtprio.h ../../sys/signal.h ./machine/signal.h \
+  ./machine/trap.h ./machine/param.h ./machine/limits.h ../../sys/systm.h \
+  ./machine/cpufunc.h ./machine/spl.h ./machine/ipl.h ./machine/stdarg.h \
+  ../../sys/libkern.h ../../sys/socket.h ../../sys/proc.h ./machine/proc.h \
+  ../../sys/select.h ../../sys/vnode.h ../../sys/queue.h ./vnode_if.h \
+  ../../sys/buf.h ../../sys/file.h ../../sys/fcntl.h ../../sys/unistd.h \
+  ../../sys/callout.h ../../sys/clist.h ../../sys/mbuf.h ../../sys/malloc.h \
+  ../../sys/kernel.h ../../ufs/ufs/quota.h
+vnode_if.o: vnode_if.c ../../sys/param.h ../../sys/types.h ../../sys/cdefs.h \
+  ./machine/endian.h ./machine/ansi.h ./machine/types.h ../../sys/syslimits.h \
+  ../../sys/errno.h ../../sys/time.h ../../sys/resource.h ../../sys/ucred.h \
+  ../../sys/uio.h ../../sys/rtprio.h ../../sys/signal.h ./machine/signal.h \
+  ./machine/trap.h ./machine/param.h ./machine/limits.h ../../sys/mount.h \
+  ../../sys/queue.h ../../net/radix.h ../../sys/socket.h ../../sys/vnode.h \
+  ./vnode_if.h ../../sys/buf.h
+genassym.o: ../../i386/i386/genassym.c ../../include/stdio.h \
+  ../../sys/types.h ../../sys/cdefs.h ./machine/endian.h ./machine/ansi.h \
+  ./machine/types.h ../../sys/param.h ../../sys/syslimits.h \
+  ../../sys/signal.h ./machine/signal.h ./machine/trap.h ./machine/param.h \
+  ./machine/limits.h ../../sys/buf.h ../../sys/queue.h ../../sys/proc.h \
+  ./machine/proc.h ../../sys/rtprio.h ../../sys/select.h ../../sys/time.h \
+  ../../sys/mount.h ../../sys/ucred.h ../../sys/mbuf.h ../../sys/malloc.h \
+  ../../sys/msgbuf.h ./machine/cpu.h ./machine/frame.h ./machine/segments.h \
+  ./machine/cputypes.h ./machine/psl.h ./machine/reg.h ./machine/bootinfo.h \
+  ../../sys/syscall.h ../../vm/vm.h ../../sys/vmmeter.h ./machine/cpufunc.h \
+  ./machine/spl.h ./machine/ipl.h ../../vm/vm_param.h ./machine/vmparam.h \
+  ../../vm/lock.h ../../vm/vm_prot.h ../../vm/vm_inherit.h ../../vm/vm_map.h \
+  ../../vm/vm_object.h ../../vm/vm_page.h ../../vm/pmap.h ./machine/pmap.h \
+  ./machine/pte.h ../../vm/vm_pager.h ../../vm/vm_extern.h ../../sys/user.h \
+  ./machine/pcb.h ./machine/tss.h ./machine/npx.h ../../sys/errno.h \
+  ../../sys/resource.h ../../sys/uio.h ../../sys/resourcevar.h \
+  ../../sys/signalvar.h ../../sys/sysctl.h ../../net/if.h ../../sys/socket.h \
+  ../../net/if_arp.h ../../netinet/in.h ../../nfs/nfsv2.h \
+  ../../nfs/nfsdiskless.h

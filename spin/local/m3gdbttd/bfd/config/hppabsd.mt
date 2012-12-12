@@ -1,0 +1,3 @@
+DEFAULT_VECTOR=som_vec
+SELECT_ARCHITECTURES=bfd_hppa_arch
+SELECT_VECS=bfd_elf32_hppa_vec

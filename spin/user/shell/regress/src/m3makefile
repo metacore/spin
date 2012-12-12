@@ -1,0 +1,21 @@
+#
+# HISTORY
+# 10-Dec-95  Brian Bershad (bershad) at the University of Washington
+#	Rewritten to use events and commands.
+#
+# 
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+
+Package("Regress")
+CommandModule("Regress")
+Generic_module("RegressionTest")
+Generic_module("TextRegressionTest")
+template(regress)
+
+Extension({})
+
+

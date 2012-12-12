@@ -1,0 +1,44 @@
+#
+# make.compiler
+#
+# This file solves the a problem with the DECs m3build.  For the
+# compiler, we need to specifiy our own template file _and_ pass it args 
+# from the m3build command line.  DECs m3build calls quake in such a way 
+# that cmd line args are passed only to m3makefile, and not the template 
+# file.
+#
+# We work around this problem by calling quake directly when building
+# subparts of the compiler.  This allows us to place the -DINSTALL_ROOT
+# arg ahead of the ALPHA_OSF template file.
+#
+# To generate the M3BUILD line, uncomment the this M3FLAGS line
+# and comment out the M3BUILD line below.  m3build will print its quake
+# command line, which is copied to the M3BUILD var below.  After copying,
+# move all the -D quake args ahead of the ALPHA_OSF template arg.
+#
+# M3FLAGS=-v -DINSTALL_ROOT=$(THISTREE)/local/ -T $(THISTREE)/local/m3/templates -DUSE_ROOT=$(ORIGINAL_M3)/
+#
+#
+
+#
+# History
+#
+# 24-Aug-97  Przemek Pardyak (pardy) at the University of Washington
+#	Enable building user-level and kernel targets in local.
+#
+
+PWD:=$(shell pwd)
+PKG:=$(shell basename $(PWD))
+
+M3BUILD=mkdir $(M3ARCH); cd $(M3ARCH) && $(ORIGINAL_QUAKE) -D_all -DPACKAGE_DIR=$(PWD) -DPACKAGE=$(PKG) -DBUILD_DIR=$(M3ARCH) -DINSTALL_ROOT=$(THISTREE)/local -DUSE_ROOT=$(ORIGINAL_M3)/ -DFULLTREE=$(FULLTREE) -DTHISTREE=$(THISTREE) $(THISTREE)/local/m3/templates/$(LOCALTARGET) $(PWD)/src/m3makefile $(THISTREE)/local/m3/templates/CLEANUP
+
+TARGET = $(shell basename `pwd`) 
+SHIP=
+
+include $(THISTREE)/local/make.local
+
+# This setup runs quake on the $(M3BUILD) ($M3FLAGS) line, but quake does
+# not take m3build flags.   Since make.local set M3FLAGS, we'll just
+# empty it here.
+
+M3FLAGS=

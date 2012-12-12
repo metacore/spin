@@ -1,0 +1,644 @@
+65,79d64
+< 
+< /* Include files. */
+< 
+< #include <io/common/iotypes.h>
+< #include <sys/types.h>	  	/* system level types */
+< #include <sys/time.h>		/* Have to include it........*/
+< #include <sys/param.h>		/* Have to include it........*/
+< #include <dec/binlog/errlog.h>	/* UERF errlog defines */
+< #include <io/cam/dec_cam.h>
+< #include <mach/vm_param.h>
+< #include <io/cam/cam_logger.h>	/* CAM errlog logger defines */
+< #include <io/cam/cam_errlog.h>
+< #include <io/cam/scsi_all.h>	/* For sense data */
+< #include <io/cam/cam.h>
+< 
+81c66,67
+<  * No error logger proc pointer in OSF, yet.
+---
+>  * Fake cam_logger for SPIN plus stub routines for things that should
+>  * not be called and assorted data statistics structures.
+83,87d68
+< int elprocp = NULL;
+< 
+< /* ---------------------------------------------------------------------- */
+< 
+< /* Local defines. */
+90c71
+<  * This will be removed in the second submit in BL8.
+---
+>  * size should be DK_NDRIVE
+92,102c73,74
+< struct binlog_softc {        /* state & status info for binary event logger */
+<        unsigned int   sc_state;        /* state flags */
+<        unsigned int   sc_open;         /* number of opens done */
+<        unsigned int   sc_size;         /* size of event log buffer */
+<        unsigned int   sc_nobufavail;   /* no buffer available counter */
+<        unsigned int   sc_badsize;      /* bad record size counter */
+<        unsigned int   sc_readbusy;     /* log busy on read counter */
+<        unsigned int   sc_seqnum;       /* sequence number */
+< };
+< 
+< void cam_logger();
+---
+> long dk_xfer[256];
+> long dk_wds[256];
+103a76,81
+> event_notify(a, ccb)
+>     char *a;
+>     char *ccb;
+> {
+> #if 0
+>     GET_CALLER(where);
+105c83,87
+< /* ---------------------------------------------------------------------- */
+---
+>     printf("event_notify called from %lx => ccb status != CAM_REQ_CMP\n",
+> 	where);
+>     printf("  dev 0x%lx, ccb %lx\n",a,ccb);
+> #endif
+> }
+107c89,92
+< /* External declarations. */
+---
+> int setdisklabel()
+> {
+>     return( 0 );
+> }
+108a94,97
+> int writedisklabel()
+> {
+>     return( 0 );
+> }
+110c99,102
+< /* ---------------------------------------------------------------------- */
+---
+> int thread_bind()
+> {
+>     return( 0 );
+> }
+112c104,107
+< /* Initialized and uninitialized data. */
+---
+> int thread_swappable()
+> {
+>     return( 0 );
+> }
+113a109,118
+> /*
+>  * This routine is called only as a fallbak if we can't read the
+>  * disk label.  We don't want any ufs cruft and every disk should
+>  * have a label.  So always return failure.
+>  */
+> rsblk()
+> {
+>     printf("rsblk (read super block) called from CAM; returning failure");
+>     return(1);
+> }
+115d119
+< /* ---------------------------------------------------------------------- */
+117,144c121
+< /* Functional Description:
+<  *
+<  * Routine Name: cam_logger
+<  *    
+<  *    This routine takes an cam error log header, and allocates an
+<  *    error log buffer from the pool. It routine will then fill in 
+<  *    the required information for the BSD based packet and ship it 
+<  *    to the error logger.
+<  *
+<  * Call syntax:
+<  *	cam_logger( cam_err_hdr, bus, target, lun )
+<  *		CAM_ERR_HDR	*cam_err_hdr;	 Pointer to the header 
+<  *		char		bus;		 Bus
+<  *		char		target		 Target
+<  *		char		lun		 Lun
+<  *
+<  *
+<  * Implicit Inputs
+<  *	None
+<  *
+<  * Implicit Outputs
+<  *	Filled in BSD based error log packet.
+<  *
+<  * Return Values
+<  *	NONE 0
+<  *
+<  *
+<  */
+---
+> int buf_lockinfo[4];
+145a123
+> char *first_task;
+147,154c125
+< void 
+< cam_logger( cam_err_hdr, bus, target, lun )
+<     CAM_ERR_HDR		*cam_err_hdr;	/* The errlog header where we get
+< 					 * everything else from.
+< 					 */
+<     char		bus;		/* Bus				*/
+<     char		target;		/* Target			*/
+<     char		lun;		/* Lun				*/
+---
+> char *lbolt;
+155a127
+> ctape_slave()
+157,160c129
+< 
+<     /*
+<      * Local variables
+<      */
+---
+>     /*panic("ctape_slave"); */ return( 0 /*==PROBE_FAILURE*/);
+162,186c131
+<     extern pid_t	binlog_savedpid;
+<     extern struct binlog_softc blsoftc;
+< 
+<     CAM_ERR_ENTRY	*err_ent;
+<     struct el_rec  	*elp;
+<     caddr_t		bufp;	  /* where we copy the data to.	*/
+<     U32			req_size; /* Size of the errlog buffer 
+< 					   * we will need	
+< 					   */
+<     U32 		i, j, k, times;  /* For for loops		*/
+<     U32		cam_nologger = 0; 
+<     U32		num_entry;	/* 
+< 					 * Number of entries this time
+< 					 * around
+< 					 */
+<     U32		last_req_size; 	/* 
+< 					 * last valid size index before
+< 					 * size exceded 
+< 					 */
+<     U32		this_req_size;	/* Current size		*/
+<     U32		total_entries;	/* Total number of entries */
+<     U32		start_ent;	/* Starting entry this time around */
+<     CAM_ERR_ENTRY	ent_cont;	/* Continuation entry struct*/
+<     static u_char	str_cont[] = 
+< 		"This error entry is a continuation for the previous entry";
+---
+> }
+187a133,136
+> ctape_attach()
+> {
+>     /*panic("ctape_attach");*/ return( 0 /*==PROBE_FAILURE*/);
+> }
+188a138,142
+> /*
+>  *
+>  *  promio_dump (also in machdep.c) may or may not be
+>  *  be included in the SPIN-4/OSF3.2 merge.
+>  */
+189a144,148
+> int promio_dump( dump_req )
+>     char *dump_req;
+> {
+>     printf("promio_dump called...but nobody's home\n");
+> }
+190a150,162
+> #if 0
+> /*
+>  * See spin/sys/glue/thread.c
+>  */
+> thread_wakeup_prim(event,one_thread,result)
+>     char *event;
+>     int	 one_thread;
+>     int  result;
+> {
+>     /* just for now ...*/
+>     thread_wakeup(event);
+> }
+> #endif
+191a164,178
+> /*
+>  * Do our best to print out something a little more informative
+>  * if the CAM error logger is called.
+>  */
+> #include <io/common/iotypes.h>
+> #include <sys/types.h>          /* system level types */
+> #include <sys/time.h>           /* Have to include it........*/
+> #include <sys/param.h>          /* Have to include it........*/
+> #include <dec/binlog/errlog.h>  /* UERF errlog defines */
+> #include <io/cam/dec_cam.h>
+> #include <mach/vm_param.h>
+> #include <io/cam/cam_logger.h>  /* CAM errlog logger defines */
+> #include <io/cam/cam_errlog.h>
+> #include <io/cam/scsi_all.h>    /* For sense data */
+> #include <io/cam/cam.h>
+192a180,186
+> /*
+>  * following two come from mach/alpha/vm_param.h.
+>  *
+> extern long asm();
+> #pragma intrinsic(asm)
+>  */
+> #define GET_CALLER(x) void *x = (void *)asm("subq %ra,4,%v0")
+194,197c188,203
+<     /*
+<      * Validate.... if the pointer is good and its for me.
+<      */
+<     if(cam_err_hdr->hdr_type  != CAM_ERR_PKT ){
+---
+> cam_logger(ehdr,bus,target,lun)
+>     CAM_ERR_HDR *ehdr;
+>     char bus;
+>     char target;
+>     char lun;
+> {
+>     int nument, entix;
+>     CAM_ERR_ENTRY *errptr;
+>     GET_CALLER(where);
+> 
+>     printf("cam error logger called from %lx: bus %d, target %d, lun %d\n",
+> 	where, (int) (bus & 0xff), (int) (target & 0xff), (int) (lun & 0xff));
+> 
+>     if (ehdr->hdr_type != CAM_ERR_PKT ) {
+> 	printf("cam_logger called with unknown packet type: %d\n",
+> 	    ehdr->hdr_type);
+200,203c206,207
+<     if(cam_err_hdr->hdr_list == NULL){
+< 	/*
+< 	 * No list
+< 	 */
+---
+>     if (ehdr->hdr_list == NULL ) {
+> 	printf("cam_logger called with NULL header list\n");
+207,208d210
+<     err_ent = cam_err_hdr->hdr_list;
+< 
+210,227c212,213
+<      * Set up our continuation struct now.......
+<      */
+<     ent_cont.ent_type = ENT_STRING;
+<     ent_cont.ent_data = str_cont;
+<     ent_cont.ent_size = strlen(ent_cont.ent_data) + 1;
+<     ent_cont.ent_pri = PRI_BRIEF_REPORT;
+< 
+<     /* Get our total entries */
+<     total_entries =  cam_err_hdr->hdr_entries;
+< 
+<     /* 
+<      * Init entry start
+<      */
+<     i = 0;
+< 
+<     /* 
+<      * Do each one of the of the entries
+<      * The loop termination is now checked here at the top of the loop.
+---
+>      * Standard version of CAM errors has function name and message
+>      * as first two string entries.
+229,267c215,226
+<     for(  times = 0; i < total_entries; times++  ){
+< 	/*
+< 	 * Set the number of entries this time around
+< 	 */
+< 	 num_entry = 0;
+< 
+<     	/*
+<     	 * Get the size of our buffer
+<     	 * Size of header plus size of element list
+<     	 */
+<     	this_req_size = sizeof( CAM_ERR_HDR );
+< 	last_req_size = sizeof( CAM_ERR_HDR );
+< 
+< 	/*
+< 	 * If this is not first time around then must include
+< 	 * continuation string
+< 	 */
+< 	if( times != NULL){
+< 	    /*
+< 	     * Since this is the second plus time around 
+< 	     * we must increment the number of entries here
+< 	     */
+< 	    num_entry++;
+< 
+< 	    /*
+< 	     * Make sure entry ends on long word boundary
+< 	     */
+< 	    if(( ent_cont.ent_size & (sizeof(long)-1) ) != NULL){
+< 	        /*
+< 	         * calculate total entry size to long word boundary
+< 	         */
+< 	        ent_cont.ent_total_size = (sizeof(long) - 
+< 		( ent_cont.ent_size & (sizeof(long)-1) )) + ent_cont.ent_size;
+< 	    }
+< 	    else {
+< 	        ent_cont.ent_total_size = ent_cont.ent_size;
+< 	    }
+< 	    this_req_size += (ent_cont.ent_total_size + sizeof(CAM_ERR_ENTRY));
+< 	    last_req_size += (ent_cont.ent_total_size + sizeof(CAM_ERR_ENTRY));
+---
+>     nument = ehdr->hdr_entries;
+>     printf("...there are %d entries in this log message\n",nument);
+>     entix = 0;
+>     while ( entix < nument ) {
+> 	errptr = &ehdr->hdr_list[entix];
+> 	switch ( errptr->ent_type ) {
+> 	    case ENT_STR_MODULE:
+> 		printf("Module name is '%s'\n",errptr->ent_data);
+> 		break;
+> 	    case ENT_STRING:
+> 		printf("Error message is '%s'\n",errptr->ent_data);
+> 		break;
+268a228,238
+> 	entix++;
+>     }
+> }
+>     
+> /*
+>  * Called only from cam_disk.c[srvc_lock] which deals only
+>  * with RAID arrays.
+>  */
+> vm_map_check_protection()
+> {
+>     GET_CALLER(where);
+269a240,242
+>     printf("vm_map_check_protection called from %lx\n",where);
+>     panic("vm_map_check_protection");
+> }
+271,520c244,254
+< 	/* 
+< 	 * Check this entry, if it is too large, with the EL_MISCSIZE +
+< 	 * CAM_ERR_HDR + CAM_ERR_ENTRY added in, to fit into an error
+< 	 * log packet, EL_MAXRECSIZE, report and error to the console
+< 	 * and continue on to the next one.
+< 	 *
+< 	 * Note: This is a "quick" check here, this will allow the inner
+< 	 * for-loop to continue with the rest of the entries.  There is no
+< 	 * checking for alignment EL_MISCSIZE already contains a 4 for
+< 	 * trailer, this is the worst case.  This will always pass for the
+< 	 * initial pass, (i = 0).  However for subsequent passes the 
+< 	 * inner for-loop would have stopped at this entry.
+< 	 */
+< 	 if( (this_req_size + err_ent[i].ent_size + EL_MISCSIZE)
+< 	     > EL_MAXRECSIZE) {
+< 
+< 	     /*
+< 	      * Increment i, (the CAM error packet index) to index the
+< 	      * next one.  Report the problem and continue with the next
+< 	      * iteration of the outer for-loop.
+< 	      */
+< 	      i++;			/* next entry */
+< 	      printf("cam_logger: CAM_ERROR entry too large to log!\n");
+< 	      continue;
+< 	 }
+< 
+<     	/* 
+<     	 * get the size of each of the entries
+<     	 */
+<     	for( start_ent = i; (i < total_entries) || 
+< 		((this_req_size + EL_MISCSIZE) > EL_MAXRECSIZE); ){
+< 
+< 	    this_req_size += sizeof(CAM_ERR_ENTRY);
+< 
+< 	    /*
+< 	     * Make sure entry ends on long word boundary
+< 	     */
+< 	    if(( err_ent[i].ent_size & (sizeof(long)-1) ) != NULL){
+< 	        /*
+< 	         * calculate total entry size to long word boundary
+< 	         */
+< 	        err_ent[i].ent_total_size = (sizeof(long) - 
+< 		( err_ent[i].ent_size & (sizeof(long)-1) )) 
+< 			+ err_ent[i].ent_size;
+< 	    }
+< 	    else {
+< 	        err_ent[i].ent_total_size = err_ent[i].ent_size;
+< 	    }
+< 	    this_req_size += err_ent[i].ent_total_size;
+< 
+< 	    /*
+< 	     * Check to see if the size of the request needs
+< 	     * to be sent down....
+< 	     */
+< 	     if((this_req_size +  EL_MISCSIZE) > EL_MAXRECSIZE){
+< 		/*
+< 		 * Get out of the for loop
+< 		 */
+< 		break;
+< 	    }
+< 	    else {
+< 	    	/* 
+< 	    	 * Increment this here because we can break out of for...
+< 	    	 */
+< 		 i++;
+< 	    	num_entry++;
+< 		last_req_size = this_req_size;
+< 	    }
+< 		
+<         } /* End of  entry for... */
+< 
+< 	cam_err_hdr->hdr_entries = num_entry;
+< 
+< 
+<         /* 
+<          * If the error logger is not running...... Everthing goes out to 
+<          * the console in byte format.......
+<          */
+< 	 elprocp = binlog_savedpid;
+< 	 if (blsoftc.sc_state & BINLOG_ON)
+< 	     cam_nologger = 0;
+< 	 else
+< 	     cam_nologger = 1;
+< 
+< 	  if((elprocp == NULL) || 
+< 	     (cam_nologger == 1) ||
+< 	     ((elp = ealloc( last_req_size, cam_err_hdr->hdr_pri)) ==
+< 	      EL_FULL)) {
+< 
+< 	    /*
+< 	     * The error logger is not running....or we could not get
+< 	     * a buffer....lets print it out....
+< 	     */
+< 
+< 	    /*
+< 	     * Don't print it out unless the packet's are of type
+< 	     * EL_PRISEVERE or EL_PRIHIGH.
+< 	     */
+< 	    if ((cam_err_hdr->hdr_pri != EL_PRISEVERE) &&
+<                 (cam_err_hdr->hdr_pri != EL_PRIHIGH)) {
+< 	        return;
+< 	    }
+< 
+< 	    printf("cam_logger: CAM_ERROR packet\n");
+< 	    if( (bus != -1) || (target != -1) || (lun != -1) ){
+< 	        printf("cam_logger: ");
+< 	        if( bus != -1 ){
+< 	            printf("bus %d ", bus);
+< 	        }
+< 	        if( target != -1 ){
+< 	            printf("target %d ", target);
+< 	        }
+< 	        if( lun != -1 ){
+< 	            printf("lun %d ", lun);
+< 	        }
+< 	        printf("\n");
+< 	    }
+< 	    else {
+< 	        printf("cam_logger: No associated bus target lun\n");
+< 	    }
+< 
+< 	    for( j = 0, k = start_ent; j < cam_err_hdr->hdr_entries; j++, k++){
+< 		/*
+< 		 * Don't print continuation message..
+< 	         * Find out the type.... 
+< 	         */
+< 	        if( (err_ent[k].ent_type >= STR_START) && 
+< 			(err_ent[k].ent_type <= STR_END)){
+< 		    /*
+< 		     * Only print strings
+< 		     */
+< 		    printf("%s\n", err_ent[k].ent_data);
+< 		    DELAY(100000);
+< 		    continue;
+< 	        }
+< 	
+< 	    } /* end of for */
+< 	    continue;
+<         } /* end of if errlog not running or can't get buffer */	
+< 
+< 	/*
+< 	 * We have an errlog buffer lets start filling it in.
+< 	 */
+< 	
+< 	    /* CAM_ERR_PKT */
+< 	    elp->elsubid.subid_class = cam_err_hdr->hdr_type;
+< 
+< 	    /* TAPE DISK PRINTER CDROM ASC SII etc.....
+< 	    elp->elsubid.subid_ctldevtyp = cam_err_hdr->hdr_subsystem;
+< 
+< 	    /* CAM_DISK CAM_TAPE ASC_DME etc. */
+< 	    elp->elsubid.subid_type = cam_err_hdr->hdr_class;
+< 
+< 	    /*
+< 	     * Get controller and target lun info.
+< 	     */
+< 	    if( bus != -1 ){
+< 	        elp->elsubid.subid_num = bus;
+< 	        elp->elsubid.subid_unitnum = (bus << 6) | (target << 3) | lun;
+< 	    }
+< 	    else{
+< 	        elp->elsubid.subid_num = EL_UNDEF; 
+< 	        elp->elsubid.subid_unitnum = EL_UNDEF; 
+< 	    }
+< 
+< 	    /* Error code not used..... */
+< 	    elp->elsubid.subid_errcode = EL_UNDEF;
+< 
+< 	    /* 
+< 	     * Now lets get our data into the buffer....
+< 	     * elp is the pointer to head of packet....we must 
+< 	     * adjust the to pointer to data sections and copy...
+< 	     */
+< 	    bufp = (caddr_t)elp + EL_RHDRSIZE + EL_SUBIDSIZE;
+<     	    err_ent = cam_err_hdr->hdr_list;
+< 
+< 	    /*
+< 	     * bzero where we are stuffing the entries.
+< 	     */
+< 	    bzero( bufp, last_req_size );
+< 
+< 	    /*
+< 	     * Now copy the CAM header packet.....
+< 	     */
+< 	    bcopy((caddr_t *)cam_err_hdr, bufp, sizeof(CAM_ERR_HDR));
+< 	    bufp += sizeof(CAM_ERR_HDR);
+< 
+< 	    /* 
+< 	     * Start at 0 for j
+< 	     */
+< 	    j = 0;
+< 	    
+< 	    /* 
+< 	     * If this is the second time around include the continuation
+< 	     * string
+< 	     * It Has been accounted for......
+< 	     */
+< 	    if( times != NULL){
+< 	        /*
+< 	         * Copy error entry stucture
+< 	         */
+< 	        bcopy( &ent_cont, bufp, sizeof(CAM_ERR_ENTRY));
+< 	        bufp += sizeof(CAM_ERR_ENTRY);
+< 
+< 	        /*
+< 	         * Copy data.....
+< 	         */
+< 	        bcopy( ent_cont.ent_data, bufp, ent_cont.ent_size );
+< 	        bufp += ent_cont.ent_total_size; 
+< 
+< 		/* 
+< 		 * Since this is a entry increment our count..
+< 		 */
+< 		j++;
+< 
+< 	    }
+< 
+< 	    /* 
+< 	     * Now get rest
+< 	     */
+< 
+< 	    for( k = start_ent; j < cam_err_hdr->hdr_entries; j++, k++){
+< 	        if( err_ent[k].ent_data == NULL ){
+< 		    printf("cam_logger: Null data ptr found in entry list\n");
+< 		    /*
+< 		     * set entries to the number actually in this 
+< 		     * Packet......
+< 		     */
+< 		    cam_err_hdr->hdr_entries = j;
+< 		    break;
+< 	        }
+< 	        /*
+< 	         * Copy error entry stucture
+< 	         */
+< 	        bcopy( &err_ent[k], bufp, sizeof(CAM_ERR_ENTRY));
+< 	        bufp += sizeof(CAM_ERR_ENTRY);
+< 
+< 	        /*
+< 	         * Copy data.....
+< 	         */
+< 	        bcopy( err_ent[k].ent_data, bufp, err_ent[k].ent_size );
+< 	        bufp += err_ent[k].ent_total_size; 
+< 
+< 	    }
+< 
+< 	    /*
+< 	     * Now validate it..
+< 	     */
+< 	    EVALID(elp);
+<     } /* end of massive for */
+---
+> /*
+>  * Called only from cam_disk.c[srvc_lock,srvc_unlock], which
+>  * only with RAID arrays.
+>  */
+> vm_map_pageable()
+> {
+>     GET_CALLER(where);
+>     
+>     printf("vm_map_pageable called from %lx\n",where);
+>     panic("vm_map_pageable");
+> }
+522c256,261
+<     return;
+---
+> suser()
+> {
+>     GET_CALLER(where);
+>     
+>     printf("suser called from %lx\n",where);
+>     panic("suser");
+524a264,274
+> /*
+>  * used by dme_turbo_94_ram.c;  I suspect this one will
+>  * become apparent in time.
+>  */
+> vm_alloc_kva()
+> {
+>     GET_CALLER(where);
+>     
+>     printf("vm_alloc_kva called from %lxn",where);
+>     panic("vm_alloc_kva");
+> }

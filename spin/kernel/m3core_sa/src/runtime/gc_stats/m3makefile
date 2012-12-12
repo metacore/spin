@@ -1,0 +1,19 @@
+
+% gc statistics files
+
+include_dir (WORD_SIZE)
+
+Interface (PCData)
+Module (IntAddr)
+Module (Int2Addr)
+Module (Map)
+
+Utable (AddrInt, Addr, Int)
+Utable (TCData, Int, HeapData)
+Utable (AddrData, Addr, AddrData)
+Utable (PCData, Addr, PCData)
+
+M3core_Array_sort (IntAddr, IntAddr)
+M3core_Array_sort (Int2Addr, Int2Addr)
+
+Utable (AddrMap, Addr, Map)

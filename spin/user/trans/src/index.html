@@ -1,0 +1,302 @@
+<head>
+<title>The SPIN Distributed Transaction Manager</title>
+</head>
+
+<img align=left src="vader.gif">
+<pre>
+
+
+</pre>
+<h1>The SPIN Distributed Transaction Manager</h1>
+
+Last Modified : Sat Mar 29 12:34:04 1997
+<pre>
+
+
+
+
+</pre>
+
+<h2>1. Executive Summary</h2>
+
+This transaction manager provides 
+a file I/O with transaction properties.
+It's function is very simliar to Camelot.
+
+<p>Distributed transaction support is still rudimentary.
+
+
+<h2> Overall structure.</h2>
+
+<ul>
+  <li> There are four big modules in the system,
+       Transaction, WAL(log), LockMan, and Storage.
+       Transaction controls the distributed transaction, wal controls
+       logging, lock manages locking,
+       and storage actually provides transactional file I/O.
+       <dl>
+	 <dt> Transaction Manager
+	 <dd> The transaction manager controls begin/commit/abort
+	      of transactions. It is also responsible for coordinating
+	      two phase commit.
+	 <dt> WAL
+	 <dd> WAL(write ahead log) manager manages a sequential log
+	      records. It's interface is reatively low level; it understands
+	      the type of each log record(redo, undo, commit, checkpoint, etc),
+	      but it doesn't understand the contents any further.
+	      WAL also coordinates the recovery on system startup.
+	 <dt> Lock Manager
+	 <dd> The lock manager is responsible for managing locks on
+	      linear regions. It now only supports flat read/write
+	      locks.
+	 <dt> Storage Manager
+	 <dd> Storage manager is an implementation of the transactional
+	      service manager.
+       </dl>
+
+       <p>
+       The service can be used both by user process and the extension.
+       From the user process, the interface really looks like Camelot.
+       From the extension, the interface is a little unnatural because
+       all data transfer has to be done using collection of
+       page sized buffers.
+
+  <li> Automatic read/write detection using MMU.
+
+  <li> Integrated memory object manager.
+
+       <p> It has its own cache manager and memory object pager.
+       No VM overhead when it's used from the user space!       
+
+  <li> Integrated with Sphinx process manager.
+
+       <p>
+       When the process crashes, all the outstanding transactions are
+       safely aborted.
+       
+  <li> Per-node generic logging service.
+       
+       <p>
+       Log manager is separate from either storage manager or transaction
+       manager. It's interface is similar to Quicksilver, i.e., its low level.
+
+  <li> Per-node (somehow) generic lock manager.
+       <p>
+       
+       Lock manager is separate from storage manager. This makes easy to
+       use the lock manager in other data services.
+
+  <li> Generic transaction manager.
+
+       <p>
+       Although there is only one data server in the system(storage manager)
+       the transaction manager is designed in such a way that it can
+       control any kind of services.
+
+       <p>
+       It is strictly two phase; and no shortcircuiting like in Quicksilver
+       is allowed.
+
+  <li> Flaky distributed transaction service.
+
+       2PC recovery is still isn't complete.
+       
+</ul>
+
+<h2>2. Roadmap</h2>
+
+<dl>
+  <dt> <a href="../src"><strong>src</strong></a>
+  <dd> Extension source.
+  <dt> <a href="../lib"><strong>lib</strong></a>
+  <dd> This directory contains the system call interface library
+       <code>libtrans.a</code> and its source codes.
+       This is used by user space apps that use
+       the service. Also contains RVM emulator. 
+  <dt> <a href="../malloc"><strong>malloc</strong></a>
+  <dd> Includes persistent <code>trans_malloc</code> and
+       <code>trans_free</code>, a persistent heap management
+       routines.
+  <dt> <a href="rvmbench.html"><strong>rvmbench</strong></a>
+  <dd> RVM SOSP benchmark. This is a very simple debit/credit benchmark
+       used in the RVM SOSP paper.
+  <dt> <a href="oo7.html"><strong>oo7</strong></a>
+  <dd> The OO7 benchmark.
+</dl>
+
+<h2>OSF/1 version</h2>
+
+The transaction service is designed to run on both SPIN and OSF(UNIX).
+On OSF, the extension and the user app are linked together to become
+single binary file. The OSF version is only for debugging.
+
+To create the OSF version, edit the toplevel <code>Makefile</code>
+and uncomment
+
+<pre>
+#export TRANSTARGET=osf
+</pre>
+
+and comment out
+
+<pre>
+export TRANSTARGET=spin
+</pre>
+
+<h2>Testing the Transaction System</h2>
+
+<ul>
+  <li> To run rvmbench, first compile everything, and then boot SPIN.
+       Then, do the following.
+       <pre>
+!>script -b
+!>script trans.rc
+!>sphinx exec ~/spin/user/trans/rvmbench/spin/rvmbench
+       </pre>
+
+       See also <a href="rvmbench.html">rvmbench documentation</a>.
+       
+  <li> To run oo7, do the following.
+
+       <pre>
+!>script -b
+!>script trans.rc
+!>sphinx exec ~/spin/user/trans/oo7/spin/OO7 -g -r /efs/rds_data ~/spin/user/trans/oo7/Config.tiny
+!>sphinx exec ~/spin/user/trans/oo7/spin/OO7 -b -r /efs/rds_data ~/spin/user/trans/oo7/Config.tiny 1 t1 t2a t2b
+       </pre>
+       
+       See also <a href="oo7.html">oo7 documentation</a>.
+</ul>
+
+<h2>3. Using the Transaction System</h2>
+
+There are sets of two interfaces, one for in-kernel extension and
+the other for user space applications.
+
+<h3>3.1 Extension Interface</h3>
+
+There are two interfaces that are visible to clients.
+
+<dl>
+  <dt><a href="../src/Transaction.i3">Transaction.i3</a></dt>
+  <dd>
+       Transaction management is separated from the actual file management.
+       This makes it easy to add a new kind of transactional I/O services
+       without changing Transaction.[im]3.
+       <a href="#log">
+       (but the log manager doesn't understand new kind of storage manager
+       easily)</a>
+       <br>
+       
+  <dt> <a href="../src/Storage.i3">Storage.i3</a></dt>
+  <dd> Storage actually provides the file I/O facility.
+</dl>
+
+<h3>3.2 User space application interface</h3>
+
+<dl>
+  <dt><a href="../src/TransSyscall.i3">TransSyscall</a></dt>
+</dl>
+
+There is also an RVM compatible layer.
+
+<h2>2. Design </h2>
+
+<h3>2.1 Logging </h3>
+
+<p>The transaction property is guaranteed using the write ahead log(WAL).
+Both the storage manager and the transaction manager uses
+the log. Storage uses it to make things consistent, and trans manager
+uses it to support 2PL.  Modifications to storage managers are kept
+either using undo-redo protocol or redo procotol. Which protocol to use
+is determined by the flag given to <code>Transaction.Begin</code>.
+
+<h3>2.2 Distributed Transactions</h3>
+
+<p>The API when the client is on a remote site is same as local case.
+
+First, client has to call <code>Storage.pin</code>.
+This call always makes RPC to the server.
+<p><code>Storage.pin</code> will map the server storage contents on the
+client memory. There is an internal optimization to check the version
+of pages in the region, and if those on the client are up to date,
+they are not transferred.
+
+<p>On transaction commit, all the undo-redo logs are transmitted to the
+server. Server modifies it's own storage contents using that
+log. Thus, after commit, the server and the client have same contents.
+
+<p>Currently, TCP is used for the communication protocol.
+
+<a name="#log">
+<h3>2.3 Recovery</h3>
+
+<p>Log recovery is a kind of weird. The log manager first opens a log
+file, and immediately starts the recovery.  It looks at each log
+record, and upcalls the local storage manager or the transaction
+manager to do undo or redo. When it detects unterminated transactions
+(ex, prepare, but not committed), it forks off a thread to poll the
+storage manager or transaction manager to resolve it.
+
+<p>There are both advantages and disadvantages in this approach.
+
+<p>The advantage is that the recovery gets quicker, because we need only
+one scan through the log file. Also, we can truncate the log file
+automatically, because once recovery is complete, we are sure that
+the log used in the recovery is not used.<br>
+
+<p>The downside is that the log manager has to know who are in the world.
+This means that you can't add a new type of the storage manager without
+changing the log manager recovery code.<br>
+
+<p>The primary motivation for this design is the log truncation.
+
+<h2>3. Modules</h2>
+
+The transaction manager contains many modules. Here is the
+big picture.
+
+<dl>
+  <dt> <a href="../src/Transaction.m3">Transaction</a>
+  <dd> Transaction manages all the transactions initiated
+       on the local host. "Initiated" means you called
+       Transaction.Begin on the local host and started the
+       transaction.
+
+  <dt> <a href="../src/TransLocal.m3">TransLocal</a>
+  <dd> This is a synonym of Transaction.T, and this represents a
+       transaction initiated on the local host.
+
+<!-- SPIN DOC EXPORT SECTION IGNORE START -->
+  <dt> <a href="../src/TransRemote.m3">TransRemote</a>
+  <dd> Transaction module also acts as a manager for remote connections.
+       TransRemote is an internal transaction that represents a 
+<!-- SPIN DOC EXPORT SECTION IGNORE END -->
+
+  <dt> <a href="../src/Storage.m3">Storage</a>
+  <dd> Storage is an abstract object representing storage devices
+       participating in local transactions. It can be local or proxy.
+
+  <dt> <a href="../src/StorageLocal.m3">StorageLocal</a>
+  <dd> Local storages are the real storages. They maintain a disk on the
+       local host. It also exports the methods for local clients.
+
+  <dt> <a href="../src/StorageProxy.m3">StorageProxy</a>
+  <dd> Proxy storage is a channel of communication to a storage on
+       remote host.
+
+  <dt> <a href="../src/StorageRemote.m3">StorageRemote</a>
+  <dd> Sounds confusing, but there is a module called StorageRemote.
+       This acts as a RPC server side stub. This module accepts a call from
+       StorageProxy of a remote host, and forwards it to the local storage.
+
+  <dt> <a href="../src/WAL.m3">WAL</a>
+  <dd> WAL stands for <dfn>Write Ahead Log</dfn>. This module provides
+       generic logging service.
+       
+  <dt> <a href="../src/LockMan.m3">LockMan</a>, the lock manager.
+</dl>
+
+<hr>
+yasushi@cs.washington.edu
+</body>

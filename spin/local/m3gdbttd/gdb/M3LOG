@@ -1,0 +1,501 @@
+Pick up all M3 specific features from 4.11 and drop into 4.14.
+
+
+lace:gdb<205> cp m3-exp.c m3-lang.c m3-lang.h m3-typeprint.c m3-uid.* m3-valprint.c /afs/cs/project/spin/bershad/m3gdbttd/gdb
+
+Update the Makefile.in.
+	m3-uid.c m3-exp.c m3-lang.c m3-typeprint.c m3-valprint.c \
+
+Update c-typeprint:
+
+c-typeprint.c:#ifdef _LANG_m3
+c-typeprint.c:   case language_m3:
+
+Update eval.c
+
+eval.c:#include "m3-lang.h"
+eval.c:  int tem, tem2, tem3;
+eval.c:#if bad_for_m3
+eval.c:      tem3 = longest_to_int (exp->elts[pc + 2].longconst);
+eval.c:      nargs = tem3 - tem2 + 1;
+eval.c:      return (value_array (tem2, tem3, argvec));
+eval.c:    case OP_M3_LONG: {
+eval.c:    case STRUCTOP_M3_INTERFACE:
+eval.c:    case STRUCTOP_M3_MODULE:
+eval.c:    case STRUCTOP_M3_STRUCT: {
+eval.c:      if (TYPE_CODE (t) == TYPE_CODE_M3_REFANY
+eval.c:          || TYPE_CODE (t) == TYPE_CODE_M3_OBJECT
+eval.c:          || TYPE_CODE (t) == TYPE_CODE_M3_ROOT) {
+eval.c:	t = find_m3_heap_type (value_as_pointer (arg1)); }
+eval.c:      if (TYPE_CODE (t) == TYPE_CODE_M3_POINTER
+eval.c:	  || TYPE_CODE (t) == TYPE_CODE_M3_INDIRECT) {
+eval.c:	arg1 = value_at_lazy (TYPE_M3_TARGET (t), value_as_pointer (arg1)); 
+eval.c:      else if (TYPE_CODE (t) == TYPE_CODE_M3_OBJECT) {
+eval.c:	tc_addr = find_m3_heap_tc_addr (value_as_pointer (arg1));
+eval.c:	while (TYPE_CODE (t) == TYPE_CODE_M3_OBJECT) {
+eval.c:	  if (find_m3_obj_field (t, &exp->elts[pc + 2].string, 0, &offset, &t)) {
+eval.c:	  if (find_m3_obj_method (t, 
+eval.c:	  t = find_m3_type_from_tc (tc_addr); }
+eval.c:      else if (TYPE_CODE (t) == TYPE_CODE_M3_RECORD) {
+eval.c:	if (! find_m3_rec_field (t, &exp->elts[pc + 2].string, 
+eval.c:	*(LONGEST *) VALUE_CONTENTS_RAW (v) = m3_unpack_ord ((char*)&i,
+eval.c:						   TYPE_M3_SIZE (t), 0); }
+eval.c:    case M3_FINAL_TYPE: {
+eval.c:      while (TYPE_CODE (arg1_type) == TYPE_CODE_M3_INDIRECT) {
+eval.c:	arg1_type = TYPE_M3_TARGET (arg1_type);
+eval.c:	arg1 = value_at_lazy (arg1_type, m3_unpack_pointer2 (arg1)); }
+eval.c:      if ((TYPE_CODE (arg1_type) == TYPE_CODE_M3_REFANY
+eval.c:           || TYPE_CODE (arg1_type) == TYPE_CODE_M3_ROOT
+eval.c:           || TYPE_CODE (arg1_type) == TYPE_CODE_M3_OBJECT)
+eval.c:	arg1_type = find_m3_heap_type (value_as_pointer (arg1)); }
+eval.c:    case UNOP_M3_IND: {
+eval.c:      while (TYPE_CODE (arg1_type) == TYPE_CODE_M3_INDIRECT) {
+eval.c:	arg1_type = TYPE_M3_TARGET (arg1_type);
+eval.c:	arg1 = value_at_lazy (arg1_type, m3_unpack_pointer2 (arg1)); }
+eval.c:      if (TYPE_CODE (arg1_type) == TYPE_CODE_M3_REFANY) {
+eval.c:	arg1_type = find_m3_heap_type (value_as_pointer (arg1)); }
+eval.c:      if (TYPE_CODE (arg1_type) == TYPE_CODE_M3_POINTER) {
+eval.c:        res_type = TYPE_M3_TARGET (arg1_type); }
+eval.c:      return value_at_lazy (res_type, m3_unpack_pointer2 (arg1)); }
+eval.c:    case UNOP_M3_NEG: {
+eval.c:      *(LONGEST *) VALUE_CONTENTS_RAW (arg1) = - m3_unpack_int2 (arg1);
+eval.c:    case UNOP_M3_FIRST:
+eval.c:    case UNOP_M3_LAST: 
+eval.c:    case UNOP_M3_NUMBER: {
+eval.c:      while (TYPE_CODE (array_type) == TYPE_CODE_M3_POINTER
+eval.c:	     || TYPE_CODE (array_type) == TYPE_CODE_M3_INDIRECT) {
+eval.c:	array_type = TYPE_M3_TARGET (array_type);
+eval.c:	array = value_at_lazy (array_type, m3_unpack_pointer2 (array));
+eval.c:      if (TYPE_CODE (array_type) == TYPE_CODE_M3_ARRAY) {
+eval.c:	index_type = TYPE_M3_ARRAY_INDEX (array_type);
+eval.c:	m3_ordinal_bounds (index_type, &lowerbound, &upperbound);
+eval.c:      } else if (TYPE_CODE (array_type) == TYPE_CODE_M3_OPEN_ARRAY) {
+eval.c:      res = allocate_value (builtin_type_m3_integer);
+eval.c:	case UNOP_M3_FIRST: 
+eval.c:	case UNOP_M3_LAST: 
+eval.c:	case UNOP_M3_NUMBER:
+eval.c:    case UNOP_M3_ADR: {
+eval.c:      TYPE_CODE (VALUE_TYPE (v)) = TYPE_CODE_M3_ADDRESS;
+eval.c:      TYPE_M3_SIZE (VALUE_TYPE (v)) = TARGET_PTR_BIT;
+eval.c:    case BINOP_M3_SUBSCRIPT: {
+eval.c:      while (TYPE_CODE (array_type) == TYPE_CODE_M3_POINTER
+eval.c:	     || TYPE_CODE (array_type) == TYPE_CODE_M3_INDIRECT) {
+eval.c:	array_type = TYPE_M3_TARGET (array_type);
+eval.c:	array = value_at_lazy (array_type, m3_unpack_pointer2 (array)); }
+eval.c:      if (TYPE_CODE (array_type) == TYPE_CODE_M3_ARRAY) {
+eval.c:	index_type = TYPE_M3_ARRAY_INDEX (array_type);
+eval.c:	elem_type  = TYPE_M3_ARRAY_ELEM (array_type);
+eval.c:	elt_size   = TYPE_M3_SIZE (elem_type);
+eval.c:	m3_ordinal_bounds (index_type, &lowerbound, &upperbound); }
+eval.c:      else if (TYPE_CODE (array_type) == TYPE_CODE_M3_OPEN_ARRAY) {
+eval.c:	elem_type = TYPE_M3_OPEN_ARRAY_ELEM (array_type);
+eval.c:	  while (TYPE_CODE (e) == TYPE_CODE_M3_OPEN_ARRAY) {
+eval.c:	    e = TYPE_M3_OPEN_ARRAY_ELEM (e); }
+eval.c:	  elt_size *= TYPE_M3_SIZE (e); }}
+eval.c:      index_val = m3_unpack_int2 (index);
+eval.c:      if (TYPE_CODE (array_type) == TYPE_CODE_M3_OPEN_ARRAY) {
+eval.c:	if (TYPE_CODE (elem_type) == TYPE_CODE_M3_OPEN_ARRAY) {
+eval.c:    case BINOP_M3_DIVIDE: {
+eval.c:    case BINOP_M3_DIV:
+eval.c:    case BINOP_M3_MOD: {
+eval.c:    case BINOP_M3_MULT: 
+eval.c:    case BINOP_M3_ADD:
+eval.c:    case BINOP_M3_MINUS: {
+eval.c:	case TYPE_CODE_M3_INDIRECT:
+eval.c:	  arg1_type = TYPE_M3_TARGET (arg1_type);
+eval.c:	  arg1 = value_at_lazy (arg1_type, m3_unpack_pointer2 (arg1));
+eval.c:	case TYPE_CODE_M3_PACKED:
+eval.c:	  arg1_type = TYPE_M3_TARGET (arg1_type);
+eval.c:	case TYPE_CODE_M3_CARDINAL:
+eval.c:	case TYPE_CODE_M3_SUBRANGE:
+eval.c:	  arg1_type = builtin_type_m3_integer;
+eval.c:	case TYPE_CODE_M3_INTEGER:
+eval.c:	  ival1 = m3_unpack_int2 (arg1);
+eval.c:	  fval1 = m3_unpack_float2 (arg1);
+eval.c:	  arg1_type = builtin_type_m3_void;
+eval.c:	case TYPE_CODE_M3_INDIRECT:
+eval.c:	  arg2_type = TYPE_M3_TARGET (arg2_type);
+eval.c:	  arg2 = value_at_lazy (arg2_type, m3_unpack_pointer2 (arg2));
+eval.c:	case TYPE_CODE_M3_PACKED:
+eval.c:	  arg2_type = TYPE_M3_TARGET (arg2_type);
+eval.c:	case TYPE_CODE_M3_CARDINAL:
+eval.c:	case TYPE_CODE_M3_SUBRANGE:
+eval.c:	  arg2_type = builtin_type_m3_integer;
+eval.c:	case TYPE_CODE_M3_INTEGER:
+eval.c:	  ival2 = m3_unpack_int2 (arg2);
+eval.c:	  fval2 = m3_unpack_float2 (arg2);
+eval.c:	  arg2_type = builtin_type_m3_void;
+eval.c:	  || TYPE_CODE (arg1_type) == TYPE_CODE_M3_VOID
+eval.c:	  || (TYPE_CODE (arg1_type) == TYPE_CODE_M3_INTEGER && !int_ok)
+eval.c:      if (TYPE_CODE (arg1_type) == TYPE_CODE_M3_INTEGER) {
+eval.c:	res = allocate_value (builtin_type_m3_integer);
+eval.c:	  case BINOP_M3_DIV: {
+eval.c:	  case BINOP_M3_MOD: {
+eval.c:	  case BINOP_M3_MULT: 
+eval.c:	  case BINOP_M3_ADD:
+eval.c:	  case BINOP_M3_MINUS:
+eval.c:	  case BINOP_M3_DIVIDE:
+eval.c:	  case BINOP_M3_MULT: 
+eval.c:	  case BINOP_M3_ADD:
+eval.c:	  case BINOP_M3_MINUS:
+eval.c:    case UNOP_M3_NOT: {
+eval.c:      if (m3_unpack_int2 (arg1) == 0) {
+eval.c:	return m3_value_from_longest (builtin_type_m3_boolean, 1);  }
+eval.c:	return m3_value_from_longest (builtin_type_m3_boolean, 0);  }}
+eval.c:    case BINOP_M3_AND: {
+eval.c:      if (m3_unpack_int2 (arg1) == 0) {
+eval.c:    case BINOP_M3_OR: {
+eval.c:      if (m3_unpack_int2 (arg1) == 1) {
+eval.c:    case BINOP_M3_EQUAL: {
+eval.c:      tem = m3_value_equal (arg1, arg2);
+eval.c:      return m3_value_from_longest (builtin_type_m3_boolean, (LONGEST) tem); }
+eval.c:    case BINOP_M3_NE: {
+eval.c:      tem = ! m3_value_equal (arg1, arg2);
+eval.c:      return value_from_longest (builtin_type_m3_boolean, (LONGEST) tem); }
+eval.c:    case BINOP_M3_LT: {
+eval.c:      return value_from_longest (builtin_type_m3_boolean, (LONGEST) tem); }
+eval.c:    case BINOP_M3_LE: {
+eval.c:      return value_from_longest (builtin_type_m3_boolean, (LONGEST) tem); }
+eval.c:    case BINOP_M3_GT: {
+eval.c:      return value_from_longest (builtin_type_m3_boolean, (LONGEST) tem); }
+eval.c:    case BINOP_M3_GE: {
+eval.c:      return value_from_longest (builtin_type_m3_boolean, (LONGEST) tem); }
+eval.c:    case BINOP_M3_CAT:
+eval.c:    case BINOP_M3_IN:
+
+
+
+Update language.c
+
+
+language.c:    printf ("m3               Use the Modula-3 language\n"); 
+language.c:   case language_m3:
+language.c:      error ("Missing M3 support in function binop_result_check.");/*FIXME*/
+language.c:   case language_m3:
+language.c:      error ("Missing M3 support in function integral_type.");  /*FIXME*/
+language.c:   case language_m3:
+language.c:   case language_m3:
+language.c:   case language_m3:
+language.c:   case language_m3:
+language.c:      error ("Missing M3 support in function structured_type.");  /*FIXME*/
+language.c:   case language_m3:
+language.c:    if (TYPE_CODE (type) != TYPE_CODE_M3_BOOLEAN)
+language.c:    v = m3_unpack_int2 (val);
+language.c:#ifdef _LANG_m3
+language.c:       case language_m3:
+language.c:	 error ("Missing M3 support in function binop_type_check.");/*FIXME*/
+
+
+NEW m3-exp.c
+NEW m3-lang.c
+NEW m3-typeprint.c
+NEW m3-uid.c
+NEW m3-valprint.c
+
+Update  mdebugread.c with mods from mipsread.c
+
+mipsread.c:	if (TYPE_NFIELDS (t) == 0 && SYMBOL_LANGUAGE (s) != language_m3)
+mipsread.c:	  m3_decode_struct (top_stack->cur_type);
+mipsread.c:	      && !M3_TYPEP (TYPE_CODE (tp)))
+
+
+Update parse.c
+
+parse.c:    case OP_M3_LONG:
+parse.c:    case BINOP_M3_AND:
+parse.c:    case BINOP_M3_OR:
+parse.c:    case BINOP_M3_SUBSCRIPT:
+parse.c:    case BINOP_M3_MULT:
+parse.c:    case BINOP_M3_DIVIDE:
+parse.c:    case BINOP_M3_DIV:
+parse.c:    case BINOP_M3_MOD:
+parse.c:    case BINOP_M3_ADD:
+parse.c:    case BINOP_M3_MINUS:
+parse.c:    case BINOP_M3_CAT:
+parse.c:    case BINOP_M3_EQUAL:
+parse.c:    case BINOP_M3_NE:
+parse.c:    case BINOP_M3_LT:
+parse.c:    case BINOP_M3_LE:
+parse.c:    case BINOP_M3_GT:
+parse.c:    case BINOP_M3_GE:
+parse.c:    case BINOP_M3_IN:
+parse.c:    case UNOP_M3_NOT:
+parse.c:    case UNOP_M3_IND:
+parse.c:    case UNOP_M3_NEG:
+parse.c:    case UNOP_M3_FIRST:
+parse.c:    case UNOP_M3_LAST: 
+parse.c:    case UNOP_M3_NUMBER:
+parse.c:    case UNOP_M3_ADR:
+parse.c:    case M3_FINAL_TYPE:
+parse.c:    case STRUCTOP_M3_INTERFACE:
+parse.c:    case STRUCTOP_M3_MODULE:
+parse.c:    case STRUCTOP_M3_STRUCT:
+parse.c:    case OP_M3_LONG:
+parse.c:    case BINOP_M3_AND:
+parse.c:    case BINOP_M3_OR:
+parse.c:    case BINOP_M3_SUBSCRIPT:
+parse.c:    case BINOP_M3_MULT:
+parse.c:    case BINOP_M3_DIVIDE:
+parse.c:    case BINOP_M3_DIV:
+parse.c:    case BINOP_M3_MOD:
+parse.c:    case BINOP_M3_ADD:
+parse.c:    case BINOP_M3_MINUS:
+parse.c:    case BINOP_M3_CAT:
+parse.c:    case BINOP_M3_EQUAL:
+parse.c:    case BINOP_M3_NE:
+parse.c:    case BINOP_M3_LT:
+parse.c:    case BINOP_M3_LE:
+parse.c:    case BINOP_M3_GT:
+parse.c:    case BINOP_M3_GE:
+parse.c:    case BINOP_M3_IN:
+parse.c:    case UNOP_M3_NOT:
+parse.c:    case UNOP_M3_IND:
+parse.c:    case UNOP_M3_NEG:
+parse.c:    case UNOP_M3_FIRST:
+parse.c:    case UNOP_M3_LAST: 
+parse.c:    case UNOP_M3_NUMBER:
+parse.c:    case UNOP_M3_ADR:
+parse.c:    case M3_FINAL_TYPE:
+parse.c:    case STRUCTOP_M3_INTERFACE:
+parse.c:    case STRUCTOP_M3_MODULE:
+parse.c:    case STRUCTOP_M3_STRUCT:
+
+
+Update stabsread.c
+stabsread.c:      m3_decode_struct (SYMBOL_TYPE (sym));
+stabsread.c:      m3_decode_struct (SYMBOL_TYPE (sym));
+stabsread.c:      m3_decode_struct (SYMBOL_TYPE (sym));
+stabsread.c:    if (current_subfile->language == language_m3)
+stabsread.c:	  if (M3_TYPEP (TYPE_CODE (*type)) 
+
+
+Update symfile.c
+
+symfile.c:  if (SYMBOL_LANGUAGE (*s1) == language_m3) {
+symfile.c:  if (pst->symtab->language == language_m3) {
+symfile.c:    m3_fix_symtab (pst->symtab); }
+symfile.c:  else if(STREQ(c,".m3") || STREQ(c,".i3") || STREQ(c,".mc") || STREQ(c,".ic"))
+symfile.c:    return language_m3;
+
+
+
+Update symtab.c
+	CAREFUL: This one wasn't so easy.  Lots of code into decode_line_1.
+
+
+symtab.c:    || SYMBOL_LANGUAGE (start) == language_m3;
+symtab.c:	  (SYMBOL_LANGUAGE (BLOCK_SYM (block, 0)) == language_m3
+symtab.c:      if (TYPE_CODE (VALUE_TYPE (val)) == TYPE_CODE_M3_PROC) {
+symtab.c:	pc = m3_unpack_pointer2 (val);
+symtab.c:	if (pc == 0 && expr->elts[1].opcode == STRUCTOP_M3_INTERFACE) {
+symtab.c:	  exports = lookup_symbol ("_m3_exporters", 0, 
+symtab.c:		  if (TYPE_CODE (VALUE_TYPE (val)) == TYPE_CODE_M3_PROC) {
+symtab.c:		    pc = m3_unpack_pointer2 (val);
+
+
+Update valarith.c  (one new function)
+
+valarith.c:m3_value_equal (arg1, arg2)
+valarith.c:  if (code1 == TYPE_CODE_M3_INTEGER && code2 == TYPE_CODE_M3_INTEGER)
+valarith.c:    return m3_unpack_int2 (arg1) == m3_unpack_int2 (arg2);
+valarith.c:  else if (code1 == TYPE_CODE_FLT && code2 == TYPE_CODE_M3_INTEGER)
+valarith.c:    return m3_unpack_float2 (arg1) == (double) m3_unpack_int2 (arg2);
+valarith.c:  else if (code2 == TYPE_CODE_FLT && code1 == TYPE_CODE_M3_INTEGER)
+valarith.c:    return m3_unpack_float2 (arg2) == (double) m3_unpack_int2 (arg1);
+valarith.c:    return m3_unpack_float2 (arg1) == m3_unpack_float2 (arg2);
+valarith.c:  else if (code1 == TYPE_CODE_M3_POINTER && code2 == TYPE_CODE_M3_INTEGER)
+valarith.c:    return m3_unpack_pointer2 (arg1) == (CORE_ADDR) m3_unpack_int2 (arg2);
+valarith.c:  else if (code2 == TYPE_CODE_M3_POINTER && code1 == TYPE_CODE_M3_INTEGER)
+valarith.c:    return (CORE_ADDR) m3_unpack_int2 (arg1) == m3_unpack_pointer2 (arg2);
+
+Update valops.c:
+
+valops.c:  else if (code == TYPE_CODE_M3_PROC) {
+valops.c:    value_type = TYPE_M3_PROC_RESTYPE (ftype);}
+
+Update values.c:
+
+values.c:  if (code == TYPE_CODE_ENUM || code == TYPE_CODE_BOOL || M3_TYPEP (code))
+values.c:    case TYPE_CODE_M3_INTEGER:
+values.c:    case TYPE_CODE_M3_CARDINAL:
+values.c:    case TYPE_CODE_M3_CHAR:
+values.c:    case TYPE_CODE_M3_ENUM:
+values.c:    case TYPE_CODE_M3_SUBRANGE:
+values.c:    case TYPE_CODE_M3_BOOLEAN:
+values.c:    case TYPE_CODE_M3_REFANY:
+values.c:    case TYPE_CODE_M3_POINTER:
+values.c:    case TYPE_CODE_M3_ADDRESS:
+values.c:    case TYPE_CODE_M3_ROOT:
+values.c:    case TYPE_CODE_M3_UN_ROOT:
+values.c:    case TYPE_CODE_M3_NULL:
+values.c:m3_value_from_longest (type, num)
+values.c:    case TYPE_CODE_M3_INTEGER:
+values.c:    case TYPE_CODE_M3_CARDINAL:
+values.c:    case TYPE_CODE_M3_CHAR:
+values.c:    case TYPE_CODE_M3_ENUM:
+values.c:    case TYPE_CODE_M3_SUBRANGE:
+values.c:    case TYPE_CODE_M3_BOOLEAN:
+values.c:    case TYPE_CODE_M3_REFANY:
+values.c:    case TYPE_CODE_M3_POINTER:
+values.c:    case TYPE_CODE_M3_ADDRESS:
+values.c:    case TYPE_CODE_M3_ROOT:
+values.c:    case TYPE_CODE_M3_UN_ROOT:
+values.c:    case TYPE_CODE_M3_NULL:
+
+HEADER FILES
+
+Update defs.h
+defs.h:   language_m3			/* Modula-3 */
+
+Update expression.h:
+
+expression.h:  /* M3 */
+expression.h:  OP_M3_LONG,
+expression.h:  STRUCTOP_M3_STRUCT,
+expression.h:  STRUCTOP_M3_INTERFACE,
+expression.h:  STRUCTOP_M3_MODULE,
+expression.h:  M3_FINAL_TYPE,
+expression.h:  UNOP_M3_IND,
+expression.h:  UNOP_M3_NEG,
+expression.h:  UNOP_M3_FIRST,
+expression.h:  UNOP_M3_LAST,
+expression.h:  UNOP_M3_NUMBER,
+expression.h:  UNOP_M3_ADR,
+expression.h:  UNOP_M3_NOT,
+expression.h:  BINOP_M3_SUBSCRIPT,
+expression.h:  BINOP_M3_MULT,
+expression.h:  BINOP_M3_DIVIDE,
+expression.h:  BINOP_M3_DIV,
+expression.h:  BINOP_M3_MOD,
+expression.h:  BINOP_M3_ADD,
+expression.h:  BINOP_M3_MINUS,
+expression.h:  BINOP_M3_CAT,
+expression.h:  BINOP_M3_EQUAL,
+expression.h:  BINOP_M3_NE,
+expression.h:  BINOP_M3_LT,
+expression.h:  BINOP_M3_LE,
+expression.h:  BINOP_M3_GT,
+expression.h:  BINOP_M3_GE,
+expression.h:  BINOP_M3_IN,
+expression.h:  BINOP_M3_AND,
+expression.h:  BINOP_M3_OR
+
+Update gdbtypes.h
+
+gdbtypes.h:  TYPE_CODE_M3_first,
+gdbtypes.h:  TYPE_CODE_M3_ARRAY,
+gdbtypes.h:  TYPE_CODE_M3_OPEN_ARRAY,
+gdbtypes.h:  TYPE_CODE_M3_ENUM,
+gdbtypes.h:  TYPE_CODE_M3_PACKED,
+gdbtypes.h:  TYPE_CODE_M3_RECORD,
+gdbtypes.h:  TYPE_CODE_M3_OBJECT,
+gdbtypes.h:  TYPE_CODE_M3_SET,
+gdbtypes.h:  TYPE_CODE_M3_SUBRANGE,
+gdbtypes.h:  TYPE_CODE_M3_POINTER,
+gdbtypes.h:  TYPE_CODE_M3_INDIRECT,
+gdbtypes.h:  TYPE_CODE_M3_PROC,
+gdbtypes.h:  TYPE_CODE_M3_OPAQUE,
+gdbtypes.h:  TYPE_CODE_M3_ADDRESS,
+gdbtypes.h:  TYPE_CODE_M3_BOOLEAN,
+gdbtypes.h:  TYPE_CODE_M3_CHAR,
+gdbtypes.h:  TYPE_CODE_M3_INTEGER,
+gdbtypes.h:  TYPE_CODE_M3_CARDINAL,
+gdbtypes.h:  TYPE_CODE_M3_REFANY,
+gdbtypes.h:  TYPE_CODE_M3_ROOT,
+gdbtypes.h:  TYPE_CODE_M3_UN_ROOT,
+gdbtypes.h:  TYPE_CODE_M3_MUTEX,
+gdbtypes.h:  TYPE_CODE_M3_TEXT,
+gdbtypes.h:  TYPE_CODE_M3_NULL,
+gdbtypes.h:  TYPE_CODE_M3_VOID,
+gdbtypes.h:  TYPE_CODE_M3_last
+gdbtypes.h:#define M3_TYPEP(x) (((int)TYPE_CODE_M3_first < (int) (x)) \
+gdbtypes.h:		     && ((int) (x) < (int) (TYPE_CODE_M3_last)))
+gdbtypes.h:      char m3_uid [7];
+gdbtypes.h:      /* M3 stuff */
+gdbtypes.h:	LONGEST m3_size; 
+gdbtypes.h:      } m3_stuff;
+gdbtypes.h:#define TYPE_FIELD_M3_UID(t,n) (TYPE_FIELDS(t)[n].m3_uid)
+gdbtypes.h:#define TYPE_M3_FIELD_TYPE(t,n) \
+gdbtypes.h:    : (TYPE_FIELD_TYPE (t, n) = m3_resolve_type (TYPE_FIELD_M3_UID (t,n))))
+gdbtypes.h:extern struct type *m3_resolve_type PARAMS ((char *));
+gdbtypes.h:#define TYPE_M3_UNIT(t)                 TYPE_M3_STUFF(t).unit
+gdbtypes.h:#define TYPE_M3_NAME(t)                 TYPE_M3_STUFF(t).name
+gdbtypes.h:#define TYPE_M3_SIZE(t)                 TYPE_M3_STUFF(t).m3_size
+gdbtypes.h:#define TYPE_M3_STUFF(t)                (t)->type_specific.m3_stuff
+gdbtypes.h:#define TYPE_M3_TARGET(t)               TYPE_M3_FIELD_TYPE(t,0)
+gdbtypes.h:#define TYPE_M3_ARRAY_INDEX(t)          TYPE_M3_FIELD_TYPE(t,0)
+gdbtypes.h:#define TYPE_M3_ARRAY_ELEM(t)           TYPE_M3_FIELD_TYPE(t,1)
+gdbtypes.h:#define TYPE_M3_OPEN_ARRAY_ELEM(t)      TYPE_M3_FIELD_TYPE(t,0)
+gdbtypes.h:#define TYPE_M3_ENUM_NVALS(t)           TYPE_NFIELDS(t)
+gdbtypes.h:#define TYPE_M3_ENUM_VALNAME(t,n)       TYPE_FIELD_NAME(t,n)
+gdbtypes.h:#define TYPE_M3_PACKED_TARGET(t)        TYPE_M3_FIELD_TYPE(t,0)
+gdbtypes.h:#define TYPE_M3_REC_NFIELDS(t)          TYPE_NFIELDS(t)
+gdbtypes.h:#define TYPE_M3_REC_FIELD_NAME(t,n)     TYPE_FIELD_NAME(t,n)
+gdbtypes.h:#define TYPE_M3_REC_FIELD_TYPE(t,n)     TYPE_M3_FIELD_TYPE(t,n)
+gdbtypes.h:#define TYPE_M3_REC_FIELD_BITPOS(t,n)   TYPE_FIELD_BITPOS(t,n)
+gdbtypes.h:#define TYPE_M3_REC_FIELD_BITSIZE(t,n)  TYPE_FIELD_BITSIZE(t,n)
+gdbtypes.h:#define TYPE_M3_OBJ_SUPER(t)            TYPE_M3_FIELD_TYPE(t,0)
+gdbtypes.h:#define TYPE_M3_OBJ_NFIELDS(t)          TYPE_M3_STUFF(t).a
+gdbtypes.h:#define TYPE_M3_OBJ_FIELD_NAME(t,n)     TYPE_FIELD_NAME(t,1+n+TYPE_M3_OBJ_NMETHODS(t))
+gdbtypes.h:#define TYPE_M3_OBJ_FIELD_TYPE(t,n)     TYPE_M3_FIELD_TYPE(t,1+n+TYPE_M3_OBJ_NMETHODS(t))
+gdbtypes.h:#define TYPE_M3_OBJ_FIELD_BITPOS(t,n)   TYPE_FIELD_BITPOS(t,1+n+TYPE_M3_OBJ_NMETHODS(t))
+gdbtypes.h:#define TYPE_M3_OBJ_FIELD_BITSIZE(t,n)  TYPE_FIELD_BITSIZE(t,1+n+TYPE_M3_OBJ_NMETHODS(t))
+gdbtypes.h:#define TYPE_M3_OBJ_NMETHODS(t)         TYPE_M3_STUFF(t).b
+gdbtypes.h:#define TYPE_M3_OBJ_METHOD_NAME(t,n)    TYPE_FIELD_NAME(t,1+n)
+gdbtypes.h:#define TYPE_M3_OBJ_METHOD_TYPE(t,n)    TYPE_M3_FIELD_TYPE(t,1+n)
+gdbtypes.h:#define TYPE_M3_OBJ_METHOD_BITPOS(t,n)  TYPE_FIELD_BITPOS(t,1+n)
+gdbtypes.h:#define TYPE_M3_OBJ_METHOD_BITSIZE(t,n) TYPE_FIELD_BITSIZE(t,1+n)
+gdbtypes.h:#define TYPE_M3_OBJ_TRACED(t)           TYPE_M3_STUFF(t).c
+gdbtypes.h:#define TYPE_M3_OBJ_BRANDED(t)          TYPE_M3_STUFF(t).d
+gdbtypes.h:#define TYPE_M3_OBJ_BRAND(t)            TYPE_M3_STUFF(t).s
+gdbtypes.h:#define TYPE_M3_SET_TARGET(t)           TYPE_M3_FIELD_TYPE(t,0)
+gdbtypes.h:#define TYPE_M3_SUBRANGE_MIN(t)         TYPE_M3_STUFF(t).a
+gdbtypes.h:#define TYPE_M3_SUBRANGE_MAX(t)         TYPE_M3_STUFF(t).b
+gdbtypes.h:#define TYPE_M3_SUBRANGE_TARGET(t)      TYPE_M3_FIELD_TYPE (t,0)
+gdbtypes.h:#define TYPE_M3_POINTER_TARGET(t)       TYPE_M3_FIELD_TYPE (t,0)
+gdbtypes.h:#define TYPE_M3_POINTER_TRACED(t)       TYPE_M3_STUFF(t).a
+gdbtypes.h:#define TYPE_M3_POINTER_BRANDED(t)      TYPE_M3_STUFF(t).b
+gdbtypes.h:#define TYPE_M3_POINTER_BRAND(t)        TYPE_M3_STUFF(t).s
+gdbtypes.h:#define TYPE_M3_INDIRECT_TARGET(t)      TYPE_M3_FIELD_TYPE (t,0)
+gdbtypes.h:#define TYPE_M3_PROC_NARGS(t)           TYPE_M3_STUFF(t).a
+gdbtypes.h:#define TYPE_M3_PROC_NRAISES(t)         TYPE_M3_STUFF(t).b
+gdbtypes.h:#define TYPE_M3_PROC_RESTYPE(t)         TYPE_M3_FIELD_TYPE(t,0)
+gdbtypes.h:#define TYPE_M3_PROC_ARG_NAME(t,n)      TYPE_FIELD_NAME(t,n+1)
+gdbtypes.h:#define TYPE_M3_PROC_ARG_TYPE(t,n)      TYPE_M3_FIELD_TYPE(t,n+1)
+gdbtypes.h:#define TYPE_M3_PROC_RAISE_NAME(t,n)    TYPE_FIELD_NAME(t,n+1+TYPE_M3_PROC_NARGS(t))
+gdbtypes.h:#define TYPE_M3_PROC_RAISE_TYPE(t,n)    TYPE_M3_FIELD_TYPE(t,n+1+TYPE_M3_PROC_NARGS(t))
+gdbtypes.h:#define TYPE_M3_OPAQUE_REVEALED(t)      TYPE_M3_FIELD_TYPE (t,0)
+gdbtypes.h:#define TYPE_M3_NAME_TYPE(t)            TYPE_M3_FIELD_TYPE (t,0)
+
+
+
+
+Update language.h
+
+language.h:#define _LANG_m3
+
+Careful to introduce new fields to struct language_definition which
+include pointers to the largest signed and unsigned integer values
+now. Not previously supported.
+
+NEW m3-lang.h
+
+New m3-uid.h
+
+Update 
+symtab.h:      struct m3_specific	 /* For M3 */
+symtab.h:	} m3_specific;
+symtab.h:#define SYMBOL_M3_DEMANGLED_NAME(symbol)	\
+symtab.h:  (symbol)->ginfo.language_specific.m3_specific.demangled_name
+symtab.h:    if (SYMBOL_LANGUAGE (symbol) == language_m3)			\
+symtab.h:	SYMBOL_M3_DEMANGLED_NAME (symbol) = NULL;			\
+symtab.h:    if (SYMBOL_LANGUAGE (symbol) == language_m3			        \
+symtab.h:	demangled = m3_demangle (SYMBOL_NAME (symbol));                 \
+symtab.h:	    SYMBOL_LANGUAGE (symbol) = language_m3;			\
+symtab.h:	    SYMBOL_M3_DEMANGLED_NAME (symbol) = 			\
+symtab.h:	    SYMBOL_M3_DEMANGLED_NAME (symbol) = NULL;			\
+symtab.h:  (SYMBOL_LANGUAGE (symbol) == language_m3				\
+symtab.h:   ? SYMBOL_M3_DEMANGLED_NAME (symbol)					\
+symtab.h:  char m3_uid[9];
+symtab.h:				 ((symbol)->type = m3_resolve_type ((symbol)->m3_uid)))
+symtab.h:m3_demangle PARAMS ((char *));

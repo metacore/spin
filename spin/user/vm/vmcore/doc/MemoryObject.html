@@ -1,0 +1,198 @@
+<head>
+<title>MemoryObject</title>
+</head>
+<body>
+<h2>MemoryObject</h2>
+<table width=100%>
+<td><td>
+<p>
+ Memory object is a conainer of page frames.
+
+<p>
+Internally, a memory object consists of two objects,
+
+<!--href="../src/CacheObject.i3"--><a href="../src/CacheObject.i3">cache</a> and
+
+<!--href="../src/PagerObject.i3"--><a href="../src/PagerObject.i3">pager</a>.
+
+Cache holds a set of page frames. All the frames
+
+in a memory object is recorded in the cache object.
+
+<p>
+Pager implements a mechanism to transfer pages to and from
+
+memory and external I/O device. Pager is expected to be
+
+subtyped. Currently, two types of pagers are provided, namely, 
+
+<em>Bogopager</em>
+
+and Filepager</em>
+
+pager</dfn>).
+
+<p>
+<ul>
+
+  <li> Bogopager always provides a zero filled page on page fault.
+
+       It doesn't provide the page out operation.
+
+       Bogopager comes with the vmcore extension.
+
+  <li> File pager provides a zero filled page on the first fault.
+
+       It supports page-out on generic
+
+       <!--href="fs"--><a href="../../../../user/fs/doc/index.html">file system</a>.
+
+       When loaded into memory, the default pager replaces the
+
+       <a href="../src/DefaultPager.i3">public procedures</a>
+
+       to call bogopager. Thus, the bogopager and the file pager
+
+       are used in the same way.
+
+</ul>
+
+<p>
+<bq>
+
+<em>Note:</em>
+
+The reason the bogopager is there is that the default pager depends on
+
+the file system, and file system depends on vmcore. Therefore, we
+
+can't put the default pager in vmcore, or we have circular dependency.
+
+</bq>
+
+<p>
+</table><br>
+<br>
+<blockquote>
+<code><b>INTERFACE MemoryObject;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>IMPORT Word, VMError, VMTypes;
+</b></code><br><code><b>IMPORT MachineTrap;
+</b></code><br><code><b>IMPORT PhysAddr;
+</b></code><br><code><b>IMPORT PagerObject;
+</b></code><br><code><b>IMPORT CacheObject;
+</b></code><br><code><b>IMPORT Protection;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>TYPE
+</b></code><br><code><b>&nbsp;&nbsp;PageNumber = VMTypes.PageNumber;
+</b></code><br><code><b>&nbsp;&nbsp;PageCount = VMTypes.PageCount;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>TYPE
+</b></code><br><code><b>&nbsp;&nbsp;T &lt: Public;
+</b></code><br><code><b>&nbsp;&nbsp;Public = OBJECT
+</b></code><br><code><b>&nbsp;&nbsp;METHODS
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;init(size: PageCount;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pager: PagerObject.T := NIL;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cache: CacheObject.T := NIL;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name: TEXT := NIL
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ): T RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> This proc initializes the memory object. If <code><b>pager</b></code> is NIL, then
+     the <!--href="filepager"--><a href="../../filepager/doc/FilePager.html">file pager</a> will be newly created.
+
+     If <code><b>cache</b></code> is NIL, then the default cache will be newly created.
+
+     <code><b>size</b></code> specifies the maximum number of pages that this memory object
+
+      will occupy.
+
+<br>
+     <code><b>name</b></code> is used just for debugging.
+
+     </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;request(offset: PageNumber; type: INTEGER;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VAR frame: PhysAddr.T; VAR prot: Protection.T): BOOLEAN
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> This is called by AddressSpace page fault handler. Request
+       returns the physical frame that backs the location <code><b>offset</b></code>, and
+
+       the new protection bits that should be applied when mapping
+
+       <code><b>frame</b></code> onto the faulted address.
+
+<br>
+       <code><b>type</b></code> is one of MachineTrap.Read/Write/Execute that indicates
+
+       how the fault happened.
+
+     </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;fork(): T RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> Create an eager copy of the object.
+       THIS WILL BE REMOVED IN THE FUTURE. </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;copyOnWrite(from := 0; len: PageCount := LAST(INTEGER)): T
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> Create a memory object that clones the region
+     <code><b>from</b></code>..<code><b>from+len</b></code> of this memobject. </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;isMapped(): BOOLEAN;
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> Returns true is the memory object it mapped on any addrspace.
+       We don't return where it is mapped for safety reason. </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;print(): TEXT;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code>Returns some human-understandable descriptive string. <br>
+</blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;END;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>CONST
+</b></code><br><code><b>&nbsp;&nbsp;Read = MachineTrap.Read;
+</b></code><br><code><b>&nbsp;&nbsp;Write = MachineTrap.Write;
+</b></code><br><code><b>&nbsp;&nbsp;Execute = MachineTrap.Execute;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>CONST Brand = "MemoryObject-1.0";
+</b></code><br></blockquote>
+<blockquote>
+<code><b>PROCEDURE Destroyed(memObj: T);
+</b></code><br><table width=100%>
+<td><code><b></b></code><td> This is an event. Called when <code><b>memObj</b></code> is going to be destroyed.
+   The auth key is the memory object.</table><br>
+</blockquote>
+<br>
+The below three are used by the table generic. <br>
+<blockquote>
+<code><b>PROCEDURE Equal(mo1, mo2: T): BOOLEAN;
+</b></code><br><code><b>PROCEDURE Hash(mo: T): Word.T;
+</b></code><br><code><b>PROCEDURE Compare(mo1, mo2: T): [-1..1];
+</b></code><br></blockquote>
+<blockquote>
+<code><b>END MemoryObject.
+</b></code><br></blockquote>
+<br>
+<br>
+<hr>
+Last updated: Sun Oct 13 16:36:46 PDT 1996
+<br>
+<address>Yasushi Saito (yasushi@cs.washington.edu)</address>
+</body>

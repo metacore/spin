@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+<h2> The Sequence interface </h2>
+ A "Sequence(Elem).T" (or just a {\it sequence}) represents an
+   extensible sequence of "Elem.T"s.  
+<p>     
+   The first group of methods have side effects on the sequence.  The
+   call
+<p>     
+
+| s.init(sizeHint)
+<p>     
+
+   initializes "s" to be the empty sequence.  Furthermore "init"
+   assumes that at least "sizeHint" elements will be added to the
+   sequence; these operations may be executed more efficiently than if
+   "sizeHint" was defaulted.  The call
+<p>     
+
+| s.fromArray(a)
+<p>     
+
+   initializes "s" to be the sequence with elements
+   "a[0],~...,~a[LAST(a)]".  The call
+<p>     
+
+| s.addhi(x)
+<p>     
+
+   appends "x" to the end of "s".  Thus it does not change the index
+   of any existing element.  The call
+<p>     
+
+| s.addlo(x)
+<p>     
+
+   appends "x" to the front of "s".  Thus it increases the index of
+   all existing elements by one. The call
+<p>  
+| s.remhi()
+<p>
+   removes and returns the last element of "s".  Thus it does not
+   change the index of any of "s"'s other elements.  If "s" is empty,
+   "s.remhi()" causes a checked runtime error.  The call
+<p>
+| s.remlo()
+<p>
+   removes and returns the first element of "s".  Thus it decreases
+   the index of all other elements of "s" by one. If "s" is empty,
+   "s.remlo()" causes a checked runtime error.  The call
+<p>
+| s.put(i, x)
+<p>
+   replaces element "i" of "s" with "x".  Element "0" is the first
+   element. It is a checked runtime error unless "i" is less than
+   "s.size()".
+<p>
+   The second group of methods have no side effect on the sequence.
+   The call
+<p>
+| s.size()
+<p>
+   returns the number of elements in "s".  The call
+<p>
+| s.get(i)
+<p>
+   returns element "i" of "s". It is a checked runtime error unless
+   "i" is less than "s.size()".  The call
+<p>
+| s.gethi()
+<p>
+   returns the last element of "s"; that is, it is equivalent to
+   "s.get(s.size()-1)".  The call
+<p>
+| s.getlo()
+<p>
+   returns the first element of "s"; that is, it is equivalent to
+   "s.get(0)".
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

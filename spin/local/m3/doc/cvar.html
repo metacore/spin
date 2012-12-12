@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>CVAR</title>
+</head>
+
+<body>
+
+<h1>CVAR description</br></h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+C implements call-by-reference by passing pointers to arguments
+explicitly.  Passing <code>NIL</code> explicitly as the value of such
+a pointer is legal, and is often has meaning.  Modula-3 has no clean
+way of calling such a function with <code>NIL</code> as the passed
+pointer: either a <code>REF</code> must be created an passed explicitly,
+or the function must be given two <code>EXTERNAL</code> declarations.
+
+<h2>Implementation</h2>
+
+Our compiler supports <code>CVAR</code> parameters in
+<code>EXTERNAL</code> function declarations.  A <code>CVAR</code>
+parameter is a <code>VAR</code> parameter with the additional
+semantics that the non-designator value <code>NIL</code> can be passed
+as that parameter.  The callee will receive <code>NIL</code> as the
+value of its formal.
+
+<h2>Examples</h2>
+
+<pre>
+<* EXTERNAL *> PROCEDURE p(CVAR x: REF INTEGER);
+
+a: REF INTEGER := NIL ;
+p (a);             (* the address of a is passed *)
+p (NIL);           (* NIL is passed *)
+</pre>
+
+
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>May 21, 1996</date>
+<Address>
+whsieh@cs.washington.edu
+</address>
+</html>

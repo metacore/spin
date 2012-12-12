@@ -1,0 +1,26 @@
+% Copyright (C) 1989, 1992 Digital Equipment Corporation 
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+
+% 
+% Standard configuration file for Alpha/AXP running SPIN
+%
+
+% HISTORY
+%
+% 05-May-96  Charles Garrett (garrett) at the University of Washington
+%	Created. The same as ALPHA_SPIN except that the "-p" option is
+%	 turned on.
+%
+
+
+if equal(TARGET, "TARGET")
+  readonly TARGET = "IX86_SPIN_PROF"
+end
+
+include (IX86_SPIN)
+
+readonly PROFILE = "TRUE"
+
+% What are the standard flags?
+m3_option("-X6@-p@")

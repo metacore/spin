@@ -1,0 +1,6 @@
+Generic_module("SyscallBootGen")
+proc sphinx_addon_syscall(intf) is
+  local name = intf & "Boot"
+  build_generic_intf (name, "SyscallBootGen", [intf & "Extension"], HIDDEN)
+  build_generic_impl (name, "SyscallBootGen", [intf & "Extension"])
+end

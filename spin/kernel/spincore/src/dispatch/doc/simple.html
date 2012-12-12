@@ -1,0 +1,237 @@
+<html>
+<head>
+<title>Simple handler installation and uninstallation</title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top"> Simple handler installation and uninstallation</a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+<h2> Overview </h2>
+
+This part of the dispatcher interface allows manipulation of a single
+binding: its creation, activation and deactivation. 
+
+<h2> Interface </h2>
+
+<pre>
+
+PROCEDURE Create(event: PROCANY;
+                 guard: PROCANY;
+                 handler: PROCANY;
+                 guardClosure: REFANY := NIL;
+                 handlerClosure: REFANY := NIL;
+                 options: Options := DefaultOptions;
+                 key : Auth.Key := NIL
+                ): Binding
+                RAISES { Error };
+
+PROCEDURE Install (binding: Binding) 
+                  RAISES { Error };
+
+PROCEDURE Uninstall (binding: Binding) 
+                    RAISES { Error };
+
+PROCEDURE InstallHandler(event: PROCANY;
+	                 guard: PROCANY;
+        	         handler: PROCANY;
+                	 guardClosure: REFANY := NIL;
+	                 handlerClosure: REFANY := NIL;
+        	         options: Options := DefaultOptions;
+			 key: Auth.Key := NIL
+	                ): Binding
+        	        RAISES { Error };
+</pre>
+
+<h2> Usage </h2>
+
+<i>Create</i> is used to create an inactive binding.  A binding
+descriptor returned as the result of this procedure can be
+subsequently used to install and uninstall the binding as well as
+change properties of the binding.
+
+<p>
+
+The required parameters of binding creation are: the event on which
+the handler will be installed, the handler procedure and the guard
+procedure.  Neither event nor handler procedure can be <i>NIL</i>.  If the
+guard procedure is <i>NIL</i> then the handler will be invoked
+unconditionally (each time the event is raised).  Optional parameters
+include closures and installation options.  A closure can be specified
+for either a guard or a handler.  If a handler or a guard procedure
+takes a closure then it is passed to it then the closure will be
+passed to the procedure as the first argument.
+
+<p>
+
+<i>Install</i> is used to activate a single binding. <i>Uninstall</i>
+is used to deactivate a single binding.  These two procedures
+guarantee atomicity of installation and uninstallation with respect to
+on-going event invocations. (In other words, handlers can be installed
+and uninstalled on the fly.)  They do not provide any atomicity
+across a single call, for example, if two handlers are swapped on an
+event by uninstalling one through a call to <i>Uninstall</i> and
+installing another through a call to <i>Install</i> there is a period
+of time between the two calls during which none of them is installed.
+Use the <a href="handlers.html"><i>ChangeHandlers</i></a> procedure
+where such atomicity is required.  
+
+<p>
+
+<i> InstallHandler </i> creates an active binding.  It takes the same
+arguments as <i>Create</i> and in fact it is equivalent to:
+<pre>
+	VAR binding : Binding := Create(...);
+	Install(binding);
+	RETURN binding;
+</pre>
+
+Since this is the most common case of handler installation a separate
+procedure is exported by the dispatcher.  
+
+<p>
+
+Explicit pair of calls to <i>Create</i> and <i>Install</i> should be used
+instead of <i>InstallHandler</i> either if the installation has to be
+synchronized with other event operations (see <a
+href="handlers.html"><i>ChangeHandlers</i></a>) or to speed up
+initialization be removing creation, which includes typechecking and
+authorization, out of a critical path.
+
+<h2> Typing rules </h2>
+
+The dispatcher dynamically checks the types of procedures at the time
+a binding is created according to the following rules:
+
+<ul>
+<li> Procedure types:
+<ul>
+<li> event, guard, and handler must be procedures (be of type PROCANY),
+<li> event, guard, and handler must be legal
+	procedures.
+</ul>
+<li> Taking closure:
+<ul>
+<li> a handler or a guard must take a closure is the corresponding
+	closure argument (guardClosure for guard and handlerClosure
+	for handler) is not <i>NIL</i>,
+<li> a handler or a guard can take a closure if the corresponding
+	closure argument is <i>NIL</i>,
+</ul>
+<li> No closure:
+<ul>
+<li> a handler that does not take a closure must have the same type as
+	the event,
+<li> a guard that does not take a closure must have the same number
+	and types of arguments as the event but must return result of
+	type <i> BOOLEAN</i>,
+</ul>
+<li> With closure:
+<ul>
+<li> if a handler or a guard takes a closure than it must have an
+	additional argument (first, before all event arguments) of the
+	type which is a subtype of <i>REFANY</i>,
+</ul>
+<li> Closure:
+<ul>
+<li> a closure argument must be a subtype of the type of the first
+	argument of the corresponding procedure argument.
+</ul>
+</ul>
+
+<h2> Examples </h2>
+
+Installation of a simple handler which is always executed:
+
+<pre>
+MODULE Counter;
+        
+VAR 
+  binding : Dispatcher.Binding;
+  counter : INTEGER;
+
+PROCEDURE Counter(...) =
+  BEGIN
+    INC(counter);
+  END Counter;
+
+PROCEDURE Start () =
+  BEGIN
+    counter := 0;
+    binding := Dispatcher.InstallHandler(IP.PacketRecv, Count, NIL);
+  END Start;
+
+PROCEDURE Stop (): INTEGER =
+  BEGIN
+    Dispatcher.Uninstall(binding);
+    RETURN counter;
+  END Stop;
+
+BEGIN
+END Counter;
+</pre>
+
+Note that:
+<ul>
+<li> the argument to uninstallation is the value returned form
+	installation,
+<li> the counter used by the handler is initialized before the
+	installation because there are no synchronization between the
+	installation and the thread that does the installation.  
+<li> a new binding is created each time we start counting.
+</ul>
+
+Alternatively one could reuse the same binding:
+
+<pre>
+MODULE Counter;
+        
+VAR 
+  binding : Dispatcher.Binding;
+  counter : INTEGER;
+
+PROCEDURE Counter(...) =
+  BEGIN
+    INC(counter);
+  END Counter;
+
+PROCEDURE Start () =
+  BEGIN
+    counter := 0;
+    Dispatcher.Install(binding);
+  END Start;
+
+PROCEDURE Stop (): INTEGER =
+  BEGIN
+    Dispatcher.Uninstall(binding);
+    RETURN counter;
+  END Stop;
+
+BEGIN
+  binding := Dispatcher.Create(IP.PacketRecv, Count, NIL);
+END Counter;
+</pre>
+
+Note that:
+<ul>
+<li> the creation is done in the module initialization and a call to
+	<i>Install</i>  activates the binding when the counting is
+	started, 
+</ul>
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>

@@ -1,0 +1,10 @@
+99a100,106
+> #ifdef SPIN
+> /* Turning on NETSYNC_LOCK explicitly to do net synchronization.
+>  * Cannot just use UNIX_LOCKS, as this would turn on more crap
+>  * than we want to deal with. 
+>  */
+> #define NETSYNC_LOCK	(1)	/* locks needed in extended kernel */
+> #else
+100a108
+> #endif /* SPIN */

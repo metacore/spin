@@ -1,0 +1,10 @@
+79a80,84
+> #ifdef SPIN
+> /* DEC Bug - savage */
+> int pmagro_load_formatted_cursor();
+> int pmagro_reformat_cursor();
+> #else /* SPIN */
+82c87
+< 
+---
+> #endif /* SPIN */

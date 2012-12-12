@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>Web File System</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> Web File System</a> </br>
+</h1>
+<date>Thu May 23 12:13:58 1996</date>
+</br>
+Brian Bershad (doc by Yasushi Saito)
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2>
+
+Web file system(<dfn>WFS</dfn> from now on) is a
+<!href="fs"><a href="../../../../user/fs/doc/index.html">file system</a> that
+retrieves files from remote httpd server.
+It may be slow because it provides no caching, and it sets up
+TCP connection with the httpd server every time a file is being read.
+The virtue of WFS is that it's simple, reliable, and easy to maintain.
+
+<H2>Design and Implementation</H2> 
+
+It's an another kind of <!href="fs"><a href="../../../../user/fs/doc/index.html">file system</a> extension.
+It defines <!href="FileSystem.i3"><a href="../../../../user/fs/fscore/src/FileSystem.i3">FileSystem.T</a>,
+<a href="../../../../user/fs/fscore/src/FileSystem.i3">FileSystem.MountPoint</a>
+and <!href="File.i3"><a href="../../../../user/fs/fscore/src/File.i3">File.T</a> objects as usual,
+
+In reponse to <code>File.T.read(<var>path</var>)</code> call, it sends out a
+http request
+
+<pre>
+GET /<var>path</var>
+</pre>
+
+to the server specified when the file system in mounted.
+
+<H2>Using the service</H2>
+
+WFS is usually loaded via <!href="nanny"><a href="../../../../user/nanny/doc/index.html">nanny</a>, so
+no special command is required to load it.
+When WFS is loaded, it installs inself in the
+<!href="ns"><a href="../../../../user/ns/doc/index.html">name server</a>. <p>
+
+To use the file system, you first have to mount it like below.
+
+<pre>
+!>mount www.cs.washington.edu wfs /wfs
+</pre>
+
+The first argument to <code>mount</code> specifies the remote httpd server
+to which WFS send out requests.
+
+<H2>Caveats</H2> 
+
+<ul>
+  <li> It's read only.
+  <li> It doesn't support directory operations.
+       You can't do <code>ls</code>.
+</ul>
+
+<P>
+<HR>
+<P>
+<ADDRESS>yasushi@cs.washington.edu</ADDRESS>
+</HTML>

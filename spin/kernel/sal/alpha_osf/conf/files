@@ -1,0 +1,243 @@
+#
+# Copyright 1994, 1995 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY 
+# 21-Sep-95  Stefan Savage (savage) at the University of Washington
+#	Created to define SPIN kernel
+#
+#
+# *****************************************************************
+# *                                                               *
+# *    Copyright (c) Digital Equipment Corporation, 1991, 1994    *
+# *                                                               *
+# *   All Rights Reserved.  Unpublished rights  reserved  under   *
+# *   the copyright laws of the United States.                    *
+# *                                                               *
+# *   The software contained on this media  is  proprietary  to   *
+# *   and  embodies  the  confidential  technology  of  Digital   *
+# *   Equipment Corporation.  Possession, use,  duplication  or   *
+# *   dissemination of the software and media is authorized only  *
+# *   pursuant to a valid written license from Digital Equipment  *
+# *   Corporation.                                                *
+# *                                                               *
+# *   RESTRICTED RIGHTS LEGEND   Use, duplication, or disclosure  *
+# *   by the U.S. Government is subject to restrictions  as  set  *
+# *   forth in Subparagraph (c)(1)(ii)  of  DFARS  252.227-7013,  *
+# *   or  in  FAR 52.227-19, as applicable.                       *
+# *                                                               *
+# *****************************************************************
+#
+# HISTORY
+#
+# @(#)$RCSfile: files,v $ $Revision: 1.20 $ (DEC) $Date: 1997/06/03 16:34:49 $
+#
+#
+# (c) Copyright 1990, OPEN SOFTWARE FOUNDATION, INC.
+# ALL RIGHTS RESERVED
+#
+#
+# OSF/1 Release 1.0
+#
+# !!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!! NOTE TO DEVELOPERS !!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!
+#
+# IF YOU MODIFY THIS FILE, YOU MUST ADD THE CORRESPONDING CHANGES TO
+# ".mrg..files.dat", ALSO CONTAINED IN THIS DIRECTORY. FAILURE TO
+# UPDATE ".mrg..files.dat" WILL RESULT IN PROBLEMS DURING UPDATE 
+# INSTALLATION !
+#
+# FYI - Lines marked 'standard' are always in linked into a kernel and lines
+#	marked 'optional' are only linked in if the keyword they are 
+#	optional on is in the config file. 
+#
+#	'Binary' files are linked into a kernel but not compiled
+#	 and 'Notbinary' entries are compiled first and then linked
+#	 into a kernel.
+#
+#	@(#)files	3.17	(ULTRIX/OSF)	10/8/91
+# Mach Operating System
+# Copyright (c) 1989 Carnegie-Mellon University
+# All rights reserved.  The CMU software License Agreement specifies
+# the terms and conditions for use and redistribution.
+#
+OPTIONS/bogus_memory		optional bogus_memory
+OPTIONS/bsd_a_out		optional bsd_a_out
+OPTIONS/bufcache_stats		optional bufcache_stats
+OPTIONS/dec_audit		optional dec_audit
+OPTIONS/fast_csw		optional fast_csw
+OPTIONS/generic			optional generic
+OPTIONS/hw_ast			optional hw_ast
+OPTIONS/hw_footprint		optional hw_footprint
+OPTIONS/inocache_stats		optional inocache_stats
+OPTIONS/lock_stats		optional lock_stats
+OPTIONS/mach_assert		optional mach_assert
+OPTIONS/mach_co_info		optional mach_co_info
+OPTIONS/mach_co_stats		optional mach_co_stats
+OPTIONS/mach_debug		optional mach_debug
+OPTIONS/mach_fastlink		optional mach_fastlink
+OPTIONS/mach_host		optional mach_host
+OPTIONS/mach_ipc_stats		optional mach_ipc_stats
+OPTIONS/mach_ipc_sighack	optional mach_ipc_sighack
+OPTIONS/mach_ipc_tcache		optional mach_ipc_tcache
+OPTIONS/mach_ipc_wwa		optional mach_ipc_wwa
+OPTIONS/mach_ipc_xxxhack	optional mach_ipc_xxxhack
+OPTIONS/mach_km			optional mach_km
+OPTIONS/mach_kdb		optional mach_kdb
+OPTIONS/mach_ldebug		optional mach_ldebug
+OPTIONS/mach_ltracks		optional mach_ltracks
+OPTIONS/mach_load		optional mach_load
+OPTIONS/mach_old_vm_copy	optional mach_old_vm_copy
+OPTIONS/mach_sctimes		optional mach_sctimes
+OPTIONS/mach_xp_fpd		optional mach_xp_fpd
+OPTIONS/mach_emulation		optional mach_emulation
+OPTIONS/nfs			optional nfs define_dynamic
+OPTIONS/cdfs			optional cdfs define_dynamic
+OPTIONS/dcedfs			optional dcedfs
+OPTIONS/dceefs			optional dceefs
+OPTIONS/msfs                    optional msfs define_dynamic
+OPTIONS/sec_base		optional sec_base
+OPTIONS/sec_mac_ob		optional sec_mac_ob
+OPTIONS/sec_acl_sware		optional sec_acl_sware
+OPTIONS/sec_acl_posix		optional sec_acl_posix
+OPTIONS/sec_cmw			optional sec_cmw
+OPTIONS/sec_shw			optional sec_shw
+OPTIONS/sec_priv		optional sec_priv
+OPTIONS/sec_ncav		optional sec_ncav
+OPTIONS/spd			optional spd
+OPTIONS/osf_mach_o		optional osf_mach_o
+OPTIONS/quota			optional quota
+OPTIONS/rt_preempt		optional rt_preempt
+OPTIONS/rt_preempt_debug	optional rt_preempt_debug
+OPTIONS/rt_sched		optional rt_sched
+OPTIONS/rt_sched_mon		optional rt_sched_mon
+OPTIONS/rt_sched_rq		optional rt_sched_rq
+OPTIONS/rt_sched_opt		optional rt_sched_opt
+OPTIONS/rt_pml			optional rt_pml
+OPTIONS/rt_timer		optional rt_timer
+OPTIONS/rt_sem			optional rt_sem
+OPTIONS/rt_csem                 optional rt_csem
+OPTIONS/rt_ipc                  optional rt_ipc
+OPTIONS/ser_compat		optional ser_compat
+OPTIONS/bin_compat		optional bin_compat
+OPTIONS/ult_bin_compat		optional ult_bin_compat
+OPTIONS/_lmf_			optional _lmf_
+OPTIONS/simple_clock		optional simple_clock
+OPTIONS/slock_stats		optional slock_stats
+OPTIONS/stat_time		optional stat_time
+OPTIONS/streams			optional streams
+OPTIONS/streams_debug		optional streams_debug
+OPTIONS/streams_memdbg		optional streams_memdbg
+OPTIONS/sun_lock		optional sun_lock
+OPTIONS/sysv_coff		optional sysv_coff
+OPTIONS/sysv_elf		optional sysv_elf
+OPTIONS/sysv_fs			optional sysv_fs define_dynamic
+OPTIONS/ffm_fs			optional ffm_fs
+OPTIONS/xpr_debug		optional xpr_debug
+OPTIONS/unix_locks		optional unix_locks
+OPTIONS/unix_uni		optional unix_uni
+OPTIONS/vague_stats		optional vague_stats
+OPTIONS/kji			optional kji
+OPTIONS/uipc			optional uipc
+OPTIONS/inet			optional inet define_dynamic
+OPTIONS/ns			optional ns define_dynamic
+OPTIONS/dli			optional dli
+OPTIONS/packetfilter		optional packetfilter
+OPTIONS/lat			optional lat define_dynamic
+OPTIONS/strifnet		optional strifnet define_dynamic
+OPTIONS/strkinfo		optional strkinfo define_dynamic
+OPTIONS/timod			optional timod define_dynamic
+OPTIONS/tirdwr			optional tirdwr define_dynamic
+OPTIONS/xtiso			optional xtiso define_dynamic
+OPTIONS/ldtty			optional ldtty define_dynamic
+OPTIONS/rpty			optional rpty define_dynamic
+OPTIONS/pckt			optional pckt define_dynamic
+OPTIONS/bsd_tty			optional bsd_tty
+OPTIONS/slip			optional slip define_dynamic
+OPTIONS/dlb			optional dlb define_dynamic
+OPTIONS/dlpi			optional dlpi define_dynamic
+OPTIONS/kdebug			optional kdebug
+OPTIONS/sas			optional sas
+OPTIONS/svvs            	optional svvs define_dynamic
+OPTIONS/atm                     optional atm
+
+# Ultrix binary compatability module
+OPTIONS/ult_bin			optional ult_bin define_dynamic
+# System V habitat module
+OPTIONS/sysv_hab		optional sysv_hab define_dynamic
+# Real-time habitat module
+OPTIONS/rt_hab			optional rt_hab define_dynamic
+# Svid3 habitat module
+OPTIONS/svid_three_hab		optional svid_three_hab define_dynamic
+# Svr4 habitat module
+OPTIONS/svr_four_hab		optional svr_four_hab define_dynamic
+# Soe2 habitat module
+OPTIONS/soe_two_hab		optional soe_two_hab define_dynamic
+OPTIONS/ttd			optional ttd 
+
+../kern/zalloc.c			standard Binary optimize -g3
+../dec/debug/kdebug/kdebug_kern.c	standard Binary
+../bsd/kern_malloc.c               standard Binary optimize -g3
+../bsd/kern_subr.c			standard Binary
+../bsd/subr_prf.c			standard Binary optimize -g3
+../bsd/subr_xxx.c			standard Binary
+../bsd/subr_rmap.c			standard Binary
+../bsd/subr_select.c			standard Binary
+../bsd/tty_subr.c			standard Binary
+../bsd/uipc_mbuf.c			standard Binary
+
+# TTY
+
+../bsd/tty_conf.c			standard Binary
+../bsd/tty_tb.c				optional tb Binary
+../net/if_sl.c				optional sl Binary optimize -g3
+../tty/tty_common.c		standard Binary
+../bsd/tty.c				optional bsd_tty Binary
+../bsd/tty_compat.c			optional bsd_tty Binary
+
+
+#../netinet/in_cksum.c			standard Binary
+../kern/kalloc.c			standard Binary
+../kern/queue.c			standard Binary
+
+# standalone 
+#	conf.c wants a bunch of .h files that is generated by these 'or's
+../sal.c		optional spin or asc or tza or lv or prf or mlog Binary Binary
+../osf_subr.c		optional spin Binary
+../osf_data.c		optional spin Binary
+
+# ../../salhook.c	optional spin # SAL only
+../../ttd/ttd_server.c        optional ttd
+../../ttd/ttd_stub.c          optional ttd
+../../ttd/ttd_thread.c        optional ttd
+../../ttd/ttd_alpha.c        optional ttd
+../../salnet/arp.c	optional spin
+../../salnet/bootp.c	optional spin
+../../salnet/salnet.c	optional spin
+../../salnet/salnfs.c	optional spin
+../../salnet/tftp.c	optional spin
+# ../../salnet/dns.c	optional spin
+# ../../salnet/res_comp.c	optional spin
+# ../../salnet/res_mkquery.c	optional spin
+
+
+# TCP spindle
+../bsd/uipc_socket.c			optional tcp_spindle Binary
+../bsd/uipc_socket2.c			optional tcp_spindle Binary
+../netinet/tcp_input.c			optional tcp_spindle Binary
+../netinet/tcp_output.c			optional tcp_spindle Binary
+../netinet/tcp_subr.c			optional tcp_spindle Binary
+../netinet/tcp_timer.c			optional tcp_spindle Binary
+../netinet/tcp_debug.c			optional tcp_spindle Binary
+../netinet/tcp_usrreq.c			optional tcp_spindle Binary
+../netinet/in.c				optional tcp_spindle Binary
+../netinet/in_pcb.c			optional tcp_spindle Binary
+../netinet/udp_usrreq.c			optional tcp_spindle Binary
+#../netinet/in_proto.c			optional tcp_spindle Binary
+
+# Fore card
+../rpc/xdr.c			optional fa Binary
+../rpc/xdr_array.c		optional fa Binary
+../rpc/xdr_mem.c 		optional fa Binary		

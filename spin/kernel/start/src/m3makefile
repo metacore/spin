@@ -1,0 +1,48 @@
+
+#
+# Copyright 1994, 1995 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+
+#
+# HISTORY
+# 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+#	TARGET -> BASETARGET
+#
+#
+
+#####################################################################
+# Start initializes the core SPIN services, loads initial extensions
+# and runs initial user programs.
+overridepath = [ THISTREE, FULLTREE ]
+importfrompath ("kernel","spincore",overridepath)
+
+#####################################################################
+# create _m3main.c to initialize runtime of boot system
+m3_option("-genmain")
+
+#####################################################################
+# name the procedure in m3main.c spin_init()
+m3_option("-Mspin_init") 
+
+#####################################################################
+# kernel/Makefile give us a list of static extensions 
+include("../m3statics." & BASETARGET) 
+
+#####################################################################
+# templates to be exported 
+include("start.tmpl")
+include("buildinfo.tmpl")
+implementation("Main")
+implementation("Boot")
+
+include_dir(BASETARGET)
+
+#####################################################################
+# generate the encapsulated modules for each static domain, 
+# and compile the BootEncap support module/interface.
+GenerateEncap("BootEncap",STATIC_EXTENSIONS)
+
+library("start")
+

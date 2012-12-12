@@ -1,0 +1,11 @@
+
+Module ("ReachIB")
+
+Dynamic_array ("ReachIB", "ReachIB", "ReachIBArray")
+
+#build_generic_intf ("ReachIBArray", "DynamicArray", "ReachIB", VISIBLE)
+#build_generic_impl ("ReachIBArray", "DynamicArray", "ReachIB")
+#Array_sort ("ReachIB", "ReachIB")
+
+Module ("Reaching")
+

@@ -1,0 +1,37 @@
+
+
+if equal(PROFILE, "TRUE")
+   SFLAGS += "-DCALL_GRAPH"
+end
+
+implementation("ProfileSupport")
+interface("ProfileExtern")
+
+Interface("ErrnoDep")
+Interface("SalExtern")
+Module(SalDep)
+c_source(mallocstats)
+c_source(PmapActivate)
+Module(Select)
+S_source("profile")
+
+% When building the profiled version of the compiler,
+% define CALL_GRAPH for the assembler. This will build
+% in the full profiling support.
+if equal(PROFILE, "TRUE")
+   m3_option("-X1@-DCALL_GRAPH@")
+end
+
+% We compile the gprof.c file this way because the m3 program
+% might compile it with the -pg option which would lead
+% to an infinite recursion problem.
+if stale("gprof.o", "../src/sal/IX86_SPIN/gprof.c")
+  exec(BSD_PREFIX & "cc -B" & BSD_PREFIX & " -c ../src/sal/IX86_SPIN/gprof.c")
+end
+obj_file("gprof")
+
+
+DomainExport("SpinTrusted","ErrnoDep")
+DomainExport("SpinTrusted","SalDep")
+DomainExport("SpinTrusted","SalExtern")
+DomainExport("SpinTrusted","Select")

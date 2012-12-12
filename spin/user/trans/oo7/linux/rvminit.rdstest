@@ -1,0 +1,9 @@
+rm -f rds_data
+../bin/rdsinit log_file rds_data <<DDD
+0x800000
+0x8250000
+0x400000
+0x100000
+100
+128
+DDD

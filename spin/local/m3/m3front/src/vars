@@ -1,0 +1,204 @@
+
+----------------------------------------------------------- reset procedure ---
+
+types/Type.i3:VAR
+
+types/Type.m3:VAR compile_started : BOOLEAN    := FALSE;
+types/Type.m3:VAR cur             : ModuleInfo := NIL;
+types/Type.m3:VAR errored         : TypeTbl.T  := NIL;  (* type -> BOOLEAN *)
+types/Type.m3:VAR compiled        : TypeTbl.T  := NIL;  (* type -> BOOLEAN *)
+types/Type.m3:VAR visible_cells   : TypeTbl.T  := NIL;  (* type -> CellInfo *)
+types/Type.m3:VAR visible_types   : TypeTbl.T  := NIL;  (* type -> interface (Module.T) *)
+types/Type.m3:VAR ref_names       : TypeTbl.T  := NIL;  (* type -> TEXT *)
+
+types/RefType.m3:VAR all_brands: ARRAY [0..97] OF BrandNode;
+
+values/Constant.m3:VAR
+
+misc/Tracer.m3:VAR
+
+exprs/TextExpr.m3:VAR nextID      : INTEGER := 0;
+exprs/TextExpr.m3:VAR literals    : LiteralTable := NIL;
+exprs/TextExpr.m3:VAR global_data : CG.Var := NIL;
+
+misc/CG.i3:VAR (* maximum possible machine alignment *)
+misc/CG.m3:VAR
+
+misc/Coverage.m3:VAR
+
+misc/ESet.m3:VAR nextID  : INTEGER := FirstUserID;
+misc/ESet.m3:VAR thisAge : INTEGER := 1;
+misc/ESet.m3:VAR hashTbl : HashTable;
+
+misc/Error.m3:VAR
+
+misc/Host.i3:VAR (* parameters to the top-level compile *)
+misc/Host.i3:VAR (* misc. options *)
+misc/Host.i3:VAR (* runtime checks *)
+
+misc/Host.m3:VAR search_timer : ETimer.T := NIL;
+
+misc/M3String.m3:VAR
+
+misc/Marker.m3:VAR
+
+misc/ProcBody.m3:VAR
+
+misc/Runtime.m3:VAR
+
+misc/Scanner.i3:VAR
+misc/Scanner.m3:VAR (* explicitly reset *)
+
+misc/Scope.m3:VAR (* explicit reset *)
+
+misc/TipeDesc.m3:VAR
+
+misc/TipeMap.m3:VAR
+
+values/Ident.i3:VAR
+
+values/Module.i3:VAR (*READONLY*) depth: INTEGER := 0; (* == 1 in main module*)
+values/Module.m3:VAR
+values/Module.m3:VAR load_map: M3Buf.T := NIL;
+
+values/Value.m3:VAR all: T;  (* all values in the current module *)
+
+----------------------------------------- left reset by proper client usage ---
+
+types/TypeFP.m3:VAR stack    : REF ARRAY OF Info;
+types/TypeFP.m3:VAR tos      : INTEGER := NO_SCC + 1;
+types/TypeFP.m3:VAR dfs_cnt  : INTEGER := DFS_reset;
+
+values/Revelation.m3:VAR top := NewSet (NIL);
+
+----------------------------------------------- never reset => keep growing ---
+
+types/TypeFP.m3:VAR next_scc : INTEGER := NO_SCC + 1;
+types/TypeFP.m3:VAR mbuf     : M3Buf.T  := NIL;
+types/TypeFP.m3:VAR wr: M3Buf.T := NIL;
+
+misc/Scanner.m3:VAR (* never reset *)
+
+misc/Scope.m3:VAR (* never reset *)
+
+types/RefType.m3:VAR brand_buf : M3Buf.T := NIL;
+
+values/Value.m3:VAR mbuf: M3Buf.T := NIL;
+
+---------------------------------------------------------------- don't care ---
+
+main/Ant.m3:VAR
+main/Ant.m3:VAR
+main/Beetle.m3:VAR
+main/Beetle.m3:VAR
+
+----------------------------------------------------------------- constants ---
+
+types/RefType.m3:VAR root: M3ID.T := M3ID.NoID;
+
+values/Procedure.m3:VAR (*CONST*)
+
+values/Decl.m3:VAR cString, mscwinString: M3ID.T := M3ID.NoID;
+
+types/SubrangeType.m3:VAR (*CONST*)
+
+types/ProcType.m3:VAR unnamed: M3ID.T := M3ID.NoID;
+
+types/ObjectType.m3:VAR
+
+misc/Token.i3:VAR (*CONST*)
+
+misc/Scope.i3:VAR
+
+misc/Scope.m3:VAR (* string "constants" *)
+
+misc/Scanner.m3:VAR (* CONST *)
+
+misc/M3Compiler.m3:VAR mu       : MUTEX    := NEW (MUTEX);
+misc/M3Compiler.m3:VAR builtins : Module.T := NIL;
+
+misc/ESet.m3:VAR DefaultSet := NEW (T);
+
+exprs/IntegerExpr.m3:VAR cache: ARRAY [-7 .. 31] OF P;
+exprs/SetExpr.m3:VAR (*CONST*)
+
+builtinTypes/Addr.i3:VAR T: Type.T;
+builtinTypes/Bool.i3:VAR
+builtinTypes/CChar.i3:VAR T: Type.T;
+builtinTypes/Card.i3:VAR T: Type.T;
+builtinTypes/EReel.i3:VAR T: Type.T;
+builtinTypes/ErrType.i3:VAR T: Type.T;
+builtinTypes/Int.i3:VAR T: Type.T;
+builtinTypes/LReel.i3:VAR T: Type.T;
+builtinTypes/Mutex.i3:VAR T: Type.T;
+builtinTypes/Null.i3:VAR
+builtinTypes/ObjectAdr.i3:VAR T: Type.T;
+builtinTypes/ObjectRef.i3:VAR T: Type.T;
+builtinTypes/Reel.i3:VAR T: Type.T;
+builtinTypes/Reff.i3:VAR T: Type.T;
+builtinTypes/Textt.i3:VAR T: Type.T;
+
+types/UserProc.i3:VAR (*READONLY*) Methods: CallExpr.MethodList;
+
+builtinOps/Abs.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Adr.m3:VAR Z: CallExpr.MethodList;
+builtinOps/AdrSize.m3:VAR Z: CallExpr.MethodList;
+builtinOps/BitSize.m3:VAR Z: CallExpr.MethodList;
+builtinOps/ByteSize.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Ceiling.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Dec.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Dispose.m3:VAR Z: CallExpr.MethodList;
+builtinOps/First.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Floatt.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Floor.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Inc.m3:VAR Z: CallExpr.MethodList;
+builtinOps/IsType.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Last.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Loophole.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Max.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Min.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Narrow.m3:VAR Z: CallExpr.MethodList;
+builtinOps/New.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Number.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Ord.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Round.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Subarray.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Trunc.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Typecode.m3:VAR Z: CallExpr.MethodList;
+builtinOps/Val.m3:VAR Z: CallExpr.MethodList;
+
+builtinWord/WordAnd.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordAnd.m3:VAR formals: Value.T;
+builtinWord/WordDivide.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordDivide.m3:VAR formals: Value.T;
+builtinWord/WordExtract.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordExtract.m3:VAR formals: Value.T;
+builtinWord/WordGE.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordGE.m3:VAR formals: Value.T;
+builtinWord/WordGT.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordGT.m3:VAR formals: Value.T;
+builtinWord/WordInsert.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordInsert.m3:VAR formals: Value.T;
+builtinWord/WordLE.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordLE.m3:VAR formals: Value.T;
+builtinWord/WordLT.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordLT.m3:VAR formals: Value.T;
+builtinWord/WordMinus.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordMinus.m3:VAR formals: Value.T;
+builtinWord/WordMod.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordMod.m3:VAR formals: Value.T;
+builtinWord/WordModule.i3:VAR M: Module.T;
+builtinWord/WordNot.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordNot.m3:VAR formals: Value.T;
+builtinWord/WordOr.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordOr.m3:VAR formals: Value.T;
+builtinWord/WordPlus.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordPlus.m3:VAR formals: Value.T;
+builtinWord/WordRotate.m3:VAR Z, ZL, ZR: CallExpr.MethodList;
+builtinWord/WordRotate.m3:VAR formals, formalsL, formalsR: Value.T;
+builtinWord/WordShift.m3:VAR Z, ZL, ZR: CallExpr.MethodList;
+builtinWord/WordShift.m3:VAR formals, formalsL, formalsR: Value.T;
+builtinWord/WordTimes.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordTimes.m3:VAR formals: Value.T;
+builtinWord/WordXor.m3:VAR Z: CallExpr.MethodList;
+builtinWord/WordXor.m3:VAR formals: Value.T;

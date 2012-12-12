@@ -1,0 +1,328 @@
+<html>
+<head>
+<title>The Spin Regression Tests</title>
+</head>
+
+<body>
+<img align=right src="../../../doc/at-work.gif">
+<h1>
+<A name = "top"> The Spin Regression Tests</a> </br>
+</h1>
+ <P>
+<HR>
+<P>
+
+Regression tests are a collection of extensions executed to test
+various parts of the system and a control command that drives those
+extensions.  These tests should be run after each major modification
+to the system or the compiler to ensure that things known (or thought)
+to work still do.  Each component of the system should be accompanied
+by a set of regression tests that would somehow verify its
+functionality.  Additionally, if a bug is fixed, providing a simple
+test that brakes verifies the fix.
+
+<p>
+
+Each regression test is installed into the system as a shell command
+and can be executed independently of other tests or all regression
+tests can be executed together.  Functionally, a regression test is a
+collection of procedures (test cases) that return a BOOLEAN value
+indicating whether the case test succeeded or not.  The regression
+control is also a shell command and it allows changing the mode of
+execution of regression tests.  It is a statically linked extension,
+hence it is always available.
+
+<h2> Shell commands </h2>
+
+Before you run the tests:
+<ul>
+<li> load regression tests you want to run, to load all of them execute
+    <i>script ~/spin/user/scripts/regress.rc</i>
+<li> type <i>help</i> to see which regression tests are installed.  They will
+    cause <i>help</i> to print <i>regress `name of the test' - `some
+    information'</i>  
+</ul>
+
+If you want to execute all or some of the tests:
+<ul>
+<li> <i>regress -all</i> - to run all the currently loaded tests
+<li> <i>regress `test name'</i> - to run a particular test
+<li> <i>regress -clean</i> - to remove all tests, e.g., to be able to
+     reload them 
+</ul>
+
+The amount of information printed by regression tests can be regulated
+<ul>
+<li> default (no flag specified) - a line saying which test or test case
+	is executed is printed indicating  whether the test has succeeded
+	or not,  output from the test extensions is suppressed.
+<li> quiet mode (<i>-quiet</i> flag) - no output is printed except for error
+	 messages, output from the test extensions is suppressed.
+<li> verbose mode (<i>-verbose</i> flag) - a line is printed before and after
+	each test case to be able to see which tests are run, all output
+	from test extensions is visible.
+</ul>
+
+<H2>Interpreting results</H2>
+
+A regression test failed if a line <i>>>> `test-name' => ERROR</i> is printed.
+There will be also a line that says which case have failed.  Run the
+test in a verbose mode to see how exactly the test failed.
+
+<h2> Existing tests </h2>
+
+<ul>
+<li> <i>hello</i> - simply prints "hello world" (pardy)
+<li> <i>dyntypes</i> - tests dynamically loaded types (pardy)
+<li> <i>disp-type</i> - tests dynamic typing of procedures done by the
+	dispatcher (pardy)
+<li> <i>disp-guardeval</i> - verify correctness of guard and handler order 
+	evaluation (pardy)
+<li> <i>disp-args</i> - verify that arguments are passed correctly (pardy)
+<li> <i>disp-noinvoke</i> - tests exception raised when no handler is
+	invoked (pardy) 
+<li> <i>disp-closure</i> - tests passing closures to guards and
+	handlers (pardy) 
+<li> <i>disp-cancel</i> - tests cancelation (pardy)
+<li> <i>disp-impose</i> - tests imposed guards (pardy)
+<li> <i>disp-asynch</i> - test asynchronous event raise (pardy)
+<li> <i>disp-except</i> - tests passing exceptions from handlers and guards
+	to the caller (pardy)
+<li> <i>disp-save</i> - tests passing callee-saved registers to
+	handlers (pardy) (as used by Strand.Stop handlers).
+<li> <i>view</i> - tests the VIEW expression (whsieh)
+<li> <i>bitfield</i> - tests the fixes for bitfield bugs (pardy)
+<li> <i>machbasic</i> - tests basic Mach-style allocation and
+deallocation (savage) 
+</ul>
+
+<H2>Writing a regression test</H2>
+
+To write a regression test you need:
+<UL>
+<LI> a name,
+<LI> a help string,
+<LI> a list of test cases (a procedure and a string describing it),
+<li> start-up and clean-up code.
+</UL>
+<P>
+
+and of course an implementation of all those procedures which tests
+something important. 
+
+A regression test with a name "test" is expected to be installed as a
+command "regress test", and is supposed to execute all of the
+procedure cases clearly indicating which one was passed and which one
+not.  
+
+To ease writing tests and to provide uniformity, a generic
+RegressionTest is provided.  All you need to do is to give it those
+four things in a right interface.  A template regress.tmpl takes care
+of putting everything together so that in your m3makefile just type
+"RegressionModule(YourTestModuleName)" and you got yourself a
+regression test.
+
+Here's an example of the simple test:
+
+<DL>
+<DT> <A HREF="../misc/hello/src/Hello.i3">Hello.i3</A>
+<DD> The interface 
+<DT> <A HREF="../misc/hello/src/Hello.m3">Hello.m3</A>
+<DD> The implementation
+<DT> <A HREF="../misc/hello/src/m3makefile">m3makefile</A>
+<DD> The m3makefile.
+<!-- SPIN DOC EXPORT SECTION IGNORE START -->
+<DT> <A HREF="../misc/hello/ALPHA_SPIN/hello.conf">hello.conf</A>
+<DD> The downloadable config file.
+<!-- SPIN DOC EXPORT SECTION IGNORE END -->
+</DL>
+
+<h2> How does it work? </h2>
+
+The RegressionTest generic takes the name of the test and the help
+string and installs the test as a right command.  It provides right
+guards and the Run procedure which iterates over all test cases and
+printing messages.  The start-up (Start) procedure is executed before
+any test case and it enables initialization of the test.  The clean-up
+(End) procedure is executed after all test cases and can be used, for
+example, to deallocate memory, uninstall handlers, etc.  All test
+cases and the cleanup procedure are executed even if one of the cases
+fails or raises an exception.
+
+<h2> Text-based regression tests </h2>
+
+There is an alternative implementation of regression tests.  The
+primary one (described above) forces the writer of a test to check 
+internally whether a test has failed or not.  To ease the task of
+programming regression test, text-based regressions are avaialble.
+Those tests still can test internally for inconsistency in results
+and return a result that indicates success or failure.  They can
+however delegate this responsibility to the right generic by providing
+it with a text that is the expected output from the test.  The generic
+matches the acutual output with the expected one and if they are
+different, it reports a failure.  All other options are identical with
+regular regression tests. 
+
+<H2> Some important files </h2>
+
+Five files are involved in implementing regression tests:
+
+<DL>
+<DT> <A HREF="../../shell/regress/src/RegressionTest.mg">RegressionTest.mg</A>.
+<DD> Generic implementation of regular regressions.
+
+<DT> <A HREF="../../shell/regress/src/RegressionTest.ig">RegressionTest.ig</A>.
+<DD> Generic interface of regular regressions.
+
+<DT> <A HREF="../../shell/regress/src/TextRegressionTest.mg">TextRegressionTest.mg</A>.
+<DD> Generic implementation of text-based regressions.
+
+<DT> <A HREF="../../shell/regress/src/TextRegressionTest.ig">TextRegressionTest.ig</A>.
+<DD> Generic interface of text-based regressions.
+
+<DT> <A HREF="../../shell/regress/src/Regress.m3">Regress.m3</A>.
+<DD> Regression control implementation.
+
+<DT> <A HREF="../../shell/regress/src/Regress.i3">Regress.i3</A>.
+<DD> Regression control interface.
+
+<DT> <A HREF="../../shell/regress/src/regress.tmpl">regress.tmpl</A>.
+<DD> The quake directives that instantiate your generic from the
+RegressionModule directive.
+
+</DL>
+
+<H2> Conventions </h2>
+
+Please, follow these several rules.  They will make creating,
+maintaining, and running regression tests easier.  
+
+<ul>
+<li> Always use the provided generics.  
+<li> All regression tests are placed in the spindle/regress directory.
+<li> All tests for a given subsystem (e.g. for strands) should
+	do to a subdirectory of the regress directory with that subsystem's 
+	name (spindle/regress/spindle in this case),
+<li> Use the name of your test as the name of the conf file for that test.
+<li> Provide right Makefiles so that your test can be build using gmake
+	together with other tests (see 
+	<A HREF="../misc/hello/Makefile"> this file</a>
+	for an example).
+<li> Add your regression tests to the regress.rc script.
+<li> Use IO interface to print on the screen.
+<li> As much as possible, a regression test should be self-contained.
+     It should be possible to just load the.
+<li> It has to be possible to run a regression test many time without
+	rebooting or reloading the test.  Use startup and cleanup functions
+	to make sure that the system is in the right state. 
+</ul>
+
+<h2> Suggested usage </h2>
+
+The tests can may our life easier if we use them right.  We will learn
+what is "right" as we use them but for now a couple suggestions from
+the author of this page.  None of these rules contain words like
+"always" or "never".  Everyone has to judge for yourself, but it's
+good to remember that sometimes people other than the programmer who
+wrote a piece of code have to believe that it works. 
+
+<h3> Submitting new tests </h2>
+
+What should be tested and how is sometimes hard to decide, but two major 
+guidelines are proposed: 
+
+<ul>
+<li> cover functionality - 
+	Each major system service should be covered by a set of tests that
+	exercise each piece of functionality, stress test the service,
+	and exercise the interaction of the service with other
+	components of the system.  
+
+<li> make bugs harder to repeat -
+	If a bug is found it might be profitable to submit a simple
+	regression test that shows that the bug is removed.  This,
+	of course, should not be done for each trivial bug but may be
+	considered if a bug is found that was hard to detect, has
+	some "generality" to it (as in, it would be easy to make a similar 
+	one).  Another advantage is that such regression tests simplify
+	the lives of the mergermeisters.
+</ul>
+
+Also, it is better to submit too many tests then too few. If the
+number of tests ever becomes a problem we can always prioritize them,
+if a test is missing someone may spend hours trying to figure out why
+stuff doesn't work.
+
+<h3> Testing </h2>
+
+"Run them all, run them often"
+
+<ul>
+<li> It is imperative to run the tests before submitting a tag and
+	during the merge after merging in a new tag. 
+<li> It is suggested to run regression tests after each major modification
+	to the system, libraries, or the compiler to make sure that
+	these changes do not break some unrelated part of the system.
+<li> The tests may be very useful in hunting down bugs.  Execution of 
+	the test could pin-point where the problem is or where it is
+	unlikely to be.  They will be even more usable when we can
+	statically load them and execute them automatically (see the
+	TODO list) 
+</ul>
+
+<h3> Running tests </h2>
+<ul>
+<li> Start by running all the regression tests in the normal mode 
+	("regress -all").
+<li> Repeat the test several times, some bugs may show only if the test
+	is repeated or a test can contain a bug that prevents it 
+	from being run many times (there will be automatic support for
+	repeating tests).
+<li> If any problem is detected, run the offending test or tests by 
+	hand in a verbose mode (e.g., "regress -verbose hello") to try to 
+	find hints on the problem in the output.
+<li> If you cannot figure out why the test fails, get in touch with the
+	writer of the test who is more likely to find what the source 
+	of the problem is.
+<li> Running the tests in the quiet mode is not recommended unless
+	they have been run successfully in the normal mode before.
+	The reason to avoid them is that if, for some reason, the 
+	regression tests were broken one could not see whether they
+	actually run anything or not.
+<li> For the same reason, it might be good to run at least some tests
+	in the verbose mode to see that they actually get executed.
+</ul>
+
+<h2> ToDo </h2>
+
+I am still working on the regression test control to provide more flexible
+execution of tests and easier interpretation of results.
+
+<ul>
+<li> More tests (Uncle Pardy, wants <b> YOU </b> to write them!),
+<li> Enable and use static extensions. Some tests should be available
+     even if parts of the system (e.g., tftp) do not work so we should
+     be able to build a kernel with some extensions statically linked in,
+<li> Automatic running of the tests even some fundamental components of 
+	the system (e.g., shell or threads) do not work.  This requires that 
+	we can statically link spindles.  An example of when this would be
+	useful is if the dispatcher or memory system made threads
+	unusable.  In this case, the dispatcher tests should be run before 
+	the threads are started, for example, first thing after run-time 
+	initialization.  
+<li> Testing options (e.g., number of times tests should be repeated),
+<li> Uninstalling separate tests,
+<li> Running separate test cases,
+<li> Parameterizing tests (???),
+<li> Priorities (???).
+</ul>
+
+</body>
+<p><hr>
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>

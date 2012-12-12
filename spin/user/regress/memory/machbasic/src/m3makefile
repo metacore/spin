@@ -1,0 +1,29 @@
+#
+# Copyright 1995, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 28-Mar-96  Przemek Pardyak (pardy) at the University of Washington
+#	Converted to new build environment.
+#
+# 09-Mar-96  Stefan Savage (savage) at the University of Washington
+#	Created.
+#
+#
+
+m3_option("-X6@-fno-common@")
+m3_option("-zG@-g3@")
+
+overridepath = [ THISTREE , FULLTREE ]
+
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("Regress","user/shell","regress",overridepath)
+DomainImport ("VMCore","user/vm","vmcore",overridepath)
+DomainImport ("Mach","user/vm","mach",overridepath)
+
+RegressionModule ("MachBasic")
+
+Extension({})

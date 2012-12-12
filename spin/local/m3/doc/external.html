@@ -1,0 +1,39 @@
+<html>
+<head>
+<title>EXTERNAL = UNSAFE</title>
+</head>
+
+<body>
+
+<h1>EXTERNAL Declarations are UNSAFE</h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+An external declaration in a Modula-3 interface can potentially be
+un-typesafe, because Modula-3 cannot determine that the definition
+matches the declaration, since the definition is in another language.
+
+<h2>Implementation</h2>
+
+We have prohibited the use of external declarations in safe
+interfaces. The recommended way to use external declarations is to
+split an interface into safe and unsafe parts and include the word
+Extern in the name of the unsafe part.  For example, split Clib.i3
+into a safe Clib.i3 and an unsafe ClibExtern.i3.  Then import
+ClibExtern into Clib.m3.  Clib will be an unsafe module, but that is
+legal because an unsafe module can export a safe interface.
+ 
+<P>
+
+</body>
+<p>
+
+<hr>
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>May 20, 1996</date><br>
+<Address>garrett@cs.washington.edu</address>
+</html>

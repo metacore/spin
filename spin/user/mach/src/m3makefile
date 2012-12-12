@@ -1,0 +1,47 @@
+%
+% m3makefile for vmunix extensions
+% created by David Becker Mon Jul 10 10:32:22 PDT 1995
+
+% HISTORY
+% 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+%	Changed to simpler spindle build functions.
+%
+
+
+
+% PackageImport("sys")
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("UserSpaceThread","user/thread","threadcore",overridepath)
+DomainImport("Console","user/dev","console",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport("SpinUnixNet","user/urt","net",overridepath)
+DomainImport("EtherServer","user/net","ether",overridepath)
+%DomainImport("IpServer","user/net","ip",overridepath)
+%DomainImport("UdpServer","user/net","udp",overridepath)
+%DomainImport("IpClient","user/net","ipClient",overridepath)
+%DomainImport("UdpClient","user/net","udpClient",overridepath)
+%DomainImport("BasicCmds","user/shell","basiccmds",overridepath)
+DomainImport ("VMCore","user/vm","vmcore",overridepath)
+DomainImport ("Space","user/vm","space",overridepath)
+
+% Package("OSFServer")
+
+Module ("Syscall")
+Module ("DeviceHandlers")
+Module ("VMHandlers")
+Module ("VMTaskSupport")
+Module ("ThreadHandlers")
+Module ("MachHandlers")
+Module ("ExcHandlers")
+Module ("MarshallExc")
+Module ("HandlerUtils")
+Module ("TimeHandlers")
+%Module ("SocketIntercept")
+Module ("Buffer")
+
+Extension({})
+

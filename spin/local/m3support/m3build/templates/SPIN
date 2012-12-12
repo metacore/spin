@@ -1,0 +1,43 @@
+% Copyright (C) 1993, Digital Equipment Corporation
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+% Last modified on Wed Jan 18 13:30:00 PST 1995 by kalsow   
+%      modified on Thu Sep  9 14:26:49 PDT 1993 by harrison 
+%      modified on Thu May 13 22:09:30 PDT 1993 by mjordan 
+
+
+%
+% HISTORY
+% 01-Feb-97  Wilson Hsieh (whsieh) at the University of Washington
+%	m3mkdir is not in LIB_USE, which depends on the BUILD_DIR,
+%	but instead just depends on the BASETARGET
+%
+%
+
+%
+% Here are the OS-specific commands
+%
+% These were for Ultrix but we use them for spin
+%
+
+readonly SL = "/"   % the path separator
+readonly CR = "\n"  % line break character
+
+readonly proc delete_file(file) is
+  local void = unlink_file(file)
+end
+
+readonly proc link_file(from, to) is
+  delete_file(to)
+  exec("-ln", "-s", from, to)
+end
+
+readonly proc make_executable(script) is
+  exec("@chmod +x", script)
+end
+
+readonly proc make_dir(dir) is
+  if not defined ("_quiet") write ("m3mkdir ", dir, CR) end
+
+  exec("@" & THISTREE & "/local/" & BASETARGET & "/lib/m3/" & BASETARGET & "/m3mkdir", dir)
+end

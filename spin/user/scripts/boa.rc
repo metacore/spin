@@ -1,0 +1,18 @@
+# scripts to run wn on SPIN
+#	created by T.Owa.
+
+nanny touch Sphinx
+nanny touch Network
+mkdir /afs
+mount nfs daffy:/afs /afs
+mkdir /etc
+mount nfs lace:/nfs_spin/mef/etc /etc
+
+mkdir /tmp
+mkdir /tmp/boa 
+
+disp opt
+sphinx exec /afs/cs/project/spin/owa/boa/boa-0.92/src/boa -c /afs/cs/project/spin/owa/boa/boa-0.92 
+
+
+

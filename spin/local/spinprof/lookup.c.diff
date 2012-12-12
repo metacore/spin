@@ -1,0 +1,24 @@
+77d75
+< #   ifdef DEBUG
+81d78
+< #   endif /* DEBUG */
+83d79
+< #	ifdef DEBUG
+85d80
+< #	endif /* DEBUG */
+88d82
+< #	    ifdef DEBUG
+92d85
+< #	    endif /* DEBUG */
+101c94
+<     fprintf(stderr, MSGSTR(SEARCH, "[nllookup] binary search fails???\n"));
+---
+>     fprintf(stderr, "[nllookup] binary search fails for %lx in range [%lx, %lx]\n", address, nl[0].value, nl[nname-1].value);
+117d109
+< #   ifdef DEBUG
+122d113
+< #   endif /* DEBUG */
+124d114
+< #	ifdef DEBUG
+130d119
+< #	endif /* DEBUG */

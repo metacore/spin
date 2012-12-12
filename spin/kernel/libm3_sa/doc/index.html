@@ -1,0 +1,87 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+<h1>
+Standard M3 Libraries
+</h1>
+<date>January 15, 1996</date>
+ <P>
+<HR>
+<h2> Motivation </h2>
+Every programming language has its library of basic data structures and
+algorithms and Modula-3 is no exception. We have noticed that these 
+libraries emphasize correctness and safety at the expense of speed. 
+
+<h2> Overview </h2>
+
+The libm3 library contains basic data structures
+such as lists, tables, sequences and atoms as well as procedures to implement
+formatted I/O and random number generation.
+
+<P>
+
+For SPIN, we have made standalone versions of these libararies which
+contain the standard library services that we need while omitting 
+some that we don't need. These libraries are statically linked with
+the kernel and some of the standard library interfaces, such as
+Thread, are now implemented by SPIN kernel code.
+
+<P>
+
+<p>
+<h2> The contents of libm3_sa </h2>
+This list contains the subdirectories of the libm3_sa directory.
+
+<dl> 
+
+<dt> <A href="http://www.research.digital.com/SRC/m3sources/html/atom/src/Atom.i3.html">atom</A>
+<dd> "An Atom.T is a unique representative for a set of equal texts."
+	In other words, the two TEXT's "alpha" and "alpha" may not be
+	equal REF's, but the result of calling Atom.FromText() will be
+	the same REF for both of them. This is useful if you have to test
+	strings for equality many times. You just have to convert them
+	to Atom.T's once and then compare the Atom.T's.
+<p>
+<dt> <A href="fmtlex.html">fmtlex</A>
+<dd>	Fmt and Lex are interfaces for INTEGER's, Float's and BOOLEAN's
+	into TEXT's and vice versa.
+<p>
+<dt> <A href="list.html">list</A>
+<dd>	A generic list interface. AtomList's are instantiated.
+<p>
+<dt> <A href="random.html">random</A>
+<dd>	A random number generator.
+<p>
+<dt> <A href="rw.html">rw</A>
+<dd>	Readers and writers are stream abstractions for getting and putting
+	groups of characters.
+<p>
+<dt> <A href="sequence.html">sequence</A>
+<dd>	A generic interface for an extensible sequence.
+<p>
+<dt> sort
+<dd>	This generic interface defines a procedure which will sort arrays
+	of Elem.T's using QuickSort.
+<p>
+<dt> <A href="sortedtable.html">sortedtable</A>
+<dd>	A sorted table is a table with its keys in sorted order.
+<p>
+<dt> <A href="table.html">table</A>
+<dd>	A table is a mapping of keys to values. AtomAtomTbl's and TextRefTbl's
+	are instantiated.
+<p>
+<dt> types
+<dd>	Some interfaces which permit CHAR, BOOLEAN, INTEGER and REFANY
+	to be used as formal imports for generic interfaces. For example,
+	Boolean.T is BOOLEAN and Char.Equal is just "=".
+</dl>
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

@@ -1,0 +1,12 @@
+#
+# Copyright 1994, 1995,1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 29-Jul-96  Charles Garrett (garrett) at the University of Washington
+#	Created.
+#
+
+
+implementation("MachineCPU")

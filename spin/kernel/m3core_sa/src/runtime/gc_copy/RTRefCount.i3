@@ -1,0 +1,10 @@
+UNSAFE INTERFACE RTRefCount;
+
+PROCEDURE Init ();
+
+CONST
+  RefCount = FALSE;
+  WRITEBARRIER = FALSE;
+
+END RTRefCount.
+

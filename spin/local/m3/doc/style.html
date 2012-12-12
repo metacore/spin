@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>SPIN M3 OO Style Guide</title>
+<!-- Changed by: Wilson Hsieh, 17-Jul-1996 -->
+</head>
+
+<body>
+<h1>M3 OO Style For Safety</br></h1>
+
+When writing object-oriented code in Modula-3, there are a set of
+rules that should be followed to help ensure type and system safety.
+In each of the following examples we compare some bad OO code to some
+<a href="good-code.html">good OO code</a>.
+
+The pages in the following section all use frames, so use a frame-enabled
+browser.
+
+<p>
+
+<h2>Rules</h2>
+
+Modula-3 does not distinguish between class interfaces and
+implementations.  A <strong>class interface</strong>, which declares
+the methods that a class exports, should be declared inside a Modula-3
+INTERFACE, and should not declare default methods.  A <strong>class
+implementation</strong> should override all of the methods to their
+values.  <a href="subclass.html">Otherwise, objects can be treated as
+their supertypes, and have all sorts of methods called on them</a>.
+
+<p>
+
+<a href="extension.html">Method extension should be avoided.  It is
+very dangerous, because the extended method remains part of the
+subclass interface.</a>
+
+<p>
+
+<a href="branded.html">Partially revealed types should be BRANDED, so
+that the types cannot be spoofed.</a>
+
+<p>
+
+<a href="hidden.html">Check all of the revelations of a
+superclass.  If you create a subclass, then any method of the
+superclass is in your interface.</a>
+
+<p>
+
+<a href="override.html">Override any superclass method that could do
+bad things to your subclass.  A non-overridden method is effectively
+in thesubclass interface.</a>
+
+<p>
+
+</body>
+<p>
+<hr>Last changed <date>July 17, 1996</date> <br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

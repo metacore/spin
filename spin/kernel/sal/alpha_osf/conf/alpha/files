@@ -1,0 +1,567 @@
+#
+# Copyright 1994, 1995 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY 
+# 28-May-96 becker at the University of Washington
+#	Removed fp emulation and kernargs.c.  moved mips_dummpy.c to osf.cam
+#
+# 13-May-96  Stefan Savage (savage) at the University of Washington
+#	No longer build context.s
+#
+# 21-Sep-95  Stefan Savage (savage) at the University of Washington
+#	Created to define SPIN kernel
+#
+# *****************************************************************
+# *                                                               *
+# *    Copyright (c) Digital Equipment Corporation, 1991, 1994    *
+# *                                                               *
+# *   All Rights Reserved.  Unpublished rights  reserved  under   *
+# *   the copyright laws of the United States.                    *
+# *                                                               *
+# *   The software contained on this media  is  proprietary  to   *
+# *   and  embodies  the  confidential  technology  of  Digital   *
+# *   Equipment Corporation.  Possession, use,  duplication  or   *
+# *   dissemination of the software and media is authorized only  *
+# *   pursuant to a valid written license from Digital Equipment  *
+# *   Corporation.                                                *
+# *                                                               *
+# *   RESTRICTED RIGHTS LEGEND   Use, duplication, or disclosure  *
+# *   by the U.S. Government is subject to restrictions  as  set  *
+# *   forth in Subparagraph (c)(1)(ii)  of  DFARS  252.227-7013,  *
+# *   or  in  FAR 52.227-19, as applicable.                       *
+# *                                                               *
+# *****************************************************************
+#
+# HISTORY
+# 
+#
+# (c) Copyright 1990, OPEN SOFTWARE FOUNDATION, INC.
+# ALL RIGHTS RESERVED
+#
+#
+# OSF/1 Release 1.0 (Alpha files)
+#
+# !!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!! NOTE TO DEVELOPERS !!!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!
+#
+# IF YOU MODIFY THIS FILE, YOU MUST ADD THE CORRESPONDING CHANGES TO 
+# ".mrg..files.dat", ALSO CONTAINED IN THIS DIRECTORY. FAILURE TO
+# UPDATE ".mrg..files.dat" WILL RESULT IN PROBLEMS DURING UPDATE 
+# INSTALLATION !
+#
+#
+OPTIONS/labels			optional labels
+OPTIONS/trsrcf			optional trsrcf
+
+# SPIN # Modula-3 compiler uses memset calls all the time
+../ccs/lib/libc/alpha/memset.s	optional spin Binary
+
+#
+#LIB/lib_DEC3000_500.O		optional cpu DEC3000_500
+#LIB/lib_DEC3000_300.O		optional cpu DEC3000_300
+#LIB/lib_ALPHACOBRA.O		optional cpu DEC4000
+#LIB/lib_ALPHARUBY.O		optional cpu DEC7000
+#LIB/lib_ALPHAADU.O		optional cpu ALPHAADU
+#
+#../arch/alpha/alpha_exception.c	standard Binary
+../arch/alpha/alpha_init.c		standard ordered Binary optimize -g3
+#../arch/alpha/alpha_ptrace.c	standard Binary
+../arch/alpha/atomic_ops.s		standard Binary
+../arch/alpha/byte_swap.s		standard Binary
+../arch/alpha/clock.c		standard Binary
+#../arch/alpha/coff_subr.c		standard Binary
+#../arch/alpha/context.s		standard Binary
+../arch/alpha/copy.c		standard device-driver Binary
+# SPIN - cpu.c is only required for multiprocessor platforms,
+#        but reduces amount of diffs.  db
+../arch/alpha/cpu.c		standard Binary optimize -g3
+#../arch/alpha/crc.c		standard Binary
+../arch/alpha/__divl.s		standard Binary
+../arch/alpha/__divq.s		standard Binary
+../arch/alpha/__divlu.s		standard Binary
+../arch/alpha/__divqu.s		standard Binary
+../arch/alpha/__reml.s		standard Binary
+../arch/alpha/__remq.s		standard Binary
+../arch/alpha/__remlu.s		standard Binary
+../arch/alpha/__remqu.s		standard Binary
+../arch/alpha/divglobl.s		standard Binary
+../arch/alpha/entry.s		standard ordered Binary
+#../arch/alpha/exec_config.c	standard Binary
+#../arch/alpha/exec_subr.c		standard Binary
+../arch/alpha/fastcopy.s		standard Binary
+../arch/alpha/in_checksum.s	standard Binary
+#../arch/alpha/in_cksum.c		optional inet Binary
+../arch/alpha/in_cksum.c		standard Binary
+../arch/alpha/intr.c		standard Binary
+#../arch/alpha/kernargs.c		standard Binary
+../arch/alpha/locore.s		standard Binary
+#../arch/alpha/lockprim.s		standard Binary
+#../arch/alpha/addupc.s		standard Binary
+../arch/alpha/machdep.c		standard Binary
+../arch/alpha/md.c			optional memd Notbinary
+#../arch/alpha/mem.c		standard Binary
+../arch/alpha/pfm.c		optional pfm Binary optimize -g3
+#../arch/alpha/ovbcopy.c		standard Binary
+../arch/alpha/pal_lib.s		standard Binary
+#../arch/alpha/pcb.c		standard Binary
+../arch/alpha/pmap.c		standard Binary optimize -g3
+#../arch/alpha/pmap_debug.c		standard Binary
+../arch/alpha/pmap_init.c		standard ordered Binary
+#../arch/alpha/pmap_update.c	standard Binary
+../arch/alpha/prom.c		standard Binary
+../arch/alpha/scb.s		standard ordered Binary
+../arch/alpha/spl.s		standard Binary
+#../arch/alpha/startup.c		standard ordered Binary optimize -g3
+#../arch/alpha/super.c		standard Binary
+#../arch/alpha/syscall_trap.c	standard Binary
+#../arch/alpha/trap.c		standard Binary optimize -g3
+#../arch/alpha/softfp.c		standard Binary
+#../arch/alpha/ieee_float_math.c	standard Binary
+#../arch/alpha/64bit_math.c		standard Binary
+#
+#../arch/alpha/fp/fp_ieee.c		standard floating-point Binary
+#../arch/alpha/fp/fp_ieee_handler.c	standard floating-point Binary
+#../arch/alpha/fp/fp_ascii.c	standard floating-point Binary
+#../arch/alpha/fp/fp_result.c	standard floating-point Binary
+#../arch/alpha/fp/fp_scale.c	standard floating-point Binary
+#../arch/alpha/fp/fp_trigger.c	standard floating-point Binary
+#../arch/alpha/fp/fp_tables.c	standard floating-point Binary
+#../arch/alpha/fp/fp_emulator.c	standard floating-point Binary
+#../arch/alpha/fp/fp_emulate.s 	standard floating-point Binary
+#
+#../arch/alpha/ul.c			standard Binary
+#../arch/alpha/usercopy.s		standard Binary
+../arch/alpha/nofault.s		standard Binary
+#../arch/alpha/vm_machdep.c		standard Binary
+#../arch/alpha/mcount.s             optional profiling Binary
+#../arch/alpha/alpha_scrub.s	optional cpu DEC4000 or cpu DEC21000 Binary
+#
+#../arch/alpha/lww.s                standard Binary
+#../arch/alpha/lwu.s                standard Binary
+#
+../arch/alpha/hal/autoconf.c	standard Binary
+../arch/alpha/hal/cons_sw.c	standard Binary
+#../arch/alpha/hal/console.c	standard Binary
+../arch/alpha/hal/cpuconf.c	standard Binary
+../arch/alpha/hal/cpusw.c		standard Binary
+../arch/alpha/hal/io_access.c	standard Binary
+#../arch/alpha/hal/dec4000_cons.c	optional cpu DEC4000 device-driver Binary
+#../arch/alpha/hal/dec7000_cons.c	optional cpu DEC7000 or cpu DEC21000 rubycn device-driver Binary
+#../arch/alpha/hal/eeprom_iic_access.c optional cpu DEC4000 device-driver Binary
+#../arch/alpha/hal/general_iic_routines.c optional cpu DEC4000 device-driver Binary
+#../arch/alpha/hal/hal_lmf.c	standard Binary
+#../arch/alpha/hal/hal_sysinfo.c	standard Binary
+#../arch/alpha/hal/init_iic.c	optional cpu DEC4000 device-driver Binary
+../arch/alpha/hal/kn15aa.c		optional cpu DEC3000_500 Binary
+../arch/alpha/hal/kn16aa.c		optional cpu DEC3000_300 Binary
+#../arch/alpha/hal/kn430.c		optional cpu DEC4000 device-driver Binary
+#../arch/alpha/hal/kn7aa.c		optional cpu DEC7000 device-driver Binary
+#../arch/alpha/hal/kn8ae.c		optional cpu DEC21000 device-driver Binary
+#../arch/alpha/hal/ruby_common.c	optional cpu DEC21000 or cpu DEC7000 device-driver Binary
+#../arch/alpha/hal/log_iic_error.c	optional cpu DEC4000 device-driver Binary
+#../arch/alpha/hal/ocp_iic_access.c	optional cpu DEC4000 device-driver Binary
+#../arch/alpha/hal/send_psc_cmd.c	optional cpu DEC4000 device-driver Binary
+#../arch/alpha/hal/kn20aa.c          optional cpu DEC_KN20AA Binary
+#../arch/alpha/hal/kn121.c		optional cpu DEC2000_300 Binary
+#
+../arch/alpha/hal/dec2000_cons.c	optional cpu DEC2000_300 or cpu DEC_KN20AA or cpu DEC2100_A50 or cpu DEC2100_A500 or cpu DEC1000 or cpu DECAXPPCI_33 or DEC2100_C500 device-driver Binary
+#
+../arch/alpha/hal/pc_bell.c	optional eisa or isa device-driver Binary
+#../arch/alpha/hal/isp.c		optional eisa device-driver Binary
+../arch/alpha/hal/sio.c		optional cpu DEC2100_A50 or cpu DECAXPPCI_33 device-driver Binary
+#
+../arch/alpha/hal/dma_direct_map.c	optional eisa or pci or isa or tc Binary
+../arch/alpha/hal/dma_sg_map.c	optional pci Binary
+#
+../arch/alpha/hal/mc146818clock.c	optional cpu DEC2000_300 DECAXPPCI_33 DEC2100_A50 DEC2100_A500 or cpu DEC2100_C500 or cpu  DEC1000 or cpu DEC_KN20AA device-driver Binary
+../arch/alpha/hal/82357_pic.c	optional cpu DEC2000_300 DECAXPPCI_33 DEC2100_A50 or cpu DEC1000 or cpu DEC2100_A500 or cpu DEC2100_C500 or DEC_KN20AA device-driver Binary
+#../arch/alpha/hal/lca.c		optional cpu DECAXPVME_64 or cpu DECAXPPCI_33 device-driver Binary
+../arch/alpha/hal/apecs.c		optional cpu DEC2100_A50 or cpu DEC1000 device-driver Binary
+../arch/alpha/hal/kn25.c		optional cpu DEC2100_A50 device-driver Binary
+#../arch/alpha/hal/kn450.c		optional cpu DEC2100_A500 or DEC2100_C500 Binary
+#../arch/alpha/hal/kn470.c		optional cpu DEC2100_C500 Binary
+#../arch/alpha/hal/kn22a.c		optional cpu DEC1000 device-driver Binary
+#../arch/alpha/hal/ebp10.c		optional cpu DECAXPPCI_33 Binary
+#
+#../arch/alpha/hal/ebv10.c		optional cpu DECAXPVME_64 Binary
+#../arch/alpha/hal/ebv10_pallib.s	optional cpu DECAXPVME_64 Binary
+#../arch/alpha/hal/ebv10_cons.c	optional cpu DECAXPVME_64 device-driver Binary
+#../io/dec/vme/ebv10_vme.c      	optional cpu DECAXPVME_64 and vba device-driver Binary
+#../data/ebv10_vme_data.c           optional cpu DECAXPVME_64 and vba device-driver Notbinary
+#../arch/alpha/hal/ds1386clock.c	optional cpu DECAXPVME_64 device-driver Binary
+#
+#../arch/alpha/kdebug_ace_cons.c	optional kdebug Binary
+../arch/alpha/kdebug_misc.c	optional kdebug Binary
+#../arch/alpha/kdebug_cobra_cons.c	optional kdebug Binary
+#../arch/alpha/kdebug_gbus_cons.c	optional kdebug Binary
+#../arch/alpha/kdebug_scc_cons.c	optional kdebug Binary
+#
+# arch/alpha/devz.c               optional not sas Binary
+#
+../io/common/driver_support.c	standard Binary
+#../io/common/ldbl_driver_support.c	standard Binary
+#../io/common/ldbl_controller_support.c standard Binary
+#../io/common/stanza_resolver.c	standard Binary
+# SPIN - topology is not really required, but reduces amount of diffs.  db
+../io/common/topology.c		standard Binary
+../io/common/handler.c		standard Binary
+../io/common/tty_def.c		standard Binary
+#../io/common/lsbmem.c		optional cpu DEC7000 or cpu DEC21000 Binary
+#
+#
+../io/dec/lsb/lsb_common.c		optional cpu DEC7000 or cpu DEC21000 device-driver Binary
+../io/dec/lsb/lsbinit.c		optional cpu DEC7000 device-driver Binary
+../io/dec/lsb/lsb_iop.c		optional cpu DEC7000 device-driver Binary
+../io/dec/lsb/tlsbinit.c		optional cpu DEC21000 device-driver Binary
+../io/dec/lsb/tlsb_iop.c		optional cpu DEC21000 device-driver Binary
+../io/dec/fbus/fbus.c		optional fbus device-driver Binary
+../io/dec/fbus/fbus_loadable.c	optional fbus device-driver Binary
+../data/fbus_option_data.c		optional fbus Notbinary
+../io/dec/fbus/flag.c		optional fbus device-driver Binary
+#
+../io/dec/mbox/mbox.c		optional ibus or cpu DEC7000 or cpu DEC4000 or cpu DEC21000 device-driver Binary
+#
+../io/dec/ibus/ibus.c		optional ibus device-driver Binary
+../io/dec/xmi/xmiinit.c		optional xmi device-driver Binary
+../io/dec/xmi/xlamb.c		optional xmi device-driver Binary
+#
+../io/dec/netif/if_xna.c		optional xna device-driver Binary
+../io/dec/netif/if_mfa.c		optional mfa device-driver Binary
+#
+../io/dec/tc/tc.c			optional tc device-driver Binary
+# SPIN - tc_loadable is not really required, but reduces amount of diffs.  db
+../io/dec/tc/tc_loadable.c		optional tc device-driver Binary
+../io/dec/tc/dc7085.c		optional dc device-driver Binary
+../io/dec/tc/scc.c			optional scc device-driver Binary
+../io/dec/tc/nvtc.c		optional nvtc device-driver Binary
+../io/dec/tc/qfont.c		optional fb or pv or pvl or vga or tga device-driver Binary
+../io/dec/tc/fgfont.c		optional px or kws_td device-driver Binary
+../io/dec/tc/amd79c30.c		optional bba device-driver if_dynamic bba Binary
+../io/dec/tc/amd79c30_dummy.c	optional bba device-driver if_dynamic bba Binary
+../io/dec/tc/amd79c30_hdlc.c	optional bba device-driver if_dynamic bba Binary
+#
+../io/dec/eisa/eisa.c		optional eisa device-driver Binary
+../io/dec/eisa/eisa_cnfg.c		optional eisa device-driver Binary
+../io/dec/eisa/isa.c               optional isa device-driver Binary
+../io/dec/eisa/gpc.c		optional gpc device-driver Binary
+../io/dec/eisa/ace.c		optional ace device-driver Binary
+../io/dec/eisa/lp.c		optional lp device-driver Binary optimize -g3
+../io/dec/eisa/envram.c		optional envram device-driver Binary
+../io/dec/eisa/msb.c		optional msb device-driver Binary
+../io/dec/eisa/re_driver.c		optional re or xcr device-driver Binary
+../io/dec/eisa/xcr_logger.c	optional re or xcr device-driver Binary
+../io/dec/eisa/xcr_port.c		optional re or xcr device-driver Binary
+#
+../io/dec/pci/pci.c		optional pci device-driver Binary
+../io/dec/pci/pnvram.c		optional pnvram device-driver Binary
+../io/dec/pci/pcia.c		optional pci and cpu DEC21000 device-driver Binary
+#
+../io/dec/netif/if_ln.c		optional ln Binary
+../io/dec/netif/if_le.c		optional le device-driver Binary
+../io/dec/netif/if_te.c		optional te Binary
+../io/dec/netif/if_tu.c		optional tu Binary
+../io/dec/netif/if_fza.c		optional fza Binary
+../io/dec/netif/if_fta.c		optional fta Binary
+../io/dec/netif/if_tra.c		optional tra Binary
+../io/dec/netif/if_faa.c		optional faa Binary
+../io/dec/netif/if_vb.c		optional cpu DECAXPVME_64 and vba and vb Binary
+#
+../io/atm/drivers/otto/if_otto.c          optional lta Binary
+../io/atm/drivers/otto/if_otto_xilinx.c   optional lta Binary
+../io/atm/drivers/otto/if_ottodefs.c      optional lta Binary
+../io/atm/drivers/otto/otto_platform.c    optional lta Binary
+../io/atm/drivers/otto/otto_flow.c    optional lta Binary
+../io/atm/drivers/otto/otto_fakesnmp.c    optional lta Binary
+#
+../io/dec/ci/ciconfig.c		optional ci device-driver Binary
+../io/dec/ci/cippd_error.c		optional ci or msi device-driver Binary
+../io/dec/ci/cippd_event.c		optional ci or msi device-driver Binary
+../io/dec/ci/cippd_pmaint.c	optional ci or msi device-driver Binary
+../io/dec/ci/cippd_protocol.c	optional ci or msi device-driver Binary
+../io/dec/ci/cippdvar.c		optional ci or msi device-driver Binary
+#
+../io/dec/gvp/gvp_block.c		optional ci or bvpssp or msi device-driver Binary
+../io/dec/gvp/gvp_dg.c		optional ci or bvpssp or msi device-driver Binary
+../io/dec/gvp/gvp_msg.c		optional ci or bvpssp or msi device-driver Binary
+../io/dec/gvp/gvp_subr.c		optional ci or bvpssp or msi device-driver Binary
+../io/dec/gvp/gvpvar.c		optional ci or bvpssp or msi device-driver Binary
+#
+../io/dec/msi/msi_dg.c		optional msi device-driver Binary
+../io/dec/msi/msi_error.c		optional msi device-driver Binary
+../io/dec/msi/msi_init.c		optional msi device-driver Binary
+../io/dec/msi/msi_isr.c		optional msi device-driver Binary
+../io/dec/msi/msi_lpmaint.c	optional msi device-driver Binary
+../io/dec/msi/msi_msg.c		optional msi device-driver Binary
+../io/dec/msi/msi_subr.c		optional msi device-driver Binary
+../io/dec/msi/msivar.c		optional msi device-driver Binary
+#
+../io/dec/np/np_block.c		optional np device-driver Binary
+../io/dec/np/np_dg.c		optional np device-driver Binary
+../io/dec/np/np_error.c		optional np device-driver Binary
+../io/dec/np/np_init.c		optional np device-driver Binary
+../io/dec/np/np_isr.c		optional np device-driver Binary
+../io/dec/np/np_lpmaint.c		optional np device-driver Binary
+../io/dec/np/np_msg.c		optional np device-driver Binary
+../io/dec/np/np_subr.c		optional np device-driver Binary
+../io/dec/np/npvar.c		optional np device-driver Binary
+#
+../io/dec/scs/scs_block.c		optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_configdb.c	optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_conn.c		optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_dg.c		optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_error.c		optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_event.c		optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_info.c		optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_maint.c		optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_msg.c		optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_protocol.c	optional uq or ci or msi device-driver Binary
+../io/dec/scs/scs_subr.c		optional uq or ci or msi device-driver Binary
+../io/dec/scs/scsvar.c		optional uq or ci or msi device-driver Binary
+#
+../io/cam/siop/psiop.c		optional psiop device-driver Binary optimize -g3
+../io/cam/siop/pci/psiop_pci.c	optional psiop device-driver Binary
+
+../io/cam/siop/siop.c		optional cpu DEC4000 siop device-driver Binary optimize -g3
+../io/cam/siop/kn430/siop_kn430.c	optional cpu DEC4000 siop device-driver Binary
+#
+../io/cam/aha1740.c                optional aha device-driver Binary optimize -g3
+#
+../io/dec/fdi/fd.c                 optional fdi device-driver Binary
+../io/dec/fdi/fdcam.c              optional fdi device-driver Binary
+#
+../io/dec/sysap/scs_directory.c 	optional uq or ci or msi device-driver Binary
+../io/dec/sysap/mscp_tape.c	optional uq or ci or msi device-driver Binary
+../io/dec/sysap/mscp_disk.c	optional uq or ci or msi device-driver Binary
+../io/dec/sysap/mscp_bbr.c		optional uq or ci or msi device-driver Binary
+../io/dec/sysap/mscp_bbrstates.c 	optional uq or ci or msi device-driver Binary
+../io/dec/sysap/mscp_config.c	optional uq or ci or msi device-driver Binary
+../io/dec/sysap/mscp_conpol.c	optional uq or ci or msi device-driver Binary
+../io/dec/sysap/mscp_diskvar.c	optional uq or ci or msi device-driver Binary
+../io/dec/sysap/mscp_subr.c	optional uq or ci or msi device-driver Binary
+../io/dec/sysap/mscp_var.c		optional uq or ci or msi device-driver Binary
+../io/dec/sysap/sysap_start.c	optional uq or ci or msi device-driver Binary
+#
+../io/dec/uba/uba.c		optional uba or uq device-driver Binary
+../io/dec/uba/dhu.c		optional dhu device-driver Binary
+../io/dec/uba/uqserv.c		optional uq device-driver Binary
+../io/dec/uba/kdm.c		optional kdm device-driver Binary
+
+../io/dec/ws/ws_device.c		optional ws device-driver Binary
+../io/dec/ws/bt431.c		optional fb or pv device-driver Binary
+../io/dec/ws/bt459.c		optional fb or px device-driver Binary
+../io/dec/ws/bt463.c		optional fb or pv device-driver Binary
+../io/dec/ws/fb.c			optional fb device-driver Binary
+../io/dec/ws/lk201.c		optional ws and scc device-driver Binary
+../io/dec/ws/vsxxx.c		optional ws and scc device-driver Binary
+../io/dec/ws/pcxal.c		optional ws and gpc device-driver Binary
+../io/dec/ws/pcxas.c		optional ws and gpc device-driver Binary
+../io/dec/ws/pmagro.c		optional fb device-driver Binary
+../io/dec/ws/sfb.c			optional fb if_dynamic sfbp device-driver Binary
+../io/dec/ws/px.c			optional px device-driver Binary
+../io/dec/ws/pa.c			optional px device-driver Binary
+../io/dec/ws/pq.c			optional px device-driver Binary
+../io/dec/ws/pv.c			optional pv device-driver Binary
+../io/dec/ws/pvl.c			optional pvl device-driver Binary
+# Note that all VGA devices are currently defined for all busses
+../io/dec/ws/vga.c			optional vga device-driver Binary
+../io/dec/ws/ati.c			optional vga device-driver Binary
+../io/dec/ws/ati64.c		optional vga device-driver Binary
+../io/dec/ws/cirrus.c		optional vga device-driver Binary
+../io/dec/ws/qvision.c		optional vga device-driver Binary
+../io/dec/ws/s3v864.c		optional vga device-driver Binary
+../io/dec/ws/tga.c			optional tga device-driver Binary
+# Kubota Pacific Computer TC Denali
+../io/kpc/kws/TCdenali/kws_t_flash.c     optional kws_t_flash Binary
+../io/kpc/kws/TCdenali/kws_td.c          optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_byp.c      optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_dma.c      optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_fifo.c     optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_gom.c      optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_gws.c      optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_ini.c      optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_intr.c     optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_load.c     optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_misc.c     optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_sys.c      optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_tstl.c     optional kws_td device-driver Binary
+../io/kpc/kws/TCdenali/kws_td_kernGom.c  optional kws_td Binary
+../io/kpc/kws/kernutil/kws_kernutil.c    optional kws_td Binary
+#
+../io/dec/presto/pr.c		optional presto Binary optimize -g3
+../io/dec/presto/presto_cfg.c	optional presto if_dynamic presto Binary
+#
+../io/dec/xmi/xminp.c		optional np device-driver Binary
+#
+../data/cbus_data.c		optional cpu DEC4000 Notbinary
+../data/cbus2_data.c		optional cpu DEC2100_A500 or DEC2100_C500 Notbinary
+../data/mbox_data.c		optional ibus or cpu DEC7000 or cpu DEC4000 or cpu DEC21000 Binary
+../data/lsb_data.c			optional cpu DEC7000 or cpu DEC21000 Notbinary
+../data/xmi_data.c			optional xmi or iop or xza or xfa Notbinary
+../data/if_xna_data.c		optional xna Notbinary
+../data/if_mfa_data.c		optional mfa Notbinary
+../data/cam_data.c			optional scsi Notbinary
+../data/cam_special_data.c		optional scsi Notbinary
+../data/if_ln_data.c		optional ln Notbinary
+../data/if_le_data.c		optional le Notbinary
+../data/if_te_data.c		optional te Notbinary
+../data/if_tu_data.c		optional tu Notbinary
+../data/if_fza_data.c		optional fza Notbinary
+../data/if_fta_data.c		optional fta Notbinary
+../data/if_tra_data.c		optional tra Notbinary
+../data/tms380_fw_data.c		optional tra Notbinary
+../data/if_faa_data.c		optional faa Notbinary
+../data/if_vb_data.c               optional cpu DECAXPVME_64 and vba and vb Notbinary
+../data/if_otto_data.c             optional lta Notbinary
+#
+../data/bt_data.c			optional fb or px or pv Notbinary
+../data/lk201_data.c		optional ws and scc Notbinary
+../data/vsxxx_data.c		optional ws and scc Notbinary
+../data/pcxal_data.c		optional ws and gpc Notbinary
+../data/pcxas_data.c		optional ws and gpc Notbinary
+../data/ws_data.c			standard Notbinary
+../data/autoconf_data.c		standard Notbinary
+../data/cons_sw_data.c		standard Notbinary
+./tc_option_data.c		optional tc Notbinary
+../data/tty_pty_data.c		optional  pty Notbinary
+../data/pty_data.c			optional rpty Notbinary
+./pci_option_data.c		optional pci Notbinary
+./eisa_option_data.c		optional eisa Notbinary
+./isa_option_data.c		optional isa Notbinary
+../data/fb_data.c			optional fb Notbinary
+../data/dc_data.c			optional dc Notbinary
+../data/dhu_data.c			optional dhu Notbinary
+../data/scc_data.c			optional scc Notbinary
+../data/nvtc_data.c		optional nvtc Notbinary
+../data/envram_data.c		optional envram Notbinary
+../data/pnvram_data.c		optional pnvram Notbinary
+../data/ci_data.c			optional ci or kdb or klesib or msi Notbinary
+../data/cippd_data.c		optional ci or msi Notbinary
+../data/gvp_data.c			optional bvpssp or ci or msi Notbinary
+../data/mscp_data.c		optional uq or bvpssp or ci or msi or mscp Notbinary
+../data/msi_data.c			optional msi Notbinary
+../data/np_data.c			optional np Notbinary
+../data/scs_data.c			optional uq or bvpssp or ci or msi or hsc or dssc or scsnet Notbinary
+../data/sysap_data.c		optional uq or bvpssp or ci or msi Notbinary
+#../data/binlog_data.c		standard Notbinary
+../data/uq_data.c			optional uq Notbinary
+../data/pmap_data.c		standard Notbinary
+#../data/presto_data.c		standard Notbinary
+../data/pa_data.c			optional px Notbinary
+../data/pq_data.c			optional px Notbinary
+../data/px_data.c			optional px Notbinary
+../data/pv_data.c			optional pv Notbinary
+../data/pvl_data.c			optional pvl Notbinary
+../data/vga_data.c			optional vga Notbinary
+../data/tga_data.c			optional tga Notbinary
+../data/steal_mem.c		standard ordered Binary
+#../io/common/error_event.c		standard Binary
+../data/ace_data.c			optional ace device-driver Notbinary
+#../data/trn_sr_data.c              standard Notbinary
+../data/xcr_data.c			optional re or xcr Notbinary
+net/trn_sr.c                    optional tra or trsrcf Binary optimize -g3
+#
+# LSM source files
+#
+../data/lsm_data.c			optional lsm Notbinary
+vxvm/dki_osf.c			optional lsm Binary
+#
+#       Plex Driver
+#
+vxvm/plex/plex.c		optional lsm Binary
+#
+#       Vols Driver
+#
+vxvm/volspec/volspec.c		optional lsm Binary
+#
+#       Vol Driver
+#
+vxvm/vol/vol.c			optional lsm Binary optimize -g3
+vxvm/vol/volblog.c		optional lsm Binary
+vxvm/vol/volioctl.c		optional lsm Binary
+vxvm/vol/volklog.c		optional lsm Binary
+vxvm/vol/volted.c		optional lsm Binary
+vxvm/vol/volSpace.c		optional lsm Binary
+vxvm/vol/volroot.c		optional lsm Binary
+vxvm/vol/vol_cfg.c		optional lsm if_dynamic lsm Binary
+#
+# LSM ted files
+#
+ted/ted.c			optional lsm_ted Binary
+ted/tedSpace.c			optional lsm_ted Binary
+#
+# VME
+#
+../io/dec/vme/vba_generic.c	optional vba device-driver Binary
+../io/dec/vme/vba_tc.c		optional vba device-driver Binary
+../io/dec/vme/vba_pci.c	        optional vba device-driver Binary
+../data/vba_data.c			optional vba device-driver Notbinary
+
+#
+# Reflective Memory (RM)
+#
+../io/dec/pci/rm_spur.c	optional rmspur device-driver Binary
+../data/rm_data.c			optional rmspur device-driver Notbinary
+
+
+
+
+#############
+# CAM spindle
+# 
+../io/cam/io_routines.c		optional scsi Binary 
+../io/cam/cam_config.c		optional  scsi device-driver optimize -O2 Binary
+../io/cam/cam_debug.c		optional  scsi device-driver optimize -O2 Binary
+../io/cam/cam_disk.c		optional  scsi optimize -g3 Binary
+../io/cam/cam_logger.c		optional  scsi device-driver optimize -O2 Binary
+../io/cam/cam_special.c		optional  scsi device-driver optimize -O2 Binary
+# #../io/cam/cam_tape.c		optional  scsi optimize -g3 Binary
+../io/cam/ccfg.c			optional  scsi device-driver optimize -O2 Binary
+../io/cam/pdrv_common.c		optional  scsi optimize -g3 Binary
+../io/cam/dme_3min_94_dma.c	optional  asc or tcds device-driver Binary
+../io/cam/dme_turbo_94_ram.c	optional  asc or tcds device-driver Binary
+../io/cam/dme_kn03_94_dma.c	optional  asc or tcds device-driver Binary
+../io/cam/dme_common.c		optional  asc or tcds device-driver Binary optimize -g3
+../io/cam/dme_tcds_94_dma.c	optional  tcds device-driver Binary optimize -g3
+../io/cam/tcds_adapt.c		optional  tcds device-driver Binary
+../io/cam/sim_94_fast.c		optional  asc or tcds device-driver Binary
+../io/cam/sim_94.c			optional  asc or tcds device-driver Binary optimize -g3
+../io/cam/spo/sim_kztsa.c          optional  tza device-driver Binary optimize -g3
+../io/cam/spo/sim_pza.c		optional  pza Binary
+../io/cam/spo/simport.c            optional  tza or pza device-driver Binary optimize -g3
+../io/cam/spo/simport_htm.c        optional  tza or pza Binary
+../io/cam/spo/simport_dme.c        optional  tza or pza Binary
+../io/cam/spo/simport_subr.c       optional  tza or pza device-driver Binary
+../io/cam/sim_as.c			optional  asc or tcds psiop or siop or aha or xza or isp device-driver optimize -O2 Binary
+../io/cam/sim_common.c		optional  scsi device-driver optimize -O2 Binary
+../io/cam/sim_config.c		optional  scsi device-driver optimize -O2 Binary
+../io/cam/sim_error.c		optional  asc or tcds or psiop or siop or aha or xza or isp device-driver optimize -O2 Binary
+../io/cam/sim_kn02.c		optional  asc or tcds device-driver Binary
+../io/cam/sim_kn03.c		optional  cpu DS5000_300 device-driver Binary
+../io/cam/sim_sched.c		optional  asc or tcds or psiop or siop or aha or xza or isp device-driver optimize -O2 Binary
+../io/cam/sim_sm.c			optional  asc or tcds or psiop or siop or aha or xza or isp device-driver optimize -O2 Binary
+../io/cam/sim_target.c		optional  asc or tcds or psiop or siop or aha or xza or isp optimize -g3 Binary
+../io/cam/sim_xpt.c		optional  scsi optimize -g3 Binary
+../io/cam/special_audio.c		optional  scsi device-driver optimize -O2 Binary
+../io/cam/special_direct.c		optional  scsi device-driver optimize -O2 Binary
+../io/cam/special_generic.c	optional  scsi device-driver optimize -O2 Binary
+../io/cam/special_sequential.c	optional  scsi device-driver optimize -O2 Binary
+../io/cam/uagt.c			optional  scsi device-driver optimize -O2 Binary
+../io/cam/xpt.c			optional  scsi optimize -g3 Binary
+../io/cam/mips_dummy.c             optional scsi Binary
+../io/cam/dme_null.c		optional  scsi device-driver optimize -O2 Binary
+# #
+../io/cam/qlogic/isp1020.c         optional  isp device-driver Binary
+#
+../io/cam/xza/skz_config.c		optional  xza device-driver Binary
+../io/cam/xza/skz_main.c		optional  xza device-driver Binary optimize -g3
+../io/cam/xza/skz_dme.c		optional  xza device-driver Binary
+../io/cam/xza/skz_error.c		optional  xza device-driver Binary
+../io/cam/xza/skz_sched.c		optional  xza device-driver Binary
+../io/cam/xza/skz_debug.c		optional  xza device-driver Binary
+../io/cam/xza/skz_nport.c		optional  xza device-driver Binary
+../io/cam/xza/skz_diag.c		optional  xza device-driver Binary
+../io/cam/xza/skz_target.c		optional  xza device-driver Binary
+

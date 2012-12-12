@@ -1,0 +1,29 @@
+# HISTORY
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Change ALPHA_SPIN to variable $target which can be either
+#	 ALPHA_SPIN or ALPHA_SPIN_PROF.
+#
+
+# oh well
+echo
+echo Sie ma! pozdrawia Przemko
+echo
+
+# initialize the collector
+# script gc.rc
+
+# initialize the machine
+# script -b
+
+# some useful aliases
+set cthreadrc    ~/spin/user/thread/cthread/$target/cthread.rc
+set threatrc     ~/spin/user/threat/$target/threat.rc
+set benchmarkrc  ~/spin/user/benchmark/$target/benchmark.rc
+set rcgrc        ~/spin/user/rcg/$target/rcg.rc
+set syscalltime  /spin/egs/archive/syscalltime
+set getpidtime   ~/spin/user/sphinx/benchmark/spin/test_getpid
+set s script
+
+# script bar.rc
+
+set csh sphinx exec /spin/owa/csh-bsd/csh

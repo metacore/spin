@@ -1,0 +1,33 @@
+#
+# Copyright 1994, 1995,1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+#
+# HISTORY
+# 27-Jun-96  Tian Fung Lim (tian) at the University of Washington
+#	Added Strip.
+#
+# 27-Jan-95  Emin Gun Sirer (egs) at the University of Washington
+#	Created.
+
+m3_option("-g3")
+
+interface ("MachineLinkerExtern")
+implementation ("MachineLinker")
+
+h_source ("Interface")
+h_source ("Module")
+c_source ("Module")
+h_source ("Section")
+c_source ("Section")
+h_source ("Symbol")
+c_source ("Symbol")
+h_source ("Hash")
+c_source ("Hash")
+c_source ("Link")
+h_source ("Resolve")
+c_source ("Resolve")
+c_source ("Unresolve")
+c_source ("Utils")
+c_source ("Strip")

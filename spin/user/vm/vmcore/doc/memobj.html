@@ -1,0 +1,80 @@
+<a name="memobj"></a>
+<h2>Memory Object</h2>
+
+Memory object is a conainer of page frames.
+
+<p>
+Internally, a memory object consists of two objects,
+<a href="../src/CacheObject.i3">cache</a> and
+<a href="../src/PagerObject.i3">pager</a>.
+Cache holds a set of page frames. All the frames
+in a memory object is recorded in the cache object.
+
+<p>
+Pager implements a mechanism to read and write pages to and from
+memory and external I/O device. Pager is expected to be
+subtyped. Currently, two types of pagers are provided,
+Default default pager(aka <dfn>bogopager</dfn>)
+and <a href="../../filepager/doc/FilePager.html">Real default pager</a>(aka <dfn>default
+pager</dfn>).
+
+<ul>
+  <li> Bogopager always provides a zero filled page on page fault.
+       It doesn't provide the page out operation.
+       Bogopager comes with the vmcore extension.
+  <li> Default pager provides a zero filled page on first fault.
+       It supports page-out on generic
+       <a href="../../../fs/doc/index.html">file system</a>.
+       When loaded into memory, the default pager replaces the
+       <a href="../src/DefaultPager.i3">public procedures</a>
+       to call bogopager. Thus, the bogopager and the default pager
+       are used in the same way.
+</ul>
+
+<blockquote>
+The reason the bogopager is there is that the default pager depends on
+the file system, and file system depends on vmcore. Therefore, we
+can't put the default pager in vmcore, or we have circular dependency.
+</blockquote>
+
+
+<h2>Pager Interface</h2>
+
+Here is the list of mechods that all <a href="../src/PagerObject.i3">
+pagers</a> have to provide.
+
+<dl>
+  <dt> <b>init(): T;</b>
+  <dt> <b>destroy()</b>
+  <dt> <b>pageIn(offset: PageNumber; VAR data : ARRAY OF CHAR) : ResultCode;
+       </b>
+  <dd> Read the contents of the page <var>offset</var> from the external
+       device. The <a href="../src/PagerObject.i3">
+       <code>ResultCode</code></a> is an enumerated type
+       whose values include the following.
+
+       <p>
+       <dl>
+	 <dt> Success
+	 <dd> This is the normal return code.
+	 <dt> AlreadyPagedIn
+	 <dd> This indicates that the requested page to
+	      should be in memory already. When this code is
+	      returned, the memory object rechecks the cache object.
+	 <dt> AlreadyPagedOut
+	 <dd> This code should be returned only by <code>pageOut</code>
+	      method described below. This code indicates that the
+	      requested page is already paged out. When the memory
+	      object gets this code, it interprets as
+	      <em>Success</em>.
+	 <dt> DeviceFull
+	 <dt> NotImplemented
+	 <dd> These are catastrophic event.
+	      The memory object is immediately destroyed.
+	      (not done now)
+       </dl>
+  <dt> <b>pageOut(offset : PageNumber; READONLY data : ARRAY OF CHAR;
+	    dirty: BOOLEAN) : ResultCode;</b>
+  <dd> Write the page out to the external device.
+       
+</dl>

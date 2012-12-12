@@ -1,0 +1,123 @@
+<html>
+<head>
+<title>OSF/1 Server</title>
+</head>
+
+<body>
+<h1>
+<A name = "top">OSF/1 Server</a> </br>
+</h1>
+<date>March 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2>
+
+The OSF/1 UNIX Server provides UNIX functionality for user-level programs
+running on SPIN.  Moreover, as SPIN's most demanding client (at least so
+far), it provides an excellent stress test for kernel services.  Finally, 
+as the server port is being performed almost entirely via SPIN dynamically 
+linked extensions, the OSF/1 server is a model of using kernel extensions 
+for emulation.
+<p>
+The goal of the OSF/1 server is to run SPIN on desktop workstations, 
+using it for day-to-day operations such as reading mail and developing
+code.  In its current state, the server can be booted to single-user mode
+and used to run some basic programs.
+
+<H2>Design and Implementation</H2> 
+
+The OSF/1 server in use was developed for the Mach microkernel.  The first
+step in porting it to SPIN was the removal of reliance upon the Mach IPC 
+message-passing interface.  Mach messages were either removed or converted
+into system calls.  Whenever possible, these changes were localized in the
+libmach library.  This conversion represents the bulk of changes to the 
+OSF/1 server code.  Following are some early notes on retargeting the 
+OSF/1 server for SPIN:
+<ul>
+<li><a href="./osf.html">Converting the OSF/1 server</a>: original notes
+    on OSF/1 server conversion.</li>
+<li><a href="ipcbugs.html">IPC Dependencies</a>: server dependencies on
+    Mach IPC at time of original OSF/1 server conversion meeting.</li>
+</ul>
+<p>
+Simply transforming Mach messages into system calls did not complete the
+port of the OSF/1 server to SPIN.  Although SPIN may provide some 
+functionality similar to Mach, its interfaces differ substantially.
+Hence, SPIN dynamically linked extensions are used to emulate a Mach
+environment upon which the OSF/1 server executes.
+<p>
+The basic unit of emulation is the system call.  When an application makes
+a system call, the Syscall event is raised in SPIN.  A dynamically linked
+extension waiting for the Syscall event determines which system call has
+been made and takes appropriate action.  This action could be either of the
+following:
+<ul>
+<li>Determine that the system call is intended for the kernel (e.g. the
+    Mach vm_allocate() system call).  Call upon the appropriate SPIN 
+    services to satisfy the request.</li>
+<li>Determine that the system call is intended for UNIX (e.g. the UNIX
+    getpid() system call).  Marshall the system call arguments and 
+    perform an upcall to the OSF/1 server.</li>
+</ul>
+<p>
+Hence, the SPIN OSF/1 server implementation consists of two major parts.
+The first is the OSF/1 server itself.  The bulk of the OSF/1 server is
+written in C and executes in the user-level.  The second consists of SPIN
+dynamically linked extensions.  These extensions are written in Modula-3
+and execute in the kernel.
+
+<H2>Using the OSF/1 Unix Server</H2>
+
+<h3>Checking out and Building</h3>
+
+The SPIN extensions can be checked out with other SPIN extensions.  The
+OSF/1 server is not so easy.  For checkout and build instructions, see
+<a href="./buildserver.html">Building the OSF/1 Server for SPIN</a>.  
+To simply use the OSF/1 server to run user-level programs, see
+<a href="./userlevel.html">User-Level Programs on SPIN</a>.  The remainder 
+of this documentation will focus on the SPIN dynamically linked extensions 
+which help emulate a Mach environment for the OSF/1 server.
+
+<h3>Interfaces</h3>
+
+The OSF/1 server extensions consist of the following interfaces (and 
+associated modules):
+<ul>
+<li><a href="./Syscall.html">Syscall.i3</a>
+<li><a href="./Buffer.html">Buffer.i3</a>
+<li><a href="./DeviceHandlers.html">DeviceHandlers.i3</a>
+<li><a href="./ExcHandlers.html">ExcHandlers.i3</a>
+<li><a href="./HandlerUtils.html">HandlerUtils.i3</a>
+<li><a href="./MachHandlers.html">MachHandlers.i3</a>
+<li><a href="./MarshallExc.html">MarshallExc.i3</a>
+<li><a href="./ThreadHandlers.html">ThreadHandlers.i3</a>
+<li><a href="./TimeHandlers.html">TimeHandlers.i3</a>
+<li><a href="./VMHandlers.html">VMHandlers.i3</a>
+<li><a href="./VMTaskSupport.html">VMTaskSupport.i3</a>
+</ul>
+
+<H2>Remaining Issues</H2>
+
+The port of the OSF/1 Unix Server to SPIN is far from complete.  Some 
+near future work includes:
+<ul>
+<li>Converting to the new <a href="../../vm/doc/index.html">Mach VM</a>
+    dynamically linked extensions.</li>
+<li>Using 
+    <a href="../../../local/sieg/doc/index.html">
+    Sieg</a> as much as possible for automatically generated argument
+    marshalling.</li>
+<li>Making the server work with the 
+    <a href="../../nanny/doc/index.html">nanny</a> facility.
+</ul>
+
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

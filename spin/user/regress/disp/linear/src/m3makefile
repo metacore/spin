@@ -1,0 +1,33 @@
+#
+# Copyright 1995, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 28-Mar-96  Przemek Pardyak (pardy) at the University of Washington
+#	Converted to new build environment.
+#
+# 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Converted quake commands to the new versions. Some m3_options are
+#	 automatically set by Extension.
+#
+# 29-Nov-95  Przemek Pardyak (pardy) at the University of Washington
+#	Created
+#
+#
+
+m3_option("-X6@-fno-common@")
+m3_option("-zG@-g3@")
+
+overridepath = [ THISTREE , FULLTREE ]
+
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("Regress","user/shell","regress",overridepath)
+
+Module ("Sirpa")
+RegressionModule ("DispLinear")
+
+Extension({})
+

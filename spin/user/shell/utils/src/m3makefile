@@ -1,0 +1,27 @@
+# HISTORY
+# 19-Mar-97  Przemek Pardyak (pardy) at the University of Washington
+#	Enabled Date.
+#
+# 4-oct-96  becker at the University of Washington
+#	Added TmpFileSystem and Device import
+#
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Switched to simpler spindle build functions.
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport ("FileSystem","user/fs","fscore",overridepath)
+DomainImport ("TmpFileSystem","user/fs","tmpfs",overridepath)
+
+Package("UtilCmds")
+interface("UtilCmds")
+
+
+Module("Date")
+CommandModule("Version")
+Extension({})
+

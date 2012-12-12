@@ -1,0 +1,43 @@
+623a624,627
+> #ifdef SPIN
+> /* We don't use usimple locks and
+>  * our thread_block lowers spl. 
+>  */
+631a636,647
+>     thread_block();						\
+>     ccmn_bp_head.bp_wait_cnt--;					\
+> }
+> #else
+> #define CCMN_BP_WAIT(saveipl)					\
+> {								\
+>     ccmn_bp_head.bp_wait_cnt++;					\
+>     thread_t thread = current_thread();				\
+>     if( ccmn_bp_head.bp_wait_cnt == 1){				\
+> 	timeout(ccmn_rel_bp, NULL, (2 * hz));			\
+>     }								\
+>     assert_wait((vm_offset_t)&ccmn_bp_head.bp_wait_cnt, FALSE);	\
+636a653
+> #endif
+637a655,659
+> 
+> #ifdef SPIN
+> /* We don't use usimple locks and
+>  * our thread_block lowers spl. 
+>  */
+645a668,679
+>     thread_block();						\
+>     ccmn_data_alloc.alloc_wait_cnt--;				\
+> }
+> #else
+> #define CCMN_DATA_WAIT(saveipl)					\
+> {								\
+>     thread_t thread = current_thread();				\
+>     ccmn_data_alloc.alloc_wait_cnt++;				\
+>     if( ccmn_data_alloc.alloc_wait_cnt == 1 ) {			\
+> 	timeout(ccmn_get_dbuf, NULL, (2 * hz));			\
+>     }								\
+>     assert_wait((vm_offset_t)&ccmn_data_alloc.alloc_wait_cnt, FALSE);	\
+651c685
+< 
+---
+> #endif

@@ -1,0 +1,40 @@
+#
+# Copyright 1994, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+#
+# HISTORY
+# 28-Oct-95  Brian Bershad (bershad) at the University of Washington
+#	Added PmapExtern
+#
+# 02-Nov-95  Stefan Savage (savage) at the University of Washington
+#	Created
+#
+#
+# This should go away
+#
+Module (MachineMem)
+
+Interface(Protection)
+Module (PhysAddr)
+Interface (PhysAddrRep)
+Interface(PhysAddrPrivate)
+
+Interface(VirtAddr)
+
+Module(Translation)
+Interface(TranslationRep)
+Interface(TranslationPrivate)
+
+Module(VMError)
+
+
+DomainExport(SpinPublic,PhysAddr)
+DomainExport(SpinPublic,Translation)
+DomainExport(SpinPublic,VirtAddr)
+DomainExport(SpinPublic,MachineMem)
+DomainExport(SpinPublic,VMError)
+DomainExport(SpinPublic,Protection)
+DomainExport(SpinTrusted, PhysAddrPrivate)
+

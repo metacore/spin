@@ -1,0 +1,40 @@
+implementation("ProfileSupport")
+interface("ProfileExtern")
+
+Interface(ErrnoDep)
+Interface(SalExtern)
+Module(SalDep)
+
+Table(AddressPhysAddr, Integer, PhysAddr)
+Module("MemoryForSAL")
+
+c_source ("PmapActivate")
+
+Module(ULockForSAL)	
+interface(ULockForSALExtern)
+c_source(ULockForSAL)
+c_source(ULockSAL)
+c_source(select)
+
+% When building the profiled version of the compiler,
+% define CALL_GRAPH for the assembler. This will build
+% in the full profiling support.
+if equal(PROFILE, "TRUE")
+    m3_option("-X1@-DCALL_GRAPH@")
+end
+s_source("profile")
+
+
+% We compile the gprof.c file this way because the m3 program
+% might compile it with the -pg option which would lead
+% to an infinite recursion problem.
+if stale("gprof.o", "../src/sal/ALPHA_SPIN/gprof.c")
+  exec("cc -c ../src/sal/ALPHA_SPIN/gprof.c")
+end
+obj_file("gprof")
+
+
+DomainExport("SpinTrusted","ErrnoDep")
+DomainExport("SpinTrusted","SalDep")
+DomainExport("SpinTrusted","SalExtern")
+DomainExport("SpinTrusted","ULockForSAL")

@@ -1,0 +1,15 @@
+43c43
+< 
+---
+> #include <sal/alpha_osf/profile.h>
+81a82
+> #ifndef SPIN
+125a127,128
+> #endif
+> 		
+147a151,152
+> 	CALL_PROFILER_NO_GP	
+> 	
+840a846,847
+> 	CALL_PROFILER_NO_GP
+> 	

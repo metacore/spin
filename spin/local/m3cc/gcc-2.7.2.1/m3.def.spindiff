@@ -1,0 +1,50 @@
+*** m3.def	Wed Nov 13 14:49:47 1996
+--- ../gcc-2.6.x/m3.def	Sun Jul 21 13:37:16 1996
+***************
+*** 4,9 ****
+--- 4,27 ----
+  
+  /* Last modified on Mon Feb 10 16:54:48 PST 1992 by muller                   */
+  
++ /*
++  * HISTORY
++  * 20-Jul-96  Wilson Hsieh (whsieh) at the University of Washington
++  *	support for emitting debug info for ALIGNED FOR types
++  *
++  * 06-Feb-96  Wilson Hsieh (whsieh) at the University of Washington
++  *	changed M3_ALIGN_FAULT opcode to M3_CHECK_ALIGN
++  *
++  * 02-Feb-96  Wilson Hsieh (whsieh) at the University of Washington
++  *	add align_fault op for VIEW
++  *
++  * 25-Jan-96  Wilson Hsieh (whsieh) at the University of Washington
++  *	added support for CHECK_SIZE (size exception for VIEW)
++  *	any op added here must also be added into the wordlist data
++  *	  structure defined in m3.c
++  *
++  */
++ 
+  M3CG_OP ("begin_unit",			 M3_BEGIN_UNIT)
+  M3CG_OP ("end_unit",			 M3_END_UNIT)
+  M3CG_OP ("import_unit",			 M3_IMPORT_UNIT)
+***************
+*** 16,21 ****
+--- 34,40 ----
+  M3CG_OP ("declare_enum",		 M3_DECLARE_ENUM)
+  M3CG_OP ("declare_enum_elt",		 M3_DECLARE_ENUM_ELT)
+  M3CG_OP ("declare_packed",		 M3_DECLARE_PACKED)
++ M3CG_OP ("declare_aligned",		 M3_DECLARE_ALIGNED)
+  M3CG_OP ("declare_record",		 M3_DECLARE_RECORD)
+  M3CG_OP ("declare_field",		 M3_DECLARE_FIELD)
+  M3CG_OP ("declare_set",			 M3_DECLARE_SET)
+***************
+*** 140,145 ****
+--- 158,165 ----
+  M3CG_OP ("typecase_fault",		 M3_TYPECASE_FAULT)
+  M3CG_OP ("check_nil",			 M3_CHECK_NIL)
+  M3CG_OP ("check_lo",			 M3_CHECK_LO)
++ M3CG_OP ("check_size",			 M3_CHECK_SIZE)
++ M3CG_OP ("check_align",			 M3_CHECK_ALIGN)
+  M3CG_OP ("check_hi",			 M3_CHECK_HI)
+  M3CG_OP ("check_range",			 M3_CHECK_RANGE)
+  M3CG_OP ("check_eq",			 M3_CHECK_EQ)

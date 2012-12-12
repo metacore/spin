@@ -1,0 +1,3 @@
+
+script $USER/dev/myri/$target/myri.rc
+ifconfig myri0 198.48.78.$ipaddr3  198.48.78.255 255.255.255.0

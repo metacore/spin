@@ -1,0 +1,21 @@
+#
+# HISTORY
+# 21-Apr-96  Marc Fiuczynski (mef) at the University of Washington
+#	Took out arg to interface generic.  It was not needed.
+#
+
+proc CommandModule (nm) is
+  local cmd = nm & "Cmd"
+  % write("Checking command module ", nm, "\n")
+  Module(nm)
+  build_generic_intf (cmd, "Command", [], VISIBLE)
+  build_generic_impl (cmd, "Command", [nm])
+end
+
+proc commandModule (nm) is
+  local cmd = nm & "Cmd"
+  % write("Checking command module ", nm, "\n")
+  module(nm)
+  build_generic_intf (cmd, "Command", [], HIDDEN)
+  build_generic_impl (cmd, "Command", [nm])
+end

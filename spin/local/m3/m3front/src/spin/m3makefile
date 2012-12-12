@@ -1,0 +1,13 @@
+
+#
+# HISTORY
+# 20-Jul-96  Wilson Hsieh (whsieh) at the University of Washington
+#	added types dir
+#
+#
+
+include_dir (builtinOps)
+include_dir (builtinTypes)
+include_dir (exprs)
+include_dir (checks)
+include_dir (types)

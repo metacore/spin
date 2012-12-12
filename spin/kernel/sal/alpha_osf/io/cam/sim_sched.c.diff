@@ -1,0 +1,8 @@
+309a310,312
+> #if SPIN
+> 	if ( !sim_disable_timeout )
+> #endif
+2353a2357,2359
+> 
+>     SIM_PRINTD( NOBTL, NOBTL, NOBTL, CAMD_INOUT,
+> 	("end - sc=0x%x\n", sc));

@@ -1,0 +1,25 @@
+<html>
+<head>
+<title>Override All Methods</title>
+<!-- Changed by: Wilson Hsieh, 17-Jul-1996 -->
+</head>
+
+<body>
+<h1>Override All Methods</br></h1>
+
+The bad code differs from the good code in that some methods are not
+overridden.  All superclass methods that could break a subclass
+invariant must be overridden.  For example, in the following code
+<code>FileSystemDirectory.T</code> did not override the
+<code>init</code> from <code>Directory.T</code>. As a result, the
+following is possible:
+
+<pre>
+EVAL NARROW(NEW(FileSystemDirectory.T), Directory.T).init();
+</pre>
+
+</body>
+<p>
+<hr>Last changed <date>July 17, 1996</date> <br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

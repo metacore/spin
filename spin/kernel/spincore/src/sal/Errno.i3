@@ -1,0 +1,7 @@
+INTERFACE Errno;
+
+TYPE T      = INTEGER;
+EXCEPTION E(T);
+PROCEDURE Fmt(err: T): TEXT ;
+
+END Errno.

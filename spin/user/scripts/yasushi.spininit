@@ -1,0 +1,16 @@
+disp debug
+set home /spin/yasushi
+script -b
+script mount.rc
+nanny touch Sphinx
+#nanny touch Paging
+script X11.rc
+
+#set wish /afs/cs/project/wit/bin/wish4.0
+set wish /afs/cs/project/spin/garrett/tcl/tk4.1/unix/wish 
+set tkdir /afs/cs/project/spin/garrett/tcl
+#bg sphinx exec $wish $tkdir/typetree2.tk /proc/types
+#bg sphinx exec $wish $tkdir/vmgraph.tk /proc/vmstats
+bg sphinx exec $wish $tkdir/ps.tk /proc/sphinx
+
+

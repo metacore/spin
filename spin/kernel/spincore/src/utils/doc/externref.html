@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>Externalized References</title>
+</head>
+
+<body>
+<h1>
+<A name = "top">Externalized References</a> </br>
+</h1>
+<date>May 20, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2>
+
+SPIN kernel resources are accessed through capabilities.  SPIN implements 
+capabilities using pointers, which are statically prohibited by Modula-3 
+to be forged or dereferenced in a way inconsistent with their types.
+User-level applications often need to maintain a handle on a kernel
+resource.  However, due to Modula-3 type restrictions, pointers cannot
+be passed across the user-kernel boundary.
+<p>
+Therefore, SPIN provides the externalized reference utility.  Externalized
+references are a means of associating an integer value with a Modula-3
+pointer.  This integer value can then be passed to and from user-level
+applications without violating any language restrictions.  
+<p>
+Externalized reference associations usually occur on a per-application
+basis, but one can be instantiated by any kernel entity.
+
+<H2>Design and Implementation</H2> 
+
+<h3>Externalized References and SPIN</h3>
+Externalized references are a utility provided by the SPIN kernel.  
+Externalized references rely on no trusted SPIN resources which would 
+not be available to arbitrary extensions.  Similarly, no SPIN core 
+services rely upon externalized references.
+<p>
+Currently, each Space.T is instantiated with externalized reference
+facilities.  <a href="../../../../../user/vm/doc/index.html">Spaces</a> are statically 
+linked extensions which support user-level address spaces.
+
+<h3>Basic Model</h3>
+Externalized references are based on the Modula-3 <a href=
+"http://www.research.digital.com/SRC/m3sources/html/table/src/Table.ig.html">
+Table</a> generic.  The externalized reference table is a mapping from 
+integers to REFANYs, where the integer is an index into the table and the
+REFANY holds the kernel reference.  
+<p>
+When externalizing a reference, clients may specify an index into the 
+mapping table.  If that table entry is in use, the old reference will
+be overwritten.  If the client does not specify an index, an unused index 
+is automatically chosen.  
+<p>
+Access to capabilities stored in an externalized reference table is 
+controlled by the entity which holds the table.  For instance, with the
+current Space.T implementation, holding a capability to the Space.T also
+allows access to the externalized reference table through methods provided
+by the <a href=
+"../../../../../user/vm/space/src/Space.i3">
+Space.i3</a> interface.
+<p>
+An in-kernel reference can be externalized many times.  Ideally, to keep the
+size of the table manageable and efficient, a reference should not appear 
+twice in the same table.  That is, when externalizing a reference, it should
+first be determined that an existing Word.T externalized reference cannot be
+used.
+<p>
+An efficient way to perform this check would be a reverse table lookup.
+The Modula-3 <a href=
+"http://www.research.digital.com/SRC/m3sources/html/table/src/Table.ig.html">
+Table</a> generic does not provide a reverse lookup method.  Therefore, a
+reverse table can be maintained for each externalalized reference table.
+However, the reverse table evaluates hash functions on REFANY types.
+If the Modula-3 garbage collector then moves the referent and updates the
+REFANY, the hash function would evaluate differently.  Modula-3 strongrefs
+and weakrefs are used to defeat this problem.
+
+<H2>Using Externalized References</H2>
+
+<h3>Interface</h3>
+The interface to externalized references is <a href=
+"../ExternalRef.i3">
+ExternalRef.i3</a>.
+
+<h3>Examples</h3>
+
+
+Once an externalized reference table has been created, it is most frequently
+accessed with the Externalize() and Internalize() procedures.  Externalize()
+returns a Word.T externalized reference:
+<pre><b>
+
+IMPORT Foo, ExternalRef;
+...
+PROCEDURE ExampleOfExternalization(myExternTable: ExternalRef.T; ...) ...
+  VAR
+    fooref: REF Foo.T := NEW(REF Foo.T);
+    extref: Word.T;
+    ...
+  BEGIN
+    ...
+    extref := ExternalRef.Externalize(myExternTable, fooref);
+    ...
+  END ExampleOfExternalization;
+
+</b></pre>
+<p>
+Similarly, Internalize() returns a REFANY which can be narrowed into the
+appropriate type:
+<pre><b>
+
+IMPORT Foo, ExternalRef;
+...
+PROCEDURE ExampleOfInternalization(myExternTable: ExternalRef.T;
+                                   extref:        Word.T;
+                                   ... ) ...
+  VAR
+    fooref: REF Foo.T;
+    ...
+  BEGIN
+    ...
+    fooref := NARROW(ExternalRef.Interalize(myExternTable, extref), REF Foo.T);
+    ...
+  END ExampleOfInteralization;
+
+</b></pre>
+
+<H2>Remaining Issues</H2>
+
+An external reference table is currently part of each Space object.  
+Ideally, though, only those clients which need external reference tables
+should allocate them.  The external reference table can be removed from
+the Space object.  Then, clients which require externalized references 
+can create a customized address space representation which inherits from
+the general Space object.
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

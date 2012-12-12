@@ -1,0 +1,39 @@
+#nanny touch lfs
+#script ~/spin/user/fs/lfs/fsutils/setcurrentseg/ALPHA_SPIN/setcurrentseg.rc
+#script ~/spin/user/fs/lfs/fsutils/getsegdesc/ALPHA_SPIN/getsegdesc.rc
+#script ~/spin/user/fs/lfs/fsutils/getfreelist/ALPHA_SPIN/getfreelist.rc
+#makefs rz0b 1024 NoFormat
+#mount lfs rz0b /lfs
+#touch /lfs/LFSFile
+#bigwrite /lfs/LFSFile 100 abcdefg
+
+set HOME /afs/cs/project/spin/archive/tcl
+
+script ~/spin/user/scripts/X11.rc
+# console file
+
+nanny touch SocketRW
+telnet_shell 1000
+
+set wish /afs/cs/project/spin/machine/alpha_osf20/bin/wish4.0
+set tkdir /afs/cs/project/spin/archive/tcl
+set TCL_LIBRARY /afs/cs/project/spin/archive/tcl/lib
+set TK_LIBRARY /afs/cs/project/spin/archive/tcl/lib
+
+bg sphinx exec /usr/bin/X11/twm 
+bg sphinx exec $wish $tkdir/spincentral.tk
+
+bg sphinx exec $wish $tkdir/console.tk /proc/console
+
+#nanny touch Mount
+#nanny touch Paging
+#nanny touch Sphinx
+
+# test display to x and shared lib programs
+#bg sphinx exec /usr/bin/X11/xeyes  -geom +400+400 -fg blue -outline white -center grey
+
+#set wish /afs/cs/project/wit/bin/wish4.0
+#set tkdir /afs/cs/project/spin/garrett/tcl
+#bg sphinx exec $wish $tkdir/typetree2.tk /proc/types
+#bg sphinx exec $wish $tkdir/vmgraph.tk /proc/vmstats
+#bg sphinx exec $wish /spin/yasushi/vmgraph.tk /proc/vmstats

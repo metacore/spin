@@ -1,0 +1,19 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+% 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+%	Removed DomainExport because Module now does it automatically.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+DomainImport ("IpServer","user/net","ip",overridepath)
+
+Package("NetDb")
+CommandModule ("NetDb")
+Extension({})

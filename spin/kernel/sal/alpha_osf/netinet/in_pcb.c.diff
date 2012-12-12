@@ -1,0 +1,8 @@
+95a96,102
+> #ifdef SPIN
+> #undef IPPORT_RESERVED
+> #undef IPPORT_USERRESERVED
+> #define IPPORT_RESERVED 500
+> #define IPPORT_USERRESERVED 16*1024
+> #endif /* SPIN */
+> 

@@ -1,0 +1,26 @@
+<html>
+
+<head>
+<title>Spoofing Non-BRANDED Revelations</title>
+<!-- Changed by: Wilson Hsieh, 17-Jul-1996 -->
+</head>
+
+<body>
+<h1>Spoofing Non-BRANDED Revelations</br></h1>
+
+If revelations contain non-BRANDED types, then clients can state their
+own revelations.  Anyone can state the following revelation without
+importing the <code>Directory</code> interface.
+
+<pre>
+TYPE Directory.T <: OBJECT METHODS init() : PublicT; add(); END;
+</pre>
+
+All the malicious code needs is an interface that declares
+<code>Directory.T <: REFANY</code>.
+
+</body>
+<p>
+<hr>Last changed <date>July 17, 1996</date> <br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

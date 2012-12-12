@@ -1,0 +1,19 @@
+script lfs.rc
+gc reset
+echo *** LFS ***
+echo WARMUP
+# turn on frag
+gc frag
+script lfsbenchaux.rc
+script lfsbenchaux.rc
+script lfsbenchaux.rc
+
+echo REAL RUN
+script gcbenchstart
+script lfsbenchaux.rc
+script lfsbenchaux.rc
+script lfsbenchaux.rc
+script lfsbenchaux.rc
+script lfsbenchaux.rc
+script gcbenchend
+

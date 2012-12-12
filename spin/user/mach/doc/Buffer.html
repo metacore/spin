@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>Buffer Interface</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> Buffer Interface</a> </br>
+</h1>
+<date>May 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+The Buffer interface is largely stolen from the HTTPD buffer management
+scheme.  It provides a fast way of allocating memory by reusing instead
+of releasing memory which is no longer needed.  In this manner, 
+interaction with the allocator and interruption by the collector are
+avoided when possible.
+<p>
+The Buffer interface is <a href="../src/Buffer.i3">Buffer.i3</a>.
+
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

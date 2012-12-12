@@ -1,0 +1,114 @@
+#
+# Copyright 1994, 1995 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY 
+# 16-Jul-97  Tian Fung Lim (tian) at the University of Washington
+#	Added pfm pseudo device
+#
+# 29-May-96  Charles Garrett (garrett) at the University of Washington
+#	Added THIS_CONFIG option which is useful for pointing to include files.
+#
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Split into SPIN and SPIN_PROF targets for unprofiled and profiled
+#	 versions of sal, respectively.
+#
+#s11-becker  added PCI devices and psuedo devices for DEC2100_A50
+#
+# 21-Sep-95  Stefan Savage (savage) at the University of Washington
+#	Created to define SPIN kernel
+#
+# *****************************************************************
+# *                                                               *
+# *    Copyright (c) Digital Equipment Corporation, 1991, 1994    *
+# *                                                               *
+# *   All Rights Reserved.  Unpublished rights  reserved  under   *
+# *   the copyright laws of the United States.                    *
+# *                                                               *
+# *   The software contained on this media  is  proprietary  to   *
+# *   and  embodies  the  confidential  technology  of  Digital   *
+# *   Equipment Corporation.  Possession, use,  duplication  or   *
+# *   dissemination of the software and media is authorized only  *
+# *   pursuant to a valid written license from Digital Equipment  *
+# *   Corporation.                                                *
+# *                                                               *
+# *   RESTRICTED RIGHTS LEGEND   Use, duplication, or disclosure  *
+# *   by the U.S. Government is subject to restrictions  as  set  *
+# *   forth in Subparagraph (c)(1)(ii)  of  DFARS  252.227-7013,  *
+# *   or  in  FAR 52.227-19, as applicable.                       *
+# *                                                               *
+# *****************************************************************
+# 
+ident		"SPIN"
+
+options		MACH
+options		OSF
+options		COMPAT_43
+options		KDEBUG
+options		SPIN
+options		TTD
+options		STAT_TIME
+options		LABELS
+options		BSD_TTY
+options		PROFILING
+
+#
+makeoptions	CDEBUGOPTS="-g3"
+makeoptions	CCOPTS="-DLANGUAGE_C"
+makeoptions	BUILD_DIR="ALPHA_SPIN_REF"
+makeoptions	THIS_CONFIG="SPIN_REF"
+
+#
+# Max number of processors in the system (DO NOT CHANGE)
+#
+processors	1
+
+#
+# Special options (see configuring the kernel chapter
+# in the Guide to System Administration)
+#
+cpu		"DEC3000_500"
+cpu		"DEC3000_300"
+cpu		"DEC2100_A50"
+
+#
+# Stuff to shut config up
+#
+timezone        0 dst 0
+maxusers        32
+max_vnodes      10000
+min_free_vnodes 150
+options		UFS
+
+machine		alpha
+
+config		spin_kernel	swap generic
+
+# Turbo Channel
+bus             tc0        at nexus?    
+callout after_c "mkdata tc"
+controller      scc0       at tc0       slot  ? vector    sccintr 
+controller      ln0        at tc0       slot  ? vector    lnintr 
+controller      fb0        at tc0       slot  ? vector    fbint 
+scs_sysid	1
+
+#	AlphaStation
+bus		pci0       at nexus?
+callout after_c "mkdata pci"
+bus		isa0       at pci0	slot ?
+callout after_c "mkdata isa"
+controller	gpc0       at isa0	slot ? vector	gpcintr
+controller	ace0       at isa0	slot ? vector	aceintr
+controller	ace1       at isa0	slot ? vector	aceintr
+controller	tu0        at pci0	slot ? vector	tuintr
+controller	tga0       at pci0	slot ? vector	tgaintr
+
+#
+# Max number of processors in the system (DO NOT CHANGE)
+#
+pseudo-device	cpus	1
+pseudo-device	ws
+pseudo-device	ether
+pseudo-device	pfm
+

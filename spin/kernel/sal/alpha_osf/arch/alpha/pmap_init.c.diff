@@ -1,0 +1,13 @@
+681c681,686
+< 
+---
+> #ifdef SPIN
+> 	/* 128MB, 9 2nd-level PTEs.  Cruder, less effective hack (savage) */
+> 	/* Should ultimately replace this with boot-smart allocator.
+> 	   And when heap is demand mapped */
+> 	high_water = virtual_avail + (1L << 27);
+> #else /* SPIN */
+684c689
+< 
+---
+> #endif /* SPIN */

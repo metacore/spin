@@ -1,0 +1,32 @@
+#
+# HISTORY
+# 07-May-96  Stefan Savage (savage) at the University of Washington
+#	Make PageFaultTest again
+#
+# 21-Apr-96  Emin Gun Sirer (egs) at the University of Washington
+#	Created.
+#
+# 17-Apr-96  Przemek Pardyak (pardy) at the University of Washington
+#	Created
+# 
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("UserSpaceThread","user/thread","threadcore",overridepath)
+DomainImport("Measure","user","measure",overridepath)
+DomainImport ("Mach","user/vm","mach",overridepath)
+DomainImport ("VMCore","user/vm","vmcore",overridepath)
+DomainImport ("Space","user/vm","space",overridepath)
+
+m3_option("-keep")
+
+Package("Benchmark")
+CommandModule("Benchmark")
+Module("PageFaultTest")
+Module("MachTest")
+Module("DispTime")
+Module("Sirpa")
+
+Extension({})

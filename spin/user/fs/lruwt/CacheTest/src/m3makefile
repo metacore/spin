@@ -1,0 +1,18 @@
+# HISTORY
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Switched to simpler spindle build functions.
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+# DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Device", "user/dev","devcore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("FileSystem","user/fs","fscore",overridepath)
+
+Package("LruCmds")
+Interface("LruCmds")
+
+CommandModule("CacheTest")
+Extension({})
+

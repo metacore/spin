@@ -1,0 +1,351 @@
+24a25,29
+>  * 29-May-96  Charles Garrett (garrett) at the University of Washington
+>  *	Changed gmon.out file format to use a sparse representation
+>  *	instead of a dense one. The range of possible addresses in SPIN
+>  *	was too large to use the dense one.
+>  *
+115d118
+< #	    ifdef DEBUG
+117d119
+< #	    else /* not DEBUG */
+119d120
+< #	    endif /* DEBUG */
+179,187d179
+< 	 *	how many ticks per second?
+< 	 *	if we can't tell, report time in ticks.
+< 	 */
+<     hz = hertz();
+<     if (hz == 0) {
+< 	hz = 1;
+< 	fprintf(stderr, MSGSTR(TIMETICKS, "time is in ticks, not seconds\n"));
+<     }
+< 	/*
+207,210d198
+< 	 *	assign samples to procedures
+< 	 */
+<     asgnsamples();
+< 	/*
+228a217,219
+> 
+> #define OVERHEAD_CYCLES 0
+> 
+230,232c221,222
+<      *	information from a gmon.out file is in two parts:
+<      *	an array of sampling hits within pc ranges,
+<      *	and the arcs.
+---
+>      *	information from a gmon.out file is just
+>      *	the arcs themselves.
+238,239c228,240
+<     FILE		*openpfile();
+<     struct rawarc	arc;
+---
+>     struct spin_arc	arc;
+>     long                rate;
+> 
+>     if((pfile = fopen(filename, "r")) == NULL) {
+> 	perror(filename);
+> 	done();
+>     }
+> 
+>     if (fread(&rate, sizeof(long), 1, pfile) != 1) {
+> 	perror("Could not read clock rate");
+> 	done();
+>     }
+>     hz = (double) rate;
+241,242d241
+<     pfile = openpfile(filename);
+<     readsamples(pfile);
+244,245c243,244
+< 	 *	the rest of the file consists of
+< 	 *	a bunch of <from,self,count> tuples.
+---
+> 	 *	the file consists of
+> 	 *	a bunch of <from,self,count,cycles> tuples.
+248c247,250
+< #	ifdef DEBUG
+---
+> 	/* Adjust for profiling overhead. */
+> 	arc.cycles -= arc.count * OVERHEAD_CYCLES;
+> 
+> 	totime += arc.cycles;
+250,251c252,253
+< 		printf( "[getpfile] frompc 0x%x selfpc 0x%x count %d\n" ,
+< 			arc.raw_frompc , arc.raw_selfpc , arc.raw_count );
+---
+> 		printf( "[getpfile] frompc 0x%lx selfpc 0x%lx count %ld cyc %ld total %lf\n" ,
+> 			arc.frompc , arc.selfpc , arc.count, arc.cycles, totime);
+253d254
+< #	endif /* DEBUG */
+257c258
+< 	if (arc.raw_count != 0)		/* don't tally empty arcs */
+---
+> 	if (arc.count != 0)		/* don't tally empty arcs */
+263,307d263
+< FILE *
+< openpfile(filename)
+<     char *filename;
+< {
+<     struct hdr	tmp;
+<     FILE	*pfile;
+< 
+<     if((pfile = fopen(filename, "r")) == NULL) {
+< 	perror(filename);
+< 	done();
+<     }
+<     if(fread(&tmp, sizeof(struct hdr), 1, pfile) != 1) {
+<        fprintf(stderr, MSGSTR(UNEXPEOF2, 
+< 		"%s: unexpected EOF reading header of %s\n"),whoami,filename);
+< 	done();
+<     }
+<     if ( s_highpc != 0 && ( tmp.lowpc != h.lowpc ||
+< 	 tmp.highpc != h.highpc || tmp.ncnt != h.ncnt ) ) {
+< 	fprintf(stderr,
+< 		MSGSTR(INCOMPAT, "%s: incompatible with first gmon file\n"),
+< 		filename);
+< 	done();
+<     }
+<     h = tmp;
+<     s_lowpc = (unsigned long) h.lowpc;
+<     s_highpc = (unsigned long) h.highpc;
+<     lowpc = (unsigned long)h.lowpc / sizeof(UNIT);
+<     highpc = (unsigned long)h.highpc / sizeof(UNIT);
+<     sampbytes = h.ncnt - sizeof(struct hdr);
+<     nsamples = sampbytes / sizeof (UNIT);
+< #   ifdef DEBUG
+< 	if ( debug & SAMPLEDEBUG ) {
+< 	    printf( "[openpfile] hdr.lowpc 0x%x hdr.highpc 0x%x hdr.ncnt %d\n",
+< 		h.lowpc , h.highpc , h.ncnt );
+< 	    printf( "[openpfile]   s_lowpc 0x%x   s_highpc 0x%x\n" ,
+< 		s_lowpc , s_highpc );
+< 	    printf( "[openpfile]     lowpc 0x%x     highpc 0x%x\n" ,
+< 		lowpc , highpc );
+< 	    printf( "[openpfile] sampbytes %d nsamples %d\n" ,
+< 		sampbytes , nsamples );
+< 	}
+< #   endif /* DEBUG */
+<     return(pfile);
+< }
+< 
+309c265
+<     struct rawarc	*rawp;
+---
+>     struct spin_arc	*rawp;
+314,315c270,271
+<     parentp = nllookup( rawp -> raw_frompc );
+<     childp = nllookup( rawp -> raw_selfpc );
+---
+>     parentp = nllookup( rawp -> frompc );
+>     childp = nllookup( rawp -> selfpc );
+317d272
+< #   ifdef DEBUG
+321d275
+< #endif	/* DEBUG */
+331,332c285,286
+<     childp -> ncall += rawp -> raw_count;
+< #   ifdef DEBUG
+---
+>     childp -> ncall += rawp -> count;
+>     childp -> time += rawp -> cycles;
+335c289
+< 		    parentp -> name , childp -> name , rawp -> raw_count );
+---
+> 		    parentp -> name , childp -> name , rawp -> count );
+337,338c291
+< #   endif /* DEBUG */
+<     addarc( parentp , childp , rawp -> raw_count );
+---
+>     addarc( parentp , childp , rawp -> count, rawp -> cycles );
+349c302
+<     struct rawarc arc;
+---
+>     struct spin_arc arc;
+357,370d309
+<      * dump the header; use the last header read in
+<      */
+<     if ( fwrite( &h , sizeof h , 1 , sfile ) != 1 ) {
+< 	perror( sumfile );
+< 	done();
+<     }
+<     /*
+<      * dump the samples
+<      */
+<     if (fwrite(samples, sizeof (UNIT), nsamples, sfile) != nsamples) {
+< 	perror( sumfile );
+< 	done();
+<     }
+<     /*
+375,377c314,316
+< 	    arc.raw_frompc = arcp -> arc_parentp -> value;
+< 	    arc.raw_selfpc = arcp -> arc_childp -> value;
+< 	    arc.raw_count = arcp -> arc_count;
+---
+> 	    arc.frompc = arcp -> arc_parentp -> value;
+> 	    arc.selfpc = arcp -> arc_childp -> value;
+> 	    arc.count = arcp -> arc_count;
+382d320
+< #	    ifdef DEBUG
+384,385c322,323
+< 		    printf( "[dumpsum] frompc 0x%x selfpc 0x%x count %d\n" ,
+< 			    arc.raw_frompc , arc.raw_selfpc , arc.raw_count );
+---
+> 		    printf( "[dumpsum] frompc 0x%lx selfpc 0x%lx count %d\n" ,
+> 			    arc.frompc , arc.selfpc , arc.count );
+387d324
+< #	    endif /* DEBUG */
+405,541d341
+< readsamples(pfile)
+<     FILE	*pfile;
+< {
+<     register i;
+<     UNIT	sample;
+<     
+<     if (samples == 0) {
+< 	samples = (UNIT *) calloc(sampbytes, sizeof (UNIT));
+< 	if (samples == 0) {
+< 	    fprintf(stderr,
+< 		    MSGSTR(NOROOM, "%s: No room for %d sample pc's\n"),
+< 		    whoami, sampbytes / sizeof (UNIT));
+< 	    done();
+< 	}
+< 	/* First file: Read in entire sample buffer */
+< 	i = fread(samples, sizeof (UNIT), nsamples, pfile);
+<     }
+<     else { /* Additional files: Add samples to existing buffer */
+<         for (i = 0; i < nsamples; i++) {
+< 	    fread(&sample, sizeof (UNIT), 1, pfile);
+< 	    if (feof(pfile))
+< 		    break;
+< 	    samples[i] += sample;
+<         }
+<     }
+<     if (i != nsamples) {
+< 	fprintf(stderr,
+< 		MSGSTR(UNEXPEOF,
+< 		       "%s: unexpected EOF after reading %d/%d samples\n"),
+< 		whoami, --i, nsamples);
+< 	done();
+<     }
+< }
+< 
+< /*
+<  *	Assign samples to the procedures to which they belong.
+<  *
+<  *	There are three cases as to where pcl and pch can be
+<  *	with respect to the routine entry addresses svalue0 and svalue1
+<  *	as shown in the following diagram.  overlap computes the
+<  *	distance between the arrows, the fraction of the sample
+<  *	that is to be credited to the routine which starts at svalue0.
+<  *
+<  *	    svalue0                                         svalue1
+<  *	       |                                               |
+<  *	       v                                               v
+<  *
+<  *	       +-----------------------------------------------+
+<  *	       |					       |
+<  *	  |  ->|    |<-		->|         |<-		->|    |<-  |
+<  *	  |         |		  |         |		  |         |
+<  *	  +---------+		  +---------+		  +---------+
+<  *
+<  *	  ^         ^		  ^         ^		  ^         ^
+<  *	  |         |		  |         |		  |         |
+<  *	 pcl       pch		 pcl       pch		 pcl       pch
+<  *
+<  *	For the vax we assert that samples will never fall in the first
+<  *	two bytes of any routine, since that is the entry mask,
+<  *	thus we give call alignentries() to adjust the entry points if
+<  *	the entry mask falls in one bucket but the code for the routine
+<  *	doesn't start until the next bucket.  In conjunction with the
+<  *	alignment of routine addresses, this should allow us to have
+<  *	only one sample for every four bytes of text space and never
+<  *	have any overlap (the two end cases, above).
+<  */
+< asgnsamples()
+< {
+<     register int	j;
+<     UNIT		ccnt;
+<     double		time;
+<     unsigned long	pcl, pch;
+<     register int	i;
+<     unsigned long	overlap;
+<     unsigned long	svalue0, svalue1;
+<     struct nl **dEnl;
+< 
+<     /* read samples and assign to namelist symbols */
+<     scale = highpc - lowpc;
+<     scale /= nsamples;
+<     alignentries();
+<     for (i = 0, j = 1; i < nsamples; i++) {
+< 	ccnt = samples[i];
+< 	if (ccnt == 0)
+< 		continue;
+< 	pcl = lowpc + scale * i;
+< 	pch = lowpc + scale * (i + 1);
+< 	time = ccnt;
+< #	ifdef DEBUG
+< 	    if ( debug & SAMPLEDEBUG ) {
+< 		printf( "[asgnsamples] pcl 0x%x pch 0x%x ccnt %d\n" ,
+< 			pcl , pch , ccnt );
+< 	    }
+< #	endif /* DEBUG */
+< 	totime += time;
+< 	for (j = j - 1; j < nname; j++) {
+< 	    svalue0 = nl[j].svalue;
+< 	    svalue1 = nl[j+1].svalue;
+< 		/*
+< 		 *	if high end of tick is below entry address, 
+< 		 *	go for next tick.
+< 		 */
+< 	    if (pch < svalue0)
+< 		    break;
+< 		/*
+< 		 *	if low end of tick into next routine,
+< 		 *	go for next routine.
+< 		 */
+< 	    if (pcl >= svalue1)
+< 		    continue;
+< 	    overlap = min(pch, svalue1) - max(pcl, svalue0);
+< 	    if (overlap > 0) {
+< #		ifdef DEBUG
+< 		    if (debug & SAMPLEDEBUG) {
+< 			printf("[asgnsamples] (0x%x->0x%x-0x%x) %s gets %f ticks %d overlap\n",
+< 				nl[j].value/sizeof(UNIT), svalue0, svalue1,
+< 				nl[j].name, 
+< 				overlap * time / scale, overlap);
+< 		    }
+< #		endif /* DEBUG */
+< 		nl[j].time += overlap * time / scale;
+< 	    }
+< 	}
+<     }
+<     /* Delete times for routines excluded by default, e.g. mcount */
+<     for(i = 0; defaultEnl[i]; i++)
+< 	totime -= defaultEnl[i]->time;
+< #   ifdef DEBUG
+< 	if (debug & SAMPLEDEBUG) {
+< 	    printf("[asgnsamples] totime %f\n", totime);
+<             for(i = 0; defaultEnl[i]; i++)
+< 	        printf("[asgnsamples] %s time %f\n",defaultEnl[i]->name, 
+< 		   defaultEnl[i]->time);
+< 	}
+< #   endif /* DEBUG */
+< }
+< 
+570,571d369
+<     unsigned long	bucket_of_entry;
+<     unsigned long	bucket_of_code;
+574,585c372
+< 	nlp -> svalue = nlp -> value / sizeof(UNIT);
+< 	bucket_of_entry = (nlp->svalue - lowpc) / scale;
+< 	bucket_of_code = (nlp->svalue + UNITS_TO_CODE - lowpc) / scale;
+< 	if (bucket_of_entry < bucket_of_code) {
+< #	    ifdef DEBUG
+< 		if (debug & SAMPLEDEBUG) {
+< 		    printf("[alignentries] pushing svalue 0x%x to 0x%x\n",
+< 			    nlp->svalue, nlp->svalue + UNITS_TO_CODE);
+< 		}
+< #	    endif /* DEBUG */
+< 	    nlp->svalue += UNITS_TO_CODE;
+< 	}
+---
+> 	nlp -> svalue = nlp -> value;

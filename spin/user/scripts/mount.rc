@@ -1,0 +1,26 @@
+#
+# HISTORY
+# 16-Jul-96  Brian Bershad (bershad) at the University of Washington
+#	Created.
+#
+
+#
+# Mount all the file systems we think we'll need.
+#
+
+nanny touch Network
+echo -- mounting network file systems.
+mkdir /afs
+mount nfs daffy:/afs /afs
+mkdir /etc
+mount nfs lace:/nfs_spin/mef/etc /etc
+set home /afs/cs.washington.edu/project/spin/$user
+
+echo -- Mounting local file systems
+nanny touch $DISKDRV
+mkdir /usr
+mkdir /tmp
+mount ufs $DISKDEV$USRDEV /usr
+set TMPDEV h
+mount ufs $DISKDEV$TMPDEV /tmp
+

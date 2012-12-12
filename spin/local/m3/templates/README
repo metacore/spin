@@ -1,0 +1,12 @@
+
+The templates in this directory are used to compile the compiler, which
+is compiled using the pristine compiler.
+
+The following files in this directory were copied to ../spin-templates:
+
+ALPHA_OSF
+CLEANUP
+COMMON
+PLATFORMS
+POSIX
+

@@ -1,0 +1,25 @@
+# HISTORY
+# 16-May-96  Brian Bershad (bershad) at the University of Washington
+#	Created.
+#
+#
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SecurityPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+
+Package("ExprCmds")
+Module("ExprCmds")
+
+CommandModule("BG")
+CommandModule("Sort")
+CommandModule("Repeat")
+CommandModule("Priv")
+
+Extension({})
+
+
+

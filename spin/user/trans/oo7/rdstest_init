@@ -1,0 +1,5 @@
+#!/bin/csh
+echo CLEANING UP
+rm -f log_file rds_data swap*
+echo CREATING LOG
+rvmutl < input.rvmutl.rdstest

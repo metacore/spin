@@ -1,0 +1,16 @@
+script ~/spin/user/blur/$target/blur.rc
+
+# reset collection count
+gc frag
+gc reset 
+blur n 40 live 2500000 dist 16 20000
+
+script gcbenchstart
+blur n 100 live 2500000 dist 16 20000
+script gcbenchend
+#gcb n 100 live 2500000 dist 16 15000
+#gcb n 50 live 2500000 dist 16 15000
+#gcb n 75 live 2500000 dist 16 15000
+#gcb n 85 live 2500000 dist 16 15000
+#gcb n 200 live 2500000 dist 16 15000
+

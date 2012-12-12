@@ -1,0 +1,5 @@
+#!/bin/csh
+echo CLEANING UP
+rm -f log_file OO7_data_file* swapfile*
+echo CREATING LOG
+rvmutl < input.rvmutl.large

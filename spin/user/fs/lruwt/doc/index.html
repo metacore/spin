@@ -1,0 +1,42 @@
+<html> <head>
+<title>LRU-WT file system</title>
+</head>
+
+<body>
+<h1>LRU-WT file system</h1>
+
+<h2>What is it?</h2>
+
+The LRU-WT file system is a <a href="stack.html">stackable</a> file
+system that provides a least-recently-used write-through (LRU-WT)
+cache to any SPIN file system.
+
+<h2>How does it work?</h2>
+
+It doesn't, yet.
+
+<h2>How <i>will</i> it work, then?</h2>
+
+In the current design, you will mount a LRU-WT file system much like
+any other file system, only instead of giving it the name of a
+physical device to mount, you give it the name of a directory to
+"stack" onto.
+
+<p>
+
+For example, typing 
+<code>
+mount lruwt /cache /sampledir 
+</code>
+will create a LRU-WT file system at <tt>cache</tt>.  It will be
+stacked on the directory <tt>sampledir</tt>.  You can then bang away
+at <tt>cache</tt> to your heart's content.  It will attempt to satisfy
+all read requests from its memory pool.  If it can't, it will pass the
+request on to <tt>sampledir</tt> and stash the answer away in the cache.
+
+<hr>
+<address><a href="http://www.cs.washington.edu:/homes/dewey/">Brian K. Dewey &lt;dewey@cs.washington.edu&gt;</a></address>
+<!-- hhmts start -->
+Last modified: Tue Dec 17 20:35:19 1996
+<!-- hhmts end -->
+</body> </html>

@@ -1,0 +1,11 @@
+# HISTORY
+# 16-Dec-97  Przemek Pardyak (pardy) at the University of Washington
+#	Created.
+#
+
+#
+# mount an existing default lfs partition
+#
+
+mkdir /lfs
+mount lfs lfsextent /lfs

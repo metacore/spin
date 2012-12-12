@@ -1,0 +1,29 @@
+#
+# init.ALPHA_SPIN is interpretted by the Init extension 
+# after the SPIN kernel is up and running.
+#
+# Init parsing is limited to the machine generated rc files and lines 
+#  starting with "script ~"
+#
+# Default is http
+# boot http 
+# boot nfs
+# boot tftp
+script ~/spin/user/vm/vmcore/ALPHA_SPIN/vmcore.rc
+script ~/spin/user/vm/space/ALPHA_SPIN/space.rc
+script ~/spin/user/dev/devcore/ALPHA_SPIN/devcore.rc
+script ~/spin/user/dev/console/ALPHA_SPIN/console.rc
+script ~/spin/user/fs/fscore/ALPHA_SPIN/fscore.rc
+script ~/spin/user/fs/tmpfs/ALPHA_SPIN/tmpfs.rc
+script ~/spin/user/shell/shellcore/ALPHA_SPIN/shellcore.rc
+# need to be loaded after shellcore.  stcpfs relies on it.
+# enable tftp rather than stcpfs if you want to use tftp.
+script ~/spin/user/fs/stcpfs/ALPHA_SPIN/stcpfs.rc
+#script ~/spin/user/fs/tftp/ALPHA_SPIN/tftp.rc
+script ~/spin/user/shell/basiccmds/ALPHA_SPIN/basiccmds.rc
+script ~/spin/user/shell/expr/ALPHA_SPIN/expr.rc
+script ~/spin/user/shell/utils/ALPHA_SPIN/utils.rc
+script ~/spin/user/thread/threadcore/ALPHA_SPIN/threadcore.rc
+script ~/spin/user/thread/exec/ALPHA_SPIN/exec.rc
+script ~/spin/user/shell/consoleshell/ALPHA_SPIN/consoleshell.rc
+#SMURT: script ~/spin/user/autoexec/ALPHA_SPIN/autoexec.rc

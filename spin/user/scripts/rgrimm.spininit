@@ -1,0 +1,18 @@
+echo Hab' in einer stern-lodernden Nacht...
+
+set cure ~/spin/user/security/$target/security.rc
+set death ~/spin/user/trans/rvmbench/spin/rvmbench
+set am ~/spin/user/regress/security/accessmode/$target/accessmode.rc
+set sm ~/spin/user/regress/security/manager/$target/manager.rc
+set dyn ~/spin/user/regress/security/dyncontrol/$target/dyncontrol.rc
+
+echo ... SPIN um's Leben gebracht.
+
+# script network.rc
+# script nfs.rc
+# script $cure
+# spy reset
+
+# security nfs
+# spy dump
+# echo ready

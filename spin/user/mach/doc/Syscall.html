@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>Syscall Interface</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> Syscall Interface</a> </br>
+</h1>
+<date>March 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+The Syscall interface and module are the main drivers behind the OSF/1
+UNIX extensions.  The Syscall module consists largely of a case statement
+based on syscall numbers.  Requests which are not found in the case
+statement are assumed to be for the OSF/1 server.
+<p>
+When an appropriate syscall number is located in the case statement, a
+procedure is called which handles the system call.  Currently, that 
+procedure is responsible for argument marshalling.
+<p>
+Syscall requests are caught in as SPIN events.  At link time, the 
+Syscall module registers an event handler and guard with the SPIN dispatcher.
+<p>
+The Syscall interface is 
+<a href="../src/Syscall.i3">
+Syscall.i3</a>.
+
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

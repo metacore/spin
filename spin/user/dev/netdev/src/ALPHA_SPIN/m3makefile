@@ -1,0 +1,3 @@
+
+interface("MbufExtern")
+Module("MbufDep")

@@ -1,0 +1,199 @@
+<html>
+<head>
+<title>Universal System Call Extension</title>
+</head>
+
+<body>
+<h1>
+<A name = "top">Universal System Call Extension</a> </br>
+</h1>
+<date>Wed May 22 10:21:35 1996</date>
+</br>
+Brian Bershad & Yasushi Saito
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2>
+
+<dfn>
+<a href="../src/USyscall.i3">USyscall</a></dfn>,
+the universal system call extension, provides
+primitive services that all user space programs might use.
+
+The usyscall services can be grouped into the below 5 categories.
+
+<ol>
+  <li> Utility services, like printing string on the screen.
+  <li> Identity services, like getting the
+<!href="memory"><a href="../../../kernel/spincore/src/memory/doc/index.html">space</a> and thread ID.
+  <li> <!href="domain"><a href="../../../kernel/spincore/src/domain/doc/index.html">Domain</a> services;
+       creating and manipulating a domain. <li> Termination; terminate yourself.
+  <li> Rendezvous service; bootstrap other systemcall extension by yourself.
+</ol>
+ and
+
+The usyscall extension is meant to be a static extension; it is
+installed into the system when it starts up. All user space programs
+may assume that usyscall is present when they start up.
+
+<a name="services">
+<h2> List of Services </h2>
+
+<h3> Utilities </h3>
+
+<dl>
+  <dt><pre>Putc(c: CHAR);</pre>
+  <dt><pre>Putx(x: Word.T);</pre>
+  <dd> <code>Putc</code> puts a character on the screen.
+       <code>Putx </code> puts a hexadecimal representation of the
+       value <var>x</var> on the screen.
+  <dt> <pre>System(<*AS CTEXT*>command : TEXT) : ErrorCode;</pre>
+  <dd> This systemcall calls a shell command.
+</dl>
+
+<h3> Identity </h3>
+<dl>
+  <dt><pre>SpaceSelf() : Space.T</pre>
+  <dt><pre>ThreadSelf() : Strand.T</pre>
+  <dd> These two get the identity. The return values are
+       <!href="externref"><a href="../../../kernel/spincore/src/utils/doc/externref.html">externalized</a>
+	 and returned to the user space app.
+       
+  <dt> <pre>SpaceDestroy(s : Space.T)</pre>
+  <dt> <pre>StrandDestroy(s : Strand.T)</pre>
+  <dd> Destroy the space or strand.
+       
+  <dt><pre>Close(xref : Word.T) : ErrorCode</pre>
+  <dd> Closes the external reference <var>xref</var>
+</dl>
+       
+<h3> Domain </h3>
+<dl>
+  <dt> <pre>DomainLookup(<*AS CTEXT*>name : TEXT;): Domain.T;</pre>
+  <dt><pre>DomainCreate(<*AS CTEXT*>name : TEXT): Domain.T;</pre>
+  <dt><pre>DomainRegister(<*AS CTEXT*>name : TEXT; d: Domain.T): ErrorCode;</pre>
+  <dt>
+<pre>DomainLoad (d     : Domain.T;  
+                 <*AS VAR %s : INTEGER! void *%s *> object: Word.T;
+                 size  : INTEGER): ErrorCode;
+     </pre>
+  <dt><pre>DomainLink(domain, extern: Domain.T): ErrorCode;</pre>
+  <dt><pre>DomainInitialize(domain: Domain.T): ErrorCode;</pre>
+  <dt><pre>DomainDestroy(domain: Domain.T): ErrorCode;</pre>
+  <dd> They are all calls to <!href="domain"><a href="../../../kernel/spincore/src/domain/doc/index.html">domain</a>.
+       Strings like <code>&lt;*AS CTEXT*&gt;</code> are directives
+       to <!href="sieg"><a href="../../../local/sieg/doc/index.html">Sieg</a>.
+</dl>
+
+<h3> Rendezvous</h3>
+
+<dl>
+  <dt><pre>Rendezvous(<*AS CTEXT*>simpleName: TEXT; 
+		     key: REFANY;  (* Protect the rendezvous, NIL if any *)
+		     VAR reply: REFANY): ErrorCode;
+       </pre>
+  <dd> This service is used to autoload a systemcall extension.
+       <var>simpleName</var> specifies the name of the extension, which
+       is typically a <code>Brand</code> string defined in the extension.
+       (ex. <code>"Dlib"</code> in case of Dlib extension).<br>
+
+       I'm not sure about the use of <var>key</var> and <var>reply</var>.
+       At least it's not used currently. Ask
+       <a href="mailto:bershad@cs.washington.edu">Brian</a> about them.
+
+       This service actually does <strong>nothing</strong>.
+       Systemcall extensions should install its own handler to
+       <code>USyscall.Rendezvous</code>. The handler typically
+       installs the system call handler for the caller.<br>
+
+       Sounds confusing. Here's how a Dlib application starts up.
+
+       <ol>
+	 <li> Dlib user app starts up. At this point, USyscall is
+	      loaded and installed, but dlib is not loaded. 
+	 <li> The user app calls <code>USyscall_DomainLookup("Dlib")</code>.
+	      This calls the <!href="ns"><a href="../../../user/ns/doc/index.html">name server</a>, and since
+	      dlib isn't loaded, <!href="nanny"><a href="../../../user/nanny/doc/index.html">nanny</a> is called to
+	      load dlib.
+	 <li> Dlib is loaded. Dlib <strong>does not</strong> installs
+	      the system call handler at startup. However, it installs
+	      a handler for the <code>USyscall.Rendezvous</code> event.
+
+	 <li> Control goes back to the user app, and the user app then
+	      calls <code>USyscall_Rendezvous("Dlib")</code>
+	 <li> <code>Dlib.Rendezvous</code> is called in response to
+	      <code>USyscall.Rendezvous</code> event.
+	      This procedure installs a handler for the
+	      <code>MachineTrap.Syscall</code> event. As a
+	      <!href="auth"><a href="../../../kernel/spincore/src/auth/doc/index.html">authorizer key</a>, the triple
+
+	      <center>&\lt; user space thread id, min proc ID, max proc ID
+	      &\gt;</center>
+
+	      is passed to the <!href="dispatcher"><a href="../../../kernel/spincore/src/dispatch/doc/index.html">dispatcher</a>.
+	 <li> Dispatcher installs the systemcall handler along with
+	      an imposed guard that checks the
+	      systemcall number range and thread
+	      identity upon each systemcall event.
+
+       </ol>
+</dl>
+
+<H2>Using USyscall From User Space</H2>
+
+USyscall is described using <!href="sieg"><a href="../../../local/sieg/doc/index.html">Sieg</a>.
+There is an assembly procedure for each of the services described in
+the <a href="#services">previous section</a>. The name of the procedure
+is <code>USyscall_</code> prepended to the original service name.
+The parameter types obey the sieg rule.
+Below are examples of user side procedures.
+<!-- SPIN DOC EXPORT SECTION IGNORE START -->
+See <!href="USyscallUser.s"><a href="../../../user/usyscall/ALPHA_SPIN/USyscallUser.s">USyscallUser.s</a> also.
+<!-- SPIN DOC EXPORT SECTION IGNORE END -->
+
+<pre>
+void USyscall_Putc(char x);
+long USyscall_System(char *command);
+long USyscall_Rendezvous(char *simpleName, long key, long *reply);
+</pre>
+
+The most interesting use of USyscall is loading a systemcall extension
+on demand. Here's the example user bootstrap code.
+
+<b><pre>
+#define SPIN_NIL_REF (unsigned long)(0x7fffffffffffffff)
+
+__Dlib_BootPrintString(char *s)
+{
+    while (*s) {
+	USyscall_Putc(*s);
+	s++;
+    }
+}
+__Dlib_Boot()
+{
+    unsigned long reply;
+    int fd = USyscall_DomainLookup("Dlib");
+
+    if (USyscall_DomainLookup("Dlib") == SPIN_NIL_REF)  {
+	__Dlib_BootPrintString("Dlib : could not find\n");
+	return 0;
+    } else {
+	USyscall_Close(fd);
+    }
+    
+    __Dlib_BootPrintString("Rendezvous w/Dlib\n");
+    if (USyscall_Rendezvous(name, SPIN_NIL_REF, &reply) == SPIN_FAILURE) {
+	 __Dlib_BootPrintString("Could not rendezvous\n");
+	 return 0;
+    }
+    return 1;
+}
+</pre></b>
+
+<P>
+<HR>
+<P>
+<ADDRESS>yasushi@cs.washington.edu</ADDRESS>
+</HTML>

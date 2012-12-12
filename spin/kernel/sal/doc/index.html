@@ -1,0 +1,155 @@
+<html>
+<head>
+<title>SAL: stand-alone layer</title>
+</head>
+
+<h1>SAL: stand-alone layer</h1>
+<body>
+
+<p>
+A <em>stand-alone</em> program is one that runs
+without operating system support.  SAL is a chunk of code
+that handles such chores as initializing the cpu/mmu
+and operating the devices.  A SAL client program links to SAL
+to form a complete stand-alone program.
+An alternate definition of a <em>stand-alone program</em> is that
+you have to reboot to run a different one.
+
+<p>
+SAL is created by extracting code
+from an
+existing operating system
+that boots and
+controls the hardware.
+It <em>does not</em> include a scheduler,
+virtual memory, file system, users or system calls.  SAL does include a
+debugger and enough networking for a tftp client.  The intention is that
+the SAL client
+program will implement an operating system to provide the services
+explicitly left out of SAL.
+
+<h3>Generic SAL Services</h3>
+
+The major SAL ``service'' is to boot the machine and call
+<pre>
+	run_program() 
+</pre>
+which represents the SAL client.
+<p>
+<!-- SPIN DOC EXPORT SECTION IGNORE START -->
+For any platform, SAL includes the 
+<a href=../ttd/doc/index.html> TTD debugger </a>
+for network debugging
+and the 
+<a href=../standalone/net/doc/index.html> tftp client </a>.
+These services are supported by a
+<a href=../standalone/net/doc/index.html>
+polling network interface 
+</a>
+native to SAL.
+<!-- SPIN DOC EXPORT SECTION IGNORE END -->
+
+<h3>Sample SAL Client</h3>
+
+The stand-along layer allow clients to provide a small set of
+routines, largely for TTD support.  The simplest sal client
+just provides null implementations of these routines.  Such a client
+<b> to appear </b> in the 
+<a href=../standalone/doc/index.html> standalone directory </a>.
+
+<h3>Digital Unix SAL</h3>
+
+For the DEC alpha platform, SAL is extracted from the sources for
+Digital Unix (nee OSF/1).  It is configured and built in the same way as
+Digital Unix.  The configuration happens in the
+<a href=../conf/doc/index.html> conf directory</a>.
+
+<p>
+Most of the alpha sal files are copied from the regular Digital Unix
+source tree (that tree is the DIGITALUNIX directory as set in spin/make.conf).
+At UW, DIGITALUNIX  is /afs/cs/system/os/osfsrc/OSC320/src/kernel.
+To make a diff file, be sure to give diff the files in the right order:
+<pre>
+	cd spin/kerenel/sal
+	diff /afs/cs/system/os/osfsrc/OSC320/src/kernel/foo/bar.c foo/bar.c > foo/bar.c.diff
+</pre>
+If this is a new diff file, remake the dependency file.  Once the diff
+file is the dependencies, make will apply the diff file whenever it
+changes before compiling the source file.
+<pre>
+	cd spin/kernel/sal
+	gmake deps
+</pre>
+After changing or adding a diff file, check it in to cvs as usual.
+<p>
+
+
+<p>
+Digital Unix SAL is built in several stages.  Ideally it would all be
+built last.
+Unfortunately files in spincore include several .h files from sal, so an
+early stage builds enough of sal for those files to exist.
+
+<dl>
+<dt>gmake configure
+<dd>
+The first stage of building sal is configuration.
+The main Makefile imports, from the DEC source tree, parts of the
+build environment needed for configuration (see the files variable in the
+sal/Makefile).  Next it runs "config SPIN" to create the SPIN directory
+and generate the sources that live there.  Finally it imports the
+include files needed by spincore (see the spincorefiles variable in the
+sal/Makefile).
+
+<dt>gmake all and gmake SPIN
+<dd>
+After the sal client (spincore and start) are built, sal can be built
+and linked with the client to form the boot image.  For SPIN, the
+bootp image is spin.boot and the image for disk boots is spin_kernel.sys.
+
+<dt>gmake deps
+<dd>This command regenerates the dependecies file. The dependencies file is
+central to the scheme that imports files from
+the DEC sources.  It is part of the source tree and lives in the 
+<a href=../conf/doc/index.html> conf directory</a>.
+It contains all the dependecies for the SPIN and DRIVER (see below)
+build trees.
+
+<dt>gmake import and gmake unimport
+<dd>This will import (copy and diff if needed) or unimport (remove
+the copied files) all the sal sources borrowed from Digital Unix.
+
+</dl>
+
+<h3>SPIN Client</h3>
+
+SAL was created for the SPIN client.  The run_program() routine
+is located in the
+<a href=../../start/doc/index.html> SPIN initialization </a> sources.
+That code starts up the
+<a href=../../spincore/doc/index.html> SPIN core services </a>
+which supports scheduling, memory management and SPIN extensions.
+
+<h3>DRIVER extensions</h3>
+
+SPIN uses several chunks of code from Digital Unix as extensions
+including the TCP stack and the CAM driver.  These are also built in
+this tree to keep the includes together and since the machinery is all
+here for borrowing the DEC sources.
+<p>
+
+Extensions in the 
+<a href=../../../user/doc/index.html> user tree</a> have Makefile
+commands to come into this tree and build the DRIVER tree.
+To build by hand, use the DRIVER target
+<samp>
+	gmake DRIVER
+</samp>
+
+<p>
+
+<p><hr>
+<Address>
+becker@cs.washington.edu<br>
+</address>
+</html>

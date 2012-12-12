@@ -1,0 +1,103 @@
+<HTML>
+<HEAD>
+<TITLE> Creating A New Protocol</TITLE>
+</HEAD>
+<BODY>
+
+<H1>Creating A New Protocol</H1>
+<P>
+
+Creating a new protocol in plexus is simple.  The first step is to
+define the protocol's header in an interface file.  Plexus follows the
+naming convention of <i>protocol</i>PktFormat.i3 for each protocol.
+This interface file describes the header layout of the protocol as a
+<em>Modula-3</em> RECORD and any other constants used by the protocol.
+The RECORD must be <i>packed</i> to prevent the compiler from padding
+it.  Following the Modula-3 naming convetion, the
+<i>protocol</i>PktFormat.T type defines the protocol's header type.
+For example, the interface for the Ethernet protocol looks like:
+
+<pre>
+INTERFACE EtherPktFormat;
+TYPE EtherType = BITS 16 FOR [16_0 .. 16_ffff];
+TYPE T = RECORD
+  dhost   : ARRAY [1..6] OF CHAR;
+  shost   : ARRAY [1..6] OF CHAR;
+  type    : EtherType;
+END;
+
+CONST
+  ETHERTYPE_IP  : EtherType= 16_0800; (* IP protocol number        *)
+  ETHERTYPE_ARP : EtherType= 16_0806; (* Addr. resolution protocol *)
+
+END EtherPktFormat;
+</pre>
+
+The next step is to define the protocol events. All Plexus protocols
+define a <tt>PacketArrived</tt> event. This event roughly corresponds
+to the <tt>input</tt> function found in BSD style protocol stacks, and
+serves as the binding points for extending a protocol with customized
+a implementation.  The Modula-3 type signature of the PacketArrived
+event is:
+
+<pre>
+TYPE PacketArrivedEvent = PROCEDURE (packet, curr: Mbuf.T; offset: CARDINAL):BOOLEAN;
+</pre>
+
+By convention this event is defined in a <i>protocol</i>.i3 interface
+file. Packet data is passed up and down protocol layers using the <A
+HREF="../../urt/doc/index.html#mbuf">mbuf</A> datastructure.  Plexus
+mbufs are similar to the Berkeley memory buffers found in conventional
+Unix operating systems.  This datastructure is used more as a matter
+of convince, as it works directly with the device drivers that are
+using in SPIN. The <code>packet</code> parameter is an mbuf pointer to
+the beginning of a packet chain.  The <code>curr</code> parameter is a
+pointer to the mbuf that contains the packet payload.  It is very
+likely that for low-layered protocols both <code>packet</code> and
+<code>curr</code> point at the same mbuf.  However, for high-layer
+protocols, such as Udp and Tcp, the header and data may not be
+contained in the initial mbuf.  The <code>curr</code> mbuf pointer
+prevents us from having to walk the linked list of the mbuf chain to
+find the payload that is currently being processed.  <P>
+
+To make life easier, there is a quake directive, called
+<code>protocolModule</code>, that instantiates a generic 
+<A HREF="../plexus/src/Protocol.ig">interface</A> and 
+<A HREF="../plexus/src/Protocol.mg">module</A>.  The generic defines the
+<tt>PacketArrived</tt> event and (un)install procedures used by
+clients that attach themselves to the event.
+
+The directive comes in the conventional m3build forms, where the lower
+case version hides the module and the upper case version allows other
+modules to link/import with the interface.  Here's an example of the
+<code>Ether</code> protocol begin instantiated with the m3build
+directive:
+
+<pre> 
+ProtocolModule ("Ether","EtherServer") # visible
+protocolmodule ("Ether","EtherServer") # hidden
+</pre>
+
+Note the different cases of the visible and hidden
+<i>protocolmodule</i> directives.  The first argument to the directive
+is the name of the protocol.  The second argument is the domain name
+that the protocol is defined in.  The <code>protocolmodule</code> is
+just a bit of glue for the following quake commands:
+
+<pre>
+proc ProtocolModule (protocol,link) is
+  local inf   = link & "Interface"
+  build_generic_intf (protocol, "Protocol", [], VISIBLE)
+  build_generic_impl (protocol, "Protocol", [inf])
+end
+</pre>
+
+<ADDRESS>
+<I>
+<A HREF="mailto:mef@cs.washington.edu">Marc Fiuczynski</A>
+<BR>DAY/MONTH/YEAR
+</I>
+</ADDRESS>
+
+</BODY>
+</HTML>

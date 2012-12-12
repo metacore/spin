@@ -1,0 +1,3 @@
+# Symmetry running either dynix (bsd) or ptx (sysv), but not ptx4 (sysv4)
+HDEFINES=-DTRAD_CORE
+HDEPFILES=trad-core.o

@@ -1,0 +1,9 @@
+implementation("MachineSyscallTrace")
+implementation("SphinxBSD")
+
+Interface("MachineSigContext")
+Sieg_interface_with_info("Sphinx")
+create_i3_from_h(THISTREE & "/kernel/sal/i386_freebsd/sys/sysctl.h", 
+		 "SphinxSysctl")
+implementation("SphinxSysctl")
+implementation("SphinxMachineDep")

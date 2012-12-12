@@ -1,0 +1,92 @@
+<html>
+
+<head>
+<title>Non-BRANDED Revelations</title>
+<!-- Changed by: Wilson Hsieh, 18-Jul-1996 -->
+</head>
+
+<body>
+<h1>Non-BRANDED Revelations</br></h1>
+
+<pre>
+INTERFACE Directory;
+
+TYPE
+  (* The implementation of Directory.T supports
+     the following methods: init, m
+     all other details are hidden from clients
+     brand T so that someone cannot fake
+     their own revelation. *)
+
+  (* PublicT is NOT BRANDED!!!!!!! *)
+  PublicT = OBJECT METHODS
+              init() : PublicT;
+              add();
+            END;
+  T <: PublicT;
+
+END Directory.
+
+(**************************)
+
+INTERFACE FileSystemDirectory;
+IMPORT Directory;
+
+TYPE
+  (* brand PublicT so that a client cannot fake
+     a revelation.
+     if this type were not BRANDED, someone
+     without the right to see this interface
+     could state their own partial revelation
+     for Directory.T *)
+  PublicT = Directory.T
+              BRANDED OBJECT METHODS
+                (* do not call this init
+                   if you do, then you cannot
+                   override Directory.T.init *)
+	        initFSD() : T;
+              END;
+  T <: PublicT;
+
+END FileSystemDirectory.
+
+(**************************)
+
+MODULE FileSystemDirectory;
+
+IMPORT Directory;
+
+REVEAL
+ (* T is a subtype of Directory.T *)
+ T = PublicT BRANDED OBJECT OVERRIDES
+               (* override any superclass methods that
+                   could be dangerous *)
+               init := Init;
+               initFSD := InitFSD;
+               add := Add;
+             END;
+
+(* the initialization method for T *)
+PROCEDURE InitFSD (t: T) : T =
+  BEGIN
+    (* call initialization on the superclass *)
+    RETURN Directory.T.init(t);
+  END InitFSD;
+
+(* cancel the inherited Init method *)
+PROCEDURE Init (t: T) : Directory;
+  BEGIN
+    (* do nothing *)
+    RETURN t;
+  END Init.
+
+BEGIN
+END FileSystemDirectory.
+</pre>
+
+
+</body>
+<p>
+<hr>Last changed <date>July 17, 1996</date> <br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

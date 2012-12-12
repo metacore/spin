@@ -1,0 +1,45 @@
+% Copyright (C) 1994, Digital Equipment Corporation
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+%
+% Last modified on Fri Nov 18 16:20:44 PST 1994 by kalsow
+%      modified on Mon Dec 14 19:59:03 PST 1992 by jdd
+%      modified on Wed May 20 17:21:29 PDT 1992 by muller
+
+#
+# HISTORY
+# 16-Jul-97  Tian Fung Lim (tian) at the University of Washington
+#	Added RTWB, which implements the writebarrier upcalls
+#
+# 27-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+#	added RTCounting.s
+#
+# 14-Oct-96  Przemek Pardyak (pardy) at the University of Washington
+#	Moved RTHeapDep.m3 to spincore.
+#
+# 13-Aug-96  Frederick Gray (fgray) at the University of Washington
+#	Made RTOSMachine.i3, RTMachineHeapTrace.i3, and RTMachineHeapTrace.m3 
+#	machine-dependent.
+#
+
+interface      ("RTMachineExtern")
+Interface      ("RTMachineCollectorExtern")
+Module         ("RTMachine")
+implementation ("RTSignal")
+implementation ("RTThread")
+
+c_source       ("RTThreadC")
+#c_source       ("RTExceptionC")
+
+if equal(WRITEBARRIER,"TRUE") 
+	s_source("RTWB")
+else
+	if equal(REFCOUNT, "TRUE")
+	  s_source("RTCountingRC")
+	else
+	  s_source("RTCounting")
+	end
+end
+
+Interface ("RTOSMachine")
+Module ("RTMachineHeapTrace")

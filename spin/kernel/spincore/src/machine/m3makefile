@@ -1,0 +1,37 @@
+#
+# Copyright 1994, 1995, 1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 31-May-97  David Becker at the University of Washington
+#	Removed SAL* interfaces.  Now use kernel interfaces.
+#
+# 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+#	TARGET -> BASETARGET
+#
+# 21-Apr-96  Wilson Hsieh (whsieh) at the University of Washington
+#	moved include_dir to try and get around quake(?) bug
+#
+# 10-Dec-94  Emin Gun Sirer (egs) at the University of Washington
+#	Created.
+
+Interface("AtomicOps")
+Interface("AtomicOpsPrivate")
+Interface("CPU")
+Interface("CPUPrivate")
+Interface("Trap")
+Interface("MachineLinker")
+Interface("MachineStitcher")
+Interface("MachineThread")
+Interface("MachineDebugger")
+
+
+include_dir (BASETARGET)
+
+DomainExport("SpinPublic","CPU")
+DomainExport("SpinPublic","Trap")
+DomainExportUnsafe("SpinTrusted","CPUPrivate")
+DomainExport("SpinTrusted","AtomicOps")
+DomainExport("SpinTrusted","MachineLinker")
+DomainExport("SpinTrusted","TrapPrivate")

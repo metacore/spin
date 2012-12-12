@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Kernel Strand Package &amp; Scheduler (trusted)</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Kernel Strand Package &amp; Scheduler (trusted)">
+<meta name="keywords" value="strands">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html76 HREF="node7.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/general/latex2html_icons//next_motif.gif"></A>   <A NAME=tex2html74 HREF="index.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/general/latex2html_icons//up_motif.gif"></A>   <A NAME=tex2html68 HREF="node5.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/general/latex2html_icons//previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html77 HREF="node7.html"> Global Scheduler (trusted)</A>
+<B>Up:</B> <A NAME=tex2html75 HREF="index.html">Strands</A>
+<B> Previous:</B> <A NAME=tex2html69 HREF="node5.html"> Events Handled by </A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00040000000000000000> Kernel Strand Package &amp; Scheduler (trusted)</A></H1>
+<P>
+Kernel strands are minimal threads that run in the kernel address
+space and are used to execute the spindles that are to be fired in
+response to an event. They are efficiently created and destroyed by
+the kernel strand package and scheduler.
+<P>
+Efficient creation in this context means that the absolute
+minimum amount of work is performed to get a spindle executed. For
+instance, the kernel strand package can reuse the stack of a blocked
+user-level thread and can execute successive handlers without saving
+any state (unless they block, in which case minimum state to unblock
+and restart is saved). Thus, even interrupt handlers run as threads
+and use the same synchronization primitives as regular extension code.
+<P>
+The kernel strand scheduler receives the set of spindles to execute
+from the event dispatcher. Although the kernel strand scheduler conforms to
+the spindle event interface, it does not go through the event dispatcher
+(since the kernel strand scheduler is involved in event handling, going
+through the dispatcher would cause infinite regress). The attributes
+of the spindles to execute (e.g. their scheduling priority with
+respect to other strands) is registered with the
+kernel strand scheduler by the event dispatcher at the time the
+spindles are installed (and may be changed at any later time).
+<P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Emin Gun Sirer <BR>
+Sat Jun 22 19:01:37 PDT 1996</I>
+</ADDRESS>
+</BODY>

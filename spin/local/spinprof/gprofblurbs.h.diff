@@ -1,0 +1,21 @@
+63,64c63,64
+<  self      the average number of milliseconds spent in this	\n\
+< ms/call    function per call, if this function is profiled,	\n\
+---
+>  self      the average number of microseconds spent in this	\n\
+> us/call    function per call, if this function is profiled,	\n\
+67,68c67,68
+<  total     the average number of milliseconds spent in this	\n\
+< ms/call    function and its descendents per call, if this 	\n\
+---
+>  total     the average number of microseconds spent in this	\n\
+> us/call    function and its descendents per call, if this 	\n\
+69a70,77
+> 								\n\
+>  self       the average number of cycles spent in this	        \n\
+> cycles/call function per call, if this function is profiled,	\n\
+> 	    else blank.						\n\
+> 								\n\
+>  total      the average number of cycles spent in this          \n\
+> cycles/call function and its descendents per call, if this 	\n\
+> 	    function is profiled, else blank.			\n\

@@ -1,0 +1,24 @@
+#
+# Copyright 1995, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 06-Aug-97  Robert Grimm (rgrimm) at the University of Washington
+#       Created
+#
+#
+
+m3_option("-X6@-fno-common@")
+m3_option("-zG@-g3@")
+
+overridepath = [ THISTREE , FULLTREE ]
+
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("Regress","user/shell","regress",overridepath)
+
+RegressionModule ("PreemptionTest")
+
+Extension({})

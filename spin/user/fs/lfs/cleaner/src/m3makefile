@@ -1,0 +1,28 @@
+#
+#  Copyright 1996 University of Washington
+#  All rights reserved.
+#  See COPYRIGHT file for a full description
+# 
+#  HISTORY
+# 30-May-96  Eric Christoffersen (ericc) at the University of Washington
+#	Created.
+#
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("Segment","user/fs/lfs","segment",overridepath)
+#DomainImport("SegBuffer","user/fs/lfs","buffer",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("LFSCore","user/fs/lfs","lfscore",overridepath)
+
+Package("Cleaner")
+Module(Cleaner)
+
+
+Extension({})
+
+

@@ -1,0 +1,4 @@
+70a71,73
+> #ifdef SPIN
+> #include <mach/vm_param.h>
+> #endif /* SPIN */

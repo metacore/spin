@@ -1,0 +1,18 @@
+#
+# HISTORY
+# 21-Apr-96  Emin Gun Sirer (egs) at the University of Washington
+#	Deleted MeasurePrivate.
+#
+# 19-Mar-96  Stefan Savage (savage) at the University of Washington
+#	Created.
+#
+# 
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+
+Package("Measure")
+Module ("Measure")
+
+Extension({})

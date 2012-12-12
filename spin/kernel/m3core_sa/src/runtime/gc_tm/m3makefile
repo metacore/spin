@@ -1,0 +1,18 @@
+Interface ("RT0")
+Module ("RTHeapTM")
+Module ("RTHeapVM")
+implementation ("RTHeapDebug")
+Interface ("RTHeapEvent")
+implementation("RTCollector")
+implementation("RTAllocator")
+implementation("RTHeapStubs")
+
+if equal(WRITEBARRIER,"TRUE")
+	include_dir("gc_wb")
+else
+	if not equal(REFCOUNT, "TRUE")
+		implementation("RTCollector1")
+		Module("RTRefCount")
+	end
+end
+

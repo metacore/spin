@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+<h1>
+Random Number Generator
+</h1>
+<HR>
+
+A "Random.T" (or just a generator) is a pseudo-random number
+   generator.
+<p>
+
+<p>
+Individual generators are unmonitored, and all the operations
+   have side effects.
+<p>  
+   The methods provided by a generator "rand" are:
+<p> 
+   The call "rand.integer(a, b)" returns a uniformly distributed
+   "INTEGER" in the closed interval "[a..b]".
+<p> 
+   The call "rand.boolean()" returns a random "BOOLEAN" value.
+<p> 
+   It is a checked runtime error if "min > max" on any call.
+<p> 
+   "NEW(Default).init()" creates and initializes a generator (see
+   below for implementation details).  If "fixed" is "TRUE", a
+   predetermined sequence is used.  If "fixed" is "FALSE", "init"
+   chooses a random seed in such a way that different sequences result
+   even if "init" is called many times in close proximity.
+<p> 
+A good pseudo-random permutation of an array "a"
+   can be generated as follows:
+<pre>
+| WITH rand = NEW(Random.Default).init() DO
+|   FOR i := FIRST(a) TO LAST(a) - 1 DO
+|     WITH j = rand.integer(i, LAST(a)) DO
+|       `Exchange "a[i]" and "a[j]"`
+|     END
+|   END
+| END
+</pre>
+The object returned
+   by a call of "New(Default).init" uses an additive generator based
+   on Knuth's Algorithm 3.2.2A (see Knuth:Vol2).
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

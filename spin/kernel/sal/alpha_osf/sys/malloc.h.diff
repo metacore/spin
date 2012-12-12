@@ -1,0 +1,16 @@
+112c112,116
+< #define M_LAST		51
+---
+> #define M_DSECTION	51	/* Domain section usage */
+> #define M_DSYMBOL	52	/* Domain symbol usage */
+> #define M_DRELOC	53	/* Domain relocation usage */
+> #define M_DMODULE	54 	/* Domain module usage */
+> #define M_LAST		55
+167c171,175
+< }
+---
+> 	"SECTUSAGE", 	/* 51 Section usage	*/ \
+> 	"SYMTBLUSAGE", 	/* 52 Symbol usage	*/ \
+> 	"RELOCUSAGE", 	/* 53 Relocusage	*/ \
+> 	"MODULEUSAGE", 	/* 54 Module usage	*/ \
+> 					       }

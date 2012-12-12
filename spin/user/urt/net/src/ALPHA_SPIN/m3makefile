@@ -1,0 +1,5 @@
+
+interface("OsfNetExtern")
+interface("SocketExtern")
+implementation("OsfNet")
+implementation("SocketDep")

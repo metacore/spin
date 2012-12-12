@@ -1,0 +1,42 @@
+607a608
+> #ifndef SPIN
+608a610
+> #endif /* SPIN */
+836c838
+< 
+---
+> #ifndef SPIN
+972a975
+> #endif /* SPIN */
+1413c1416
+< 
+---
+> #ifndef SPIN
+1575c1578
+< 
+---
+> #endif /* SPIN */
+1580c1583
+< 
+---
+> #ifndef SPIN
+1621c1624
+< 
+---
+> #endif /* SPIN */
+1625c1628
+< 
+---
+> #ifndef SPIN
+1630c1633
+< 
+---
+> #endif /* SPIN */
+1635c1638
+< 
+---
+> #ifndef SPIN
+1702c1705
+< 
+---
+> #endif /* SPIN */

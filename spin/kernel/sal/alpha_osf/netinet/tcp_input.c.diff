@@ -1,0 +1,16 @@
+741a742,746
+> #ifdef SPIN		
+> 		/* Need to tell plexus that there is a new port to
+> 		   that it should listen to. */
+> 		tcp_URT_bind(inp->inp_lport);
+> #endif /* SPIN */
+1690a1729,1733
+> #ifdef SPIN
+> 	extern (*tcp_URT_mss)(struct tcpcb *tp, u_short offer);
+> 	extern int tcp_mssdflt;
+> 	return max(tcp_mssdflt, tcp_URT_mss(tp,offer));
+> #else 
+1700a1744
+> 
+1854a1899
+> #endif /* SPIN*/

@@ -1,0 +1,217 @@
+<html>
+<head>
+<title>VIEW</title>
+<!-- Changed by: Wilson Hsieh,  7-Oct-1996 -->
+</head>
+
+<body>
+
+<h1>VIEW description</br></h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+We need a type-safe casting mechanism to avoid copying
+when communicating across untyped channels.
+
+<h2>Implementation</h2>
+
+<code> 
+   VIEW ( expr, type )
+</code>
+<p>
+
+<code>VIEW</code> can be used to impose a "view" of a region of memory
+as a different type.  This view is type-safe -- it will not cause any
+unchecked runtime errors.  <code>VIEW</code> only incurs runtime
+checks when the <code>VIEW</code> occurs.
+<p>
+
+The first argument, <code>expr</code>, must be a designator; that is,
+it must describe a region of memory.  The result of the
+<code>VIEW</code> is a designator, and is writable if
+<code>expr</code> is writable.  Following are the restrictions
+on the use of <code>VIEW</code> in more detail.
+<p>
+
+We make use the following definitions:
+
+<ul>
+
+<li> A type A is "representation-equivalent" to a type B if every legal
+bit pattern in B can be padded to form a legal bit pattern in A, and
+every legal bit pattern in A can be truncated to form a legal bit
+pattern in B.  Representation-equivalence is not necessarily symmetric.
+<p>
+
+<li> A type is "representation-complete" (a term taken from DEC SRC)
+if every bit pattern is a legal instance of the type.<p>
+
+In our implementation, the set of non-representation-complete
+types consist of the following: REF, object, procedure, opaque REF,
+enum, subrange, set, float.
+</ul>
+
+A <code>VIEW</code> would be legal whenever the type of
+<code>expr</code> --- call it <code>T</code> is
+representation-equivalent to <code>type</code>.  Our implementation is
+simpler than this, and allows a <code>VIEW</code> under one of the
+following conditions:
+
+<ol>
+
+<li>
+The type of <code>expr</code> is representation-equivalent to
+<code>type</code>.  The following <code>VIEW</code> is legal:
+
+<pre>
+	VAR x: RECORD a, b: INTEGER := 3; END;
+	BEGIN
+	  VIEW (x, RECORD a: INTEGER; END).a := 255;
+	END;
+</pre>
+
+Our check for representation-equivalence is not much weaker than type
+equality.  That is, A is representation-equivalent to B if A is equal
+to B, with the following weakening:
+<p>
+<ul>
+<li>
+Field names and defaults in record types are irrelevant
+to the representation.
+<li>
+If A is a <code>RECORD</code> type, it can have extra fields at the
+end that B does not have.
+</ul>
+<p>
+As a result, our implementation does not support the following
+<code>VIEW</code>:
+
+<pre>
+	VAR x: RECORD a, b: INTEGER; END;
+	BEGIN
+          (* this is not supported by our implementation *)
+	  VIEW (x, RECORD a: INTEGER; b: RECORD a: INTEGER; END; END).a := 255;
+	END;
+</pre>
+
+<p>
+
+<li>
+Representation-equivalence can be determined due to
+representation-completeness.
+
+<ul>
+<li>
+
+If <code>expr</code> is writable, then <code>expr</code>
+must be representation-complete.
+<p>
+
+If this condition were not present, then the following would
+be legal:
+<p>
+
+<pre>
+	VAR x: [0..254];
+	BEGIN
+	  VIEW (x, [0..255]) := 255;  (* this is not legal! *)
+	END;
+
+</pre>
+<p>
+
+<li>
+
+If expr is an open array, the array elements must not be open arrays.
+<p>
+
+This is a restriction made for the sake of simplicity, as we have
+not seen any need for <code>VIEW</code>ing multi-dimensional open arrays.
+
+<p>
+<li>
+<code>type</code> must be representation-complete.
+<p>
+
+If this condition were not present, the following would be legal:
+<p>
+
+<pre>
+	VAR x: [0..255] := 254;
+	BEGIN
+	  WITH y = VIEW (x, [0..254]) DO
+	   x := 255;
+	   (* y is now 255, which is illegal! *)
+	  END;
+	END;
+</pre>
+
+<li>
+
+If <code>type</code> is an open array type, it cannot contain any
+open arrays.
+<p>
+
+Without this restriction, there would be no means of determining
+the size of the resulting array.
+<p>
+
+<li>
+Finally, we impose two restrictions regarding the relationship of
+<code>expr</code> and <code>type</code>.  First, the size of
+<code>type</code>
+must be less than or equal to
+that of <code>expr</code>.  Second, the alignment of the
+<code>expr</code> must satisfy the alignment of <code>type</code>.
+If the sizes and alignments are known at compile-time,
+the check is performed there; otherwise, there is a run-time
+check.
+
+</ul>
+</ol>
+
+<h2>Examples</h2>
+
+These examples are not ones from within SPIN, because there are too
+many types involved.
+
+<pre>
+TYPE T = RECORD
+	   a: INTEGER;
+	   b: INTEGER;
+           c: INTEGER;
+         END;
+
+
+PROCEDURE p(x: ARRAY [0..10] OF INTEGER; y: ARRAY OF INTEGER;
+            z: ARRAY [0..100] OF [0..255]) =
+  BEGIN
+    WITH t = VIEW (x, T) DO
+      (* legal, no runtime check because sizes are known statically,
+         and alignments match *)
+    END
+    WITH t = VIEW (y, T) DO
+      (* legal, a runtime size check on the open array.  alignments
+         match *)
+    END
+    WITH t = VIEW (z, T) DO
+      (* legal, a runtime alignment check, because z is only
+         aligned on an 8-bit boundary *)
+    END
+  END p;
+</pre>
+
+
+</body>
+<p><hr>
+
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>October 7, 1996</date><br>
+<Address>
+whsieh@cs.washington.edu
+</address>
+</html>

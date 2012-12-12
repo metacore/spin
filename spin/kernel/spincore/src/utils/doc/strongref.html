@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>StrongRefs </title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top"> Events and event dispatcher</a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+The SRC Modula-3 garbage collector is partially copying which means
+that some objects change their memory location over time as they may
+be moved during collection. The only objects which are guaranteed to
+remain in their position during collection are those pointed to by
+ambiguous roots.  An ambiguous root is a value in memory which is
+conservatively treated by the collector as a pointer.  Examples of
+ambiguous pointers are values on the stack or saved registers if those
+values can be interpreted as a pointer to some objects in the traced
+heap.
+
+A strong reference is an additional reference to an object created to
+make the object uncollectible even if no other reference exists and to
+prevent the object from being moved by the collector.  Strong
+references are used where collectible (traced) objects are embedded in
+data structures that are not scanned by the collector (e.g., passed to 
+C code which places that in its global variables or embedded inside of
+run-time generated code). 
+
+<h2> Interface </h2>
+<pre>
+PROCEDURE Add(ref: REFANY);
+
+PROCEDURE Remove(ref: REFANY);
+
+PROCEDURE IsThere(ref: REFANY) : BOOLEAN; 
+</pre>
+
+
+The <i>StrongRef</i> interface maintains a counter of how many strong
+references were created for a given reference.  If the count is
+greater than zero then the object pointed to by the reference become
+uncollectible and immobilized.  The object becomes collectible and
+mobile again after the count drops to zero.
+
+A strong reference is created by a call to <i>StrongRef.Add</i> and
+disposed of by a call to <i>StrongRef.Remove</i>.  Strong references
+are kept internally by the implementation of the <i>StrongRef</i>
+interface and are not exported to its users.  The original reference
+to an object for which a strong reference is created is passed to this
+interface.  A call to <i>IsThere</i> returns <i>TRUE</i> if a strong
+reference for the argument reference currently exists.
+
+<P> <HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>June 25th, 1996</date>
+</I>
+</HTML>

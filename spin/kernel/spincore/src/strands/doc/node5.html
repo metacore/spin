@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Events Handled by Strand Schedulers</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Events Handled by Strand Schedulers">
+<meta name="keywords" value="strands">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html66 HREF="node6.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/general/latex2html_icons//next_motif.gif"></A>   <A NAME=tex2html64 HREF="node3.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/general/latex2html_icons//up_motif.gif"></A>   <A NAME=tex2html60 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/general/latex2html_icons//previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html67 HREF="node6.html"> Kernel Strand Package </A>
+<B>Up:</B> <A NAME=tex2html65 HREF="node3.html"> Strand Interface</A>
+<B> Previous:</B> <A NAME=tex2html61 HREF="node4.html"> Events Handled by </A>
+<BR> <HR> <P>
+<H2><A NAME=SECTION00032000000000000000> Events Handled by Strand Schedulers</A></H2>
+<P>
+<DL ><DT><tt> PROCEDURE Block(strand: REFANY);</tt>
+<DD> 
+<P>
+This event indicates that the named strand is not eligible for
+execution and should no longer be scheduled. A blocked thread should
+not be <tt> Run</tt> by the scheduler until an <tt> Unblock</tt> occurs.
+A typical response from a scheduler module would be to save away current
+state (with <tt> Stop</tt>), make an indication that the current thread is
+no longer runnable and pick a new one to run.
+
+<P>
+Failure to comply might possibly result in garbled execution, or lack
+of forward progress by the named strand.
+<P>
+Examples: VM or synchronization subsystems would raise this event to
+suspend the execution of a process.
+<P>
+<DT><tt> PROCEDURE Unblock(strand: REFANY);</tt>
+<DD> 
+<P>
+This event indicates that the named strand is eligible for execution
+and should be scheduled.
+Failure to comply results in denial of service to the named strand.
+<P>
+Examples: The VM interface, for instance, would use this event to
+unblock a spindle that is blocked waiting on some paging activity.
+<P>
+<DT><tt> PROCEDURE Yield();</tt>
+<DD> 
+<P>
+This event indicates that the currently running entity has relinquished
+the processor. A typical scheduler would pick a new runnable strand and
+raise <tt> Run</tt> on it.
+<P>
+<DT><tt> PROCEDURE Current() : REFANY;</tt>
+<DD> 
+<P>
+This event returns the identity of the currently running strand. The
+identity is a piece of software state that is updated through the
+context switches.
+<P>
+ </DL><BR> <HR>
+<P><ADDRESS>
+<I>Emin Gun Sirer <BR>
+Sat Jun 22 19:01:37 PDT 1996</I>
+</ADDRESS>
+</BODY>

@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>TFTP File System</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> TFTP File System</a> </br>
+</h1>
+<date>Thu May 23 12:13:58 1996</date>
+</br>
+Yasushi Saito
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2>
+
+TFTP file system(<dfn>TFTPFS</dfn> from now on) is a
+<!href="fs"><a href="../../../user/fs/doc/index.html">file system</a> that
+uses tftp(trivial ftp) protocol to retrieve a file.
+It uses the tftp code provided by SAL, so
+no extra network support extensions are needed.<p>
+
+TFTPFS is a static extension(it's loaded when system boots), and
+it is automatically mounted on <code>/</code> on system startup.<p>
+
+It is currently the primary mean to load extensions into the system.<p>
+
+TFTPFS uses low level SAL code for networking.
+On SAL based on DEC OSF/1, tftp is implemented by
+polling, and this means that the whole system stops
+working while you are transfering a file using tftp.
+And, tftp sometimes gets hung.<p>
+
+Because of these problems, many people think using TFTP as a file
+system is not the right thing to do, so we are planning
+to switch to <!href="nfs.html"><a href="nfs.html">NFS</a> soon.<p>
+
+<H2>Using the service</H2>
+
+TFTPFS is mounted on <code>/</code> at the system startup.
+
+<H2>Caveats</H2> 
+
+<ul>
+  <li> It's read only.
+  <li> It doesn't support directory operations.
+       You can't do <code>ls</code>.
+</ul>
+
+<P>
+<HR>
+<P>
+<ADDRESS>yasushi@cs.washington.edu</ADDRESS>
+</HTML>

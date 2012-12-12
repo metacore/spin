@@ -1,0 +1,55 @@
+#
+# stcp m3makefile 
+#
+# HISTORY
+# 25-Jul-97  Tsutomu Owa (owa) at the University of Washington
+#	Use Salnet.Arp() instead of StcpEtherArp module.
+#
+# 09-Apr-97  Tsutomu Owa (owa) at the University of Washington
+#	Change interface names so that these don't conflict w/
+#	those used by user/net.
+#
+# 18-Mar-97  Tsutomu Owa (owa) at University of Washington
+#	Whisted.
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+# DomainImport ("Shell","user/shell","shellcore",overridepath)
+
+Package ("Stcp")
+
+# CommandModule ("StcpShell")
+
+# load safe interface 
+Interface ("StcpEtherPktFormat")
+#interface ("StcpArpPktFormat")
+interface ("StcpIpPktFormat")
+interface ("StcpTcpPktFormat")
+interface ("StcpMbufPublic")
+Interface ("StcpSocketAddr")
+Interface ("StcpSocketAddrIn")
+Interface ("StcpTime")
+
+module ("DefaultAddr")
+Module ("StcpEtherPacket")
+#module ("StcpEtherArp")
+
+module ("IcmpPing")
+Module ("StcpIf")
+module ("StcpIpPacket")
+module ("StcpTcpPacket")
+Module ("StcpMbuf")
+module ("StcpNet")
+Module ("SimpleHttp")
+module ("Stcp")
+module ("StcpUtils")
+Module ("StcpEtherDev")
+interface ("StcpEtherDevExtern")
+
+c_source("bootether")
+
+include_dir(BASETARGET)
+
+Extension({})

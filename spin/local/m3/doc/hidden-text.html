@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>Subclassing Opaque Types</title>
+<!-- Changed by: Wilson Hsieh, 17-Jul-1996 -->
+</head>
+
+<body>
+<h1>Subclassing Opaque Types</br></h1>
+
+If you create a subclass of a partially revealed superclass, all of
+the superclass methods are still in your interface, even if they
+were hidden to you.
+
+For example, suppose there another interface to <code>Directory</code>
+that reveals some more of <code>Directory.T</code>, as illustrated
+below.  Given that interface, a malicious user could do the following:
+
+<pre>
+IMPORT Directory, DirectoryFriend, FileSystemDirectory;
+
+NARROW(NEW(FileSystemDirectory.T), Directory.T).oops();
+</pre>
+
+</body>
+<p>
+<hr>Last changed <date>July 17, 1996</date> <br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

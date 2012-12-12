@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>MarshallExc Interface</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> MarshallExc Interface</a> </br>
+</h1>
+<date>March 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+The MarshallExc interface provides a means for the ExcHandlers module
+to marshall syscall arguments between the OSF/1 server and SPIN.  The
+basic unit of marshalling is the handle.  When an application thread
+enters the ExcHandlers module with a syscall request, it first obtains
+one of these handles.  It then stores all of its arguments on this
+handle, kicks a server thread associated with its task, and waits on
+a semaphore associated with this handle.  The server thread finds the
+appropriate handle, gets the arguments and takes them up to the server.
+After handling the system call, the server thread returns to the kernel
+via the exception_task_get_next_exception system call.  It relocates
+the marshalling handle and places the syscall resulting state on this
+handle.  Finally, it kicks the application thread and waits for the
+next syscall.  After being kicked, the application thread gathers the
+resulting state and returns.
+
+<p>
+The MarshallExc interface is <a href="../src/MarshallExc.i3">
+MarshallExc.i3</a>.
+
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

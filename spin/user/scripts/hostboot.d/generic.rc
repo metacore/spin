@@ -1,0 +1,10 @@
+# HISTORY
+# 27-Sep-96  Marc Fiuczynski (mef) at the University of Washington
+#       Cleanup.
+# 28-Mar-96  Brian Bershad (bershad) at the University of Washington
+#	Created.
+# Generic support for all hosts
+
+# Note: the below doesn't work. the dirname is "cam", not "CAM". -- yaz.
+#nanny install $DISKDEV$ROOTDEV /svc/devices/$DISKDEV$ROOTDEV ~/spin/user/dev/$DISKDRV/$target/$DISKDRV.rc
+#nanny install $DISKDEV$USRDEV /svc/devices/$DISKDEV$USRDEV ~/spin/user/dev/$DISKDRV/$target/$DISKDRV.rc

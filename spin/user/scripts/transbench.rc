@@ -1,0 +1,33 @@
+script trans.rc
+
+echo
+echo ***** TRANSACTIONS *****
+echo ***** WARMUP RUN
+
+# turn it on
+gc frag
+gc reset
+
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+
+echo ***** ACTUAL RUN
+
+script gcbenchstart
+
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+sphinx exec ~/spin/user/trans/rvmbench/${target}/rvmbench  -n   5000 -a   5000
+
+script gcbenchend
+
+
+

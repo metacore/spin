@@ -1,0 +1,2 @@
+INTERFACE Init;
+END Init.

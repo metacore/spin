@@ -1,0 +1,42 @@
+
+overridepath = [ THISTREE, FULLTREE ]
+
+CC = "/bin/cc"
+
+m3_option("-keep")
+#m3_option("-O2")                        # turn on optimizations
+#m3_option("-X2@-p@")
+#m3_option("-X2@-pg@")
+
+m3_option("-NoLoopholeWarning")
+m3_option("-SpinRelax")
+
+m3_option("-Y1@" & CC & "@")            # set the c compiler
+m3_option("-X6@-fno-common@")           # No common symbols
+
+m3_option("-X6@-mno-fp-regs@")          # No floats
+m3_option("-zG@-g3@")                   # lots of debug
+
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+
+# only import if RCGNet tests are desired
+DomainImport("IpClient","user/net","ipClient",overridepath)
+DomainImport("NetDev", "user/dev", "netdev", overridepath)
+DomainImport("IpServer","user/net", "ip", overridepath)
+
+Package("RCG")
+
+CommandModule("RCG")
+implementation("RCGInit")
+module ("RCGTest")
+module ("RCGNet")
+
+include_dir(misc)
+include_dir(ir)
+include_dir(assembler)
+include_dir(analyzer)
+include_dir(optimizer)
+
+Extension({})

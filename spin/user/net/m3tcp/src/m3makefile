@@ -1,0 +1,36 @@
+% Makefile for Modula-3 program 'myprog' 
+%import("m3core")
+%import("libm3")
+
+%m3_option("-commands")
+m3_option("-keep")
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+%DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+DomainImport ("IpServer","user/net","ip",overridepath)
+DomainImport ("TcpServer","user/net","tcp",overridepath)
+DomainImport ("IpClient","user/net","ipClient",overridepath)
+DomainImport ("NetDb","user/net","dns",overridepath)
+
+Package("M3Tcp")
+
+Module("Ifq")
+Module("TcpSM")
+Module("LocalSM")
+interface("LocalSMPrivate")
+Module("RemoteSM")
+interface("RemoteSMPrivate")
+Module("TcpCtrlBlock")
+Interface("TcpDebug")
+CommandModule("M3Tcp")
+
+Module ("Incarnation")
+Table  ("Incarnation", "Incarnation", "TcpCtrlBlock")
+
+Extension({})

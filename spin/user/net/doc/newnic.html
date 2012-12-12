@@ -1,0 +1,43 @@
+<HEAD>
+<TITLE> How To Support New Network Interface Cards</TITLE>
+</HEAD>
+<BODY>
+
+<H1><A NAME=SECTION1> How To Support New Network Interface Cards</A></H1>
+
+<P>
+There are three things necessary to support a new network interface
+card:
+<P>
+<OL><LI> <tt> Ephemeral packet Arrived function.</tt> The device driver will
+  call this function in the context of an interrupt handler.  The
+  purpose of this function is to either raise the linker layer
+  PacketArrived event, or kick a thread that will raise that event for
+  each packet delivered by the device driver.
+<P>
+<LI> <tt> Output function.</tt> A link layer output function that calls
+  the device driver to send a packet.
+<P>
+<LI> <tt> if_attach</tt>.  network interface cards register
+  themselves with a call to if_attach.  This is then reflected via
+  <em> URT
+ </em>'s IfPrivate module and should eventually end up in the
+  <em> SPIN
+ </em>'s device management.
+<P>
+</OL>
+<P>
+NEED TO SHOW EXAMPLES AND CODE.
+<P>
+<BR> <HR>
+<P>
+
+
+<ADDRESS>
+<I>
+<A HREF="mailto:mef@cs.washington.edu">Marc Fiuczynski</A>
+<BR>DAY/MONTH/YEAR
+</I>
+</ADDRESS>
+
+</BODY>

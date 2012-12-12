@@ -1,0 +1,22 @@
+#
+# GetSegDesc makefile 
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)  # needed for Error.E
+DomainImport("LFS","user/fs","lfs",overridepath)
+DomainImport("Segment","user/fs/lfs","segment",overridepath)
+DomainImport("LFSCore","user/fs/lfs","lfscore",overridepath)
+DomainImport("Cleaner","user/fs/lfs","cleaner",overridepath)
+DomainImport ("TmpFileSystem","user/fs","tmpfs",overridepath)
+
+Package("GetSegDesc")
+CommandModule("GetSegDesc")
+Extension({})
+
+

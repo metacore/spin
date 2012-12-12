@@ -1,0 +1,124 @@
+<html>
+<head>
+<title>Booting iX86 SPIN</title>
+</head>
+
+<body bgcolor="#fefefe">
+<center>
+<table width=590><tr><td>
+<h1>
+<IMG align=bottom src="http://www.cs.washington.edu/research/projects/spin/www/pics/boot.gif">Booting SPIN on iX86</br></h1>
+<date>October 29, 1997</date>
+ <P>
+<HR>
+<P>
+
+<h2>Overview</h2>
+
+We prefer to boot kernels over the network rather than from the local file
+system as this drastically reduces the turnaround time of a build.
+The idea behind network booting is that some server listens out on 
+the network for "bootp" requests on the same subnet.  For the iX86 platform that server is
+yakko, and it begins looking for kernels starting from /afs/cs/project.
+Pathnames are specified relative to there.
+
+<p>
+If you've built a kernel, then just copy the kernel image
+(.../spin/kernel/sal/i386_freebsd/compile/SPIN/kernel) to your project directory
+(/afs/cs/project/spin/YOU/kernel).   Most of us just make a symlink to our
+build tree. Assuming you build in .../spin, this would be:
+<pre>
+	ln -s  /spin/YOU/spin/kernel/sal/i386_freebsd/compile/SPIN/kernel /spin/YOU/kernel
+</pre><blockquote>
+( Note that there exists a symlink &nbsp; /spin -> /afs/cs/project/spin )
+</blockquote>
+
+<h3> Using rconsole</h3>
+
+We use rconsole to directly interact with the crash machines.
+See the <a href="file:/afs/cs/project/spin/www/Internal/Environment/Equipment/rconsole.html">rconsole page</a> for a current list.  Crash machines have a serial line connection to an rconsole server.  You can run rconsole from anywhere in the network, and connect to the appropriate rconsole server.
+<p>
+You connect via rconsole to one of the crash machines listed on the 
+<a href="file:/afs/cs/project/spin/www/Internal/Environment/Equipment/rconsole.html">rconsole page</a> by typing:
+
+<pre>
+	% rconsole (machinename)
+</pre>
+For example,
+<pre>
+	% rconsole loom12
+	Attempting to connect to loom12 (via /dev/ttyC12) ... Connected
+	Password:
+	rconsole: Type '^_{q|e}' to exit.
+
+	>>>
+</pre>
+
+<p>
+You will need to know the rconsole password.  If you don't know it
+already, you will have to talk to one of us in person, as we don't
+send passwords via email.  If all of them are taken you can zephyr to
+spin-m3 and ask if someone could make one available, since people just
+hang on to an rconsole.  The escape sequence out of rconsole is
+(contrl)(shift)(dash) and then the char "q".
+
+
+Once you are at the boot prompt, which looks like:
+
+<pre>
+	>>>
+	>>> help
+	?		this list
+	help		this list
+	init		restart netboot
+	exit		restart netboot
+	halt		restart netboot
+	bootp		 retry bootp broadcast
+	ip &lt;addr&gt;	set my IP addr
+	server &lt;addr&gt;	set nfs server IP addr
+	kernel &lt;file&gt;	set boot filename
+	set &lt;option&gt;	set boot flag
+	show		 show boot flag
+	unset &lt;option&gt;	clear boot flag
+	b		alias for boot
+	boot [ [-fi] filename ]
+</pre>
+
+type 
+
+<pre>
+
+	>>> b /spin/YOU/kernel
+
+</pre>
+
+where YOU is YOU
+
+<p>
+This should boot spin over the network via http and/or nfs, and eventually you'll get to the spin shell. The spin shell has "!>" as its prompt.
+
+<h2> Where to go from here?</h2>
+
+Once you've booted, you can talk to the shell, or connect with the debugger.
+
+<dl>
+<dt><A HREF="../../../../../user/shell/doc/index.html">The Shell</a>
+<dd>The SPIN CLI
+
+<dt><A HREF="../../../../../doc/Debug/gdb.html">M3GDBTTD</a>
+<dd> Debugging
+
+<dt><A HREF="../../../../../doc/boot.html">Alpha boot page</A>
+<dd>If you're booting on the alpha
+</dl>
+
+<P>
+<hr>
+<FONT SIZE=2>
+<P>Copyright (c) 1997 The University of Washington. All rights reserved.
+</P>
+</FONT>
+</td></tr></table>
+</body>
+</html>
+

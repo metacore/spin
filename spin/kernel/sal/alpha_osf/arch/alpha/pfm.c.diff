@@ -1,0 +1,268 @@
+81a82,89
+> #ifdef SPIN
+> #define copyout(src, dst, size) (bcopy(src, dst, size), 0)
+> #undef simple_lock
+> #undef simple_unlock
+> #define simple_lock(x) 
+> #define simple_unlock(x) 
+> #endif
+> 
+94a103,110
+> #define NBUCKETS 32
+> #define BUCKET_SIZE (1024*1024)
+> #define SAMPLE_UNIT 32
+> #define SAMPLE_SIZE (BUCKET_SIZE*sizeof(uint)/SAMPLE_UNIT)
+> struct samples {
+>     ulong addr;
+>     uint *samples;
+> };
+102,103c118
+< 	uint	*pfm_samples;		/* PC samples		*/
+< 	ulong	pfm_buffsize;		/* size of pfm_samples	*/
+---
+> 	struct samples pfm_samples[NBUCKETS];
+108a124,175
+> static void
+> init_samples(struct pfmstate *pfm)
+> {
+>     int i;
+>     for (i = 0; i < NBUCKETS; i++) {
+> 	if (!pfm->pfm_samples[i].samples) {
+> 	    pfm->pfm_samples[i].samples = (uint*)kalloc(SAMPLE_SIZE);
+> 	}
+> 	memset(pfm->pfm_samples[i].samples, 0, SAMPLE_SIZE);
+> 	pfm->pfm_samples[i].addr = -1;
+>     }
+> }
+> 
+> static void
+> add_sample(struct pfmstate *pfm, ulong addr)
+> {
+>     int i;
+>     ulong off = addr % BUCKET_SIZE;
+>     addr -= off;
+> 
+>     for (i = 0; i < NBUCKETS; i++) {
+> 	if (pfm->pfm_samples[i].addr == addr) {
+> 	    pfm->pfm_samples[i].samples[off  / SAMPLE_UNIT]++;
+> 	    return;
+> 	}
+> 	if (pfm->pfm_samples[i].addr == -1) {
+> 	    pfm->pfm_samples[i].addr = addr;
+> 	    pfm->pfm_samples[i].samples[off  / SAMPLE_UNIT]++;
+> 	    return;
+> 	}
+>     }
+>     /* simply ignore the overflow. */
+>     printf("pfm:add_sample: sample overflow.\n");
+>     gimmeabreak();
+> }
+> 
+> static long get_sample_size(struct pfmstate *pfm)
+> {
+>     int i, j;
+>     ulong x = 0;
+>     for (i = 0; i < NBUCKETS; i++) {
+> 	if (pfm->pfm_samples[i].samples) {
+> 	    for (j = 0; j < BUCKET_SIZE/SAMPLE_UNIT; j++) {
+> 		if (pfm->pfm_samples[i].samples[j] != 0) {
+> 		    x++;
+> 		}
+> 	    }
+> 	}
+>     }
+>     return x + 100; /* slack */
+> }
+> 
+258,264c325,328
+< 		if (pfm->pfm_samples != NULL) {
+< 			kmem_free(kernel_map, pfm->pfm_samples, pfm->pfm_buffsize);
+< 			pfm->pfm_samples = NULL;
+< 			pfm->pfm_buffsize = 0;
+< 			for (i = 1; i < ncpus; i++)
+< 				(++pfm)->pfm_samples = NULL;
+< 		}
+---
+> 	    init_samples(pfm);
+> 	    for (i = 1; i < ncpus; i++) {
+> 		init_samples(++pfm);
+> 	    }
+266,270c330
+< 		if (pfm->pfm_samples != NULL) {
+< 			kmem_free(kernel_map, pfm->pfm_samples, pfm->pfm_buffsize);
+< 			pfm->pfm_samples = NULL;
+< 			pfm->pfm_buffsize = 0;
+< 		}
+---
+> 	    init_samples(pfm);
+272,277c332,333
+< 		pfm += cpu_number();
+< 		if (pfm->pfm_samples != NULL) {
+< 			kmem_free(kernel_map, pfm->pfm_samples, pfm->pfm_buffsize);
+< 			pfm->pfm_samples = NULL;
+< 			pfm->pfm_buffsize = 0;
+< 		}
+---
+> 	    pfm += cpu_number();
+> 	    init_samples(pfm);
+295,299c351
+< 	if (pfm->pfm_samples != NULL) {
+< 		kmem_free(kernel_map, pfm->pfm_samples, pfm->pfm_buffsize);
+< 		pfm->pfm_samples = NULL;
+< 		pfm->pfm_buffsize = 0;
+< 	}
+---
+> 	init_samples(pfm);
+307,309c359,362
+< /*
+<  * Give the user the current set of samples
+<  */
+---
+> struct pcount {
+>     ulong addr, count;
+> };
+> 
+311,313c364
+< pfmread(dev, uio)
+< 	dev_t dev;
+< 	struct uio *uio;
+---
+> pfmread(struct pcount *p, int n)
+315,320c366,383
+< 	register struct pfmstate *pfm = pfmstate;
+< 
+< 	if (!(pfm->pfm_state & PFM_PROFILING))
+< 		return (0);
+< 
+< 	return (uiomove (pfm->pfm_samples, pfm->pfm_buffsize, uio));
+---
+>     int i;
+>     int x = 0;
+>     register struct pfmstate *pfm = pfmstate;
+>     for (i = 0; i < NBUCKETS; i++) {
+> 	if (pfm->pfm_samples[i].samples) {
+> 	    int j;
+> 	    for (j = 0; j < BUCKET_SIZE/SAMPLE_UNIT; j++) {
+> 		if (pfm->pfm_samples[i].samples[j] != 0) {
+> 		    p[x].addr = pfm->pfm_samples[i].addr + j*SAMPLE_UNIT;
+> 		    p[x].count = pfm->pfm_samples[i].samples[j];
+> 		    x++;
+> 		    if (x >= n) 
+> 		      return x;
+> 		}
+> 	    }
+> 	}
+>     }
+>     return x;
+490c553
+< 
+---
+> 		init_samples(pfm);
+574,575c637,638
+< 
+< 		*(ulong *)data = pfm->pfm_buffsize;
+---
+> 		
+> 		*(ulong *)data = get_sample_size(pfm);
+592,598c655,656
+< 				if (pfm->pfm_samples != NULL) {
+< 					kmem_free(kernel_map, pfm->pfm_samples, pfm->pfm_buffsize);
+< 					pfm->pfm_samples = NULL;
+< 					pfm->pfm_buffsize = 0;
+< 					for (i = 1; i < ncpus; i++)
+< 						(++pfm2)->pfm_samples = NULL;
+< 				}
+---
+> 			    init_samples(pfm);
+> 			    init_samples(++pfm2);
+600,604c658
+< 				if (pfm->pfm_samples != NULL) {
+< 					kmem_free(kernel_map, pfm->pfm_samples, pfm->pfm_buffsize);
+< 					pfm->pfm_samples = NULL;
+< 					pfm->pfm_buffsize = 0;
+< 				}
+---
+> 			    init_samples(pfm);
+606,612c660,662
+< 				/* Better be the same CPU we opened.... */
+< 				pfm2 += cpu_number();
+< 				if (pfm2->pfm_samples != NULL) {
+< 					kmem_free(kernel_map, pfm2->pfm_samples, pfm2->pfm_buffsize);
+< 					pfm2->pfm_samples = NULL;
+< 					pfm2->pfm_buffsize = 0;
+< 				}
+---
+> 			    /* Better be the same CPU we opened.... */
+> 			    pfm2 += cpu_number();
+> 			    init_samples(pfm2);
+631,632c681
+< 		if (pfm->pfm_samples != NULL)
+< 			kmem_free (kernel_map, pfm->pfm_samples, pfm->pfm_buffsize);
+---
+> 
+634,639c683,684
+< 		pfm->pfm_buffsize = nbytes = (pfm->pfm_addrs.end - pfm->pfm_addrs.start) / 4;
+< 		if (pfm_open_mode == PCNTOPENEACH)
+< 			pfm->pfm_buffsize *= ncpus;
+< 		sptr = kmem_alloc(kernel_map, pfm->pfm_buffsize);
+< 		if (sptr == NULL)
+< 			return (ENOMEM);
+---
+> 		init_samples(pfm);
+> 
+643,644c688
+< 				pfm->pfm_samples = (uint *)sptr;
+< 				pfm->pfm_addrs = *(addr_rangep);
+---
+> 				init_samples(pfm);
+648c692
+< 			pfm->pfm_samples = (uint *)sptr;
+---
+> 			init_samples(pfm);
+657,658d700
+< 		if (pfm->pfm_samples != NULL)
+< 			kmem_free (kernel_map, pfm->pfm_samples, pfm->pfm_buffsize);
+660,665c702
+< 		pfm->pfm_buffsize = nbytes = (pfm->pfm_addrs.end - pfm->pfm_addrs.start) / 4;
+< 		if (pfm_open_mode == PCNTOPENEACH)
+< 			pfm->pfm_buffsize *= ncpus;
+< 		sptr = kmem_alloc(kernel_map, pfm->pfm_buffsize);
+< 		if (sptr == NULL)
+< 			return (ENOMEM);
+---
+> 		init_samples(pfm);
+669d705
+< 				pfm->pfm_samples = (uint *)sptr;
+670a707
+> 				init_samples(pfm);
+674d710
+< 			pfm->pfm_samples = (uint *)sptr;
+762c798
+< pfmintr(pc, ps, cntr, rpccval, sp)
+---
+> pfmintr(pc, ps, cntr, rpccval)
+764d799
+< struct stack_layout *sp;
+768c803,806
+< 
+---
+> 	if (cntr < 0 || cntr > 1) {
+> 	    printf("cntr value(%d) ??\n", cntr);
+> 	    gimmeabreak();
+> 	}
+807c845,846
+< 		pfm->pfm_ipl[ps & 0xf]++;
+---
+> 		/*pfm->pfm_ipl[ps & 0xf]++;*/
+> #ifndef SPIN
+809a849
+> #endif
+818,821c858,860
+< 	if ((pfm_state & (ps & PSL_CURMOD ? PFM_USAMPLES : PFM_KSAMPLES)) &&
+< 	    pc >= pfm->pfm_addrs.start && pc < pfm->pfm_addrs.end)
+< 		pfm->pfm_samples[(pc - pfm->pfm_addrs.start)
+< 				 / (4 * sizeof(uint))]++;
+---
+> 	if ((pfm_state & (PFM_USAMPLES | PFM_KSAMPLES))
+> 	    && pc >= pfm->pfm_addrs.start && pc < pfm->pfm_addrs.end)
+> 	  add_sample(pfm, pc - pfm->pfm_addrs.start); 

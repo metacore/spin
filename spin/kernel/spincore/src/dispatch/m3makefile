@@ -1,0 +1,21 @@
+
+Interface ("DispatcherRep")
+Interface ("EventDesc")
+Interface ("AliasDesc")
+Module ("EID")
+Table(ED,EID,EventDesc)
+Table(AD,EID,AliasDesc)
+
+Module ("Stitcher")
+
+Interface ("DispatcherPrivate")
+Module ("Binding")
+Module ("Dispatcher")
+Module ("DispatcherTypes")
+
+DomainExport("SpinTrusted","DispatcherPrivate")
+DomainExport("SpinTrusted","Stitcher")
+DomainExport("SpinTrusted","AliasDesc")
+DomainExport("SpinTrusted","DispatcherRep")
+DomainExport("SpinTrusted","Binding")
+DomainExport("SpinPublic","Dispatcher")

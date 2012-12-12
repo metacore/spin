@@ -1,0 +1,60 @@
+#
+# No shared libs, no floating point for cc
+#
+m3_option("-Y1@/bin/cc@-non_shared@-Wc,-nofloat@")
+
+#
+# Boilerplate code needed to compile c files which use kernel includes
+#
+m3_option("-X1@-D__alpha@")
+m3_option("-X1@-D__alpha__@")
+m3_option("-X1@-DMACH_IPC_TYPES=1@")
+m3_option("-X1@-Dalpha@")
+m3_option("-X1@-Wc,-nofloat@")
+m3_option("-X1@-O@")
+m3_option("-X1@-O1@")
+m3_option("-X1@-g3@")
+m3_option("-X1@-DALPHA@")
+m3_option("-X1@-DMACH@")
+m3_option("-X1@-DMACH_KERNEL@")
+m3_option("-X1@-DMACH_EXC_COMPAT@")
+m3_option("-X1@-DMACH_LOAD@")
+m3_option("-X1@-DTT@")
+m3_option("-X1@-DKERNEL@")
+
+#
+# Use my compiler
+#
+# m3_option("-Y0@/afs/cs/project/spin/build/release-6/src/m3/compiler/compiler/ALPHA_OSF/m3c@-tALPHA_OSF@")
+m3_option("-Y0@/afs/cs/project/spin/lib/m3/ALPHA_OSF/m3c@-tALPHA_OSF@")
+
+# call the startup function something other than main()
+m3_option("-Mspin_init")
+m3_option("-genmain")
+
+#
+# Use my driver
+#
+#M3="/afs/cs/project/spin/build/release-6/src/m3/compiler/driver/ALPHA_OSF/m3"
+
+#
+# Keep those .o files around
+#
+# m3_option("-keep") # keeps m3 ir and assembly intermediate files
+#
+# No float, lots of debug
+#
+m3_option("-X6@-mno-fp-regs@")
+m3_option("-zG@-g3@")
+m3_option("-w3")
+# m3_option("-verbose")
+
+build_standalone()
+override ("libm3s", $SOURCEBASE & "/mk/kernel/spin")
+import ("libm3s")
+override ("spin", $SOURCEBASE & "/mk/kernel")
+import ("spin")
+
+Module("CThread_Strands")
+Module("RPC")
+library("cthreads")

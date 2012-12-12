@@ -1,0 +1,236 @@
+# Copyright 1990 W. Jolitz
+#	from: @(#)Makefile.i386	7.1 5/10/91
+#	$Id: Makefile.i386,v 1.9 1997/12/09 20:20:41 becker Exp $
+#
+# Makefile for FreeBSD
+#
+# This makefile is constructed from a machine description:
+#	config machineid
+# Most changes should be made in the machine description
+#	/sys/i386/conf/``machineid''
+# after which you should do
+#	 config machineid
+# Generic makefile changes should be made in
+#	/sys/i386/conf/Makefile.i386
+# after which config should be rerun for all machines.
+#
+
+THISTREE:=$(shell cd ../../../../..; pwd)
+include $(THISTREE)/make.conf   # sets FULLTREE and THISTREE
+
+HOSTCC=gcc
+CC=${TARGETCC}
+
+# S is relative path from object dir to spin/kernel/sal/IX86_SPIN
+S=	../..
+I386=	${S}/i386
+
+CWARNFLAGS=-W -Wreturn-type -Wcomment -Wredundant-decls -Wimplicit
+#
+# The following flags are next up for working on:
+#	-Wnested-externs (almost works)
+#	-Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations
+#
+# When working on removing warnings from code, the `-Werror' flag should be
+# of material assistance.
+#
+COPTFLAGS= -g -O2
+# Not ready for -I- yet.  #include "foo.h" where foo.h is in the srcdir fails.
+INCLUDES= -nostdinc -I. -I$S/../.. -I$S -I$S/sys
+
+ifdef PROFILE
+BUILD_DIR = $(M3ARCH)_PROF
+else
+BUILD_DIR = $(M3ARCH)
+endif
+
+INCLUDES+= -I$S/include
+INCLUDES+= -I$S/myricom/include
+COPTS=	${INCLUDES} ${IDENT} -DKERNEL -Di386 -DLOAD_ADDRESS=0x${LOAD_ADDRESS} -D__FreeBSD__=2
+ASFLAGS=
+CFLAGS=	${COPTFLAGS} ${CWARNFLAGS} ${DEBUG} ${COPTS}
+
+ifndef LOAD_ADDRESS
+LOAD_ADDRESS=F0100000
+endif
+
+NORMAL_C= ${TARGETCC} -c ${CFLAGS} ${PROF} $<
+NORMAL_C_C= ${TARGETCC} -c ${CFLAGS} ${PROF} ${PARAM} $<
+# XXX errors leak out of all the pipes.  Should use cc *.S.
+# XXX LOCORE means "don't declare C stuff" not "for locore.s".
+NORMAL_S= ${TARGETCPP} -traditional -$$ -DLOCORE ${COPTS} $< | ${TARGETAS} ${ASFLAGS} -o $*.o
+DRIVER_C= ${TARGETCC} -c ${CFLAGS} ${PROF} $<
+DRIVER_C_C= ${TARGETCC} -c ${CFLAGS} ${PROF} ${PARAM} $<
+PROFILE_C= ${TARGETCC} -c ${CFLAGS} ${PARAM} $<
+
+vpath libstart.a $(THISTREE)/kernel/start/$(BUILD_DIR):$(FULLTREE)/kernel/start/$(BUILD_DIR)
+vpath libm3_sa.a $(THISTREE)/kernel/libm3_sa/$(BUILD_DIR):$(FULLTREE)/kernel/libm3_sa/$(BUILD_DIR)
+vpath libm3core_sa.a $(THISTREE)/kernel/m3core_sa/$(BUILD_DIR):$(FULLTREE)/kernel/m3core_sa/$(BUILD_DIR)
+vpath libspin.a $(THISTREE)/kernel/spincore/$(BUILD_DIR):$(FULLTREE)/kernel/spincore/$(BUILD_DIR)
+
+SFILES=	${I386}/i386/exception.s ${I386}/i386/microtime.s \
+	${I386}/i386/support.s ${I386}/i386/swtch.s ${I386}/apm/apm_setup.s
+SYSTEM_CFILES= ioconf.c param.c vnode_if.c
+SYSTEM_SFILES= ${I386}/i386/locore.s
+SYSTEM_OBJS= locore.o vnode_if.o ${OBJS} ioconf.o param.o
+SYSTEM_DEP= Makefile symbols.exclude symbols.sort ${SYSTEM_OBJS} libkern.a libm3core_sa.a libm3_sa.a libspin.a libstart.a _m3main.o
+SYSTEM_LD_HEAD= @echo loading $@; rm -f $@
+SYSTEM_LD= ${TARGETLD} -Bstatic -Bforcearchive -Z -T ${LOAD_ADDRESS} -o $@ -X ${SYSTEM_OBJS} vers.o _m3main.o  libkern.a \
+	-lstart -L$(THISTREE)/kernel/start/$(BUILD_DIR) \
+	-L$(FULLTREE)/kernel/start/$(BUILD_DIR) \
+	-lm3_sa -L$(THISTREE)/kernel/libm3_sa/$(BUILD_DIR) \
+	-L$(FULLTREE)/kernel/libm3_sa/$(BUILD_DIR) \
+	-lm3core_sa -L$(THISTREE)/kernel/m3core_sa/$(BUILD_DIR) \
+	-L$(FULLTREE)/kernel/m3core_sa/$(BUILD_DIR) \
+	-lspin -L$(THISTREE)/kernel/spincore/$(BUILD_DIR) \
+	-L$(FULLTREE)/kernel/spincore/$(BUILD_DIR)
+# SALONLY # SYSTEM_LD= ${TARGETLD} -Bstatic -Bforcearchive -Z -T ${LOAD_ADDRESS} -o $@ -X ${SYSTEM_OBJS} vers.o libkern.a
+
+SYMORDER_EXCLUDE=-x symbols.exclude
+#SYSTEM_LD_TAIL= @echo rearranging symbols; \
+#	symorder -m ${SYMORDER_EXCLUDE} symbols.sort $@; \
+#	size $@; chmod 755 $@
+SYSTEM_LD_TAIL=cp $@ $@.withsyms; ${TARGETSTRIP} $@; chmod 755 $@
+
+%BEFORE_DEPEND
+
+%OBJS
+
+%CFILES
+
+%LOAD
+
+%CLEAN
+
+# This is slightly different from before in that if you define PROF
+# to anything, it will assume profiling.  Don't do "PROF=" to turn
+# profiling off!
+LIBKERNP=$S/libkern
+
+ifdef PROF
+LIBKERN=${LIBKERNP}/libkern_p.a
+else
+LIBKERN=${LIBKERNP}/libkern.a
+endif
+
+libkern.a: ${LIBKERN}
+	@rm -f libkern.a
+	ln -s ${LIBKERN} libkern.a
+
+${LIBKERN}:
+	@(cd $S/libkern; ${MAKE})
+
+# Hack to find m3main.  Using cp to get here means we avoid weird
+# tricks to get the full path on the kernel link line.
+# We cannot use vpath to find _m3main.o because freebsd puts non-linkable
+# files on the kernel deps line.
+# $< represents the first dependency.  So if THISTREE has m3main, $<
+# expands to that, otherwise $< expands to the FULLTREE version
+
+_m3main.o: $(wildcard $(THISTREE)/kernel/start/$(BUILD_DIR)/_m3main.o \
+	$(FULLTREE)/kernel/start/$(BUILD_DIR)/_m3main.o)
+	cp $< .
+
+clean:
+	rm -f *.o *.s eddep errs genassym kernel libkern.a linterrs \
+	      makelinks param.c symbols.exclude symbols.sort tags \
+	      vers.c vnode_if.c vnode_if.h ${CLEAN}
+
+#lint: /tmp param.c
+#	@lint -hbxn -DGENERIC -Dvolatile= ${COPTS} ${PARAM} \
+#	  ${I386}/i386/Locore.c ${CFILES} ioconf.c param.c | \
+#	    grep -v 'struct/union .* never defined' | \
+#	    grep -v 'possible pointer alignment problem'
+
+symbols.exclude: Makefile
+	echo "gcc2_compiled." >symbols.exclude
+	echo "___gnu_compiled_c" >>symbols.exclude
+
+symbols.sort: ${I386}/i386/symbols.raw
+	grep -v '^#' ${I386}/i386/symbols.raw \
+	    | sed 's/^	//' | sort -u > symbols.sort
+
+locore.o: ${I386}/i386/locore.s assym.s
+	${NORMAL_S}
+
+# everything potentially depends on the Makefile since everything potentially
+# depends on the options.  Some things are more dependent on the Makefile for
+# historical reasons.
+machdep.o: Makefile
+
+# the following is necessary because autoconf.o depends on #if GENERIC
+autoconf.o: Makefile
+
+# depend on network configuration
+af.o uipc_proto.o locore.o: Makefile
+
+# depends on KDB (cons.o also depends on GENERIC)
+trap.o cons.o: Makefile
+
+# this rule stops ./assym.s in .depend from causing problems
+# ./assym.s: assym.s
+
+assym.s: genassym
+	./genassym >assym.s
+
+# Some of the defines that genassym outputs may well depend on the
+# value of kernel options.
+genassym.o: ${I386}/i386/genassym.c Makefile
+	${HOSTCC} -c ${CFLAGS} ${PARAM} -UKERNEL ${I386}/i386/genassym.c
+
+genassym: genassym.o
+	${HOSTCC} -static ${CFLAGS} ${PARAM} genassym.o -o $@
+
+# XXX this assumes that the options for NORMAL_C* and DRIVER_C* are identical.
+deps depend: assym.s param.c vnode_if.h ${BEFORE_DEPEND}
+	${TARGETCC} -M ${COPTS} ${CFILES} ${SYSTEM_CFILES} > dependencies
+	${TARGETCC} -M ${COPTS} ${PARAM} -UKERNEL ${I386}/i386/genassym.c >> dependencies
+	#MKDEP_CPP=${TARGETCPP} ; export MKDEP_CPP ; \
+	#mkdep -a -DLOCORE ${COPTS} ${SFILES} ${SYSTEM_SFILES}
+
+links:
+	egrep '#if' ${CFILES:Nswapkernel.c} | sed -f $S/conf/defines | \
+	  sed -e 's/:.*//' -e 's/\.c/.o/' | sort -u > dontlink
+	echo ${CFILES:Nswapkernel.c} | tr -s ' ' '\12' | sed 's/\.c/.o/' | \
+	  sort -u | comm -23 - dontlink | \
+	  sed 's,../.*/\(.*.o\),rm -f \1;ln -s ../GENERIC/\1 \1,' > makelinks
+	sh makelinks && rm -f dontlink
+
+tags:
+	@echo "see $S/kern/Makefile for tags"
+
+install:
+	@if [ ! -f kernel ] ; then \
+		echo "You must first build your kernel before trying to install." ; \
+		exit 1 ; \
+	fi
+	chflags noschg /kernel
+	mv /kernel /kernel.old
+	install -c -m 555 -o root -g wheel -fschg kernel /
+
+ioconf.o: ioconf.c $S/sys/param.h machine/pte.h $S/sys/buf.h \
+    ${I386}/isa/isa_device.h ${I386}/isa/isa.h ${I386}/isa/icu.h
+	${TARGETCC} -c ${CFLAGS} ioconf.c
+
+param.c: $S/conf/param.c
+	-rm -f param.c
+	cp $S/conf/param.c .
+
+param.o: param.c Makefile
+	${TARGETCC} -c ${CFLAGS} ${PARAM} param.c
+
+vers.o: ${SYSTEM_DEP} ${SYSTEM_SWAP_DEP}
+	sh $S/conf/newvers.sh ${KERN_IDENT} ${IDENT}
+	${TARGETCC} ${CFLAGS} -c vers.c
+
+vnode_if.c: $S/kern/vnode_if.sh $S/kern/vnode_if.src
+	sh $S/kern/vnode_if.sh $S/kern/vnode_if.src
+vnode_if.h: $S/kern/vnode_if.sh $S/kern/vnode_if.src
+	sh $S/kern/vnode_if.sh $S/kern/vnode_if.src
+
+fbsd.tcp: in.o in_pcb.o udp_usrreq.o tcp_input.o tcp_output.o tcp_subr.o tcp_timer.o tcp_usrreq.o uipc_socket.o uipc_socket2.o
+
+include dependencies
+%RULES
+
+# DO NOT DELETE THIS LINE -- make depend uses it

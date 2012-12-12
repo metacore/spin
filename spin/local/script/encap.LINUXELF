@@ -1,0 +1,71 @@
+#!/bin/sh
+#
+# encap
+#	generate assembly to stdout that encapsulates the object files 
+#	as Module-3 openarrays named prefix.file
+#
+#	kernel/start/src/mkextender generates m3 code to extract the objs
+#	ALPHA_SPIN templates generates c code to extract the objs
+#
+# Tue Feb 13 11:38:15 PST 1996
+#
+
+if [ $# -lt 2 ]
+then
+	echo  "usage: $0 <arrayprefix> <object files>+"
+	exit 1
+fi
+
+#
+# Write the object files as giant arrays of longs
+#
+
+echo "# created by $0 $*"
+
+prefix=encap_$1
+echo ".data"
+shift 1
+
+#
+for i in $*
+do
+	filename=`basename $i`
+	echo "	.align 4"
+	echo "_$filename.bits:"
+        hexdump -ve '".long 0x%x\n"' $i
+done
+echo "_end_of_objects:"
+
+#
+# Create M3 open array records for each file.  M3 implements open arrays
+# as struct {void*array, long bytes};
+#
+
+for i in $*
+do
+	filename=`basename $i`
+	bytes=`perl -e "@a=stat(\\"$i\\"); print \\$a[7]" `
+
+	echo "	.align 4"
+	echo "_$filename.openarray:"
+	echo "	.long _$filename.bits"
+	echo "	.long $bytes"
+	echo "	.globl _$prefix.$filename"
+	echo "_$prefix.$filename:"
+	echo "	.long _$filename.openarray"
+done
+
+#
+# Create C table of objects ending with 'end_of_objects' and terminated with 0.
+# C can calculate the size of each object with table[i+1]-table[i]
+#
+echo "	.align 4"
+echo "	.globl _$prefix""_list"
+echo "_$prefix""_list:"
+for i in $*
+do
+	filename=`basename $i`
+	echo "	.long _$filename.bits"
+done
+echo "	.long _end_of_objects"
+echo "	.long 0"

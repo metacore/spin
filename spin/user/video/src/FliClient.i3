@@ -1,0 +1,8 @@
+INTERFACE FliClient;
+PROCEDURE load1(fname: TEXT;x:CARDINAL;y:CARDINAL;repeat:CARDINAL);
+PROCEDURE load2(fname: TEXT;repeat:CARDINAL);
+(*
+PROCEDURE load3(fname: TEXT);
+*)
+PROCEDURE load4(fname: TEXT;x:CARDINAL;y:CARDINAL;repeat:CARDINAL);
+END FliClient.

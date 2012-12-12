@@ -1,0 +1,4 @@
+101c101
+< extern struct device	device_list[];
+---
+> extern struct device	*device_list;

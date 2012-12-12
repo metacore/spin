@@ -1,0 +1,5 @@
+if equal(BASETARGET, "ALPHA_SPIN")
+  implementation(MachineRPC)
+end
+
+interface(MachineTrans)

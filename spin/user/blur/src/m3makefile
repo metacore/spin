@@ -1,0 +1,11 @@
+overridepath = [ THISTREE , FULLTREE ]
+#m3_option("-keep")
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+
+Module("FPaint")
+CommandModule("BlurCmd")
+
+
+Extension({""})

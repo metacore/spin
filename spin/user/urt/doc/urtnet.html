@@ -1,0 +1,212 @@
+<HTML>	
+<HEAD>
+<TITLE>URT Network Support</TITLE>
+</HEAD>
+<BODY>
+
+<H1>URT Network Support</H1>
+
+The Unix Runtime support for networking implements the interface to
+the Digital Unix V3.2 networking code.  This document describes the
+socket support, internet initialization utilities, and how we spoof
+the Digital Unix TCP code to work in SPIN.
+
+<H2>Sockets</H2>
+
+<P>The URT network support provides a unix-like 
+<A HREF="../net/src/Socket.i3">socket</A> interface to the UDP and TCP
+protocols.  Sockets are based on the BSD socket implemention provided
+by Digital Unix. The module is a safe interface to the underlying
+socket implementation.  It is written defensively and does not expose
+the socket represention to untrusted clients.  Sockets grants access
+to the sockets layer by exporting procedures that use those of the
+in-kernel UNIX system. Thus, Sockets mainly calls these procedures.
+Currently we only support sockets in synchronous mode, which means
+that a receive call actually blocks, if there is no data available.
+Asynchronous socket support has not been tested.</P>
+
+<P> The Socket interface uses <i>mbufs</i> to implement a zero-copy
+send and receive interface.  Outgoing data is transferred immediately
+to the socket layer without touching that user provided data.  </P>
+
+<H2>Internet initialization and utilities (In)</H2>
+
+<P>Since we borrow some low-level components of the Unix networking
+source, it is necessary to spoof various components into believing
+that it is running in the context of Digital Unix.  </P>
+
+<P>The <i>In</i> module defines the in_aliasreq and in_ifaddr data
+structures used to register interface devices (lance, t3, etc.).  For
+each IP address assigned to an interface, an in_ifaddr structure is
+allocated and added to the interface address list.  IP addresses are
+assigned using the In.Control() procedure define in the 
+<A HREF="../urtcore/src/In.i3">In</A> interface.</P
+
+<H2>TCP from Digital Unix V3.2</H2>
+
+<A HREF="../../net/doc/index.html">Plexus</A> supports multiple
+implementations of the same protocol for different endpoints in the
+same way that it supports multiple protocols -- different handlers are
+fired in response to different guard predicates evaluating true.
+
+We currently borrow the TCP protocol from Digital Unix.  To make TCP
+work in our environment required that we import other networking
+modules found in the netinet directory.  In particular the following
+modules are required: <P> 
+
+<DL>
+
+<DT> <tt> Internet support (in.c)</tt>. Initializes the internet
+support and provide utility functions. <P>
+
+<DT> <tt> Protocol control block (in_pcb.c)</tt>. <P>
+
+<DT> <tt> Berkeley Socket support (uipc_socket.c and uipc_socket2.c)</tt>. <P>
+
+<DT> <tt> Berkeley memory buffer (uipc_mbuf.c)</tt>. <P>
+
+<DT> <tt> TCP input processing (tcp_input.c)</tt>. <P>
+
+<DT> <tt> TCP output processing (tcp_output.c)</tt>. <P>
+
+<DT> <tt> Miscellaneous TCP support routines (tcp_subr.c)</tt>. <P>
+
+<DT> <tt> Functions for slow/fast TCP timeouts (tcp_timer.c)</tt>. <P>
+
+<DT> <tt> TCP debugging and tracing utiDTties (tcp_debug.c)</tt>. <P>
+
+<DT> <tt> Berkeley protocol software table (tcp_usrreq.c)</tt>. Used
+to glue socket operations with protocol operations. <P>
+
+</DL>
+
+<em>URT</em> defines a OsfNet module that initializes the TCP module,
+starts the fast and slow TCP timers, initializes a protocol software
+table (protosw) and unix domain structure for TCP, implements the
+pffindtype() function to return the protosw structure, and provides
+the interface to call TCP's input routine.  In relation to the Plexus
+osfClient, OsfNet does the top-level initialization of internal
+datastructures, whereas the osfClient passes packets to the Digital
+Unix networking code.
+
+Rather than littering the networking C code with <em>SPIN</em>
+specific #ifdef statements, <em>URT</em>'s net_upcall modules defines
+the C functions and globals used by the networking code.  The
+net_upcalls module provides upcalls (via procedure variables), and
+global variables and dummy functions that are used to spoof the
+networking tcp C code to believe it is running in a environment.
+
+There are a few functions that the networking code calls that are
+redirected to a <em>Modula-3</em> implementation provided by
+<em>URT</em>.  The redirection is achieved via procedure variables
+that are bound to the <em>Modula-3</em> implementation at <em>URT</em>
+initialization.  The following procedures are currently redirected:
+
+<DL>
+
+<DT> <tt> ip_output()</tt>.  Redirected to the IP output function
+provided by <em>Plexus</em>.  <P>
+
+<DT> <tt> pffindtype ()</tt>. Redirected to OsfNet provided by
+<em>URT</em>.  <P>
+
+</DL>
+
+<H3>Network Synchronization and Socket Locking</H3>
+
+The networking code (tcp and sockets) use reader/writer lock
+primitives for synchronization.  Specifically, TCP time out functions,
+TCP input and output processing, and all accesses to protocol control
+blocks (pcb) and sockets are synchronized using locks.  These locks
+are used when setting the #define NETSYNC_LOCK to TRUE in
+net/net_globals.h.  The lock primitives (ulock_xxx ops) are emulated
+by <em>SPIN</em> and are implemented by 
+<A HREF="../../../kernel/spincore/src/machine/ALPHA_SPIN/sal/ThreadForSAL.i3">ThreadForSAL</A>
+<P>
+
+The <em>net_upcalls.c</em> file defines the following functions and
+global variables related to synchronization:
+
+<DL>
+
+<DT> solock() and sounlock() call solock_ext() and sounlock_ext(),
+respectively, and are called to synchronize on socket operations.
+
+<DT> route_lock, inifaddr_lock, igmp_lock and inp_udp_li are global
+lock data structures that are initialized explicitly by the OsfNet
+module.
+
+<DT> lockmode is set to the preemptive kernel lock mode.  (lockmode=1)
+
+</DL>
+
+<H3>Global Variables</H3>
+
+The following global variables are linked by the networking C code:
+
+<DL>
+
+<DT> <tt> struct in_ifaddr *in_ifaddr;</tt> is the head of the
+in_ifaddr structure list, which is used by the in.c module.  <P>
+
+<DT> <tt> unsigned char inetctlerrmap[24];</tt> is defined but not
+used.  <P>
+
+<DT> <tt> struct protosw inetsw[1]</tt>; is previously used by the
+pffindtype() function, which is now implemented by the OsfNet module.
+<P>
+
+<DT> <tt> struct ifqueue ipintrq;</tt> must be defined, but is not used.
+
+<DT> <tt> struct ifnet loif;</tt> must be defined, but is not used.
+
+</DL>
+
+<H3>Dummy Functions</H3>
+<P>
+The  networking code is functional without various support
+functions.  The following list of dummy functions either do nothing or
+return a default value (typically 0 or 1).
+<P>
+<UL><LI> ip_ctloutput 
+<LI> ip_srcroute
+<LI> iptime
+<LI> ip_stripoptions
+<LI> ip_freemoptions
+<LI> sockaddr_old 
+<LI> arpaliaswhohas
+<LI> if_addmulti 
+<LI> if_delmulti 
+<LI> ifa_ifwithaddr 
+<LI> ifa_ifwithdstaddr 
+<LI> igmp_joingroup 
+<LI> igmp_leavegroup 
+<LI> rtinit 
+<LI> rtrequest  
+<LI> rt_missmsg 
+<LI> rtalloc 
+<LI> rtfree 
+<LI> gsignal
+<LI> pfind
+<LI> psignal_inthread
+<LI> P_UNREF
+<LI> uiomove
+</UL>
+<P>
+
+Many of the above functions are used to optimize the packet processing
+path through the networking code.  The <em>inaction</em> of these
+functions simply forces the networking code to follow a more general
+and slower path.
+
+<HR>
+<ADDRESS>
+
+<I>
+<A HREF="mailto:mef@cs.washington.edu">Marc Fiuczynski</A>
+<BR>DAY/MONTH/YEAR
+</I>
+
+</ADDRESS>
+</BODY>
+</HTML>

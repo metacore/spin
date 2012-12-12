@@ -1,0 +1,156 @@
+<html>
+<head>
+<title>User-Level Programs on the SPIN OSF/1 Unix Server</title>
+</head>
+
+<body>
+
+<h1>User-Level Programs on the SPIN OSF/1 Unix Server</br></h1>
+<date>Updated for spin-20: 8 April 1996</date>
+
+<hr>
+
+<p>
+
+<h2>So you want to run a user-level program on SPIN</h2>
+
+These instructions will tell you what to do.  Unfortunately, you can't
+run emacs or Netscape on the SPIN server ... yet ...
+
+<h3>Setting up your machine</h3>
+
+The server will look for some files on the local machine as it boots.
+Follow these instructions to get set up:
+<dd>1.  Become superuser at the root of the filesystem.
+<dd>2.  rm -rf /spinbin; cp -r /afs/cs/project/spin/ddion/spinbin .
+<dd>3.  cd mach_servers
+<dd>4.  mv mach_init mach_init.old
+<dd>5.  ln -s /spinbin/spin_init mach_init
+
+<h3>Setting up SPIN</h3>
+
+As of <date>31 May 1996</date>, the OSF/1 server runs directly on 
+the SPIN trunk.  Occasionally, though, by tweaking a few things in
+your kernel you can improve performance and reduce irritability.
+These tweaks evolve as SPIN evolves, but they often involve
+<ul>
+<li>SpinProgram.c: this is the file which partitions SPIN memory.
+    <ul>
+    <li>SpinNumPhysFreePages controls how much memory can be allocated
+    through the OSF/1 server virtual memory interface.  This number
+    should be high enough for the server to boot (2000 pages is
+    recommended), although now that deallocate works, it is no longer
+    critical to raise it as high as possible.</li>
+    <li>SpinNumMallocPages controls, among other things, the amount
+    of memory available for dynamic linking.  The OSF/1 server will
+    require roughly 20 MB.</li>
+    <li>By decreasing the above two, you increase the memory available
+    for traced allocation.  In its current state, the OSF/1 server
+    forces frequent kernel garbage collection.  Garbage collection
+    hurts performance significantly.  By increasing traced memory, 
+    the frequency of garbage collection can be reduced.
+    </ul>
+<li>Error messages:  occasionally error messages or debugging printfs
+    are left in SPIN for development purposes.  The server does a lot
+    of things a lot of times, which means you may see a lot of these
+    messages.  If you work with the server often and you understand
+    the conditions under which such messages are displayed, it may be
+    worth the trouble to take them out.
+</ul>
+
+<p>
+If you find any other problems running the server on your 
+out-of-the-box kernel, please submit a bug report or contact ddion.
+
+<h3>Setting up the UNIX system call extensions</h3>
+
+The OSF/1 Unix extensions should build by default with other extensions.
+The source is under 
+<pre>
+spin/user/mach
+</pre>  
+See the current release build notes for building extensions.
+
+<h3>Booting the server</h3>
+
+<dd>1.  Boot SPIN.
+<dd>2.  Run the Unix init script:
+        <pre>script ~/spin/scripts/unix.spininit</pre>
+<dd>3.  Exec the server:
+	<pre>exec -noreturn /spin/ddion/vmunix.OSFSRV1.stable</pre>
+<p>
+<b>Note:</b>  Do <i>NOT</i> run script -b.  What the server needs from 
+script -b is subsumed by the unix.spininit script.  At this point, the 
+OSF/1 server and nanny don't get along so well.  This is future work.
+
+
+<h3>Using the user-level shell</h3>
+
+Type help at the SPIN shell prompt to see your builtin options.  
+<p>
+The first set of programs available to you are those in /spinbin.  They are
+<li>spin_init: I wouldn't recommend running this from the shell.
+<li>init: debuggable version of /sbin/init (does not yet work)
+<li>shell: the program currently running.
+<li>ls: lists the contents of a directory.
+<li>hello: simple exec test.
+<li>type: displays the contents of a file.
+<li>copy: tests writable file system (does not yet work)
+<li>io: lib I/O test
+<li>send: sends small UDP packets using the socket interface
+<li>float: tests some floating point operations
+<li>getpid: times a simple system call
+<b>Note:</b> Upkeep of these programs is not guaranteed.  spin_init and
+the shell should be current until the server switches to /sbin/init and
+/sbin/sh.
+<p>
+The source for these programs is in /afs/cs/project/spin/ddion/spin_init/.
+If you want to build your own user-level programs, start with the makefile
+located here.  There are some limitations, though:
+<ul>
+<li>Don't do anything that would write to the disk.  The server still
+thinks it has a read-only file system.
+</ul>
+<p>
+If you discover other things to add to this list, please let me know.
+As I said, simple user-level programs have not been extensively tested.
+<p>
+There are some additional system calls available to you.  Their main
+purpose is to facilitate debugging, avoiding complicated asynchronous
+console I/O.
+<ul>
+<li><b>sysprintd(x):</b> prints to the console x as an unsigned value, 
+followed by a newline.</li>
+<li><b>sysprintstr(str):</b> prints to the console the first 80 characters of 
+the string str.</li>
+<li><b>sysprintstrd(str, x):</b> prints to the console the first 80 characters 
+of the string str, followed by the value x as an unsigned value, followed 
+by a newline.</li>
+<li><b>strandprintstrd(str, x):</b> prints to the console the current 
+Strand.T (REF as an unsigned hex int), followed by the first 80 
+characters of the string str, followed by the value x as an unsigned value, 
+followed by a newline.</li>
+<li><b>set_debug_switch(x):</b> toggles the syscall debugging tracing.  If x is
+zero, syscall tracing is turned off (this is the default and initial
+condition).  Otherwise, syscall debugging is turned on.  This means that
+tracing data will be printed to the console for each system call, and 
+at key points during complex system call handlers.</li>
+</ul>
+
+<p>
+Lately it has also been possible to run some programs in /sbin.  These
+are programs which were not modified at all and have no idea they are
+running over SPIN.  These programs tend to consume more memory than the
+programs in /spinbin, hence the SPIN garbage collector will probably
+slow things down.  Also, programs in /sbin
+tend to do a lot of asynchronous console I/O.  This is fairly thread
+intensive, and will increase the probability of the GC-threads bug 
+popping up.  
+
+</body>
+<p>
+<hr>
+<Address>
+ddion@cs.washington.edu<br>
+</address>
+</html>

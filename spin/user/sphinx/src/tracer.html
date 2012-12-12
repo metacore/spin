@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>Dlib Tracer</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> Dlib Tracer</a> </h1>
+<date>Wed May 22 19:38:59 1996</date>
+</br>
+Yasushi Saito
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2>
+
+Dlib tracer is an add-on extension to the <!href="dlib"><a href="../../../user/dlib/doc/index.html">Dlib</a> service.
+It peeks at all the system call events destined to the dlib, and
+it logs the arguments passed to each of them. Then, it sends out
+the log to a specified machine using the UDP protocol.<p>
+
+This extension is created primarily to demonstrate the flexible 
+systemcall emulation service structure, so
+it won't serve any practical purpose now.<p>
+
+It's interesting to compare this service with
+<code>trace</code> command supported in some UNIXes(e.g., Sun OS).
+<small>rest under construction</small>.
+
+<H2>Design and Implementation</H2> 
+
+The tracer is an extension, and it is invoked in reponse to
+the <code>MachineTrap.Syscall</code> event. Dlib extension itself and
+the tracer are both dispatched for a single system call event. The tracer is
+invoked first(by specifying
+Dispatcher.Opt.First to <!href="dispatcher"><a href="../../../kernel/spincore/src/dispatch/doc/index.html">Dispatcher.Install</a>).
+It records the register packet, and passes the control to the
+next event handler, which is usually the Dlib extension.<p>
+
+
+When the log becomes full, it is output to a remote host using the UDP
+protocol. The name of the remote host is specified by the 
+<code>tracer</code> shell command described later.<p>
+
+
+<block> Actually, the log is managed in circular bounded-buffer style
+you may see in any textbook. There are fixed number(5) of logs, and
+the tracer and UDP sender act as the producer and the consumer,
+respectively.
+</block>
+
+<H2>Using the service</H2>
+
+First you have to load the extension. Assuming you've 
+done <code>script -b</code>, all you have to do is
+
+<pre>
+!>nanny touch tracer
+</pre>
+
+The tracer installs a shell command <code>tracer</code> when it's
+loaded. All the functions of the tracer can be controlled via this
+command.
+
+<dl>
+  <dt> <b><code>tracer on </code><var>host</var></b>
+  <dd> This command installs the tracer, and sets the remote host
+       to be <var>host</var>. 
+       
+  <dt> <b><code>tracer fancy </code><var>host</var></b>
+  <dd> This is same as <code>tracer on</code>, except that the tracer
+       uses fancy logging format. Fancy logging format records each
+       system call name(instead of system call number), and
+       for arguments that are supposed to be a text type, it
+       records the text pointed to by the register
+       instead of register value itself.
+
+       Of course, all these fanciness makes logging very slow.
+       
+  <dt> <b><code>tracer fake </code><var>host</var></b>
+  <dd> This is same as <code>tracer on</code>, except that the tracer
+       doesn't output any packets to the network. This sounds meaningless,
+       but it serves as a basepoint for performance comparison.
+       
+  <dt> <b><code>tracer off </b></code>
+  <dd> Uninstalls the tracer handler from the systemcall event.
+</dl>
+
+
+
+<H2>Remaining Issues</H2>
+
+<P>
+<HR>
+<P>
+<ADDRESS>yasushi@cs.washington.edu</ADDRESS>
+</HTML>

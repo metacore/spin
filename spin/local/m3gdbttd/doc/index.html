@@ -1,0 +1,724 @@
+<html>
+<head>
+<title>Using GDB With SPIN</title>
+</head>
+
+<body>
+<h1>
+<IMG align=bottom src=http://www.cs.washington.edu/research/projects/spin/www/pics/housefly.gif>
+<A name = "top"> Using GDB to debug kernels</a> </br>
+</h1>
+<date>March 13, 1995</date>
+<br>Last changed <date>
+Mon Jan 29 08:50:48 PST 1996
+</date>
+ <P>
+<HR>
+<P>
+
+<A NAME="TOC"><H2>Table of Contents</H2></A>
+
+<UL>
+<LI> <A HREF="#TOC">Table of contents</A>
+<LI> <A HREF="#overview">The Big Picture</A>
+<LI> <A HREF="#history">History</A>
+<LI> <A HREF="#intro">Starting GDB with TTD on a kernel</A>
+<LI> <A HREF="#threads">Threads</A>
+<LI> <A HREF="#breakpoints">Breakpoints</A>
+<LI> <A HREF="#gdb-domains">Multiple symbol namespaces with domains</A>
+<LI> <A HREF="#user-stacks">Debugging user space stacks</A>
+<LI> <A HREF="#dynamicLink">Debugging dynamically linked code</A>
+<LI> <A HREF="#disconnect">Disconnecting and halting</A>
+<LI> <A HREF="#problems">Problems and Hints</A>
+<LI> <A HREF="#bugs">Bugs</A>
+</UL>
+
+
+<A NAME="overview"><h2> The Big Picture</h2></A>
+
+SPIN and Mach support an ethernet debugging protocol called TTD (name
+explained below) that allows you to debug a running kernel or
+user-level program over the network.  The TTD-enabled debugger,
+combined with a kernel that speaks the TTD protocol will let you:
+<ul>
+<li> use GDB to symbolically debug a remote kernel,
+<li> examine all threads and address spaces,
+<li> maintain and switch between symbols for multiple
+non-overlapping address spaces,
+<li> partially debug overlapping address spaces,
+<li> set and recover from breakpoints in either kernel space or user space,
+<li> forcefully HALT a wedged kernel in nearly all cases,
+<li> look at either Modula-3 or C code.
+<li> debug dynamically linked code.
+</ul>
+
+TTD should not be confused with rcons-gdb, which was our original
+debugger that mapped gdb's remote target commands onto the Mach
+kernel's ddb interface.  This implementation, although incredibly
+useful, had lots of drawbacks (reliability, required that the kernel
+keep all of its symbol tables, required long-term support for ddb,
+etc.)  
+
+Very soon, we should be able to compile our kernel's without MACH_KDB
+support built in.  TTD does not require that the target machine
+maintain symbol table information.
+
+<A NAME="history"><h2> History </h2></A>
+
+TTD stands for "Topaz Teledebugging Protocol."  TTD was originally
+designed by Dave Redell at DEC SRC for use with the Firefly
+workstations and Topaz operating system.  Several years later, Rob
+Malan, then at CMU, did a port of TTD to the Intel 386.  Several years
+after that, the SPIN project implemented a version of TTD for the
+Mach/SPIN kernel on the Alphas (you're reading about this now). We
+also modified a version of GDB (gdb4.13) so that it understood a TTD
+host as a potential debug target.
+
+<A NAME="intro"><h2> Using GDB with TTD </h2></A>
+
+To use GDB to debug a kernel running Mach or SPIN, or to debug a
+user-space applicaton on such a kernel, you need:
+
+<ul>
+
+<li> A version of gdb that understands TTD as a target.  The latest
+release always has a copy of m3gdbttd and you can use it.
+
+<li> A version of the target kernel compiled with debugging symbols.
+You get this by default.
+
+<li> A version of the program running in any target address spaces
+that you wish to debug.
+
+<li> An understanding of debugging with gdb.  Click 
+<A HREF="http://www.ns.utk.edu/gnu/gdb/gdb_toc.html">here</a> for a
+tutorial.
+
+</ul>
+
+<h3>Basic concepts</h3>
+
+There is very little that is different between debugging a kernel over
+the network and debugging a regular program with gdb.  Two machines
+are involved with kernel debugging. The <b>target</b> machine is the
+machine which you want to debug. The <b>debugger</b> machine is the
+machine from which you are debugging.
+<p>
+To debug a target, you need to start up a version of gdb that
+understands ttd targets.  I'll assume you've found such a program.  For
+sake of example, let's assume that we want to debug the machine
+spincycle, which is running a version of the SPIN kernel 
+living in the directory: /afs/cs/project/spin/bershad/spin/sal/SPIN
+
+We'll want to specify as the target executable the complete path, as
+the relative source file names embedded in the executable only make
+sense when resolved against that complete path.
+<p>
+Start up gdb:
+<pre>
+m3gdbttd /afs/cs/project/spin/bershad/spin/sal/SPIN/spin_kernel.sys
+</pre>
+After a few seconds, we should get the gdb prompt.   
+<pre>
+(gdb)
+</pre>
+<p>
+We need to tell gdb to use spincycle as a target:
+<pre>
+(gdb) target ttd spincycle
+</pre>
+<p>
+
+This will cause gdb to attempt to establish contact with the target
+host. If all goes well, you should see something like this (with questions
+you'll need to answer):
+
+<pre>
+(gdb) target ttd spincycle
+Attaching to remote machine across net...
+Attached to spincycle, an ALPHA
+Connected to MK
+target not stopped: stop it? (y or n) y
+ttd_intr ()
+    at ../ttd/alpha/ttd_interface.c:190
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+[Switching to (0xfffffc000063b5a0 0xfffffc0000631468) [a-thr]]
+gimmeabreak () at locore.as:1750
+locore.as:1750: No such file or directory.
+(gdb) 
+</pre>
+
+The way to interpret this is: "we're attaching to spincycle, which is
+an ALPHA.  The target was not presently stopped when we connected, so
+we asked it to stop.  After stopping the target, the current active
+thread/task pair were (0xfffffc000063b5a0 0xfffffc0000631468), and we
+found ourselves stopped at gimmeabreak().  The gimmeabreak() function
+is where you will often find yourself as a result of a forced stop.
+If, for some reason (like your kernel crashed, or was being debugged
+by someone else), the target was already stopped, and you'll be asked
+if you indeed wish to connect.
+
+<p>
+
+At this point, the target is stopped and waiting to be controlled.
+You can look at kernel variables, get a backtrace, set breakpoints,
+etc.  To continue, type "cont." At any time, while the target is
+running, you can interrupt it with ctrl-C, and you'll find yourself
+back in gimmebreak().
+
+<A NAME="threads"><h2> Threads </h2></A>
+
+A remote kernel has many threads. GDB will let you walk from thread to
+thread, examining stack traces, looking at local variables, etc.  GDB
+and TTD use their own thread naming convention, so the names used by
+spin_mk for threads and tasks (thread_t, task_t) are not directly
+usable by you when manipulating threads.
+
+<p> 
+A thread is named by a unique non-negative integer.  TTD enforces
+a simple naming convention that makes it easy for you to figure out
+which threads are part of which address space.  Each of the n address
+spaces (tasks) on the target is assigned a number from 0 to n-1, and
+each of the t threads in each address space is assigned a number of 0
+to t-1. The name of a specific global thread is simply (task number *
+1000) + (thread number).  For example, thread 3 in task 2 is named
+2003.  As a result, all threads in a single task have similar names.
+<p>
+It used to be that we used m3gdbttd to debug the spin+mach kernel with the DEC OSF/1 unix server. In that case, we had some special task numbers:
+<ul>
+<li> Task 0 (all threads with name < 1000) is the kernel.
+<li> Task 1 (all threads with 1000 <= name < 2000) is the default pager.
+<li> Task 2 (all threads with 2000 <= name < 3000) is the UNIX server.
+</ul>
+
+But, presently, we can't guarantee that you'll get these nice numbers
+when debugging any of the server code.
+
+
+<h3> Looking at threads </h3>
+
+GDB only learns about new threads on the target when you tell it
+to. By default, when you connect, the only thread GDB knows about is
+the current one. To kickstart the thread machinery, you need to say:
+<pre>
+(gdb) thread sweep
+</pre>
+This will enumerate all threads, showing you:
+<pre>
+thread_name (thread_t  task_t) [a-thr] last_pc
+</pre>
+
+Where the thread_t and task_t listed are those of the target's
+internal names for the specific thread.  You don't use these names
+when manipulating threads through gdb, although you can use them when
+looking at the target's data structures for a given thread.  The
+current thread will be marked with a *:
+
+<pre>
+...
+* 1 (0x0 0x0) [TAZ[k]e]ttd_intr () at ../ttd/alpha/ttd_interface.c:190
+  2 (0x0 0x0) [TAZ[k]e]16_fffffc000034b4e4 in Strand__Block (
+    s=16_fffffc0001e9cad0) at Sched.m3:194
+  3 (0x0 0x0) [TAZ[k]e]16_fffffc000034b4e4 in Strand__Block (
+    s=16_fffffc0001e9c8a8) at Sched.m3:194
+  5 (0x0 0x0) [TAZ[k]e]16_fffffc000034b4e4 in Strand__Block (
+    s=16_fffffc0001e9c458) at Sched.m3:194
+  7 (0x0 0x0) [TAZ[k]e]16_fffffc000034b4e4 in Strand__Block (
+    s=16_fffffc0001e9c008) at Sched.m3:194
+  8 (0x0 0x0) [TAZ[k]e]16_fffffc000034b4e4 in Strand__Block (
+    s=16_fffffc0001e9bc10) at Sched.m3:194
+  9 (0x0 0x0) [TAZ[k]e]16_fffffc000034b4e4 in Strand__Block (
+    s=16_fffffc0001e9b9e8) at Sched.m3:194
+  10 (0x0 0x0) [TAZ[k]e]16_fffffc000034b4e4 in Strand__Block (
+    s=16_fffffc0001e9b7c0) at Sched.m3:194
+...
+</pre>
+
+<h3>Commands that manipulate threads</h3>
+<p>
+Here are some useful commands for dealing with threads:
+<dl>
+<dt>thread sweep
+<dd>probes the target for all known threads
+
+<dt>info thread
+<dd>lists all threads that gdb currently knows about
+
+<dt>thread thread_num
+<dd>switch the current thread to the named thread.  
+
+<dd> NOT PRESENTLY WORKING... The builtin gdb symbols
+$thread, $kthread, $ktask refer to the current gdb thread number, the target's representation for that thread (as a thread_t), and the target's representation for that thread's address space (task_t).  
+For example, you can say
+<pre>
+thread 2001
+print *$kthread
+</pre>
+and you'll see what the target thinks is currently the status of thread 2001.
+
+<dt>thread apply <thread list> command
+<dd>applies the named command the the list of threads.
+<dd>Threads are named by an identifier X, where 
+X / 1000 is the number of the task (in old ddb
+fashion), and X mod 1000 is the number of the thread in that task.
+For example, thread 2005 is the fifth thread in task 2.  (the
+unix server).
+<dd> A useful command is
+<pre>
+thread apply 2000-2099 backtrace
+</pre>
+which will list the complete set of stacks for all threads (assuming there are 
+less than 100) in the unix server.
+You can look at all thread stacks with "thread apply all backtrace" This is occasionally useful.
+
+</dl>
+
+<A NAME="breakpoints"><h2>Breakpoints</h2></A>
+<p>
+
+You can set breakpoints in the target. When you set a breakpoint, the
+breakpoint will be set in the current thread's address space.  If you
+want to set a breakpoint only for a particular thread, you should use
+a conditional breakpoint switched off of the particular thread you are
+interested in.
+
+
+<A NAME="gdb-domains"><h2>Debugging multiple symbol namespaces with domains</h2></A>
+
+The original gdb only allowed you to debug using one exec file at a
+time. gdb-ttd lets you load multiple exec files at once. Symbols and
+values can be resolved against any union of loaded exec files.  This
+feature lets you seamlessly debug, say, both the spin_mk kernel and a
+user-space application together.
+<p>
+
+A single exec-file is stored in a "domain."  You can have as many
+domains loaded at a time as you want. Domains are named and stacked,
+and symbols and values are resolved against the stack of loaded
+domains in LIFO order.  By default, you get one domain, which contains
+the initial exec file, when gdb starts up.  You can create more
+domains, load symbol files into them, and manipulate the domain stack
+to influence gdb's mappings of names and addresses.
+
+<dl>
+<dt> domain stack
+<dd> shows you current stack of domains.
+The stack is listed with the bottommost element being the "top of the
+stack" and tagged with a *. 
+
+<dt> domain create domain_name
+<dd> creates a new domain  and assigns it the specified name. For example:
+<pre>
+domain create osf
+</pre>
+will create a new domain called "osf."  The osf domain will be empty (not associated with any symbol table), and will not be on the stack.
+
+<dt> domain push domain_name
+<dd> pushes the named domain onto the top of the stack. This will
+cause gdb to look in the symbol table for domain_name first when
+trying to resolve an address or a symbol.
+<dd> If domain_name is omitted, then the push operation will swap the
+top two domains.  (In this way, domain stacks work like directory
+stacks from csh).
+
+<dt> domain pop 
+<dd> pops the topmost domain (effectively removing it
+from the search space of symbols which gdb uses to resolve addresses
+and names).
+
+<dt> domain sweep 
+<dd> This does all the "add-symbol-file" commands automatically.  It
+creates and pushes a new domain and then add all the symbols from the
+extension objects.  This can be done by hand using the create, push and
+add-symbol-file commands manually with date from the spinshell 'show domains' command.
+
+<dt> file filename
+<dd> loads the named file into the domain at the top of the stack, destroying any symbol table information currently associated with the topmost domain.
+
+<dt> info domain
+<dd> lists all currently loaded domains, which can be a superset of
+the domain stack.  That is, if you pop a domain from the stack, the
+domain is not destroyed, it just is removed from gdb's currently
+active set of symbol tables.  You can push any domain returned by
+"info domain" back onto the stack if you like.
+
+</dl>
+
+Here's an example showing how you can use domains to debug the kernel
+and the OSF/1 server at the same time. It creates a second domain,
+called osf, puts it at the top of the domain stack, and then
+loads the domain with the vmunix file for the server.
+
+<pre>
+(gdb) domain create osf
+(gdb) domain push osf
+(gdb) file work/obj/alpha/osf/server/DEFAULT/vmunix.OSFSRV.DEFAULT  
+(gdb) domain stack
+ Domain default (objfile-name = sal/SPIN/spin_kernel.sys: 0xfffffc00002a0000-0xfffffc0000424910)
+*Domain osf (objfile-name = work/obj/alpha/osf/server/DEFAULT/vmunix.OSFSRV1.DEFAULT: 0x220000230-0x2400d5f20)
+(gdb) 
+</pre>
+
+Now,  gdb will use the union of the symbol tables from the 
+server and the kernel to resolve names and addresses.
+
+<h3> Trickyness </h3>
+
+If the same symbol is defined in more than one domain in the stack,
+then gdb will use the first one it finds.  This may sometimes not be
+the right thing. For example, the symbol "mach_msg_trap" is defined in
+both the server and the kernel. If you want a specific instance of a
+symbol from a specific domain, then you should take care to place that
+domain at the top of the stack beforehand.  Eventually, gdb will let
+you qualify individual symbols with domain specifiers, as in
+$osf::mach_msg_trap.  Not yet however.
+
+
+<A NAME="user-stacks"><h2> User space stacks </h2></A>
+
+GDB requires symbol table information on the alpha in order to
+determine stack frame formats.  This means that, once you've got a
+symbol table for a specific address space loaded in a domain, gdb will
+let you look at stack traces that cross the user-kernel boundary. For example,
+<pre>
+(gdb) where
+#0  mach_msg_continue ()
+    at /afs/cs/project/spin/build/release-5/src/mk/kernel/ipc/mach_msg.c:1961
+#1  0xfffffc0000313910 in mach_msg_continue ()
+    at /afs/cs/project/spin/build/release-5/src/src/src/src/src/src/src/mk/user/libcthreads/cthreads.c:586
+</pre>
+shows a stack trace that crosses the boundary (clearly marked).  
+
+
+<h4> Interpreting kernel boundary crossings </h4>
+
+There are three different kinds of "boundary" crossings that can be
+reflected by a thread which is stopped in the kernel.
+
+<dl>
+
+<dt> Full stops.
+<dd> On occasion, a thread will block in the kernel with all of its
+state maintained across the block (no continuation). For these "full
+stops" you will see a complete backtrace, generally starting with
+Swtch_context and ending with (probably) cthread_body out in user
+space. Register values at the boundary crossing will be significant. 
+
+<dt> Continuation stops.
+<dd> Most of the time, a thread will block in the kernel on a
+continuation, for example "mach_msg_continue."  In these cases, the
+thread's kernel state at the boundary will be bogus (all registers
+save for a few will be zero).
+
+<dt> Stuns
+<dd> Threads which are running, but
+temporarily stopped because you are debugging them, will often be
+found stuck at "locore_exception_return" at the user/kernel boundary
+crossing.  In these cases, you'll actually see two adjacent frames at
+the crossing. The younger boundary frame will reflect the contents of
+the kernel registers at that frame. The older boundary frame will
+reflect the contents of the (interrupted) user context
+
+</dl>
+
+
+<A NAME="dynamicLink"><H2>Debugging Dynamically Linked Code</H2></A>
+
+GDB, together with a bit of careful attention on your part, allows you
+to debug dynamically linked code.  The basic model of how to do this is:
+
+<UL>
+<LI> Dynamically link your code into the SPIN kernel.
+<LI> Ask the kernel where your dynamically linked code has gone.
+<LI> Tell gdb where it's gone.
+</UL>
+
+Here's an example interaction, starting with the 
+<A HREF="../../../user/shell/doc/index.html">SPIN
+Shell</a> dialog:
+<pre>
+Shell Started.
+!>load noconf trust tftp /spin/becker/hello.o
+DownLoad: tftp: /spin/becker/hello.o  got 1712 bytes
+!>Calling domain_entry()
+        hello,world
+        my return value is 0xc0ffee
+domain_entry() returned 0xc0ffee
+
+!>
+!>show loadmaps
+1. /spin/becker/hello.o 0xfffffc0000e87980 size=96 (untrusted) 
+        .text start=0xfffffc0000e87980 size=0x60
+        .xdata start=0xfffffc0000e87a00 size=0x10
+        .pdata start=0xfffffc0000e87a10 size=0x10
+        .data start=0xfffffc0000e87a20 size=0x30
+        .lita start=0xfffffc0000e87a50 size=0x10
+!>show domains
+1. SpinPublic (trusted) 
+        . SpinPublicCcode (trusted) 
+2. SpinTrusted (trusted) 
+        . SpinTrustedCcode (trusted) 
+3. Device (trusted) 
+4. Console (trusted) 
+5. CAM (trusted) 
+6. Rofs (trusted) 
+7. RofsTftp (trusted) 
+8. /spin/becker/hello.o 0xfffffc0000e87980 size=96 (untrusted) 
+</pre>
+
+The two important commands here are "show loadmaps" and "show
+domains".  The former shows the dynamic linking map information for
+only dynamically linked domains. The latter shows information for all
+domains. Note that static domains do not include any coff information.
+
+ <P>
+The key number is the .text addres, which is the first number shown
+after the domain name, and then repeated in the actual loadmap.
+
+Now, you've got to get this information into gdb.  You can do this
+automatically with domain sweep or manually with add-symbol-file.
+
+The automatic method creates a new domain in gdb, gets the file names
+and addresses from the target, reads the symbol files
+and pushes the new domain onto the domain stack:
+<pre>
+	gdb>domain sweep
+</pre>
+
+The manual method does each step by hand:
+<pre>
+	gdb>add-symbol-file  object-file-name  text_start_address
+</pre>
+
+Where text_start_address  is what "show loadmaps" gives you.
+
+ <P>
+
+If you load a .o file that defines symbols already defined, you will
+cause gdb to complain about multiply defined symbols.
+You need to use the <A NAME="#gdb-domains">domain machinery</A> here as in:
+<pre>
+		domain create foo
+		domain push foo
+		add-symbol-file object-file-name text_start_address
+</pre>
+
+For example,
+<pre>
+(gdb) domain create hello
+(gdb) domain push hello
+ Domain default (current domain not at top of domain stack
+objfile-name = /afs/cs.washington.edu/project/spin/bershad/spin/sal/SPIN/spin_k
+ernel.sys: 0xffffffffffffffff-0x0)
+*Domain hello (EMPTY)
+(gdb) add-symbol-file /afs/cs/project/spin/becker/hello.o 0xfffffc0000e87980
+add symbol table from file "/afs/cs/project/spin/becker/hello.o" at text_addr = 0xfffffc0000e87980?
+(y or n) y
+initializing domain at top of stack
+(gdb) disassemble domain_entry
+Dump of assembler code for function domain_entry:
+0xfffffc0000e87980 <domain_entry>:	23defff0  8	lda	sp, -16(sp)
+0xfffffc0000e87984 <domain_entry+4>:	27bb0001  9	ldah	gp, 65536(t12)
+0xfffffc0000e87988 <domain_entry+8>:	23bd80c0  8	lda	gp, -32576(gp)
+0xfffffc0000e8798c <domain_entry+12>:	b75e0000 2d	stq	ra, 0(sp)
+.....
+0xfffffc0000e879d0 <domain_entry+80>:	6bfa8001 1a	ret	zero, (ra), 1
+End of assembler dump.
+(gdb) domain pop
+*Domain default (objfile-name = spin/sal/SPIN/spin_kernel.sys: 0xfffffc0000230000-0xfffffc000087cf60)
+(gdb) disassemble domain_entry
+No symbol "domain_entry" in current context.
+(gdb) 
+</pre>
+
+
+<A NAME="disconnect"><h2>Disconnecting from and halting the target</h2></A>
+
+Once you've finished debugging the target, you should be a good citizen and gracefully detach.  Two commands are available to you for this:
+<dl>
+<dt> detach
+<dd> disconnects from current target.
+
+<dt> detach HALT
+<dd> disconnects from current target and causes target to
+go to PROM. (Useful for when things get really wedged, which is
+occasionally).
+</dl>
+
+In addition, if you find that you are unable to attach to a running
+target, then you can do a hard kill without ever connecting. For example,
+<dl>
+<dt> target ttd target-host HALT
+
+<dd> will force the target-host to shutdown to the boot prom,
+irrespective of the current state of the target.
+<dd> If you find that you are having to do a lot of hard kills, then this implies a problem with the TTD implementation.  Please let me know about it.
+
+</dl>
+
+<A NAME="problems"><h2>Problems and hints</h2></A>
+
+Although you should never experience any problems, you might. Here are
+some and what you can do about them:
+
+<h3>How do I debug system initialization?</h3>
+You need to boot with the t (for ttd) flag, or T if you're into Capitals.
+<pre>
+>>> boot -fi "spin.boot" -fl t ez0
+</pre>
+
+
+<h3>I can't seem to connect to my target?</h3>
+
+<h4> Who am I? </h4>
+
+TTD relies on bootp so that the target can determine its IP
+address. At boot time, the kernel should find a bootp server to tell
+it this.  If the bootp server is down, or it doesn't know about the
+target machine, then you won't be able to run ttd. Currently, we run a
+bootp server on silk.cs.washington.edu.  You'll need to check
+/etc/bootptab on spin to make sure that it knows who you are.
+Reminder: the target must be on the same
+subnet as the bootpserver.
+
+<h4> The target is wedged </h4>
+
+The target keeps track of minimal state about any TTD session, but it
+does remember whether or not there is currently a session. The
+protocol will let you "break into" a current session (or a session
+which terminated uncleanly), but gdb will first ask "target is
+currently being debugged; connect anyway?"  Most of the time, the
+affirmative will do the right thing here. On occasion, I've seen the
+server become completely non-responsive.  Please let me know if you
+see this.
+
+<h4> HALT doesn't work </h4>
+
+Try again.  Basically, when sending a HALT request to a wedged
+machine, you're throwing packets at it with the hopes that the lance
+driver will see the one that says "halt."  A wedged machine is not
+particularly good at fielding packets however, so you may need to try
+this several times before your packet gets through.
+
+<h4> The target is dead </h4>
+
+TTD unfortunately does not replace rconsole for our machines.  It is
+necessary to boot initially from the alpha's PROM prompt in order to
+get the kernel loaded and running ttd.  If the kernel is already sitting at the PROM, TTD won't work. I always run a separate rconsole window to the PROM just to make sure I know what's going on.
+
+<h3> GDB won't let me read or write memory.</h3>
+
+TTD is pretty forgiving when asked to read or write memory. Basically,
+you can write any piece of the kernel's address space, and any piece
+of any user address space provided that the map for that address space
+contains the address.  Of course, if you try to access some
+non-existent memory, gdb will fail and you'll get a little error
+message.  Don't worry about it.  GDB tries to cache memory on the
+debugger, so when you ask to read just a single byte, you may still
+see an error as GDB may try to read several hundred.
+
+<h3> The target is printing all kinds of little messages to the console.</h3>
+
+Most status messages are silently reflected back to GDB. Sometimes
+though, the target will print additional information to the console.
+Some messages you may see are "ttd: paged out page," which means that
+ttd had to fault a page before you could access it, or "invalid
+address" which means that gdb asked ttd to access a bad address.
+<p>
+
+There are a set of "debugging" variables that you can set directly
+from gdb if you like. These will let you more closly monitor what the
+target is doing. Under normal circumstances, you shouldn't need to use
+these:
+
+<dl>
+<dt> ttd_debug
+<dd> general debugging flag. Shows lots of information about requests
+as they arrive.  May slow the target down so much so as to make gdb
+think it's not responding.
+
+<dt> ttd_thread_debug
+<dd> shows control and status messages for ttd operations involving
+thread manipulation.
+
+<dt> ttd_machine_debug
+<dd> shows debugging information for the machine-dependent layer of the target. This shows, for example, individual register manipulations.
+
+<dt> ttd_access_debug
+<dd> shows debugging information for kernel memory acceses.
+
+<dt> ttd_uaccess_debug
+<dd> shows debugging information for user memory accesses.
+
+</dl>
+
+In addition, you can set the gdb pseudo-variable $ttd-debug to "on" in
+order to get additional debugger-side debugging information.
+<pre>
+	(gdb) set ttd-debug on
+	(gdb) set ttd-debug off
+</pre>
+
+<H3>GDB is confused about what language I am using</H3>
+
+Sometimes GDB will think you are debugging C code when you want to look at M3 code, or vice versa.  GDB uses a simple heuristic to figure out what kind of program text and symbols you are looking at. Sometimes, the heuristic is wrong. To force gdb to let you view the world through one language view or another, say:
+<pre>
+set lang c
+</pre>
+or
+<pre>
+set lang m3
+</pre>
+This will override whatever GDB thinks is the current language.
+
+<h3>GDB won't find my source files.</h3>
+
+Make sure that you have specified the full path name of your object
+files, and that those object files were compiled against a full source
+tree.
+
+<h3>So much typing to connect and debug server and kernel!</h3>
+Yes.  An easy thing to do is to have a startup script for kernel debugging.
+Here's the one I use:
+<pre>
+dir  /afs/cs/project/spin/bershad/sirpa/obj/alpha/mk/kernel/DEFAULT
+dir  /afs/cs/project/spin/bershad/work/obj/alpha/osf/server/DEFAULT
+file /afs/cs/project/spin/bershad/sirpa/obj/alpha/mk/kernel/DEFAULT/mach_kernel.SK1.DEFAULT
+target ttd spincycle
+domain create osf
+domain push osf
+file /afs/cs/project/spin/bershad/work/obj/alpha/osf/server/DEFAULT/vmunix.OSFSRV1.DEFAULT
+thread sweep
+where
+</pre>
+You'll need to change yours accordingly.
+
+<h3>How do I use DDB and GDB at the same time?</h3>
+
+You can't. You can use one or the other until DDB is completely
+eliminated from the kernel build.  As long as you are not presently
+"connected" to the target, it's fine for you to hit ctrl-P at rconsole
+and type away.  Once connected, though, the target will get very
+confused if you speak at it through both GDB and DDB.  Please don't.
+<p>
+One (temporary) advantage of keeping the kernel bilingual for now
+is that any fatal bugs in ttd cause the kernel to drop into kdb, which
+at least makes the debugger debuggable.
+
+
+
+<A NAME="bugs"><h2> Bugs </h2></A>
+
+I am sure there are plenty.  Please report them to me as you discover
+them and I'll try to fix ASAP.
+
+
+
+</body>
+<p><hr>
+<Address>
+bershad@cs.washington.edu<br>
+</address>
+</html>
+

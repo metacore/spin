@@ -1,0 +1,16 @@
+rm -f log
+../bin/rvmutl <<EEE
+init_log log 300k
+quit
+EEE
+
+rm -f data
+touch data
+../bin/rdsinit log data <<DDD
+0x500000
+0x8100000
+0x100000
+0x100000
+100
+128
+DDD

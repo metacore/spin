@@ -1,0 +1,8 @@
+#!/bin/csh
+set d=`pwd | sed -e "s=.*$USER=/udir/$USER="`
+foreach i ($*)
+  echo rcp flimflam:$d/$i .
+  if ($i:e == c) then
+    echo cl -c -Zi -Od -D_MT -D_DLL -nologo $i
+  endif
+end

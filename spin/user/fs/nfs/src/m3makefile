@@ -1,0 +1,37 @@
+m3_option("-A")
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SecurityPublic","kernel","spincore",overridepath)
+DomainImport("OncRpc","user","oncrpc",overridepath)
+DomainImport("NetDb","user/net","dns",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport("SpinUnixNet","user/urt","net",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("FastBuffer","user","fastbuffer",overridepath)
+
+# turds
+# needed for DomainPrivate and M3toC
+#DomainImport("SpinTrusted","kernel","spincore",overridepath)
+
+Package ("Nfs")
+#oncrpc_Interface("NfsMountProt")
+oncrpc_client("NfsMountProt")
+oncrpc_xdr("NfsMountProt")
+
+#oncrpc_Interface("NfsProt")
+#oncrpc_client("NfsProt")
+#oncrpc_xdr("NfsProt")
+
+interface("NfsProt")
+interface("NfsMountProt")
+module("NfsProt_x")
+module("NfsKey")
+implementation("NfsProt_c")
+table("Nfs","NfsKey","NfsProt")
+Module ("Nfs")
+Module ("SIDMap")
+Extension({""})
+

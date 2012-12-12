@@ -1,0 +1,247 @@
+<HTML>
+<HEAD>
+<TITLE>URT Core</TITLE>
+</HEAD>
+<BODY>
+
+<H1>URT Core</H1>
+
+
+<H2>Memory Buffers (Mbuf)</H2>
+
+The Mbuf module provides a re-implementation of the Berkeley memory
+buffers.  Mbufs are used throughout the plexus networking code to pass
+network data between protocols.  Unfortunately, the use of mbufs is
+currently unsafe and needs to be redesigned.  What follows is a brief
+description of how mbufs are laid out and how they are most commonly
+used. A more detailed description of the Berkeley memory buffers can
+be found in <strong>TCP/IP Illustrated Volume 2</strong> by Gary
+R. Wright and W. Richard Stevens.<P>
+
+An mbuf currently has a header structure that defines the type of the
+mbuf and where data is stored.
+
+<pre>
+TYPE mh_hdrT = RECORD
+  mh_next    : T;
+  mh_nextpkt : T;
+  mh_data    : Word.T; (* ADDRESS; *)
+  mh_len     : Ctypes.long;
+  mh_type    : Ctypes.int;
+  mh_flags   : Ctypes.int;
+  mh_union   : ARRAY [0..3] OF ARRAY [1..BYTESIZE(Ctypes.long)] OF CHAR;
+END;
+
+TYPE MbufT = RECORD
+  mh_hdr : mh_hdrT;
+  M_dat  : ARRAY [1..MLEN] OF CHAR;
+END;
+
+TYPE T = UNTRACED REF MbufT;
+
+</pre>
+
+Mbufs can be linked together using the <code>mh_next</code> and
+<code>mh_nextpkt</code> members.  The <code>mh_data</code> members
+points to the data in the mbuf and the <code>mh_len</code> member
+specifies its length.  It is possible for the data pointer to point
+internally at the <code>MbufT.M_dat</code> array, or it can point to
+external data.  The <code>mh_type</code> member specifies the type of
+data contained in the mbuf.  In SPIN this typically is either
+<code>Mbuf.MT_DATA</code> or <code>Mbuf.MT_HEADER</code>.  The
+<code>mh_flags</code> member defines how the mbuf should be treated
+when it is freed.  The last member <code>mh_union</code> is
+unused. <P>
+
+At the moment clients should only access the data contained by the
+mbuf using the <code>Mbuf.Array</code> function. 
+
+<DL>
+<DT> <code>
+PROCEDURE m_copydata(
+    mbuf : T; 
+    off  : CARDINAL; 
+    len  : CARDINAL; 
+    cp   : T);
+</code>
+
+<DD> Copy data from an mbuf chain starting <code>off</code> bytes from
+the beginning, continuing for <code>len</code> bytes, into the
+indicated buffer.  <P>
+
+<DT> <code>
+PROCEDURE m_copym(
+    mbuf : T; 
+    off  : CARDINAL; 
+    len  : CARDINAL; 
+    wait : HowT):T;
+</code>
+
+<DD> Make a copy of an mbuf chain starting <code>off</code> bytes from
+the beginning, continuing for <code>len</code> bytes.  If len is
+<code>M_COPYALL</code>, copy to end of mbuf.  The wait parameter is a
+choice of <code>M_WAIT/M_DONTWAIT</code> from caller.  <P>
+
+<DT> <code>PROCEDURE m_free(mbuf : T):T;</code>
+
+<DD> Free an allocated mbuf, freeing associated cluster if present.
+If cluster requires special action, place whole mbuf on mfreelater and
+schedule later freeing (so as not to free from interrupt level).
+<P>
+
+<DT> <code>PROCEDURE m_freem(mbuf : T);</code>
+
+<DD> Free an allocated mbuf chain.  Calls <code>m_free</code> for each
+mbuf in the chain.  <P>
+
+<DT> <code>PROCEDURE m_get(
+    canwait : HowT; 
+    type    : Ctypes.int):T;</code>
+
+<DD> Space allocation routines.  Will get a mbuf.
+<P>
+
+<DT> <code>PROCEDURE m_getclr(
+    canwait : HowT; 
+    type    : Ctypes.int):T;</code>
+
+<DD> Space allocation routines.  Will get a mbuf with zero'd out data area.
+<P>
+
+<DT> <code>PROCEDURE m_gethdr(
+    canwait : HowT; 
+    type    : Ctypes.int):T;</code>
+
+<DD> Space allocation routines.  Will get a mbuf with pkt header.
+<P>
+
+<DT> <code>PROCEDURE m_length(mbuf : T):CARDINAL;</code>
+
+<DD> get the length of an mbuf chain.
+<P>
+
+<DT> <code>PROCEDURE m_prepend(
+    mbuf : T; 
+    len  : CARDINAL; 
+    how  : HowT):T;</code>
+
+<DD> Lesser-used path for <code>M_PREPEND</code>.  Allocate new mbuf
+to prepend to chain, copy junk along.  <P>
+
+<DT> <code>PROCEDURE m_pullup(
+    mbuf : T; 
+    len  : CARDINAL):T;</code>
+
+<DD> Rearrange an mbuf chain so that len bytes are contiguous and in
+the data area of an mbuf.  Returns the resulting mbuf chain on
+success, frees it and returns null on failure.  If there is room, it
+will add up to <code>max_protohdr-len</code> extra bytes to the
+contiguous region in an attempt to avoid being called next time.  <P>
+
+<DT> <code> PROCEDURE M_PREPEND(
+    mbuf : T; 
+    plen : CARDINAL; 
+    how  : HowT):T; </code>
+
+<DD> Arrange to prepend space of size plen to mbuf m.  If a new mbuf
+must be allocated, how specifies whether to wait.  If how is
+<code>M_DONTWAIT</code> and allocation fails, the original mbuf chain
+is freed and m is set to <code>NULL</code>.  <P>
+
+<DT> <code>PROCEDURE M_ALIGN(
+    mbuf : T;
+    len  : CARDINAL);</code>
+
+<DD> Set the <code>m_data</code> member of a newly-allocated mbuf
+(<code>m_get</code>) to place an object of the specified size at
+the aligned end of the mbuf.  <P>
+
+<DT> <code>PROCEDURE MH_ALIGN(
+    mbuf : T;
+    len  : CARDINAL);</code>
+
+<DD> As above, for mbufs allocated with <code>m_gethdr</code> or
+initialized by <code>M_COPY_PKTHDR</code>.
+
+</DL>
+
+<H3>Encapsulating data in an Mbuf</H3>
+
+It is possible to encapsulate data in an mbuf and send it directly.
+This is done using the <code>MclGetOa</code> procedure, which will
+allocate an mbuf that wraps up the user supplied buffer.  This feature
+enables applications to send data without requiring additional copies.
+The user can provide a method suite that act on the mbuf.  For
+example,
+
+<pre>
+VAR m: Mbuf.T;
+    data : REF ARRAY OF CHAR;
+BEGIN
+
+  data := NEW(REF ARRAY OF CHAR, 8000);
+  m := Mbuf.MclGetOa(data, 8000, methods, NIL);
+  
+END;
+</pre>
+
+The <code>MclGetOa</code> procedure takes the newly allocated array as
+its first argument.  It is possible to specify separatedly the lenght
+of the buffer that the mbuf to be less than or equal to the size of
+the actual array.  As the third argument the user can provide some
+methods that the networking code should uses instead of the default
+implementations. The current methods supported are free and checksum.
+
+<pre>
+TYPE freeprocT = (* EPHEMERAL *) PROCEDURE (
+                     ext_buf  : REF ARRAY OF CHAR; 
+                     ext_size : CARDINAL; 
+                     ext_arg  : REFANY);
+
+TYPE csumprocT = (* EPHEMERAL *) PROCEDURE (
+                     ext_buf  : REF ARRAY OF CHAR; 
+                     ext_size : CARDINAL; 
+                     ext_arg  : REFANY;
+                     offset   : CARDINAL;
+                     csum     : Ctypes.unsigned_short): Ctypes.unsigned_short;
+
+TYPE Methods = REF RECORD
+  free: freeprocT;
+  csum: csumprocT;
+END;
+</pre>
+
+Finally, an additional optional argument can be stored with the mbuf
+that is passed back up to the methods.  
+
+<H2>Error Reporting (Errno)</H2>
+
+The <A HREF="../urtcore/src/Errno.i3">Errno</A> interface defines the
+standard Unix errno values and corresponding error messages.
+
+
+<H2>IO control (Ioctl)</H2>
+
+The ioclt support implements the ioctl value calculation functions
+(IOR, IOW, IOCBASECMD, etc.) which are necessary to compute the
+correct ioctl value.  This is useful when trying to setup devices from
+M3 modules.  Otherwise, this module should not be used.
+
+<H2>Interface Support (If)</H2>
+
+The If module implements the support register and look up interfaces
+devices.  It will be obsolete when we complete the SPIN device model.
+<P>
+
+<HR>
+<ADDRESS>
+
+<I>
+<A HREF="mailto:mef@cs.washington.edu">Marc Fiuczynski</A>
+<BR>DAY/MONTH/YEAR
+</I>
+
+</ADDRESS>
+</BODY>
+
+</HTML>

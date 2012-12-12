@@ -1,0 +1,3 @@
+(* OBSOLETE *)
+INTERFACE An1Scale;
+END An1Scale.

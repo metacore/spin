@@ -1,0 +1,6 @@
+1206a1207
+> #ifndef SPIN
+1209c1210
+< 
+---
+> #endif /* SPIN */

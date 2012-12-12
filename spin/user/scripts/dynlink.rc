@@ -1,0 +1,3 @@
+# Set up for dynamically linked apps.
+script mount.rc
+nanny touch Sphinx

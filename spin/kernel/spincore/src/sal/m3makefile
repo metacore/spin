@@ -1,0 +1,68 @@
+
+#
+# HISTORY
+# 16-Jul-97  Tian Fung Lim (tian) at the University of Washington
+#	Added WBFLAG
+#
+# 14-Jun-97  Wilson Hsieh (whsieh) at the University of Washington
+#	moved salhook after BASETARGET
+#
+#
+
+Module("Sal")
+Module("SalSync")
+Module("Errno")
+Module("Salnet")
+interface("SalnetExtern")
+
+c_source ("malloc")
+c_source ("m3salnet")
+
+
+if equal(PROFILE, "TRUE")
+    include_dir("PROFILE")
+    PROFILEFLAG="-DCALL_GRAPH"
+else
+    Interface("ProfileSupport")
+    PROFILEFLAG=""
+end
+
+if equal(WRITEBARRIER,"TRUE")
+    WBFLAG="-DWRITEBARRIER"
+else
+    WBFLAG=""
+end
+
+DomainExport("SpinPublic","Errno")
+DomainExport("SpinPublic","ProfileSupport")
+
+DomainExport("SpinTrusted","Sal")
+DomainExport("SpinTrusted","Salnet")
+
+
+% to compile a C file when it is stale
+
+if equal(BASETARGET, "ALPHA_SPIN")
+   SALFLAGS=[ "-DOSF", "-I"&THISTREE&"/kernel/sal/alpha_osf",
+	   "-I"&THISTREE&"/kernel/sal/alpha_osf/SPIN", "-I/usr/include" ]
+end
+if equal(BASETARGET, "IX86_SPIN")
+   SALFLAGS=[ "-I"&THISTREE&"/kernel/sal/i386_freebsd/include",
+	      "-I"&THISTREE&"/kernel/sal/i386_freebsd" ]
+end
+
+
+if stale("sal_symbols.o", "../src/sal/sal_symbols.c")
+or stale("sal_symbols.o", "../src/sal/trusted_symbols.h")
+or stale("sal_symbols.o", "../src/sal/public_symbols.h")
+  exec(CC, CFLAGS, "-c", "-DSPIN", "-I"&THISTREE&"/kernel",SALFLAGS,PROFILEFLAG,
+   WBFLAG,"../src/sal/sal_symbols.c")
+
+end
+
+obj_file("sal_symbols")
+
+include_dir (BASETARGET)
+
+% depends on MemoryForSAL
+c_source ("salhook")

@@ -1,0 +1,5 @@
+#CC=gcc -Wall -ansi
+RANLIB=echo
+INSTALL=cp
+HDEFINES=-DPTRACE_CORE
+HDEPFILES=ptrace-core.o

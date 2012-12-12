@@ -1,0 +1,24 @@
+nanny touch Paging
+nanny touch Sphinx
+nanny touch Trans
+touch /efs/trans_log
+mkfile /efs/trans_log 50000000
+touch /efs/rds_data
+mkfile /efs/rds_data 30000000
+touch /efs/rds_data2
+mkfile /efs/rds_data2 2000000
+cd /efs
+trans nukelog
+trans debug off
+disp opt
+sphinx exec ~/spin/user/trans/malloc/seg_create /efs/rds_data 0x142000000 0x1200000 0x100000
+echo created trans_log and rds_data.
+alias rvm sphinx exec ~/spin/user/trans/rvmbench/ALPHA_SPIN/rvmbench
+alias runoo7 sphinx exec ~/OO7 -b -r /efs/rds_data ~/Config.small 1 t1 t1 t1
+alias genoo7 sphinx exec ~/OO7 -g -r /efs/rds_data ~/Config.small
+echo To run RVM TPC-A, type "rvm".
+echo To setup OO7 type "genoo7". To run OO7, type "runoo7".
+
+
+
+    

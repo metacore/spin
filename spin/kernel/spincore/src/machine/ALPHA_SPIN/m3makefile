@@ -1,0 +1,64 @@
+#
+# Copyright 1994, 1995,1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 16-Jul-97  Tian Fung Lim (tian) at the University of Washington
+#	Added writebarrier 
+#
+#  29-Jul-96  Charles Garrett (garrett) at the University of Washington
+#	Created a profiled version of MachineCPU.m3 in its own directory. 
+#
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Added Profile.s, which enables call graph profiling. 
+#	
+# 10-Dec-94  Emin Gun Sirer (egs) at the University of Washington
+#	Created.
+
+include_dir("linker")
+include_dir("dispatch")
+
+Interface("CPUDep")
+Interface("MachineDep")
+interface("CPUExtern")
+implementation("CPU")
+
+interface("MachineThreadExtern")
+implementation("MachineThread")
+
+interface("AtomicOpsExtern")
+implementation("AtomicOps")
+
+implementation("Trap")
+Interface("TrapPrivate")
+
+Module(PFM)
+interface(PFMExtern)
+
+c_source("M3Support")
+interface("LogExtern")
+c_source("Log")
+c_source("Interrupts")
+c_source("drawrect")
+c_source("regs")
+
+implementation("MachineDebugger")
+Module("Core")
+interface("CoreExtern")
+s_source("Core")
+s_source("FPUState")
+s_source("Thread")
+if equal(WRITEBARRIER, "TRUE")
+	s_source("AtomicOpsRC")
+else
+	if equal(REFCOUNT, "TRUE")
+		s_source("AtomicOpsRC")
+	else
+		s_source("AtomicOps")
+	end	
+end	
+s_source("SwapContext")
+DomainExport("SpinPublic","CPUDep")
+DomainExport("SpinPublic","MachineDep")
+DomainExport("SpinTrusted","PFM")

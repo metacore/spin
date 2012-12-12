@@ -1,0 +1,17 @@
+#
+# imaptest makefile 
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("LFS","user/fs","lfs",overridepath)
+DomainImport("LFSCore","user/fs/lfs","lfscore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+
+Package("Sync")
+CommandModule("Sync")
+Extension({})

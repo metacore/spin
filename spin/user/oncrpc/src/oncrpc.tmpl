@@ -1,0 +1,154 @@
+#
+# HISTORY
+# 02-Mar-96  Marc Fiuczynski (mef) at the University of Washington
+#	Created.
+#
+
+ONCRPCINCLUDEPATH = []
+SPATH = []
+ONCRPCGEN= THISTREE & SL & "local" & SL & BUILD_ARCH & SL & "bin" & SL & "m3rpcgen"
+if stale(ONCRPCGEN,ONCRPCGEN)
+  ONCRPCGEN= FULLTREE & SL & "local" & SL & BUILD_ARCH & SL & "bin" & SL & "m3rpcgen"
+end
+ONCRPCLIB=oncrpc
+
+################################################################################
+# cruft to make rpcgen work
+
+readonly proc dir_of_src(x) is
+  if DERIVED_SOURCES contains x
+    return "."
+  end
+  local p = path()
+  if not equal(p, path_of_path)
+    path_of_path = p
+    path_of_base = format ("%s%s%s%s", Pkg(PACKAGE), SL, pkg_subdir(), SL)
+  end
+  return path_of_base
+end
+
+readonly proc do_gen(xfile, extras) is
+  exec(ONCRPCGEN, extras,dir_of_src(xfile) & xfile)
+end
+
+################################################################################
+# oncrpc(X)
+#	the file X.x contains the rpc interface which will be translated into
+#	X.i3		(the M3 version)
+#	X_c.m3		(the client stub)
+#	X_s.m3		(the client stub)
+#	X_x.i3 X_x.m3	(the marshalling routines)
+
+readonly proc _oncrpc(x,vis) is
+	_oncrpc_interface(x,vis)
+	_oncrpc_client(x,vis)
+	_oncrpc_server(x,vis)
+	_oncrpc_xdr(x,vis)
+end
+
+readonly proc oncrpc(x) is
+	_oncrpc(x,HIDDEN)
+end
+
+readonly proc Oncrpc(x) is
+	_oncrpc(x,VISIBLE)
+end
+
+################################################################################
+# oncrpc_interface(X)
+#	the file X.x contains the rpc interface which will be translated into
+#	X.i3		(the M3 version)
+# 
+
+readonly proc _oncrpc_interface(x,vis) is 
+  local xfile = x & ".x"
+  local ifile = x & ".i3"
+  if defined("_all")
+    if stale(ifile, path_of(xfile))
+	do_gen(xfile,["-h","-p","-o",ifile])
+    end
+  end
+  derived_interface(x, vis)
+end
+
+readonly proc oncrpc_interface(x) is
+  _oncrpc_interface(x,HIDDEN)
+end
+
+readonly proc oncrpc_Interface(x) is
+  _oncrpc_interface(x,VISIBLE)
+end
+
+################################################################################
+# oncrpc_client(X)
+#	the file X.x contains the rpc interface which will be translated into
+#	X_c.m3		(the client stub)
+
+readonly proc _oncrpc_client(x,vis) is 
+  local xfile = x & ".x"
+  local mfile = x & "_c.m3"
+  if defined("_all")
+    if stale(mfile, path_of(xfile))
+	do_gen(xfile,["-l","-p","-o",mfile])
+    end
+  end
+  derived_implementation(x & "_c")
+end
+
+readonly proc oncrpc_client(x) is 
+  _oncrpc_client(x,HIDDEN)
+end
+
+readonly proc oncrpc_Client(x) is 
+  _oncrpc_client(x,VISIBLE)
+end
+
+################################################################################
+# oncrpc_server(X)
+#	the file X.x contains the rpc interface which will be translated into
+#	X_s.m3		(the client stub)
+
+readonly proc _oncrpc_server(x,vis) is 
+  local xfile = x & ".x"
+  local mfile = x & "_s.m3"
+  if defined("_all")
+    if stale(mfile, path_of(xfile))
+	do_gen(xfile,["-s","-p","-o",mfile])
+    end
+  end
+  derived_implementation(x & "_s")
+end
+
+readonly proc oncrpc_server(x) is 
+  _oncrpc_server(x,HIDDEN)
+end
+
+readonly proc oncrpc_Server(x) is 
+  _oncrpc_server(x,VISIBLE)
+end
+
+################################################################################
+# oncrpc_xdr(X)
+#	the file X.x contains the rpc interface which will be translated into
+#	X_x.i3 X_x.m3	(the marshalling routines)
+
+readonly proc _oncrpc_xdr(x,vis) is
+  local xfile = x & ".x"
+  local xdrbase = x & "_x"
+  if defined("_all")
+    if stale(xdrbase & ".i3", path_of(xfile)) or stale (xdrbase & ".m3", path_of(xfile))
+	do_gen(xfile,["-c","-p","-o",xdrbase])
+    end
+  end
+  derived_interface(x & "_x", vis)
+  derived_implementation(x & "_x")
+end
+
+readonly proc oncrpc_xdr(x) is 
+  _oncrpc_xdr(x,HIDDEN)
+end
+
+readonly proc oncrpc_Xdr(x) is 
+  _oncrpc_xdr(x,VISIBLE)
+end
+

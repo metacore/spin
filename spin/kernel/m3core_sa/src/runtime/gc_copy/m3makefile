@@ -1,0 +1,12 @@
+Interface ("RT0")
+Interface ("RTHeapEvent")
+implementation ("RTHeapDebug")
+implementation ("RTCollector")
+implementation ("RTAllocator")
+Utable (ForwardHash, Addr, Addr)
+
+if not equal(REFCOUNT, "TRUE")
+	Module ("RTRefCount")
+	implementation ("RTCollector1")
+end
+

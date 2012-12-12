@@ -1,0 +1,30 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+% 09-Apr-97  Tsutomu Owa (owa)  at the University of Washington
+% 	Get packets from user/stcp. Import domain Stcp.
+%
+% 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+%	Removed DomainExports because Module now does it automatically.
+%
+
+########################################################################
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+Package("EtherServer")
+
+Interface ("EtherPktFormat")
+
+CommandModule ("EtherPacket")
+ProtocolModule ("Ether","EtherServer") 
+module ("EtherServer")
+
+Extension({})

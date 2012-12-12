@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> SPIN Architecture Overview - Where are Strands Used ?</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" SPIN Architecture Overview - Where are Strands Used ?">
+<meta name="keywords" value="strands">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html36 HREF="node3.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/general/latex2html_icons//next_motif.gif"></A>   <A NAME=tex2html34 HREF="index.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/general/latex2html_icons//up_motif.gif"></A>   <A NAME=tex2html28 HREF="node1.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/general/latex2html_icons//previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html37 HREF="node3.html"> Strand Interface</A>
+<B>Up:</B> <A NAME=tex2html35 HREF="index.html">Strands</A>
+<B> Previous:</B> <A NAME=tex2html29 HREF="node1.html"> What are Strands </A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00020000000000000000> SPIN Architecture Overview - Where are Strands Used ?</A></H1>
+<P>
+As is shown in the picture below:
+<P>
+<P><A NAME=81>&#160;</A><IMG  ALIGN=BOTTOM ALT="" SRC="img1.gif">
+<BR><STRONG>Figure:</STRONG> 
+<A NAME=figspinthreads>&#160;</A>
+<i> SPIN system decomposition. Arrows indicate strand related
+communication.
+</i><BR>
+<P>
+<P>
+A shrink wrapped SPIN system has the following components:
+<UL><LI> a trusted core that provides interfaces that manipulate bare hardware.
+<LI> a trusted event dispatcher.
+<LI> a trusted global scheduler that makes global CPU resource usage
+      decisions.
+<LI> a trusted kernel-strand scheduler that is responsible for executing
+      spindles that the dispatcher has identified as runnable.
+<LI> subsystems for memory management, IPC, networking, etc.
+<LI> possibly servers that use these subsystems to support a
+      cohesive API (e.g. Unix). 
+</UL>
+<P>
+All user level threads are strands that are scheduled by some strand
+scheduler. Further, there exists a kernel strand scheduler which runs
+the spindles marked by the dispatcher as ready to run. Hence,
+executing spindles conform to the strand interface and are scheduled
+just like every other executable entity in the system. That is, there
+is no inherent dichotomy between user-level strands and spindles
+except for the level of trust granted to them. This is intented to
+facilitate the migration of code from user-level into kernel space.
+<P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Emin Gun Sirer <BR>
+Sat Jun 22 19:01:37 PDT 1996</I>
+</ADDRESS>
+</BODY>

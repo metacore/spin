@@ -1,0 +1,12 @@
+machine		"i386"
+cpu		"I586_CPU"
+cpu		"I486_CPU"
+ident		BOOT
+maxusers	2
+options         SALBOOT
+options         SPIN
+makeoptions	NETWORKING="INET"
+config		kernel root on sd0 
+controller	isa0
+controller	pci0
+device vx0

@@ -1,0 +1,61 @@
+38a39,42
+> #ifndef SPIN
+> /*
+>  * Don't have these includes in SPIN now
+>  */
+67d70
+< #include <sys/sysinfo.h>
+73a77,85
+> #else /* SPIN */
+> #include <sys/sysinfo.h>
+> #include <machine/cpu.h>
+> #include <machine/rpb.h>
+> #include <machine/pmap.h>
+> #include <hal/cpuconf.h>
+> #include <io/common/devdriver.h>
+> #include <sys/time.h>
+> #endif /* SPIN */
+75a88
+> 
+109a123
+> #ifndef SPIN
+115a130
+> #endif /* SPIN */
+120a136
+> #ifndef SPIN
+633a650,651
+> #endif /* SPIN */
+> 
+662a681
+> #ifndef SPIN
+2527a2547
+> #endif /* SPIN */
+2554a2575
+> #ifndef SPIN
+2560a2582
+> #endif
+2598a2621
+> #ifndef SPIN
+2599a2623
+> #endif /* SPIN */
+2639a2664
+> #ifndef SPIN
+2673a2699
+> #endif /* SPIN */
+2829a2856,2861
+> #ifdef SPIN	
+> 	/*
+> 	 * This fixes a bug in DEC Unix V3.0
+> 	 */
+> 	mces_sce_enable(cpuid);
+> #else /* SPIN */
+2830a2863
+> #endif /* SPIN */
+3222a3256
+> #ifndef SPIN
+3251a3286
+> #endif /* SPIN */
+3368a3404
+> #ifndef SPIN
+3386a3423
+> #endif /* SPIN */

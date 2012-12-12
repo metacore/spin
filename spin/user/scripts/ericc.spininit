@@ -1,0 +1,15 @@
+echo Ericc's initialization script
+script -b
+
+set http         ~/spin/user/scripts/httpd.rc
+set regressrc    ~/spin/user/scripts/regress.rc
+set unixrc       ~/spin/user/scripts/unix.rc
+set testrc       ~/spin/user/scripts/test.rc
+#set lfs          ~/spin/user/scripts/lfs.rc
+set threatrc     ~/spin/user/threat/ALPHA_SPIN/threat.rc
+set benchmarkrc  ~/spin/user/benchmark/ALPHA_SPIN/benchmark.rc
+echo loading lfs
+nanny touch lfs
+script ~/spin/user/fs/lfs/fsutils/getsegdesc/ALPHA_SPIN/getsegdesc.rc
+script ~/spin/user/fs/lfs/fsutils/getfreelist/ALPHA_SPIN/getfreelist.rc
+echo Script Done.

@@ -1,0 +1,45 @@
+proc RegressionInterface (nm) is
+  local test = nm & "Test"
+  % write("Checking regression module ", nm, "\n")
+  Interface(nm)
+  build_generic_intf (test, "RegressionTest", [nm], VISIBLE)
+end
+
+proc RegressionImplementation (nm) is
+  local test = nm & "Test"
+  % write("Checking regression module ", nm, "\n")
+  implementation(nm)
+  build_generic_impl (test, "RegressionTest", [nm])
+end
+
+proc RegressionModule (nm) is
+  local test = nm & "Test"
+  % write("Checking regression module ", nm, "\n")
+  Module(nm)
+  build_generic_intf (test, "RegressionTest", [nm], VISIBLE)
+  build_generic_impl (test, "RegressionTest", [nm])
+end
+
+proc regressionModule (nm) is
+  local test = nm & "Test"
+  % write("Checking regression module ", nm, "\n")
+  module(nm)
+  build_generic_intf (test, "RegressionTest", [nm], HIDDEN)
+  build_generic_impl (test, "RegressionTest", [nm])
+end
+
+proc TextRegressionModule (nm) is
+  local test = nm & "TextTest"
+  % write("Checking regression module ", nm, "\n")
+  Module(nm)
+  build_generic_intf (test, "TextRegressionTest", [nm], VISIBLE)
+  build_generic_impl (test, "TextRegressionTest", [nm])
+end
+
+proc textRegressionModule (nm) is
+  local test = nm & "TextTest"
+  % write("Checking regression module ", nm, "\n")
+  module(nm)
+  build_generic_intf (test, "TextRegressionTest", [nm], HIDDEN)
+  build_generic_impl (test, "TextRegressionTest", [nm])
+end

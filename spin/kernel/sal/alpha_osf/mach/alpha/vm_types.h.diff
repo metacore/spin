@@ -1,0 +1,9 @@
+74a75,82
+> #ifdef SPIN
+> /*
+>  * natural_t, integer_t and uint32 needed for legacy Mach code
+>  */
+> typedef unsigned long   natural_t;
+> typedef long		integer_t;
+> typedef unsigned int    uint32;
+> #endif /* SPIN */

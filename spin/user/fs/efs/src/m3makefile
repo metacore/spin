@@ -1,0 +1,23 @@
+# HISTORY
+# 24-Mar-96  Brian Bershad (bershad) at the University of Washington
+#	New build fmt.
+#
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Changed to simpler spindle build functions.
+#
+# WFS
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("Extent", "user/dev", "extent", overridepath)
+DomainImport("Device", "user/dev", "devcore", overridepath)
+DomainImport("Shell","user/shell", "shellcore", overridepath)
+
+Package("EFS")
+Module("EFS")
+Extension({})
+

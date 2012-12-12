@@ -1,0 +1,10 @@
+MODULE USTFPU;
+IMPORT CPU;
+
+PROCEDURE Setup(fpustate: REF CPU.FloatRegs) =
+  BEGIN
+    fpustate.csr := 16_0c00000000000000;
+  END Setup;
+
+BEGIN
+END USTFPU.

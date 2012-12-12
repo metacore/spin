@@ -1,0 +1,53 @@
+<html>
+<head>
+<title> IPCs that ought to go</title> 
+</head>
+
+<body>
+<h1>Syscall bugs that force server to use IPC</h1>
+
+<date>November 19, 1993</date>
+ <P>
+<HR>
+<P>
+ 
+A few unfortunate IPC dependecies remain in the server.  
+
+
+<H2>vm_write</H2>
+
+<P>
+mig_vm_write is called explicitly in uxkern/user_reply_msg.c
+This is the copyout code to move data out to a user task in response to
+a syscall or signal.  This data used to go in a reply message to the
+emulator.  Without an emulator we have to stuff it in the user task with
+vm_write.  
+
+<P>
+vm_write usually moves data in PAGESIZE chunks but thats not the case
+with copyout.  A bcopy in syscall_vm_write gets a dreaded "Bad Access"
+exception trying to move small message.  As of August, syscall_vm_write
+was <UL> not </UL> the same function as mig_vm_write.  mig_vm_write
+didn't choke on the small write so that is how the no-emulatore server
+got finished.
+I think mef did something to optimize bcopy since August so I do not
+know the current state of vm_write.
+
+<P>
+Todo: Rationalize the vm_read/write code so the syscall version can be
+used rather than the IPC version.
+
+<H2>device_*</H2>
+
+
+<P>
+savage says some of the device_ calls only exist in IPC form.  If so,
+syscall versions need to be added to MK.  I suspect the device_*_inband
+calls.  Ask savage.
+
+</body>
+<p><hr>
+<Address>
+becker@cs.washington.edu<br>
+</address>
+</html>

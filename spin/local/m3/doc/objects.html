@@ -1,0 +1,54 @@
+<html>
+
+<head>
+<title>Restrictions on object methods</title>
+</head>
+
+<body>
+
+<h1>Restrictions on object methods</br></h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+Modula-3 allows a "class method" to be named via the following
+syntax:
+
+<code>
+TYPE.METHODNAME
+</code>
+
+This returns the actual procedure that the method is bound to.  The
+problem is that this procedure can be called on any object that is a
+subtype of TYPE, even if the subtype has overridden METHODNAME for its
+objects.  This is a safety hole, because it allows clients to break
+the abstraction that the subtype provides.
+
+<h2>Implementation</h2>
+
+We have added the following restrictions on using the
+<code>TYPE.METHODNAME</code> syntax:
+
+<ol>
+<li> This syntax can only be used in the scope of the full revelation of
+a subtype of TYPE.
+
+<li> When this syntax is used, the resulting procedure it can only be
+used in the function position of a call.  It cannot be passed as
+argument or stored anywhere.
+
+</ol>
+
+
+</body>
+<p><hr>
+
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>May 20, 1996</date><br>
+<Address>
+whsieh@cs.washington.edu
+</address>
+</html>

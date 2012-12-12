@@ -1,0 +1,4 @@
+# NOTE : THIS DOES NOT MEASURE BOOTSTRAP
+script gcbenchstart
+script httpd.rc
+script gcbenchend

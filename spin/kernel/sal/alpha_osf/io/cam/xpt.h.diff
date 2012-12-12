@@ -1,0 +1,22 @@
+234a235,238
+> #ifdef SPIN 
+> /* We don't use usimple locks and
+>  * our thread_block lowers spl. 
+>  */
+236a241
+>     int spl = splextreme();						\
+238a244,253
+>     thread_block();							\
+>     splx(spl);						                \
+>     (q_ptr)->xpt_wait_cnt--;						\
+> }
+> 
+> #else
+> #define XPT_WAIT( q_ptr ); {						\
+>     thread_t thread = current_thread();					\
+>     (q_ptr)->xpt_wait_cnt++;						\
+>     assert_wait((vm_offset_t)&(q_ptr)->xpt_wait_cnt, FALSE);		\
+244c259
+< 
+---
+> #endif

@@ -1,0 +1,86 @@
+#
+# HISTORY
+# 02-Feb-97  Marc Fiuczynski (mef) at the University of Washington
+#	Took out the mktime support as it was unused throughout the SPIN
+#	code.
+#
+# 5-oct-96  becker at the University of Washington
+#	added text date field
+#
+# 13-Aug-96  Frederick Gray (fgray) at the University of Washington
+#	Created.
+#
+
+> "BuildInfo.m3" in
+    write("MODULE BuildInfo;", CR)
+    write("PROCEDURE GetInfo (VAR version       : TEXT;",CR)
+    write("                   VAR target        : TEXT;",CR)
+    write("                   VAR buildDate     : TEXT;",CR)
+    write("                   VAR builder       : TEXT;",CR)
+    write("                   VAR thisTree      : TEXT ) =",CR)
+    write("   BEGIN",CR)
+    write("      version := \"") 
+end
+
+exec("@","awk '{printf \"%s\",$0}'","< " & THISTREE & "/spin-version",
+     ">> BuildInfo.m3")
+
+>> "BuildInfo.m3" in
+    write("\";",CR)
+    write("      target := \"", TARGET ,"\";",CR)
+#    write("      buildTime := ")
+end
+
+#> "mktime.c" in
+#    write("#include <sys/time.h>",CR)
+#    write("main() {",CR)
+#    write("   struct timeval t;",CR)
+#    write("   gettimeofday(&t,0);",CR)
+#    write("   printf(\"%ld\\n\", t.tv_sec);",CR)
+#    write("   return 0; }", CR)
+#end
+#exec("@","cc mktime.c -o mktime")
+#exec("@","./mktime | awk '{printf \"%s\",$0}' >> BuildInfo.m3")
+
+>> "BuildInfo.m3" in
+#    write(";",CR)
+    write("      buildDate := \"")
+end
+
+exec("@","date | awk '{printf \"%s\",$0}' >> BuildInfo.m3")
+
+>> "BuildInfo.m3" in
+    write("\";",CR)
+    write("      builder := \"")
+end
+
+exec("@","whoami | awk '{printf \"%s\",$0}' >> BuildInfo.m3")
+
+>> "BuildInfo.m3" in
+    write("\";",CR)
+    write("      thisTree := \"", THISTREE,"\";",CR)
+    write("END GetInfo;",CR) 
+    write(CR,"PROCEDURE GetMountPoint () : TEXT  =",CR)
+    write("    BEGIN",CR)
+    write("       RETURN \"", MOUNT_POINT, "\";",CR)
+    write("END GetMountPoint;",CR)
+    write(CR,"PROCEDURE GetHttpServAddr () : TEXT =",CR)
+    write("    BEGIN",CR)
+    write("       RETURN \"", HTTP_ADDR,"\";",CR)
+    write("END GetHttpServAddr;",CR)
+    write(CR,"PROCEDURE GetMountPad() : TEXT  =",CR)
+    write("    BEGIN",CR)
+    write("       RETURN  \"", MOUNT_PAD,"\";",CR)
+    write("END GetMountPad;",CR)
+    write(CR,"PROCEDURE GetHttpPort() : CARDINAL  =",CR)
+    write("    BEGIN",CR)
+    write("       RETURN ", HTTP_PORT,";",CR)
+    write("END GetHttpPort;",CR)
+    write(CR,"PROCEDURE GetFetchMethod() : TEXT =",CR)
+    write("    BEGIN",CR)
+    write("       RETURN \"", FETCH_METHOD,"\";",CR)
+    write("END GetFetchMethod;",CR)
+    write("BEGIN",CR,"END BuildInfo.",CR)
+end
+
+derived_implementation("BuildInfo")

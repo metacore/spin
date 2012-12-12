@@ -1,0 +1,4 @@
+73a74,76
+> #ifdef SPIN
+> #undef u
+> #endif /* SPIN */

@@ -1,0 +1,9 @@
+33c33,34
+< 
+---
+> #include <sal/alpha_osf/profile.h>
+> 	
+37a39
+> 	CALL_PROFILER_NO_GP
+66a69
+> 	CALL_PROFILER_NO_GP

@@ -1,0 +1,157 @@
+#
+# Init sequence for nanny.
+#
+# HISTORY
+# 29-Jul-97  Yasushi Saito (yasushi) at the University of Washington
+#	Changed nanny syntax.
+# 20-Mar-97  Tsutomu Owa (owa) at the University of Washington
+#	Changed "nanny install lfs".
+#
+# 20-Jun-96  Eric Christoffersen (ericc) at the University of Washington
+#	Added domains for LFS:Segment,SegBuffer,LFSCore,LFS
+#
+# 13-Jun-96  Marc Fiuczynski (mef) at the University of Washington
+#	Cleanup of nanny and ns names.
+#
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Change ALPHA_SPIN to variable $target which can be either
+#	 ALPHA_SPIN or ALPHA_SPIN_PROF.
+#
+# 25-Apr-96  Marc Fiuczynski (mef) at the University of Washington
+#	Added OncRpc, Nfs, Dlib and Sieg.
+#	Cleanup.
+#
+# 21-Apr-96  Emin Gun Sirer (egs) at the University of Washington
+#	Added measure.
+#
+# 20-Apr-96  Marc Fiuczynski (mef) at the University of Washington
+#	Added osfClient, socketRW and loopback.
+#
+# 27-Mar-96  Brian Bershad (bershad) at the University of Washington
+#	Created.
+#
+#
+
+echo Loading nanny....
+script ~/spin/user/nanny/$target/nanny.rc
+set SCRIPTS ~/spin/user/scripts
+set USER  ~/spin/user
+
+# echo Loading host specific info...
+mkdir /../svc/scripts
+script $SCRIPTS/hostboot.d/generic.rc
+
+nanny install -n Network $SCRIPTS/network.rc
+nanny install -n Mount  $SCRIPTS/mount.rc
+nanny install -n Paging $SCRIPTS/paging.rc
+nanny install $SCRIPTS/X11.rc
+nanny install $SCRIPTS/httpd.rc
+
+# Alpha disks
+nanny install /../svc/domains/CAM $USER/dev/cam/$target/cam.rc
+nanny install /../svc/domains/osf.cam $USER/dev/cam/osf.cam.rc.$target
+
+# x86 disks 
+nanny install /../svc/domains/BDev $USER/dev/bdev/$target/bdev.rc
+
+# Disk extents
+nanny install /../svc/domains/Extent extent.rc
+
+# Alpha Mice
+nanny install /../svc/domains/WS $USER/dev/ws/$target/ws.rc
+nanny install /../svc/devices/ws $USER/dev/ws/$target/ws.rc
+
+# Basic networking support
+nanny install /../svc/domains/NetDev $USER/dev/netdev/$target/netdev.rc
+
+# echo Enabling filesystems
+nanny install /../svc/fs/ufs $USER/fs/ufs/$target/ufs.rc
+nanny install /../svc/fs/nfs $USER/fs/nfs/$target/nfs.rc
+nanny install /../svc/fs/efs $USER/fs/efs/$target/efs.rc
+nanny install /../svc/fs/wfs $USER/fs/wfs/$target/wfs.rc
+nanny install /../svc/fs/nullfs $USER/fs/wfs/$target/nullfs.rc
+
+# LFS STUFF
+nanny install /../svc/fs/lfs $USER/fs/lfs/$target/lfs.rc
+nanny install /../svc/domains/Segment $USER/fs/lfs/segment/$target/segment.rc
+nanny install /../svc/domains/SegBuffer $USER/fs/lfs/buffer/$target/buffer.rc
+nanny install /../svc/domains/LFSCore $USER/fs/lfs/lfscore/$target/lfscore.rc
+nanny install /../svc/domains/Cleaner $USER/fs/lfs/cleaner/$target/cleaner.rc
+
+nanny install /../svc/domains/Sieg $USER/sieg/$target/sieg.rc
+nanny install /../svc/domains/USyscall $USER/usyscall/$target/usyscall.rc
+nanny install /../svc/domains/Sphinx $USER/sphinx/$target/sphinx.rc
+
+
+# echo Installing placeholder for net services
+nanny install /../svc/domains/SpinUnixRunTime $USER/urt/urtcore/$target/urtcore.rc
+nanny install /../svc/domains/SpinUnixNet $USER/urt/net/$target/net.rc
+nanny install /../svc/domains/EtherServer $USER/net/ether/$target/ether.rc
+nanny install /../svc/domains/IpServer $USER/net/ip/$target/ip.rc
+nanny install /../svc/domains/IcmpServer $USER/net/icmp/$target/icmp.rc
+nanny install /../svc/domains/UdpServer $USER/net/udp/$target/udp.rc
+nanny install /../svc/domains/TcpServer $USER/net/tcp/$target/tcp.rc
+nanny install /../svc/domains/NetDb $USER/net/dns/$target/dns.rc
+nanny install /../svc/domains/EtherClient $USER/net/etherClient/$target/etherClient.rc
+nanny install /../svc/domains/IpClient $USER/net/ipClient/$target/ipClient.rc
+nanny install /../svc/domains/IcmpClient $USER/net/icmpClient/$target/icmpClient.rc
+nanny install /../svc/domains/UdpClient $USER/net/udpClient/$target/udpClient.rc
+nanny install /../svc/domains/TcpClient $USER/net/tcpClient/$target/tcpClient.rc
+nanny install /../svc/domains/OsfNetEmulation $USER/net/osfClient/$target/osfClient.rc
+nanny install /../svc/domains/LoopbackServer $USER/net/loopback/$target/loopback.rc
+nanny install /../svc/domains/SocketRW $USER/socketRW/$target/socketRW.rc
+nanny install /../svc/domains/osf.tcp $USER/urt/net/osf.tcp.rc.$target
+nanny install /../svc/domains/Ip6Server $USER/net/ip6/$target/ip6.rc
+nanny install /../svc/domains/Icmp6Server $USER/net/icmp6/$target/icmp6.rc
+nanny install /../svc/domains/Ip6Client $USER/net/ip6Client/$target/ip6Client.rc
+nanny install /../svc/domains/Icmp6Client $USER/net/icmp6Client/$target/icmp6Client.rc
+
+nanny install /../svc/domains/Vmtp $USER/net/vmtp/$target/vmtp.rc
+nanny install /../svc/domains/Dht $USER/net/dht/$target/dht.rc
+
+# echo Enabling OncRpc
+nanny install /../svc/domains/OncRpc $USER/oncrpc/$target/oncrpc.rc
+# echo Enabling vm interfaces
+# already loaded statically
+# nanny install /../svc/domains/VMCore $USER/vm/vmcore/$target/vmcore.rc
+
+# echo Enabling mach vm interfaces
+nanny install /../svc/domains/Mach $USER/vm/mach/$target/mach.rc
+
+# echo Enabling mach interfaces
+nanny install /../svc/domains/machemu $USER/mach/ALPHA_SPIN/mach.rc
+
+# echo Enabling regression tests
+nanny install /../svc/domains/Regress $USER/shell/regress/$target/regress.rc
+
+# echo Enabling measurement package
+nanny install /../svc/domains/Measure $USER/measure/$target/measure.rc
+
+# echo Enabling transaction services
+nanny install /../svc/domains/Trans $USER/trans/$target/trans.rc
+nanny install /../svc/domains/STrans $USER/strans/$target/strans.rc
+
+nanny install /../svc/domains/FilePager $USER/vm/filepager/$target/filepager.rc
+nanny install /../svc/domains/InodePager $USER/vm/inodepager/$target/inodepager.rc
+
+nanny install $SCRIPTS/testnetwork.rc
+nanny install $SCRIPTS/udpserver.rc
+nanny install $SCRIPTS/udpclient.rc
+nanny install $SCRIPTS/udpserver.rc
+nanny install $SCRIPTS/udpclient.rc
+
+nanny install $SCRIPTS/tcpnetwork.rc
+nanny install $USER/net/mogulBench/$target/mogulBench.rc
+nanny install $USER/net/mcast/$target/mcast.rc
+nanny install $USER/benchmark/$target/benchmark.rc
+
+nanny install /../svc/domains/PFM $USER/shell/pfm/$target/pfm.rc
+nanny install /../svc/domains/rastest   $USER/sync/rastest/$target/rastest.rc
+
+nanny install /../svc/domains/FileDataCache $USER/fs/fscache/$target/fscache.rc
+nanny install /../svc/domains/RWLock $USER/sync/rwlock/$target/rwlock.rc
+nanny install /../svc/domains/TransDisk $USER/dev/transdisk/$target/transdisk.rc
+nanny install /../svc/domains/FastBuffer $USER/fastbuffer/$target/fastbuffer.rc
+
+echo Nanny names initialized
+

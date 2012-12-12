@@ -1,0 +1,73 @@
+# taken from the quake.ints template.
+# Quake is weak on integers but since it is turing complete, they can
+# be emulated painfully
+
+INC_NEXT = ["1","2","3","4","5","6","7","8","9","0"]
+DEC_NEXT = ["9","0","1","2","3","4","5","6","7","8"]
+INT_POS = ["5","4","3","2","1","0"]
+
+proc init_int() is
+  return ["0","0","0","0","0","0"]
+end
+
+proc inc_int(x) is
+  local carry = " "
+
+  foreach i in INT_POS
+    if carry
+      x[i] = INC_NEXT[x[i]]
+      if equal(x[i],"0")
+        carry = " "
+      else
+        carry = ""
+      end
+    end
+  end
+end
+
+# 
+proc int_to_string(x) is
+  if not (equal (x[4],"0") and equal (x[3],"0") and equal (x[2],"0") and equal (x[1],"0") and equal (x[0],"0"))
+    if not (equal (x[3],"0") and equal (x[2],"0") and equal (x[1],"0") and equal (x[0],"0"))
+      if not (equal (x[2],"0") and equal (x[1],"0") and equal (x[0],"0"))
+        if not (equal (x[1],"0") and equal (x[0],"0"))
+          if not (equal (x[0],"0"))
+            return x[0] & x[1] & x[2] & x[3] & x[4] & x[5]
+          end
+          return x[1] & x[2] & x[3] & x[4] & x[5]
+        end				
+        return x[2] & x[3] & x[4] & x[5]
+      end
+      return x[3] & x[4] & x[5]
+    end
+    return x[4] & x[5]
+  end
+  return x[5]
+end
+
+proc array_length(x) is
+  local l = init_int()
+
+  foreach i in x
+    inc_int(l)
+  end
+  return l
+end
+
+proc iterate(iter,procVar,index,array_or_table,arg1,arg2,arg3) is
+    foreach i in array_or_table
+	procVar(index,array_or_table,arg1,arg2,arg3)
+	iter(index)
+    end    
+end
+
+proc includefrompath(file,path) is
+  foreach dir in path
+    local includefile = dir & SL & file
+    if not stale(includefile,includefile) # then includefile exists
+      return includefile
+    end
+  end
+  return ""
+end
+

@@ -1,0 +1,174 @@
+92a93,96
+> #ifdef SPIN
+> #include <sal/salhook.h>
+> thread_t kmemthread;			/* kmem kernel thread */
+> #else /* SPIN */
+93a98
+> #endif /* SPIN */
+242a248,253
+> #ifdef SPIN
+> 		if (s > SPLEXTREME)
+> 			printf(
+> 		"malloc: called at spl level %d > splextreme, ra=0x%lx\n",
+> 				s, caller);
+> #else /* SPIN */
+246a258
+> #endif /* SPIN */
+253a266,268
+> #ifdef SPIN
+> 	s = splextreme();
+> #else /* SPIN */
+254a270
+> #endif /* SPIN */
+282a299,301
+> #ifdef SPIN
+> 		(void)splextreme();
+> #else /* SPIN */
+283a303
+> #endif /* SPIN */
+294a315,317
+> #ifdef SPIN
+> 	(void)splextreme();
+> #else /* SPIN */
+295a319
+> #endif /* SPIN */
+334d357
+< 
+354a378,380
+> #ifdef SPIN
+> 			s = splextreme();
+> #else /* SPIN */
+355a382
+> #endif /* SPIN */
+375a403,405
+> #ifdef SPIN
+> 			s = splextreme();
+> #else /* SPIN */
+376a407
+> #endif /* SPIN */
+386a418,420
+> #ifdef SPIN
+> 	s = splextreme();
+> #else /* SPIN */
+387a422
+> #endif /* SPIN */
+481a517,519
+> #ifdef SPIN
+> 	s = splextreme();
+> #else /* SPIN */
+482a521
+> #endif /* SPIN */
+553a593,595
+> #ifdef SPIN
+> 	s = splextreme();
+> #else /* SPIN */
+554a597
+> #endif /* SPIN */
+600a644,646
+> #ifdef SPIN
+> 		s = splextreme();
+> #else /* SPIN */
+601a648
+> #endif /* SPIN */
+606a654,656
+> #ifndef SPIN
+> printf("waiting for more memory... tell savage to buy some more\n");
+> #endif /* SPIN */
+638a689,691
+> #ifdef SPIN
+> 	s = splextreme();
+> #else /* SPIN */
+639a693
+> #endif /* SPIN */
+665a720
+> #ifndef SPIN
+666a722
+> #endif /* SPIN */
+690a747,749
+> #ifdef SPIN
+> 			(void)splextreme();
+> #else /* SPIN */
+691a751
+> #endif /* SPIN */
+721a782,784
+> #ifdef SPIN
+> 				(void)splextreme();
+> #else /* SPIN */
+722a786
+> #endif /* SPIN */
+776a841,843
+> #ifdef SPIN
+> 		(void)splextreme();
+> #else /* SPIN */
+777a845
+> #endif /* SPIN */
+804a873,875
+> #ifdef SPIN
+> 			(void)splextreme();
+> #else /* SPIN */
+805a877
+> #endif /* SPIN */
+868a941
+> #ifndef SPIN /* BUGBUG: We shouldn't have to do this */
+870a944
+> #endif /* SPIN */
+901a976,981
+> #ifdef SPIN
+> 	/* Hack city [savage]: # pages for kmemmap */
+> 	do { 
+> 		kmempages = salhook_mallocpages;
+> 	} while(0);
+> #else /* SPIN */
+916a997
+> #endif /* SPIN */
+920a1002,1005
+> #ifdef SPIN
+> 		/* zero out memory just to be sure */
+> 		bzero((char *)kmembase, (char *)kmemlimit - (char *)kmembase);
+> #endif /* SPIN */
+968a1054,1056
+> #ifdef SPIN
+> 	long first_task;
+> #else /* SPIN */
+969a1058
+> #endif /* SPIN */
+981a1071
+> #ifndef SPIN
+985a1076,1077
+> 		/*printf("came in store_checksum\n");*/
+> #endif /* SPIN */
+1004a1097
+> #ifndef SPIN
+1008a1102,1103
+> 		/*printf("came in update_checksum\n");*/
+> #endif /* SPIN */
+1025a1121
+> #ifndef SPIN
+1029a1126,1127
+> 		/*printf("came in check_checksum\n");*/
+> #endif /* SPIN */
+1073a1172
+> #ifndef SPIN
+1077a1177
+> #endif /* SPIN */
+1088a1189
+> #ifndef SPIN
+1092a1194
+> #endif /* SPIN */
+1098d1199
+< 
+1118a1220,1222
+> #ifdef SPIN
+> 	s = splextreme();
+> #else /* SPIN */
+1119a1224
+> #endif /* SPIN */
+1193c1298
+< 
+---
+> #ifndef SPIN
+1194a1300
+> #endif /* SPIN */
+1209a1316,1317
+> 
+> 

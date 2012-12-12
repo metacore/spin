@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Firewall</title>
+</head>
+
+<body>
+<h1>
+<A name = "top">Firewall</a> </br>
+</h1>
+<date>May 30, 1996</date>
+</br>
+Brian Bershad
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2>
+
+Firewall is a core kernel module that is responsible for keeping the machine up
+in the most difficult of times.  Kernel runtime protection faults and
+failures in m3core runtime services are reflected back
+through to firewall, where they are converted into SpinExceptions and then propogated
+to the offending thread.
+
+
+<H2>Design and Implementation</H2> 
+
+From Firewall.m3:
+<PRE>
+
+(*
+ *
+ * We take over the RTMisc.Fatal* facilities from the runtime.  This module
+ * does several things. First, we map all checked runtime exceptions out of
+ * process failures and back into exceptions.  CheckedRuntimeError
+ * raises a SpinException.CheckedRuntimeError which can be caught by the
+ * offending thread.
+ * Consequently, any and all procedures can RAISE a
+ * SpinException.CheckedRuntimeError.  To ensure this, we inform the m3 runtime
+ * of a set of implicit exceptions that, when raised, should not cause an
+ * runtime error if they are not included in a procedure's RAISES clause.
+ *
+ * If an exception is raised but not caught by the raising thread, then
+ * the runtime will notify us of an "Unhandled Exception." Clearly, we can't
+ * reraise in the context of the offending thread, so we stop the offending
+ * thread in an 'exceptional' state that reflects the unhandled exception.
+ *
+ * NOTE: If the offending thread is a privileged kernel thread (TAZ), then
+ * we go through RTProcess.Crash, which will halt the system.
+ *
+ * We rely on the dispatcher to hijack events having to do with process and
+ * system failure. We route these events into cleaner handlers.
+ *)
+</PRE>
+
+
+<HR>
+<P>
+<ADDRESS>bershad@cs.washington.edu</ADDRESS>
+</HTML>

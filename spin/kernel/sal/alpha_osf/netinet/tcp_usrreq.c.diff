@@ -1,0 +1,23 @@
+206a207,211
+> 		
+> #ifdef SPIN		
+> 		tcp_URT_unbind(inp->inp_lport);
+> #endif /* SPIN */
+> 
+215a221,223
+> #ifdef SPIN		
+> 		tcp_URT_bind(inp->inp_lport);
+> #endif
+224c232
+< 		if (error == 0)
+---
+> 		if (error == 0) {
+225a234,237
+> #ifdef SPIN		
+> 			tcp_URT_bind(inp->inp_lport);
+> #endif /* SPIN */
+> 		}
+243a256,258
+> #ifdef SPIN		
+> 		tcp_URT_bind(inp->inp_lport);
+> #endif /* SPIN */

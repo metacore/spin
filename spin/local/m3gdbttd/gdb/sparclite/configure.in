@@ -1,0 +1,8 @@
+srcname="SPARClite sample program"
+srctrigger=hello.c
+
+# per-host:
+
+# per-target:
+
+# post-target:

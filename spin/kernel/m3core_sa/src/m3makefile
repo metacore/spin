@@ -1,0 +1,68 @@
+% Copyright (C) 1992, Digital Equipment Corporation
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+%
+% HISTORY
+% 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+%	add table
+%
+% 12-Apr-96  Wilson Hsieh (whsieh) at the University of Washington
+%	add NoLoopholeWarning
+%
+% 19-Dec-95  Brian Bershad (bershad) at the University of Washington
+%	Removed fmtlex (to libm3_sa)
+%
+%
+% Last modified on Tue Feb 22 14:43:46 PST 1994 by kalsow
+%      modified on Tue Aug 24 15:08:42 PDT 1993 by heydon
+%      modified on Mon May 24 12:00:19 PDT 1993 by swart
+%      modified on Fri May  7 12:06:08 PDT 1993 by mjordan
+%      modified on Thu Dec 31 16:23:49 PST 1992 by mcjones
+%      modified on Wed May 20 21:18:03 PDT 1992 by muller
+%      modified on Fri Feb 28 13:50:29 PST 1992 by meehan
+
+add_CC_args("","-I/usr/include") % for setjmp.h
+
+#
+# Do nothing after building the .a
+#
+proc library_hooks(x) is
+  local lib_a  = format ("lib%s.a", x)
+  write ("Done building ", lib_a, CR)
+end	
+
+#m3_option ("-debug")
+#m3_option ("-verbose")
+#m3_option ("-keep")
+
+#############################################################################
+# Turn on profiling for .c files
+if equal(PROFILE, "TRUE")
+	m3_option("-cc -pg")
+end
+
+%
+% table is machine-independent, but the runtime uses it
+%
+include_dir (table)
+
+%----------------------------------------------- machine dependent packages ---
+
+include_dir (runtime)
+include_dir (C)
+include_dir (Csupport)
+include_dir (thread)
+
+%--------------------------------------------- machine independent packages ---
+
+include_dir (fingerprint)
+include_dir (main)
+include_dir (strongref)
+include_dir (text)
+include_dir (weakref)
+include_dir (word)
+
+m3_option ("-times")
+m3_option ("-NoLoopholeWarning")
+
+Library ("m3core_sa")

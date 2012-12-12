@@ -1,0 +1,11 @@
+Interface ("RT0")
+Module ("RTHeapMAS")
+implementation ("RTHeapDebug")
+Interface ("RTHeapEvent")
+implementation("RTCollector")
+implementation("RTAllocator")
+
+if not equal(REFCOUNT, "TRUE")
+	implementation("RTCollector1")
+	Module("RTRefCount")
+end

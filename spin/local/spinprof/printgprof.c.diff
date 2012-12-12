@@ -1,0 +1,58 @@
+24a25,27
+>  * 29-May-96  Charles Garrett (garrett) at the University of Washington
+>  *	Eliminated the scale variable.
+>  *
+132a133
+>     fprintf(stdout, "Clock speed = %.0lf MHz\n", hz/1000000);
+135c136
+< 	    (long) scale * sizeof(UNIT) );
+---
+> 	    BYTES_PER_SAMPLE );
+146,148c147,150
+<     printf( "%5.5s %10.10s %8.8s %8.8s %8.8s %8.8s  %-8.8s\n" ,
+<             "%  " , "cumulative" , "self  " , "" , "self  " , "total " , "" );
+<     printf( "%5.5s %10.10s %8.8s %8.8s %8.8s %8.8s  %-8.8s\n" ,
+---
+>     printf( "%5.5s %10.10s %8.8s %8.8s %8.8s %8.8s %11.11s %11.11s  %-8.8s\n" ,
+>             "%  " , "cumulative" , "self  " , "" , "self  " , "total " ,
+> 	   "self  " , "total " , "" );
+>     printf( "%5.5s %10.10s %8.8s %8.8s %8.8s %8.8s %11.11s %11.11s  %-8.8s\n" ,
+150c152
+<             "ms/call" , "ms/call" , "name" );
+---
+>             "us/call" , "us/call" , "cycles/call" , "cycles/call" , "name" );
+161,162c163,165
+<     printf( "%5.1f %10.2f %8.2f" ,
+<         100 * np -> time / totime , actime / hz , np -> time / hz );
+---
+>     printf( "%5.1lf %10.2lf %8.2lf" ,
+>         100 * ((double) np -> time / (double) totime) , 
+> 	actime / hz , np -> time / hz );
+164,166c167,171
+<         printf( " %8d %8.2f %8.2f  " , np -> ncall ,
+<             1000 * np -> time / hz / np -> ncall ,
+<             1000 * ( np -> time + np -> childtime ) / hz / np -> ncall );
+---
+>         printf( " %8ld %8.0lf %8.0lf %11ld %11ld  " , np -> ncall ,
+>             1000000 * np -> time / hz / np -> ncall ,
+>             1000000 * ( np -> time + np -> childtime ) / hz / np -> ncall,
+>             np -> time / np -> ncall ,
+>             ( np -> time + np -> childtime ) / np -> ncall );
+168c173
+<         printf( " %8.8s %8.8s %8.8s  " , "" , "" , "" );
+---
+>         printf( " %8.8s %8.8s %8.8s %11.11s %11.11s  " , "" , "" , "" , "" , "" );
+179a185
+>     fprintf(stdout, "Clock speed = %.0lf MHz\n", hz/1000000);
+182c188
+< 	    (long) scale * sizeof(UNIT) );
+---
+> 	    BYTES_PER_SAMPLE );
+395d400
+< #	ifdef DEBUG
+402d406
+< #	endif /* DEBUG */
+622d625
+< #   ifdef DEBUG
+640d642
+< #   endif /* DEBUG */

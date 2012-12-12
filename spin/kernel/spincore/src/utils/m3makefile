@@ -1,0 +1,89 @@
+#
+# HISTORY
+# 3-Mar-98  David Becker at the University of Washington
+#	Added StrandSema tables
+#
+# 31-May-97  David Becker at the University of Washington
+#	replaced TtyUpcals Events and Copy modules with
+#	new sal and kernel interfaces
+#
+# 14-Nov-96  Przemek Pardyak (pardy) at the University of Washington
+#	Added translation table.
+#
+# 14-Oct-96  Przemek Pardyak (pardy) at the University of Washington
+#	Moved RTHeapDep from m3core_sa to here.
+#
+# 25-Sep-96  Marc Fiuczynski (mef) at the University of Washington
+#	UnsafeConvert is exported as unsafe module into SpinTrusted.
+#
+# 12-May-96 oystr at the University of Washington
+#	Added Events module.
+#
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Added profiling code, ProfileSupport and ProfileExtern. This
+#	 exports a procedural interface for either PC sampling or call
+#	 graph profiling.
+#
+# 17-Apr-96  Charles Garrett (garrett) at the University of Washington
+#	Exporting ClockPrivate for the Profile interface.
+#
+# 13-Dec-95  Brian Bershad (bershad) at the University of Washington
+#	Whisted. Added Textify, System.
+#
+#
+Interface ("DebugOption")
+Interface("SpinException")
+Module("Firewall")
+Module ("Debugger")
+Module ("SafeConvert")
+Module ("UnsafeConvert")
+Module ("ArrayUtils")
+Module ("Log")
+Module ("BootIO")
+Module ("IO")
+Module ("Textify")
+Module ("NetText")
+Module("Clock")
+Interface("ClockPrivate")
+Interface("BuildInfo")
+
+implementation ("Spy")
+implementation ("RTOSSupport")
+implementation ("RTStrongRef")
+implementation ("RTHeapDep")
+
+Table(IntSema,Integer,Sema)
+Table(IntRef,Integer,Refany)
+Table(RefInt,Refany,Integer)
+Table(StrandSema,Strand,Sema)
+Module("Track")
+Module("TrackMalloc")
+Module("TrackExtension")
+Module(Random)
+Module(RandomPerm)
+
+DomainExport("SpinPublic","Clock")
+DomainExport("SpinPublic","DebugOption")
+DomainExport("SpinPublic","Debugger")
+DomainExport("SpinPublic","IO")
+DomainExport("SpinPublic","SafeConvert")
+DomainExport("SpinPublic","Spy")
+DomainExport("SpinPublic","Textify")
+DomainExport("SpinPublic","NetText")
+DomainExport("SpinPublic","SpinException")
+DomainExport("SpinPublic","Log")
+DomainExport("SpinPublic","IntSemaTbl")
+DomainExport("SpinPublic","IntRefTbl")
+DomainExport("SpinPublic","RefIntTbl")
+DomainExportUnsafe("SpinTrusted","UnsafeConvert")
+DomainExport("SpinTrusted","ClockPrivate")
+DomainExport("SpinPublic","BuildInfo")
+
+DomainExport("SpinPublic","Track")
+DomainExport("SpinPublic","TrackMalloc")
+DomainExport("SpinPublic","TrackExtension")
+DomainExport("SpinPublic","ArrayUtils")
+
+DomainExport("SpinPublic", "IntRefTbl")
+DomainExport("SpinPublic", "Random")
+

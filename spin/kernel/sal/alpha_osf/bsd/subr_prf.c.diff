@@ -1,0 +1,28 @@
+66a67
+> #ifndef SPIN
+68a70
+> #endif /* SPIN */
+83a86,88
+> #ifdef SPIN
+> #define consvp (0)
+> #else /* SPIN */
+84a90
+> #endif /* SPIN */
+126a133
+> int subr_prf_max = PRFMAX;
+341c348,350
+< 
+---
+> #ifdef SPIN
+> 	return(0);
+> #else /* SPIN */
+364a374
+> #endif /* SPIN */
+422a433
+> #ifndef SPIN
+440a452
+> #endif /* SPIN */
+470a483
+> #ifndef SPIN
+471a485
+> #endif /* SPIn */

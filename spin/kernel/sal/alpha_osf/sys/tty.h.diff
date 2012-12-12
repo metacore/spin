@@ -1,0 +1,9 @@
+146a147,154
+> 	char    t_last_signal;          /* the cause ttywakeup is called.
+> 					   if this is -1, then 
+> 					   ttywakeup is called because of
+> 					   normal input. Otherwise, this
+> 					   field holds the signal number
+> 					   that made the thread waken up.
+> 					   
+> 					   -- added by yas */

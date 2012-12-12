@@ -1,0 +1,26 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+% 28-Feb-96  Marc Fiuczynski (mef) at the University of Washington
+%	Instantiate Ip event from generic.
+%
+% 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+%	Removed DomainExports because Module now does it automatically.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+Package("IpServer")
+
+Interface ("IpPktFormat")
+ProtocolModule ("Ip","IpServer")    
+#TrustedModule ("Ip")
+#linkmodule ("IpServer")
+module ("IpServer")
+
+Extension({})

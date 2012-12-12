@@ -1,0 +1,102 @@
+<html>
+<head>
+<title>SPIN Operating System Documentation</title>
+</head>
+
+<body>
+<h2> The SocketRW interface </h2>
+
+<h2> Motivation </h2>
+
+The socketRW extension gives you an easy way to use sockets within
+the SPIN kernel. It makes a TCP socket connection behave like a
+reader stream paired with a writer stream.
+
+<h2> Overview </h2>
+
+We ported this code from the tcp directory of the SRC Modula-3 
+distribution. All that it really does is provide the veneer of
+a reader and a writer over the underlying socket. It must be 
+linked with the SPIN networking extensions which actually implement
+the sockets.
+
+<h2> Using socketRW </h2>
+
+The basic idea is that
+you create a TCP.T object (think of it as a socket) and then use it 
+to produce one reader and one writer which communicate over the socket.
+The socket can be either a server or a client side socket. On the server
+side use: 
+
+<pre>
+  VAR
+    listener: TCP.Connector;
+    socket: TCP.T;
+    rd: Rd.T;
+    wr: Wr.T;
+  BEGIN
+    (* TCP.NewConnector calls the socket listen procedure. *)
+    listener := TCP.NewConnector(IP.Endpoint{IP.NullAddress, port});
+    (* TCP.Accept is just like the Unix accept(). *)
+    socket := TCP.Accept(listener);
+
+    rd := ConnRW.NewRd(socket);
+    wr := ConnRW.NewWr(socket);
+
+    IO.Put("blah", wr);
+  END;
+</pre>
+
+To create a client side socket you call TCP.Connect like this:
+
+<pre>
+  VAR
+    address: IP.Address;
+    socket: TCP.T;
+    rd: Rd.T;
+    wr: Wr.T;
+  BEGIN
+    IP.GetHostByName("spinoff", address);
+    (* TCP.Connect works like the Unix accept(). *)
+    socket := TCP.Connect(IP.Endpoint{address, 80});
+
+    rd := ConnRW.NewRd(socket);
+    wr := ConnRW.NewWr(socket);
+
+    IO.Put("You talkin' to me?", wr);
+  END;
+</pre>
+
+Socket readers and writers can be used just like any other readers
+and writers. For example, you can redirect a thread's input and output
+to them. That is how the telnet_shell command works. 
+
+<p>
+Using telnet_shell:
+
+<pre>
+telnet_shell [port#]  -  Listen on specified port. When a connection 
+			 comes in a thread is forked which executes 
+	 		 the SpinShell main loop and has its standard 
+			 reader and writer connected to the socket. 
+</pre>
+
+From a unix box, run telnet <spin machine> <port#> to connect to the machine
+which is running telnet_shell. You will be prompted for a password which
+is the same as the rconsole password. After entering the correct password
+you should see the prompt "spin>" and you should be able to run all of the
+normal spin shell commands. Note that echoing is done by your telnet program
+on the unix machine, not by the spin program.
+
+<h2> Remaining Issues </h2>
+We were able to port the code with minimal changes, but there is some
+future work connected with the socketRW extension. First, when the 
+"select" procedure is stable, we will use that to implements timeouts.
+Second, the Network Objects library from SRC will be ported to SPIN
+as an extension which uses the TCP services of socketRW.
+
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

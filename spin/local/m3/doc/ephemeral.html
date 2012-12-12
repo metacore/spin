@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>EPHEMERAL Procedures</title>
+<!-- Changed by: Wilson Hsieh, 19-Sep-1996 -->
+</head>
+
+<body>
+
+<h1>EPHEMERAL</h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+We need the ability to identify procedures that can safely be
+terminated, because not all extensions can be suspended -- for
+example, user-defined interrupt handlers.  We call such procedures
+<code>EPHEMERAL</code>.
+
+<h2>Definition</h2>
+
+An <code>EPHEMERAL</code> procedure is only allowed to call other
+<code>EPHEMERAL</code> procedures.  The base system-provided routines
+that allocate memory or involve synchronization -- <code>&</code>,
+<code>NEW</code>, <code>LOCK DO</code> -- are defined as
+non-<code>EPHEMERAL</code>.
+
+<p>
+
+We allow an <code>EPHEMERAL</code> procedure in an <code>UNSAFE</code>
+module to call non-<code>EPHEMERAL</code> procedures.
+
+<h2>Syntax</h2>
+
+The keyword <code>PROCEDURE</code> can be preceded by the keyword
+<code>EPHEMERAL</code>, both in a procedure type or a procedure
+definition.
+
+<h2>Examples</h2>
+
+<pre>
+EPHEMERAL PROCEDURE KillMe() =
+  BEGIN
+    WHILE TRUE DO
+      (* infinite loop *)
+    END;
+  END KillMe;
+
+PROCEDURE CannotKill() =
+  VAR NewMemory : REF INTEGER;
+  BEGIN
+    (* NEW is not EPHEMERAL, so CannotKill cannot be EPHEMERAL *)
+    NewMemory = NEW (REF INTEGER);
+  END CannotKill;
+</pre>
+
+<P>
+
+</body>
+<p>
+<hr>
+
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>September 19, 1996</date><br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

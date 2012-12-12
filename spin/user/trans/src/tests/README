@@ -1,0 +1,12 @@
+This directory contains various test scripts for the transaction manager.
+You need to compile the transaction manager for ALPHA_OSF beforehand.
+
+Each test is self contained. You just have to execute each.
+
+The communication between test script and the transaction manager is
+recorded in the file LOG. By executing
+
+db <LOG
+
+you can replay the test. This is useful when debugging.
+

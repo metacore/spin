@@ -1,0 +1,5 @@
+CC_FOR_BUILD=gcc
+CC=i386-go32-gcc -fno-omit-frame-pointer -O2 -Xlinker -S
+AR=i386-go32-ar
+RANLIB=i386-go32-ranlib
+

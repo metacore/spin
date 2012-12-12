@@ -1,0 +1,87 @@
+49c46,111
+< #include "gprof_msg.h"
+---
+> #ifndef _H_GPROF_MSG 
+> #define _H_GPROF_MSG 
+> #include <limits.h>
+> #include <nl_types.h>
+> #define MF_GPROF "gprof.cat"
+> 
+> 
+> 
+> /* The following was generated from gprof.msg. */
+> 
+> 
+> /* definitions for set MS_PROF */
+> #define MS_PROF 1
+> 
+> #define STATICDEP 1
+> #define DIGNORED 2
+> #define TIMETICKS 3
+> #define INCOMPAT 4
+> #define NOROOM 5
+> #define NOROOMBUF 6
+> #define UNEXPEOF 7
+> #define OUTMEMTOPO 8
+> #define OUTMEMSORT 9
+> #define TOPOBOTCH 10
+> #define CYCLE 11
+> #define OVERFLOW 12
+> #define HEADCYCLE 13
+> #define GLOMMED 14
+> #define OPENFILE 15
+> #define FORMAT 16
+> #define SEARCH 17
+> #define PARENTP 18
+> #define MEMSORT 19
+> #define NGRAN 20
+> #define NGRAN2 21
+> #define NOTIMEACC 22
+> #define NOTIMEPROP 23
+> #define SPONTANEOUS 24
+> #define CYCLE2 25
+> #define WHOLECYCLE 26
+> #define INDEX 27
+> #define READERR 28
+> #define FILEHEAD 29
+> #define NUMSYMS 30
+> #define NOOPTHDR 31
+> #define NOSYMS 32
+> #define NOSYMS2 33
+> #define NOROOMSYM 34
+> #define READSYM 35
+> #define FAILED 36
+> #define NOSYMS3 37
+> #define SYMBOL 38
+> #define MALLOCFAIL 39
+> #define AOUT1 40
+> #define AOUT2 41
+> #define AOUT3 42
+> #define AOUT4 43
+> #define AOUT5 44
+> #define AOUT6 45
+> #define AOUT7 46
+> #define AOUT8 47
+> #define UNEXPEOF2 48
+> #define NOPD 49
+> #define FLATBLURB 50
+> #define CALLGBLURB 51
+> #endif 
+75,76c137,138
+<     double		arc_time;	/* time inherited along arc */
+<     double		arc_childtime;	/* childtime inherited along arc */
+---
+>     long		arc_time;	/* time inherited along arc */
+>     long		arc_childtime;	/* childtime inderited along arc */
+91,92c153,154
+<     double		time;		/* ticks in this routine */
+<     double		childtime;	/* cumulative ticks in children */
+---
+>     long		time;		/* ticks in this routine */
+>     long		childtime;	/* cumulative ticks in children */
+96,97c158,159
+<     double		propself;	/* how much self time propagates */
+<     double		propchild;	/* how much child time propagates */
+---
+>     long		propself;	/* how much self time propagates */
+>     long		propchild;	/* how much child time propagates */

@@ -1,0 +1,24 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+%
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+DomainImport ("IpServer","user/net","ip",overridepath)
+DomainImport ("IpClient","user/net","ipClient",overridepath)
+
+
+Package("LoopbackServer")
+
+CommandModule ("LoopbackTunnel")
+ProtocolModule ("Loopback","LoopbackServer") 
+#trustedmodule ("Loopback")
+#linkmodule("LoopbackServer")
+module("LoopbackServer")
+Extension({})

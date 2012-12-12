@@ -1,0 +1,31 @@
+#
+# Copyright 1996, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+
+# Force all of Plexus to be loaded.
+# Network depends on OsfNetEmulation, IcmpClient and EtherClient
+nanny touch SpinUnixNet
+nanny touch OsfNetEmulation
+nanny touch IcmpClient
+nanny touch EtherClient
+
+echo --- ifconfig (for $hostnamefull) ---
+ifconfig $ETHERDEV $ipaddr 255.255.255.255 255.255.255.0
+echo route add default $ipaddr0.$ipaddr1.$ipaddr2.100
+route add default $ipaddr0.$ipaddr1.$ipaddr2.100
+nanny touch LoopbackServer
+echo route add host $ipaddr 127.0.0.1
+route add host $ipaddr 127.0.0.1
+
+echo --- forcing nfs client ---
+nanny touch nfs
+
+mkdir /afs
+mount nfs daffy:/afs /afs
+set home /afs/cs.washington.edu/project/spin/$user
+mkdir /tmp
+mount nfs spin:/tmp /tmp
+cd /tmp

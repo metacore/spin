@@ -1,0 +1,17 @@
+#
+# Copyright 1994, 1995, 1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 26-Jun-96  Charles Garrett (garrett) at the University of Washington
+#	This directory contains the profiled versions of threads code
+#	 which adds an extra field to the Thread.T data structure and
+#	also maintains a global pointer to that field in the currently
+#	running thread.
+#
+
+Interface ("ThreadExtern")	# Declare a variable defined in Profile.s
+Interface ("ThreadPrivate")	# privileged additions to thread interface 
+Interface ("ThreadRep")		# kernel thread representation
+implementation ("Thread")	# kernel threads

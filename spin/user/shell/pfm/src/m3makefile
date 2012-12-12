@@ -1,0 +1,17 @@
+# HISTORY
+# 4-oct-96  becker at the University of Washington
+#	Added TmpFileSystem and Device import
+#
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Switched to simpler spindle build functions.
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+
+Package("PFMCmds")
+Module("PFMCmd")
+Extension({})
+

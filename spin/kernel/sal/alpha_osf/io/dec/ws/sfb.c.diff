@@ -1,0 +1,26 @@
+606a607
+> #ifndef SPIN
+696c697
+< 
+---
+> #endif SPIN
+722a724,727
+> #ifdef SPIN
+> 	    printf("ok, I'll assume you are priviledged\n");
+> 	    if (FALSE)
+> #else /* SPIN */
+723a729
+> #endif /* SPIN */
+1635a1642
+> 
+1636a1644
+> #ifndef SPIN
+1697a1706
+> #endif
+1743a1753,1756
+> #ifdef SPIN
+>   printf("I guess you're still priviledged\n");
+>   if (FALSE)
+> #else /* SPIN */
+1744a1758
+> #endif /* SPIN */

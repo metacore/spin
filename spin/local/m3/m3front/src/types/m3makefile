@@ -1,0 +1,38 @@
+% Copyright (C) 1992, Digital Equipment Corporation
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+
+% File: m3makefile
+% Last modified on Wed Jun 29 16:33:44 PDT 1994 by kalsow
+%      modified on Fri Feb  7 00:38:19 PST 1992 by muller
+
+%
+% HISTORY
+% 20-Jul-96  Wilson Hsieh (whsieh) at the University of Washington
+%	moved AlignedType to m3front/src/spin/types
+%
+% 06-Mar-96  Wilson Hsieh (whsieh) at the University of Washington
+%	added AlignedType
+%
+%
+
+module (Type)
+interface (TypeRep)
+
+module (ArrayType)
+module (EnumType)
+module (NamedType)
+module (ObjectType)
+module (OpaqueType)
+module (OpenArrayType)
+module (PackedType)
+module (ProcType)
+module (RecordType)
+module (RefType)
+module (SetType)
+module (SubrangeType)
+module (TypeFP)
+module (TypeTbl)
+module (UserProc)
+
+

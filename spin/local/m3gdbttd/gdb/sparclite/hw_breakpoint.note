@@ -1,0 +1,52 @@
+
+GDB Hardware Breakpoint Support for SPARClite (Fujistu MB86930 Board)
+
+1. Setup:
+	The MB86930 board is connected to a sun sparc station serial port. This
+is a cross debugging setup and the host is not limited to sun sparc station. 
+To turn on the SPARClite Debug Support Unit (DSU), jumper 5 on the board has
+to be set to (2 3) instead of (1 2). The board runs under Fujitsu EPROM code,
+which provides the Trap and interrupt handling that gdb uses. A user program
+will link with several files that gdb provides to communicate with gdb. Look
+at devo/gdb/sparclite to find the files. In devo/gdb directory, sparc-stub.c
+used to be the stub file that link with user program, to control user program
+when hit breakpoint. Now, now based on this file, we come up with a new file
+sparclite-stub.c to add the support for hardware breakpoint. Look at devo/gdb/
+sparclite/Makefile.in for how to build user binary.
+
+2. Data/Instruction breakpoint:
+	SPARClite DSU will generate traps when program access some data or
+instruction addresses assigned to debug registers. For data part, it
+facilitates watch points, in particular gdb 'watch' command. The execution
+under watch command now is much much faster. e.g.
+
+	watch x : gdb will break when x is write into and changes value
+	watch *(int *)0x40003200 : watch the integer word at addr 0x40003200
+
+The hardware breakpoint registers can only take two data watch points, if gdb
+specify more than two points, it will fall back to old method of data watch,
+whcih is step and check, it's going to be very slow. To avoid this, delete
+or disable some unused watch points by 'delete' or 'disable' commands, then
+set new watch point.
+Besides 'watch' command, we add two new commands 'rwatch' and 'awatch' to use
+the new facilities provided by DSU. 'rwatch x' for read watch x, will break
+when x is read by the program. 'awatch x' will break when x is read or written
+into. DSU has only two slots, user cannot use them with mixed type of watch
+points, that is user cannot has 'watch x' and 'rwatch y' to use the two slots.
+They have to be the same kind of watch command for both slots. Gdb will reject
+the command if mix used.
+For instruction hardware breakpoint, the main purpose is for EPROM/ROM code
+debugging, that one can set a breakpoint at an instruction without changing
+the instruction. Gdb add a new command for this, 'hbreak' for hardware
+break. The syntax is the same as 'break' command. Again there are only two
+slots for hbreak in DSU. Gdb will reject ths command if more than two
+is used. Delete or disable some of the old hardware breakpoints before setting
+new ones.
+
+3. Implementation:
+	The implementation has isloated all target dependecies, look at
+sparclite-tdep.c, sparclite-stub.c and config/sparc/tm-sparclite.h for target
+hardware dependent code. Also see gdb/sparclite directory for how to build
+a user binary and what files get linked. If you see any problem, please report
+to Kung Hsu at Cygnus Support Inc. email addr: kung@cygnus.com.
+

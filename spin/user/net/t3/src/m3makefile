@@ -1,0 +1,13 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+% 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+%	These modules are now hidden. Change module to Module to export
+%	 the interfaces from the Plexus domain.
+%
+
+interface ("T3PktFormat")
+interface ("T3PacketExtern")
+module ("T3Packet")
+module ("T3") 
+module ("T3Trusted")
+module ("T3Server")

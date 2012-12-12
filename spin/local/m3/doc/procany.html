@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>PROCANY Type</title>
+</head>
+
+<body>
+<h1>PROCANY</h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+We need a safe mechanism to talk about the class of all procedures.
+<code>PROCANY</code> is a subtype of <code>ADDRESS</code>, and is a
+supertype of all <code>PROCEDURE</code> types.
+
+<h2>Implementation</h2>
+
+<code>PROCANY</code> is a subtype of <code>ADDRESS</code>, and a
+supertype of all <code>PROCEDURE</code> types.  In order to prevent
+nested procedures from escaping, we add one runtime check.  When a
+procedure formal is passed as an argument, where the corresponding
+formal is <code>PROCANY</code> or <code>ADDRESS</code>, we must check
+that the procedure is not nested.
+
+<h2>Examples</h2>
+
+<pre>
+PROCEDURE p() =
+  BEGIN
+  END p;
+
+PROCEDURE q(x:PROCANY) =
+  BEGIN
+  END q;
+
+PROCEDURE r(x:PROCEDURE ()) =
+  BEGIN
+    q(x);     (* legal, incurs runtime check to ensure
+		 that x is not a nested procedure *)
+  END r;
+
+q(p)  (* legal, no runtime check *)
+</pre>
+ 
+<P>
+
+</body>
+<p>
+
+<hr>
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>May 20, 1996</date><br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

@@ -1,0 +1,42 @@
+88a89
+> 
+96a98,110
+> #ifdef SPIN
+> /*
+>    This is modified for the StandAlone Layer to support a polling interface. 
+> 
+>    To be a polling device, we must keep spl raised.  It is originally
+>    raised in salnet_begin(), and maintained here and in bsd/uipc_mbuf.c
+> */
+> #include <sal/salnet.h>
+> 
+> /* we must avoid lowering spl while in polling, so we check first */
+> #define splimp() ((getspl()<SPLIMP) ?swap_ipl(SPLIMP):getspl())
+> #endif
+> 
+123c137
+< #define LNDEBUG 0
+---
+> #define LNDEBUG 1
+911a926,930
+> 
+> #ifdef SPIN
+>     ifp->if_recv = salnet_bootrecv; 
+>     salnet_bootdev(ifp,lnintr,sc->is_addr);
+> #endif
+1181a1201,1204
+> #ifdef SPIN
+>     /* we call if_recv here where it is always ok to send packets out dev */
+>     if (ifp->if_rcv.ifq_len) (*ifp->if_recv)(ifp);
+> #endif
+2497c2520
+<     
+---
+> 
+2533a2557,2562
+> #ifdef SPIN
+>     /* reserve space for SPIN ether_input() to add ether header to top mbuf */
+>     m->m_len -= max_linkhdr;
+>     m->m_data += max_linkhdr;
+> #endif
+>     

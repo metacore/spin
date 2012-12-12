@@ -1,0 +1,149 @@
+<html>
+<head>
+<title> Authorization </title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top"> Authorization </a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+<h2> Overview </h2>
+
+By default, a module may not install a handler on an event.  To enable
+installation, the primary implementation module for an event installs
+an authorization service for individual events or an entire interface.
+An authorizer is invoked each time a binding is created on an event.
+It can accept the installation or reject it by raising the
+<i>Dispatcher.Error.AuthError</i> exception.  Additionally, it can
+install an <a href="imposed.html">imposed guard</a> on the handler.
+
+The dispatcher passes the binding descriptor as the argument of the 
+authorize method of the authorizer.
+
+<h2> Interface </h2>
+
+<pre>
+INTERFACE Auth;
+
+TYPE
+  Key = REFANY;
+ 
+  T = OBJECT
+  METHODS
+    authorize(key: Key; arg: REFANY := NIL): BOOLEAN 
+             RAISES {Retry};
+  END;
+
+END Auth.
+
+
+INTERFACE Dispatcher;
+
+PROCEDURE InstallAuthorizerForInterface (auth     : Auth.T;
+                                         interface: RTCode.Interface;
+                                         module   : RTCode.Module)
+                                         RAISES {Error};
+
+PROCEDURE InstallAuthorizerForEvent (auth  : Auth.T;
+                                     event : PROCANY;
+                                     module: RTCode.Module)
+                                     RAISES { Error };
+
+END Dispatcher.
+</pre>
+
+<h2> Usage </h2>
+
+<i> InstallAuthorizerForInterface </i> installs a new authorizer onto
+the procedures declared in the named interface. The caller must
+present the identity of the module which is the primary implementor of
+the interface.  This identity serves as a key to authorization and it
+cannot be obtained only inside of the module itself.  As a result,
+only that module and modules which received the key from that module
+are able to install authorizers.  If more than one module implements
+that interface, the authorizer is installed only on the procedures
+that are exported by the module whose identity is presented to the
+dispatcher.
+
+<i> InstallAuthorizerForEvent </i> installes a new authorizer onto the
+named event.  The caller must present the identity of the module which
+is the primary implementor of the event.
+
+<h2> Example </h2>
+
+The <i>MachineTrap</i> interface defines an authentication key type
+<i>AuthKey</i>.  A record of that type must be presented to the
+<i>MachineTrap</i> authorizer
+
+<pre>
+INTERFACE MachineTrap;
+
+TYPE 
+  AuthKey = REF RECORD
+    minProcID, maxProcID : INTEGER;
+  END;
+
+END MachineTrap.
+</pre>
+
+The <i>MachineTrap</i> module installs an authorizer of type
+<i>AuthT</i> (a subtype of <i>Auth.T</i>) on the
+<i>MachineTrap.Syscall</i> event.  The <i>Authorize</i> method of the
+authorizer imposes a guard (the <i>ImposedGuard</i> procedure) on each
+handler installed on that event.  The imposed guard verifies that that
+handler receives only syscalls with syscall numbers authorized by the
+key of type <i>AuthT</i>.
+
+<pre>
+UNSAFE MODULE MachineTrap;
+
+TYPE
+  AuthT = Auth.T BRANDED OBJECT
+  OVERRIDES 
+    authorize := Authorize;
+  END;
+
+PROCEDURE Authorize (a : AuthT; k : Auth.Key; r : REFANY) : BOOLEAN =
+  VAR
+    binding : Dispatcher.Binding := r;
+    newKey := NEW(MachineTrap.AuthKey);
+  BEGIN
+    IF k = NIL OR NOT ISTYPE(k, MachineTrap.AuthKey) THEN
+      IO.Put("syscall auth : key is not of type AuthKey\n");
+      RETURN FALSE;
+    END;
+    newKey^ := NARROW(k, MachineTrap.AuthKey)^;
+    EVAL Dispatcher.ImposeGuardWithClosure(binding, ImposedGuard, newKey);
+    RETURN TRUE;
+  END Authorize;
+
+PROCEDURE ImposedGuard (key : MachineTrap.AuthKey;
+			strand: Strand.T;
+			VAR ms: MachineCPU.SavedState) : BOOLEAN = 
+  BEGIN
+    RETURN ms.v0 >= key.minProcID AND ms.v0 <= key.maxProcID;
+  END ImposedGuard;
+
+BEGIN
+  Dispatcher.InstallAuthorizerForEvent(NEW(AuthT),
+  				       MachineTrap.Syscall,
+				       THIS_MODULE());
+END MachineTrap.
+</pre>
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>

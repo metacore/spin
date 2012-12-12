@@ -1,0 +1,27 @@
+4609a4610
+> #ifndef SPIN
+4612a4614
+> #endif
+4628a4631,4638
+> #ifdef SPIN
+> #define SIOP_UNLOCK_NOSPL(lock, s) {				\
+> 	usimple_unlock ( &lock );					\
+> }
+> 
+> 	/* we are at what spl the above SIOP_LOCK sets us */
+> 	
+> 	(void) splextreme();
+4631a4642,4652
+> 	SIOP_UNLOCK_NOSPL ( qp->siopq_lock, s );
+> 
+> 	/*
+> 	 * Wait for job requests to complete.
+> 	 */
+> 	thread_block();
+> 	splx(s);
+> #else
+> 	if ( qp->siopq_head == NULL )
+> 	    assert_wait ( (vm_offset_t)siop_jobcomplete, FALSE );
+> 
+4637a4659
+> #endif /* SPIN */

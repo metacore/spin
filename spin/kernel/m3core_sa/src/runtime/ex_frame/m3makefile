@@ -1,0 +1,15 @@
+% Copyright (C) 1993, Digital Equipment Corporation
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+%
+% Last modified on Mon Dec  6 15:40:56 PST 1993 by kalsow
+
+#
+# HISTORY
+# 27-Aug-97  Robert Grimm (rgrimm) at the University of Washington
+#	exported RTExRep
+#
+
+implementation (RTException)
+Interface (RTExRep)
+

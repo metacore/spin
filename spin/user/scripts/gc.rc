@@ -1,0 +1,9 @@
+# gc verbose 0
+# gc untraced show
+# gc untraced anchor
+# gc untraced sweep
+gc incremental on
+gc generational on
+gc background on
+gc sanity off
+gc blink off

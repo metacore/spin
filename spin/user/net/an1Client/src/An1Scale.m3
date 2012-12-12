@@ -1,0 +1,4 @@
+(* OBSOLETE *)
+MODULE An1Scale;
+BEGIN
+END An1Scale.

@@ -1,0 +1,72 @@
+#
+# NOTE: IF YOU ARE MODIFYING THIS FILE, MAKE SURE TO MAKE COMPATIBLE
+#       CHANGES IN THE OTHER CONF FILES.
+#
+
+machine		"i386"
+cpu		"I686_CPU"
+cpu		"I586_CPU"
+cpu		"I486_CPU"
+ident		SPIN
+maxusers	10
+
+options		STANDALONE
+options		INET
+options		BOUNCE_BUFFERS		#include support for DMA bounce buffers
+
+config		kernel	root on sd0 
+
+controller	isa0
+controller	pci0
+
+controller      wdc0    at isa? port "IO_WD1" bio irq 14 vector wdintr
+disk            wd0     at wdc0 drive 0
+disk            wd1     at wdc0 drive 1
+
+# controller      fdc0    at isa? port "IO_FD1" bio irq 6 drq 2 vector fdintr
+# disk            fd0     at fdc0 drive 0
+# disk            fd1     at fdc0 drive 1
+
+#XXX UNCOMMENT WHEN AIC7XXX THING WORKS AGAIN. (MEF)
+#controller      ahc1    at isa? bio irq ? vector ahcintr
+#device          sd0
+#device          cd0
+
+controller      bt0     at isa? port "IO_BT0" bio irq ? vector bt_isa_intr
+
+controller      scbus0
+device	sd0	# scsi disk
+
+# syscons is the default console driver, resembling an SCO console
+device		sc0	at isa? port "IO_KBD" tty irq 1 vector scintr
+# Enable this and PCVT_FREEBSD for pcvt vt220 compatible console driver
+#device		vt0	at isa? port "IO_KBD" tty irq 1 vector pcrint
+#options		"PCVT_FREEBSD=210"	# pcvt running on FreeBSD 2.1
+#options		XSERVER			# include code for XFree86
+
+device		npx0	at isa? port "IO_NPX" irq 13 vector npxintr
+
+device		sio0	at isa? port "IO_COM1" tty irq 4 vector siointr
+device		sio1	at isa? port "IO_COM2" tty irq 3 vector siointr
+
+# device		lpt0	at isa? port? tty irq 7 vector lptintr
+
+# Order is important here due to intrusive probes, do *not* alphabetize
+# this list of network interfaces until the probes have been fixed.
+# Right now it appears that the ie0 must be probed before ep0. See
+# revision 1.20 of this file.
+device vx0
+device ed0 at isa? port 0x280 net irq 5 iomem 0xd8000 vector edintr
+# device ed0 at isa? port 0x250 net flags 1 irq 5 iomem 0xd8000 vector edintr
+device ix0 at isa? port 0x270 net irq 5 iomem 0xd0000 iosiz 32768 vector ixintr
+
+pseudo-device	loop
+
+options         DDB
+options         TTD
+options         DIAGNOSTIC
+
+# to shrink mbuf cluster space
+#options		"NMBCLUSTERS"
+
+# device myri0

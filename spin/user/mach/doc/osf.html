@@ -1,0 +1,132 @@
+<html>
+<head>
+<title>The DEC OSF/1 Server Retargetting Plan</title>
+</head>
+
+<body>
+<h1> Spinning a DEC OSF/1 Server</h1>
+
+<date>November 18, 1993</date>
+ <P>
+ 
+Today, several (bershad, savage, becker, sanislo, gun) of us met to 
+devise a strategy for retargetting the DEC/OSF 1
+server onto the SPIN kernel.  This note describes that plan.
+
+Jan Sanislo has agreed to do the server retargetting.  Things are somewhat
+murky now because there
+<UL>
+<LI> is not currently a working spin kernel
+
+<LI> nor is there even a complete set of interfaces
+</UL>
+
+ <P>
+ 
+We decided to move ahead in a pipeline with development of both the
+spin-ized server and the spin kernel occurring at more or less the same time,
+but staged with the server one step ahead of the kernel.
+
+<H2>Stage 1:  ELIMINATING MACH IPC</H2>
+
+
+We eliminate the server's reliance on MACH IPC.  David's earlier
+work on the emulator free server makes this possible.  We discussed three
+places where the server relies on mach IPC:
+<UL>
+<LI>  exceptions
+
+<LI>  the inode pager
+
+<LI>  a few buggy device and vm "system" calls
+</UL>
+ <P>
+
+	The exception machinery relies on direct IPC instead of the
+	exception.defs mig stubs for performance. Exception propogation
+	can be handled by straightforward system calls, vis a vis the old Taos
+	Model:
+		Exception.GetNextException(task, ...)
+ <P>
+	The inode pager is an optimization, combining text mapping and the
+	buffer cache in the file server. We should be able to eliminate it by
+	mapping what were once pager messages into exceptions that come from
+	client applications, which are handled by virtual memory copy
+	operations.
+ <P>
+	The buggy device and vm system calls should just get fixed. David, can
+	you post a description of these bugs
+	<A HREF="ipcbugs.html"> "HERE."</A>
+
+<H2>Stage 2: ELIMINATE DEVICE*</H2>
+
+We put all device management up into the server, eliminating all reliance on
+device* functions, with the exception of device_map, which is necessary to get
+the registers into the server's address space.
+
+<P>
+Important devices here are:
+<UL>
+<LI> 	network
+<LI> 	disk (scsi)
+<LI> 	keyboard
+<LI> 	mouse
+</UL>
+
+ <P>
+network and disk have already been done (see mapped_scsi and mapped_ether from
+and older MIPS mk). The keyboard and mouse can probably be hacked around if
+mapping them in general proves to be too hard initially.
+ <P>
+The hard problem here \may/ be the lack of a standardized DMA interface for
+the disk.
+ <P>
+Secondary advantages are that we can integrate DEC OSF 1 source 
+code from OSF 2 directly into our server.
+
+
+<H2>Stage 3: ELIMINATE MACH VM</H2>
+
+ <P>
+Retarget towards the new, improved, and soon-to-be-announced SPIN VM
+interface.
+ <P>
+During stage 1 and stage 2, we need to implement the externalized VM
+interface.
+
+
+<H2>Stage 4:  ELIMINATE MACH THREADS</H2>
+
+
+Retarget towards the new strand (thread) interface.  This 
+appears to be the trickiest, and least well understood part. (the lack of
+understanding probably contributes to its perceived trickiness)
+ <P>
+During stage 3, we need to implement the externalized threads interface.
+
+
+
+<H2>Summary</H2>
+
+
+The idea behind the stages is that none should have any forward dependencies.
+
+In order to keep the pipe flowing, we must start vetting the externalized
+SPIN interfaces.  
+
+
+
+</body>
+<p><hr>
+<Address>
+bershad@cs.washington.edu<br>
+</address>
+</html>
+
+
+
+
+
+
+
+

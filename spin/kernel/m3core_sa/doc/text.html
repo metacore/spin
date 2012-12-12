@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+<h2> Overview </h2>
+
+A Text.T is the same as the builtin type TEXT. It is an OPAQUE type which
+in reality is a REF ARRAY OF CHAR. Since it is OPAQUE, you cannot access
+the representation of TEXT's directly. Instead, you must use the Text 
+interface which contains the following functions. 
+
+<h2> The Text interface </h2>
+
+<pre>
+PROCEDURE Cat(t, u: T): T;
+(* Return the concatenation of "t" and "u". *)
+
+PROCEDURE Equal(t, u: T): BOOLEAN;
+(* Return "TRUE" if "t" and "u" have the same length and
+   (case-sensitive) contents. *)
+
+PROCEDURE GetChar(t: T; i: CARDINAL): CHAR;
+(* Return character "i" of "t".  It is a checked runtime error if "i
+   >= Length(t)". *)
+
+PROCEDURE Length(t: T): CARDINAL;
+(* Return the number of characters in "t". *)
+
+PROCEDURE Empty(t: T): BOOLEAN;
+(* Equivalent to "Length(t) = 0". *)
+
+PROCEDURE Sub(t: T; start: CARDINAL; length: CARDINAL := LAST(CARDINAL)): T;
+(* Return a sub-sequence of "t": empty if "start >= Length(t)" or
+   "length = 0"; otherwise the subsequence ranging from "start" to the
+   minimum of "start+length-1" and "Length(t)-1". *)
+
+PROCEDURE SetChars(VAR a: ARRAY OF CHAR; t: T);
+(* For each "i" from 0 to "MIN(LAST(a), Length(t)-1)", set "a[i]" to
+   "GetChar(t, i)".  *)
+
+PROCEDURE FromChar(ch: CHAR): T;
+(* Return a text containing the single character "ch". *)
+
+PROCEDURE FromChars(READONLY a: ARRAY OF CHAR): T;
+(* Return a text containing the characters of "a". *)
+
+PROCEDURE Hash(t: T): Word.T;
+(* Return a hash function of the contents of "t". *)
+      
+PROCEDURE Compare(t1, t2: T): [-1..1];
+(* Return -1 if "t1" occurs before "t2", 0 if "Equal(t1, t2)", +1 if
+   "t1" occurs after "t2" in lexicographic order. *)
+
+PROCEDURE FindChar(t: T; c: CHAR; start := 0): INTEGER;
+(* If "c = t[i]" for some "i" in "[start~..~Length(t)-1]", return the
+   smallest such "i"; otherwise, return -1. *)
+
+PROCEDURE FindCharR(t: T; c: CHAR;  start := LAST(INTEGER)): INTEGER;
+(* If "c = t[i]" for some "i" in "[0~..~MIN(start, Length(t)-1)]",
+   return the largest such "i"; otherwise, return -1. *)
+</pre>
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

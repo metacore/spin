@@ -1,0 +1,3 @@
+INTERFACE An1Server;
+PROCEDURE Init(); 
+END An1Server.

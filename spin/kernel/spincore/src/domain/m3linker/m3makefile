@@ -1,0 +1,32 @@
+#
+# Copyright 1994, 1995, 1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 11-Feb-97  Przemek Pardyak (pardy) at the University of Washington
+#	Exported Mx and M3ID
+#
+
+% from m3linker
+Module (Mx)
+Module (MxIn)
+% Module (MxOut)
+Module (MxMerge)
+Module (MxCheck)
+% Module (MxGen)
+Module (MxVS)
+Module (MxRep)
+Module (MxMap)
+Module (MxSet)
+Module (MxVSSet)
+Module (MxIO)
+
+% from m3middle
+Module (M3ID)
+Module (M3Buf)
+Module (M3FP)
+
+DomainExport("SpinPublic","Mx")
+DomainExport("SpinPublic","M3ID")
+

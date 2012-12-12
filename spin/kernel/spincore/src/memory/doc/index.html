@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>Memory Management</title>
+<!-- Changed by: Yasushi Saito,  28-Apr-1997 -->
+<!-- Changed by: Stefan Savage,  8-Oct-1996 -->
+</head>
+
+<body>
+<h1>
+<IMG align=bottom src=http://www.cs.washington.edu/research/projects/spin/www/pics/taz.gif>
+<A name = "top">Memory Management</a> </br>
+</h1>
+<date>Mon Apr 28 16:12:25 1997</date>
+</br>
+Stefan Savage & Yasushi Saito
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2> This core SPIN memory management services are
+designed to provide access to both physical memory resources and the
+MMU. These services are necessary (and ideally sufficient) to develop
+general virtual memory systems as well as specialized memory
+management implementations.
+
+<p> It is equally important that these services guard against any
+misuse or malicious action.  Particularly, it must be impossible to
+modify kernel code or data structure in any way which might compromise
+the type-safety properties required by the kernel. Secondarily, the
+kernel must guard against resource consumption attacks
+(e.g. allocating undue quantities of physical memory).  Spincore
+addresses the first problem by encapsulating each page frame in an opaque
+Modula-3 object(PhysAddr.T), and allowing accesses to frame contents
+only through procedure calls. The second problem is addressed by
+implementing a involuntary frame purging  through the use of
+the dispatcher mechanism.
+
+<H2>Basic abstractions</H2>
+
+SPIN's basic memory abstractions are physical frames
+(<code>PhysAddr</code>), and translations to virtual addresses
+(<code>Translation</code>).  In general, access to memory consists of
+two steps: allocating some physical frame and mapping it to a virtual
+address range in a particular translation context.
+
+<H3>Physical Addresses</H3>
+
+The <a href="PhysAddr.html">PhysAddr.i3</a>
+interface defines all public operations on physical memory.
+Also, it defines the opaque data type
+<i>PhysAddr.T</i> which represents a contiguous block of
+physical memory. There are two kinds of PhysAddr.T objects. One is
+an ordinally page frame of the MMU page size. Other is an object that
+represents arbitrary physical address range. The latter is used to
+access I/O space, and it can be allocated only through
+<a href="PhysAddrPrivate.html">PhysAddrPrivate.AllocateIOSpace</a>, a
+privileged procedure.
+
+<H3>Translations</H3>
+
+A translation represents a context in which virtual address are
+translated (eg. an address space or protection domain).  It is
+currently implemented in terms of pmap operations.  The 
+<a href="Translation.html">Translation.i3</a>
+interface defines all operations on translations.  It also defines the
+opaque data type <i>Translation.T</i> which represents a particular
+translation context. 
+
+<h2>Getting and setting VM parameters</h2>
+
+The <code>vm</code> shell command is provided to tweak the vm parameters.
+
+<dl>
+  <dt> <code>vm params</code>
+  <dd> This command returns the current parameters.
+       I don't know what the <dfn>request</dfn> threshold is.
+
+       <p>
+       If the # of free pages fall below <dfn>reclaim</dfn> threshold,
+       an active page is picked up and reclaimed.
+
+       <p>
+       If the # of free pages fall below <dfn>repossess</dfn> threshold,
+       an reclaimed page is picked up and made free.
+
+  <dt> <code>vm setparams</code>
+  <dd> This command takes three integer parameters. Each number
+       specifies the request, reclaim, repossess threshold repectively.
+
+  <dt> <code>vm stat</code>
+  <dd> This command returns the # of pages in each state.
+
+</dl>
+
+</body>
+<p><hr>
+<Address>
+{yasushi,savage}@cs.washington.edu<br>
+</address>
+</html>
+
+
+
+
+
+
+

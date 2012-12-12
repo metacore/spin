@@ -1,0 +1,20 @@
+/* Makefile for tcp library (POSIX) */
+/* Copyright 1993 Digital Equipment Corporation. */
+/* Distributed only by permission. */
+/* Last modified on Thu Feb  9 15:55:57 PST 1995 by wobber     */
+
+# HISTORY
+# 11-Mar-96  Charles Garrett (garrett) at the University of Washington
+#	Converted to SPIN extension.
+#
+
+Interface(TCPPosix)
+Module(EasySocket)
+implementation(TCP)
+implementation(IP)
+
+CommandModule(SocketTest)
+CommandModule(TelnetShell)
+
+
+

@@ -1,0 +1,14 @@
+rm -f rds_data log_file
+../bin/rvmutl <<DDD
+init_log log_file 4000k
+quit
+DDD
+
+../bin/rdsinit log_file rds_data <<DDD
+0x800000
+0x1400a0000
+0x400000
+0x100000
+100
+128
+DDD

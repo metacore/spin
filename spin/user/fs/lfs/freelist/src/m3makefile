@@ -1,0 +1,16 @@
+#
+# stack for freelist stuff
+#
+
+overridepath = [ THIS , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+
+Package("CardStack")
+
+Interface(Cardinal)
+Generic_module(Stack)
+template(stack)
+Module(CardStack)
+Extension({})

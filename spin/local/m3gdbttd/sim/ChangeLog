@@ -1,0 +1,58 @@
+Sun Mar 13 09:27:50 1994  Jim Kingdon  (kingdon@lioth.cygnus.com)
+
+	* Makefile.in: Add TAGS target.
+
+Mon Sep 13 12:47:15 1993  K. Richard Pixley  (rich@sendai.cygnus.com)
+
+	* Makefile.in (all-z8k, install-z8k, clean-z8k, all-h8300,
+	  install-h8300, clean-h8300, all-h8500, install-h8500,
+	  clean-h8500, all-sh, install-sh, clean-sh): do not echo
+	  recursion lines. 
+
+Wed Jun 30 14:12:05 1993  david d `zoo' zuhn  (zoo at poseidon.cygnus.com)
+
+	* Makefile.in: remove endian.h trace from h8500
+
+Sun Jun 13 13:08:58 1993  Jim Kingdon  (kingdon@cygnus.com)
+
+	* Makefile.in: Add distclean, realclean, and mostlyclean targets.
+
+Fri May 21 11:21:16 1993  david d `zoo' zuhn  (zoo at cirdan.cygnus.com)
+
+	* Makefile.in: make all of the all-* target (except all-nothing)
+	depend on endian.h, so that if we're not building a simulator, we
+	don't built endian
+
+Fri May 21 10:55:06 1993  Ian Lance Taylor  (ian@cygnus.com)
+
+	* Makefile.in (check, installcheck): Added dummy targets.
+
+Mon May  3 21:39:43 1993  Fred Fish  (fnf@cygnus.com)
+
+	* Makefile.in (endian): Find endian.c in $(srcdir), and also
+	explicitly make it, since some makes apparently don't work with
+	VPATH and .c to executable rules (SunOS make for example).
+
+Mon May  3 08:29:01 1993  Steve Chamberlain  (sac@thepub.cygnus.com)
+
+	* Makefile.in (endian): Add explicit rule for broken makes.
+
+Mon Mar 15 15:47:53 1993  Ian Lance Taylor  (ian@cygnus.com)
+
+	* Makefile.in (info, install-info): New targets.
+	(DO_INSTALL): Renamed from INSTALL, which is overridden by the top
+	level Makefile.
+
+Wed Feb 10 20:12:27 1993  K. Richard Pixley  (rich@ok.cygnus.com)
+
+	* Makefile.in (endian.h): build endian.h via a temporary file so
+	  that we don't leave an incomplete file lying around on
+	  interrupted builds.
+	  (clean): remove endian, e.h, and endian.h.
+
+Mon Feb  8 11:46:06 1993  Steve Chamberlain  (sac@thepub.cygnus.com)
+
+	* Makefile.in, configure.in: if target isn't supported, build a
+	harmless makefile.
+
+

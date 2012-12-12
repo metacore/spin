@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>Model and definitions</title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top"> Model and definitions </a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+SPIN and its extensions are written in Modula-3.  Programs in Modula-3
+are written as a composition of modules communicating by procedure
+calls through interfaces.  Fundamentally, a procedure call is a signal
+from one module to another to indicate or request a change in the
+system state.  In effect, a procedure call is an event <b> raised </b>
+by the caller and <b> handled </b> by the procedure's implementation.
+We exploit this relationship to define events in SPIN.
+
+<p>
+
+<b> Events </b> are a metaphor for extended procedure calls.  They are
+defined in terms of Modula-3 procedure signatures, which preserves the
+natural invocation syntax and the ``feel'' of the language.
+Consequently, an event is a typed and named message that may carry
+arguments and return a value.  Every procedure and object method is
+implicitly an event and hence eligible for extension.  Events declared
+in an interface are available for modules that import that interface
+to either raise the event, or to provide additional handlers for the
+event.  Events not declared in an interface can be explicitly passed
+between modules as procedure variables.
+
+<p>
+
+A <b> handler </b> is a procedure that is registered to receive
+invocations of an event.  Handlers can be dynamically added to or
+removed from an event.  One, multiple or no handlers can be <a
+href="simple.html"> installed </a> on an event at any particular time.
+The same handler can be installed on any number of events in which
+case it will be invoked independently for each of them.
+
+<p>
+
+Each event handler may be associated with a set of <b> guard </b>
+predicates, which are used to filter out unwanted event raises.  A
+handler is executed only if all of its guards evaluate to TRUE.  For
+example, an extension may only be interestd in handling page fault
+events for its data segment, and can define a guard that checks
+whether the particular virtual address where the fault occurred is in
+that segment.  The predicate is specified outside of the handler to
+separate the specification of extension code from the specification of
+the binding properties.  Separation allows the same handler to be
+installed on many events, or on the same event many times with
+different guards.
+
+<p>
+
+An <b>imposed guard </b> is a guard installed with a handler for the
+purpose of limiting access of that handler to an event.  Imposed
+guards enable an event occurrence to be dynamically checked before it
+is delivered to a handler.
+
+<p>
+
+A <b> binding </b> associates a handler and its guards with an event.
+A binding is <b> active </b> if it is currently installed on an event
+and <b> inactive </b> otherwise.  If a binding is active its handler
+receives all instances of event raises for which all of its guards
+evaluated to TRUE.  Otherwise, the handler does not receive event
+raises through this binding.  The same handler may be used in a number
+of bindings, possibly for different events, and it may be installed
+for some of them and uninstalled for others.  Each installation of
+such handler receives event raises independently, so the same
+procedure used as a handler can be invoked many times for the same
+event raise and be invoked by different events.
+
+<p>
+
+An event is defined by a procedure definition.  It has the same name
+and type as the procedure that defines it.  The implementation of the
+procedure becomes this event's <b> original handler </b> which is
+always (unconditionally) executed unless it is uninstalled.
+
+<p>
+
+An event's <b> primary implementation module </b> is the module that
+defines the original handler for the event.  This module is
+responsible for maintaining properties of the event.  The identity of
+the primary implementation of the module is required as a key to allow
+using <a href="auth.html"> authorization </a> to limit the access to
+the event.
+
+<p>
+
+A centralized <b> event dispatcher </b> implements the event machinery
+which includes binding handlers to events, evaluating guards, and
+invoking handlers.
+
+<p>
+
+A <b> closure </b> is a data structure associated with either a
+handler or a guard procedure to provide it with static data specific
+to the binding.  A closure is bound with a
+procedure at the time a binding is <a href="simple.html">created</a>.
+A handler or a guard <b>takes a closure</b> if an additional argument
+(a closure) is passed to it at the time of event raise besides the
+arguments of the event raise.  A closure is a constant pointer that
+cannot be changed without reinstalling the binding with which it is
+associated.
+
+<p>
+
+A <b> legal procedure </b> is a procedure that can be used by the 
+dispatcher as a handler, guard, or event.  All Modula-3 procedures (except
+for nested procedures) are automatically legal. Non-Modula-3
+procedures can be made legal explicitely.
+A nested Modula-3 procedure cannot be made legal.
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>
+
+

@@ -1,0 +1,39 @@
+
+
+# HISTORY
+% 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+%	TARGET -> BASETARGET
+%
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Changed to simpler spindle build functions.
+#
+# Read only UFS.
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport ("FileSystem","user/fs","fscore",overridepath)
+
+Package("UnixFS")
+
+interface("UnixFS")
+
+module("FileDefs")
+implementation("UfsFs")
+module("Cache")
+
+if equal(BASETARGET, "ALPHA_SPIN") or
+   equal(BASETARGET, "IX86_SPIN")
+  include_dir("le")
+else
+  write("I don't know my architecture!")
+end
+
+Module("RofsUfs")
+
+include_dir(BASETARGET)
+
+Extension({})
+

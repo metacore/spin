@@ -1,0 +1,89 @@
+154a155,156
+> int cam_memory_daemons = 1;
+> 
+705c707
+< 
+---
+>     
+756a759,761
+> #if SPIN
+>     if ( cam_memory_daemons )
+> #endif
+1939c1944,1952
+< 
+---
+> #if SPIN
+>     /*
+>      * N.B. - cam_inisr is used almost exclusively by the routines
+>      * that attempt to free up memory.  These routines run periodically
+>      * via timeout.  Currently timeout routines are run directly from
+>      * the hardclock interrupt routine so we would always be in "inisr".
+>      */
+>     return(0);
+> #else
+1940a1954
+> #endif
+2035a2050
+> #ifndef SPIN
+2047c2062
+< 
+---
+> #endif
+2104a2120,2132
+> #ifdef SPIN
+> #define XPT_CB_UNLOCK_NOSPL(cb, spl); {					\
+>     CAM_SPINUNLOCK( &((cb)->cplt_lock)); 				\
+> }
+>            
+>             /* We are at whatever spl "s" is of the
+> 	       XPT_CB_LOCK() macro. Setting extreme
+> 	       so we wont get preempted between assert_wit
+> 	       and thread_block.
+> 	     */
+> 	       
+>             (void) splextreme();    
+> 
+2108a2137,2145
+> 	    XPT_CB_UNLOCK_NOSPL(&xpt_cb_queue, s);
+>             thread_block();
+> 
+> 	    splx(s);
+> #else    
+> 	    if( xpt_callback_thread_init ) {
+> 	        assert_wait((vm_offset_t)xpt_callback_thread, FALSE);
+> 	    }
+> 
+2110a2148
+> #endif
+2135a2174
+> #ifndef SPIN
+2144a2184
+> #endif
+2155a2196,2208
+> #ifdef SPIN
+> #define XQHEAD_IPLSMP_UNLOCK_NOSPL( saveipl, qp )            		\
+> {                                                      			\
+>     CAM_SPINUNLOCK( &((qp)->x_lk_qhead) );  				\
+> }
+> 
+>             /* We are at whatever spl "s" is of the
+> 	       XPT_CB_LOCK() macro. Setting extreme
+> 	       so we wont get preempted between assert_wit
+> 	       and thread_block.
+> 	     */
+> 	    (void) splextreme();
+> 
+2157a2211,2221
+> 	        XQHEAD_IPLSMP_UNLOCK_NOSPL(s, &xpt_qhead);
+> 	    }
+> 	    else {
+> 	        XQHEAD_IPLSMP_UNLOCK_NOSPL(s, &xpt_qhead);
+> 	    }
+>             thread_block();
+> 	   
+> 	    splx(s);
+> #else
+> 	    if (xpt_pool_alloc_thread_init && !shutting_down){
+> 		assert_wait((vm_offset_t)xpt_pool_alloc_thread, FALSE);
+2163a2228
+> #endif

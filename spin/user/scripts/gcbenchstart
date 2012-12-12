@@ -1,0 +1,8 @@
+# sanity check memory distribution decisions.
+gc stat
+
+# distribute memory 
+gc dist
+gc reset
+spy reset
+echo READY

@@ -1,0 +1,44 @@
+domain quiet
+domain create osf.cam
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/ccfg.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/cam_config.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/cam_data.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/cam_debug.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/cam_disk.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/cam_logger.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/cam_special.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/cam_special_data.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/dme_3min_94_dma.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/dme_common.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/dme_kn03_94_dma.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/dme_null.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/dme_tcds_94_dma.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/dme_turbo_94_ram.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/pdrv_common.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_94.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_94_fast.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_as.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_common.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_config.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_error.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_kn02.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_sched.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_sm.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_target.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/sim_xpt.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/special_audio.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/special_direct.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/special_generic.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/special_sequential.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/tcds_adapt.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/xpt.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/psiop.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/psiop_pci.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/io_routines.o
+domain addfile osf.cam ~/spin/kernel/sal/alpha_osf/DRIVER_PROF/mips_dummy.o
+
+domain link osf.cam osf.cam
+domain link osf.cam SpinPublic
+domain link osf.cam SpinTrusted
+domain initialize osf.cam
+domain verbose

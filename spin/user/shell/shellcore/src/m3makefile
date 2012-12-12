@@ -1,0 +1,35 @@
+#
+# HISTORY
+# 18-Jul-96  Brian Bershad (bershad) at the University of Washington
+#	Removed JobControl.
+#
+# 02-May-96  Stefan Savage (savage) at the University of Washington
+#	Added MemRead.
+#
+# 10-Dec-95  Brian Bershad (bershad) at the University of Washington
+#	Rewritten to use events and commands.
+#
+# 
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SecurityPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+
+Package("Shell")
+Module ("Shell")
+# Module ("JobControl")
+Module ("ParseParams")
+Module ("TextExtras")
+Module ("Glob")
+Table(Text,Text,Text)
+
+Generic_module("Command")
+template(command)
+
+CommandModule("Nice") # Shell.m3 uses this one
+CommandModule ("MemRead")
+Module("ShellAlias")
+Module("Commands")
+
+Extension({})

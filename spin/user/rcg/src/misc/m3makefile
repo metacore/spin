@@ -1,0 +1,42 @@
+
+
+Generic_module ("DynamicSet")
+Generic_module ("DynamicArray")
+Generic_module ("Queue")
+
+readonly proc Dynamic_array (nm, elt, name) is
+  local sorter = nm & "ArraySort"
+
+  Array_sort (nm, elt)
+  build_generic_intf (name, "DynamicArray", [elt], VISIBLE)
+  build_generic_impl (name, "DynamicArray", [elt, sorter])
+end
+
+readonly proc Dynamic_set (nm, elt, name) is
+  build_generic_intf (name, "DynamicSet", [elt], VISIBLE)
+  build_generic_impl (name, "DynamicSet", [elt])
+end
+
+Dynamic_set ("Integer", "Integer", "IntSet")
+
+#build_generic_intf ("IntSet", "DynamicSet", "Integer", VISIBLE)
+#build_generic_impl ("IntSet", "DynamicSet", "Integer")
+
+Module ("Utils")
+Module ("IntPair")
+
+% used in jump table computations
+List ("IntPair", "IntPair")
+Table ("RCG", "Integer", "Refany")
+Sorted_table ("RCG", "Integer", "Refany")
+
+% used in register allocator
+Table ("IntBool", "Integer", "Boolean")
+
+if equal (OS_TYPE, "SPIN")
+  Sequence ("Int", "Integer")
+  Module ("Stdio")
+end
+
+s_source (rpcc)
+interface(rpcc)

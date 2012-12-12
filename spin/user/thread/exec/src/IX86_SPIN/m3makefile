@@ -1,0 +1,8 @@
+makearg = "OBJDIR=../../" & TARGET
+exec("make", "-C../src/IX86_SPIN", makearg, "-fmake.sigcode")
+derived_interface("SigTramp", HIDDEN)
+Module(AoutParser)
+Module(Aout)
+implementation(Exec)
+Interface(ExecX86)
+

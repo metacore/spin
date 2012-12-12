@@ -1,0 +1,50 @@
+65a66,96
+> host=`hostname`
+> who=`whoami`
+> 
+> # Build the timestamp and squirrel it away in the kernel
+> if [ ! -f timestamp ]
+> then
+> (
+> 	echo "#include <stdio.h>";
+> 	echo "#include <sys/time.h>";
+> 	echo "void	main()";
+> 	echo "{";
+> 	echo " struct timeval now;";
+> 	echo "if (0 > gettimeofday(&now, NULL)) {";
+> 	echo "	 perror(\"gettimeofday\");";
+> 	echo "	 exit(1);";
+> 	echo " }";
+> 	echo " printf(\"%d\", now.tv_sec);";
+> 	echo " exit(0);";
+> 	echo "}";
+> ) > timestamp.c
+> /bin/cc timestamp.c -o timestamp
+> fi
+> 
+> builder=`whoami`
+> spinbuild=`pwd`
+> spinsal=`dirname $spinbuild`
+> spinroot=`dirname $spinsal`
+> echo "BUILT BY  ${builder}  AT  ${spinroot}"
+> 
+> buildtime=`./timestamp`
+> 
+80a112
+> 
+86a119
+>   echo "CONST long version_build_time = ${buildtime};" ;
+92c125
+<   echo "CONST char version[] = \"DEC OSF/1 [UNI] ${v}${variant} (Rev. ${rev}); ${t} ${nl}\";" ;
+---
+>   echo "CONST char version[] = \"SAL [UNI] ${v}${variant} (Rev. ${rev}); ${t}. ${nl}\Built by ${who}@${host}. A hollow voice says 'Hello Kitty'. ${nl}\";" ;
+94c127
+<   echo "CONST char version[] = \"DEC OSF/1 ${v}${variant} (Rev. ${rev}); ${t} ${nl}\";" ;
+---
+>   echo "CONST char version[] = \"SAL ${v}${variant} (Rev. ${rev}); ${t}. ${nl}\Built by ${who}@${host}. A hollow voice says 'Hello Kitty'.${nl}\";" ;
+95a129,133
+> 
+>   echo "CONST char version_builder[] = \"${builder}\";";
+>   echo "CONST char version_build_dir[] = \"${spinbuild}\";";
+>   
+> 

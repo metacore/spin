@@ -1,0 +1,51 @@
+#
+# Copyright 1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+# HISTORY
+# 30-May-96  Eric Christoffersen (ericc) at the University of Washington
+#	Created.
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("Segment","user/fs/lfs","segment",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+
+# LFSLIB -- Collection of Types and Objects Used Around LFS
+Package("LFSCore")
+
+Module("LFSCore")
+
+# General Types and Constants
+Module("LFSTypes")
+Interface("INodePrivate")
+Interface("DirEnt")
+Module("LFSLock")
+
+# DirObject
+Table(DirObj,Text,Integer)
+Table(DirBlock,Integer,Text)
+Module(DirObject)
+
+# INode
+Module("INode")
+
+# INodeArray
+Module("INodeInfo")
+Module("INodeInfoArray")
+Array_sort("INodeInfo","INodeInfo")
+
+# IMap
+Module("IMap")
+
+# Cleaner IMap
+Table(INode,Integer,Text)
+Table(INum,Integer,Integer)
+Module(CleanerIMap)
+
+Extension({})
+
+
+
+

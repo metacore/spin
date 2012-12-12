@@ -1,0 +1,74 @@
+#
+# script for lfs
+#
+echo Loading LFS and extra commands
+nanny touch lfs
+
+echo Creating a 64MB extent for LFS
+extent mkdev $EDISKDEV lfsextent -size 67108864
+
+echo -----------------------------------------------------------------------
+echo load makefs and format the device if necessary
+echo -- script ~/spin/user/fs/lfs/fsutils/makefs/$target/makefs.rc
+echo -- makefs lfsextent 1024 Format
+
+echo -----------------------------------------------------------------------
+echo mount lfs if the device has already been formatted.
+echo -- mkdir /lfs
+echo -- mount lfs lfsextent /lfs
+
+#script ~/spin/user/fs/fsutils/touch/$target/touch.rc
+#echo touch loaded
+
+#script ~/spin/user/fs/lfs/fsutils/init/$target/init.rc
+#echo Init loaded
+
+#XXX. does not compile due to File.T changes.
+#script ~/spin/user/fs/fsutils/read/$target/read.rc
+#echo read loaded
+
+#XXX. does not compile due to File.T changes.
+#script ~/spin/user/fs/fsutils/write/$target/write.rc
+#echo write loaded
+
+#script ~/spin/user/fs/fsutils/sync/$target/sync.rc
+#echo sync loaded
+
+#script ~/spin/user/fs/fsutils/mkdir/$target/mkdir.rc
+#echo mkdir loaded
+
+#script ~/spin/user/fs/fsutils/rmdir/$target/rmdir.rc
+#echo rmdir loaded
+
+#script ~/spin/user/fs/fsutils/unlink/$target/unlink.rc
+#echo unlink loaded
+
+#script ~/spin/user/fs/lfs/fsutils/makefs/$target/makefs.rc
+#echo makefs loaded
+
+#script ~/spin/user/fs/lfs/fsutils/cleanse/$target/cleanse.rc
+#echo cleanse loaded
+
+#script ~/spin/user/fs/lfs/fsutils/bigwrite/$target/bigwrite.rc
+#echo bigwrite loaded
+
+#script ~/spin/user/fs/lfs/fsutils/setcurrentseg/$target/setcurrentseg.rc
+#echo lfssetcurrentseg loaded
+
+#script ~/spin/user/fs/lfs/fsutils/getsegdesc/$target/getsegdesc.rc
+#echo lfsgetsegdesc loaded
+
+#script ~/spin/user/fs/lfs/fsutils/getfreelist/$target/getfreelist.rc
+#echo lfsgetfreelist loaded
+
+#echo Creating a 64MB extent for LFS
+#extent mkdev $EDISKDEV lfsextent -size 67108864
+
+# mount the file system, this will fail if there's no lfs
+# on that drive
+
+#echo mkdir /lfs
+#mkdir /lfs
+#echo mount lfs $DISKDEV /lfs
+#mount lfs $DISKDEV /lfs
+#echo LFS loaded

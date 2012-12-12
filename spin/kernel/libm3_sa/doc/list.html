@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+<h2> Overview </h2>
+The List interface is an example of a generic interface. It can hold
+any type of data, as long as that data is declared to be type T in
+some interface and the interface declares an appropriate Brand constant
+and Equal procedure. Be careful when using the Nth() procedure for
+a List, because it searches from the beginning of the list every
+time which can make iterating over the list very expensive.
+
+<h2> The Details </h2>
+
+<h3> The List interface </h3>
+
+<pre>
+GENERIC INTERFACE List(Elem);
+</pre>
+Where "Elem.T" is not an open array type and "Elem" contains
+<pre>
+| CONST Brand = <text-constant>;
+| PROCEDURE Equal(k1, k2: Elem.T): BOOLEAN;
+</pre>
+   "Brand" must be a text constant. It will be used to construct a brand for
+   any generic types instantiated with the "List" interface. For a non-generic
+   interface, we recommend choosing the name of the interface.
+<p>
+   "Equal" may be declared with a parameter mode of either "VALUE" or
+   "READONLY", but not "VAR".
+<p>
+ A "List.T" represents a linked list of items of type "Elem.T".
+<p>
+ None of the operations of this interface modify the "head" field of
+   an existing list element.  Operations that may modify the "tail"
+   field of existing list elements are called <em> destructive </em>.  By
+   convention, their names end in "D".
+<p>
+
+<h3> The ListSort interface </h3>
+ The generic interface "ListSort" extends the generic interface
+   "List" with sorting operations.
+
+<pre>
+GENERIC INTERFACE ListSort(Elem, ElemList);
+</pre>
+Where "Elem.T" is not an open array type, "ElemList" equals "List(Elem)",
+   and "Elem" contains
+<pre>
+| CONST Brand = <text-constant>;
+| PROCEDURE Compare(e1, e2: Elem.T): [-1..1];
+</pre>
+   "Brand" must be a text constant. It will be used to construct a brand for
+   any generic types instantiated with the "ListSort" interface. For a
+   non-generic interface, we recommend choosing the name of the interface.
+<p>
+   "Compare" must be a total order. It may be declared with any parameter
+   mode, but must have no visible side-effects.
+<p>
+The implementation is time- and cons-efficient but not guaranteed
+   to be stable.  "Sort" copies the cells; "SortD" modifies the "tail"
+   fields of the existing cells. 
+
+<h2> Using the interfaces </h2>
+
+<h3> List </h3>
+
+
+
+<h3> ListSort </h3>
+
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

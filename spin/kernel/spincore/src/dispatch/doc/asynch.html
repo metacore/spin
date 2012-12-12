@@ -1,0 +1,66 @@
+<html>
+<head>
+<title> Asynchrony </title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top">  Asynchrony </a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+In <i>SPIN</i> events can be dispatched asynchronously to detach
+execution of callees from the execution of the caller either for
+performance or safety reasons.  For instance, networking code can pass
+a packet to an untrusted extension from interrupt level if it is
+guaranteed that control comes back to it fast enough.  One way of
+achieving it is to spawn an asynchronous thread for that handler; in
+<i> SPIN</i> this can be done transparently by making an event
+asynchronous.  An asynchronous event raise creates a thread that
+synchronously dispatches the invocation to all the handlers.
+
+<p>
+
+Sometimes it is advantageous to be able to execute asynchronously only
+some handlers.  For example, if a file system is extended with lazy
+replication then the original code should perform the write
+synchronously but the replication can be done asynchronously.  <i>
+SPIN </i> allows making handlers asynchronous.  When an event raised
+and a handler installed on this event is asynchronous handler then, if
+the guards for the handler evaluate to <i> TRUE </i>, a thread is
+created to execute that handler.
+
+<h2> Interface </h2>
+
+<pre>
+PROCEDURE SetAsynchronousEvent (event        : PROCANY;
+                                asynchronous : BOOLEAN;
+                                module: RTCode.Module)
+                               RAISES { Error };
+
+PROCEDURE SetAsynchronousHandler (binding: Binding;
+                                  asynchronous : BOOLEAN)
+                                 RAISES { Error };
+</pre>
+
+<h2> Usage </h2>
+
+<i>SetAsynchronousEvent</i> is used to make an event asynchronous if
+the <i> asynchronous</i> argument is <i> TRUE</i> and synchronous if
+it is <i> FALSE</i>.  Accordingly, <i>SetAsynchronousHandler</i> is
+used to make a handler asynchronous.
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>

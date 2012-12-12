@@ -1,0 +1,16 @@
+67c67
+< GPSIZE=		${MACHO?0:4}
+---
+> GPSIZE=		4
+119,121c119,120
+< LDOBJS_PREFIX=alpha_init.o init_main.o ipc_globals.o lockinfo.o pmap_init.o \
+< 	startup.o steal_mem.o vm_init.o scb.o entry.o
+< LDFLAGS= ${MACHO?:${ENDIAN} -G ${GPSIZE} -N} -ncr -w2 -O2 -T ${TEXTBASE} -e start ${LDOPTS}
+---
+> LDOBJS_PREFIX=alpha_init.o pmap_init.o steal_mem.o scb.o entry.o 
+> LDFLAGS= ${ENDIAN} ${LDPROF} -G ${GPSIZE} -N -ncr -w2 -O2 -T ${TEXTBASE} -e start ${LDOPTS}
+138c137,138
+< libvmunix: vmunix.sys
+---
+> libvmunix: spin.boot
+> # libvmunix: sal.boot # for sal_client kernel

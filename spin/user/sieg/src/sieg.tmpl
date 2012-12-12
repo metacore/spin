@@ -1,0 +1,104 @@
+%
+%  This template defines sieg_both.
+%
+% HISTORY
+% 14-Aug-96  Frederick Gray (fgray) at the University of Washington
+%	Eliminated dependency on particular directory structure.
+%
+% sieg_both(INTERFACE) : creates both user and extension stubs.
+% -- yasushi
+%
+
+SIEG_USER_OBJS = []
+
+SIEG_TEMPLATE_BASE_NAME="extension_tmpl"
+EXTENSION_TMPL="unknown-tmpl"
+
+# SIEG_USER_DIR : user/sieg
+# SIEG_LOCAL_DIR : local/sieg
+
+proc sieg_get_dirs() is
+
+    if not stale(THISTREE & "/user/sieg", THISTREE & "/user/sieg")
+	SIEG_USER_DIR = THISTREE & "/user/sieg"
+    else
+	SIEG_USER_DIR = FULLTREE & "/user/sieg"
+    end
+
+
+    # some sanity check.
+    if stale(SIEG_USER_DIR, SIEG_USER_DIR) 
+      error("sieg is not found on " & SIEG_USER_DIR)
+    end
+
+    EXTENSION_TMPL = SIEG_USER_DIR & "/" & SIEG_TEMPLATE_BASE_NAME
+
+    if defined ("SIEG")
+      % take the version specified by the user
+      SIEG_PROG = SIEG
+    else
+       if not stale(THISTREE & "/local/" & BUILD_ARCH & "/bin/sieg", THISTREE & "/local/" & BUILD_ARCH & "/bin/sieg")
+	  SIEG_PROG = THISTREE & "/local/" & BUILD_ARCH  & "/bin/sieg"
+       else
+	  SIEG_PROG = FULLTREE & "/local/" & BUILD_ARCH & "/bin/sieg"
+       end
+    end
+end
+
+SIEG_OPTION = []
+
+proc _sieg(intf, add_info_file, hidden_or_not) is
+  local target_path = intf & "Extension.m3"
+  local intf_path = path() & "/" & intf & ".i3"
+
+  sieg_get_dirs()
+  if defined("EXTENSION_NAME")
+    SIEG_OPTION += ["-dn", EXTENSION_NAME]
+  end
+  if stale(target_path, intf_path)
+	or stale(target_path, EXTENSION_TMPL & ".i3")
+	or stale(target_path, EXTENSION_TMPL & ".m3")
+    generate_tfile()
+    exec(SIEG_PROG, intf_path, SIEG_OPTION, "-gch", M3SEARCH_TABLES, "-et", EXTENSION_TMPL)
+  end
+
+  %derived_interface(intf & "User", HIDDEN)
+  derived_s(intf & "User")
+  derived_h(intf & "User")
+  SIEG_USER_OBJS+= intf & "User" & ".io"
+  SIEG_USER_OBJS+= intf & "User" & ".o" 
+
+  derived_implementation(intf & "Extension")
+  derived_interface(intf & "Extension", HIDDEN)
+  if equal(hidden_or_not, HIDDEN)
+    interface(intf)
+  else
+    Interface(intf)
+  end
+  if equal(add_info_file, "yes")
+    derived_interface(intf & "Info", hidden_or_not)
+  end
+end
+
+proc Sieg_interface(intf) is
+  _sieg(intf, "no", VISIBLE)
+end
+proc Sieg_interface_with_info(intf) is
+  _sieg(intf, "yes", VISIBLE)
+end
+proc sieg_interface(intf) is
+  _sieg(intf, "no", HIDDEN)
+end
+proc sieg_both(intf) is
+  # this is deprecated.
+  _sieg(intf, "no", VISIBLE)
+end
+
+
+proc sieg_option(str) is 
+  SIEG_OPTION += str
+end
+proc sieg_select_template(str) is 
+  SIEG_TEMPLATE_BASE_NAME=str
+end
+

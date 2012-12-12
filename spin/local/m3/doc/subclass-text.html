@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>Casting Up the Type Hierarchy</title>
+<!-- Changed by: Wilson Hsieh, 17-Jul-1996 -->
+</head>
+
+<body>
+<h1>Casting Up the Type Hierarchy</br></h1>
+
+The bad code below differs from the good code in that
+<code>Directory.T</code> is subtyped from a class that is not
+completely virtual.  (That is, it has some non-NIL methods.)  It also
+has a procedure <code>Init</code> revealed in its interface.
+
+There are two problems with this interface.  First, malicious code
+could cast upwards and call a superclass method on the subtype.
+
+<pre>
+(* using Type.Method and casting up to a visible type *)
+EVAL Directory.PublicT.init(NARROW(NEW(FileSystemDirectory.T), Directory.PublicT));
+</pre>
+
+If no methods are revealed in an INTERFACE, then the only methods that
+can be called are NIL methods.
+
+Second, procedures that operate directly on objects is also dangerous.
+Malicious code could also do the following:
+
+<pre>
+(* calling init directly, since FileSystemDirectory.T is a subclass
+   of Directory.PublicT *)
+EVAL Directory.Init(NEW(FileSystemDirectory.T));
+</pre>
+
+The implementor of <code>FileSystemDirectory.T</code> must ensure that
+<code>Directory.Init</code> is written acceptably, or that it only
+calls object methods on <code>Directory.T</code> that are acceptably
+overriden in <code>FileSystemDirectory.T</code>.
+
+</body>
+<p>
+<hr>Last changed <date>July 17, 1996</date> <br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

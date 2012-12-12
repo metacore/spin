@@ -1,0 +1,14 @@
+#! /bin/sh
+#
+# top-level bootstrap install script
+#
+ 
+TOP=`pwd`
+QUAKE=$TOP/quake/$LOCALTARGET/quake
+CONFIG=$TOP/m3build/templates/$LOCALTARGET
+top_root="$1/"
+install_root="$1/$LOCALTARGET/"
+ 
+ 
+echo ---- installing ----
+$QUAKE -D_all -DBUILD_PACKAGE=boot -DTOP_ROOT=$top_root -DINSTALL_ROOT=$install_root -DLOCALTARGET=$LOCALTARGET $CONFIG m3ship.boot

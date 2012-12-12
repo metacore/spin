@@ -1,0 +1,9 @@
+# Host:  IBM RS/6000 running LynxOS
+# This file is derived from rs6000.mh, but it disables COFF archives.  LynxOS
+# uses a.out style archives (even though it uses XCOFF binaries).
+
+# Turn on core file support in coff-rs6000.c.  We cannot do this in
+# configure.in, as there is no way to distinguish between aix and lynx at the
+# critical part of the post-target routine.
+
+HDEPFILES = lynx-core.o

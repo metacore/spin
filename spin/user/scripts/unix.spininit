@@ -1,0 +1,52 @@
+# HISTORY
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Change ALPHA_SPIN to variable $target which can be either
+#	 ALPHA_SPIN or ALPHA_SPIN_PROF.
+#
+
+#echo ---- Running boot script ----
+#script -b
+
+#echo ---- Setting dispatcher optimization ----
+#disp opt
+#disp show
+
+echo Getting host name...
+script ~/spin/user/scripts/hostmap.d/$ipaddr
+
+echo Booting $hostname @ $ipaddr
+
+echo Loading host specific info...
+script ~/spin/user/scripts/hostboot.d/$hostname.rc
+
+echo ---- Loading SpinUnixRunTime and SpinUnixNet ----
+script ~/spin/user/urt/net/osf.tcp.rc
+script ~/spin/user/urt/urtcore/$target/urtcore.rc
+script ~/spin/user/urt/net/$target/net.rc
+
+echo ---- Loading Ethernet ----
+script ~/spin/user/net/ether/$target/ether.rc
+
+#echo ---- ifconfig (for $hostnamefull) ----
+#join ifconfig $ETHERDEV $ipaddr 255.255.255.255 255.255.255.0
+#route add default 128.95.2.100
+
+echo ---- Loading CAM ----
+script ~/spin/user/cam/osf.cam.rc
+script ~/spin/user/cam/$target/cam.rc
+
+echo ---- Loading OSF/1 Unix extensions ----
+#nanny touch mach
+script ~/spin/user/mach/$target/mach.rc
+
+echo ---- Forcing collection ----
+join gc collect
+
+#echo ---- Disabling GC ----
+#join gc disable
+
+#echo ---- Disabling Preemption ----
+#join preemptive user
+
+echo ---- Setting GC verbose ----
+join gc -verbose

@@ -1,0 +1,25 @@
+#
+# Copyright 1996, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+
+
+# Network depends on OsfNetEmulation, IcmpClient and EtherClient
+nanny touch SpinUnixNet
+nanny touch OsfNetEmulation
+nanny touch IcmpClient
+nanny touch EtherClient
+
+echo ifconfig $ETHERDEV $ipaddr
+ifconfig $ETHERDEV $ipaddr 255.255.255.255 255.255.255.0
+echo route add default $ipaddr0.$ipaddr1.$ipaddr2.100
+route add default $ipaddr0.$ipaddr1.$ipaddr2.100
+
+nanny touch LoopbackServer
+echo route add host $ipaddr 127.0.0.1
+route add host $ipaddr 127.0.0.1
+script hosts.rc
+script ~/spin/user/net/stats/$target/stats.rc
+

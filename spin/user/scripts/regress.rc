@@ -1,0 +1,84 @@
+#
+# Copyright 1995, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# This script loads all regression tests.  Regression tests are supposed
+# to install themselves as commands by using RegressionTest generic.
+# Type "regress -all" from shell to execute all regression tests and
+# "regress <test-name> to execute a particular test.  Type "regress -clean"
+# to uninstall all regression tests.
+#
+# HISTORY
+#
+# 03-Sep-97  Robert Grimm (rgrimm) at the University of Washington
+#       added preemption test.
+#
+# 08-Aug-97  Robert Grimm (rgrimm) at the University of Washington
+#       added security regression tests.
+#
+# 20-Sep-96  Wilson Hsieh (whsieh) at the University of Washington
+#	removed guard-eval, because guards are now FUNCTIONAL, and it
+#	depends on side effects
+#
+# 18-Jun-96  Przemek Pardyak (pardy) at the University of Washington
+#	Added "disp-result".
+#
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Change ALPHA_SPIN to variable $target which can be either
+#	 ALPHA_SPIN or ALPHA_SPIN_PROF.
+#
+# 09-Mar-96  Stefan Savage (savage) at the University of Washington
+#	Added memory tests
+#
+# 26-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Added commands to set the loadpath variable.
+#
+# 4-Jan-96  Przemek Pardyak (pardy) at the University of Washington
+#	Created.
+#
+
+
+echo Loading all regression tests
+
+# miscellaneous
+script ~/spin/user/regress/misc/hello/$target/hello.rc
+
+# dynamic linking
+script ~/spin/user/regress/dynlink/dyntypes/$target/dyntypes.rc
+
+# dispatcher
+script ~/spin/user/regress/disp/type/$target/type.rc
+script ~/spin/user/regress/disp/args/$target/args.rc
+script ~/spin/user/regress/disp/noinvoke/$target/noinvoke.rc
+script ~/spin/user/regress/disp/invoke/$target/invoke.rc
+# disabled because it relied on guards with side effects
+# script ~/spin/user/regress/disp/guardeval/$target/guardeval.rc
+script ~/spin/user/regress/disp/except/$target/except.rc
+script ~/spin/user/regress/disp/closure/$target/closure.rc
+script ~/spin/user/regress/disp/save/$target/save.rc
+script ~/spin/user/regress/disp/asynch/$target/asynch.rc
+script ~/spin/user/regress/disp/impose/$target/impose.rc
+script ~/spin/user/regress/disp/cancel/$target/cancel.rc
+script ~/spin/user/regress/disp/result/$target/result.rc
+script ~/spin/user/regress/disp/linear/$target/linear.rc
+
+# compiler
+script ~/spin/user/regress/compiler/view/$target/view.rc
+script ~/spin/user/regress/compiler/bitfield/$target/bitfield.rc
+
+# memory
+script ~/spin/user/vm/mach/$target/mach.rc
+# took out by yaz Tue Jul 29 18:43:21 1997
+#script ~/spin/user/regress/memory/machbasic/$target/machbasic.rc
+
+# security
+script ~/spin/user/regress/security/accessmode/$target/accessmode.rc
+script ~/spin/user/regress/security/manager/$target/manager.rc
+script ~/spin/user/regress/security/dyncontrol/$target/dyncontrol.rc
+
+# preemption
+script ~/spin/user/regress/preempt/$target/preempt.rc
+
+echo Loading done
+

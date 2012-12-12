@@ -1,0 +1,15 @@
+# m3makefile for block device support
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+
+Package("BDev")
+
+Module("BDev")
+interface("BDevExtern")
+c_source("blkdev")
+
+Extension({})

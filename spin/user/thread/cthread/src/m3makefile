@@ -1,0 +1,28 @@
+
+
+%
+% HISTORY
+% 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+%	TARGET -> BASETARGET
+%
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("SecurityPublic","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("VMCore","user/vm","vmcore",overridepath)
+DomainImport("Space","user/vm","space",overridepath)
+DomainImport("Console","user/dev","console",overridepath)
+DomainImport("UserSpaceThread","user/thread","threadcore",overridepath)
+
+Package("CThread")
+
+Interface("CThread")
+Interface("CThreadNativeRep")
+Interface("CThreadNative")
+Interface("CTSyscall")
+
+include_dir(BASETARGET)
+
+Extension({})

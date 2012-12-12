@@ -1,0 +1,9 @@
+../malloc/seg_create /dev/rrz2h 0x142000000 0x2000000  0x100000
+db -bufsize 100000 -oo7 -f/dev/rrz2h -g Config.small
+
+
+
+
+
+
+

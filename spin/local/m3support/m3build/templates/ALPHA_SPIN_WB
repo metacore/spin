@@ -1,0 +1,25 @@
+% Copyright (C) 1989, 1992 Digital Equipment Corporation 
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+
+% 
+% Standard configuration file for Alpha/AXP running SPIN
+%
+
+%
+% HISTORY
+% 16-Jul-97  Tian Fung Lim (tian) at the University of Washington
+%	created
+%
+
+
+
+if equal(TARGET, "TARGET")
+  readonly TARGET = "ALPHA_SPIN_WB"
+end
+
+include (ALPHA_SPIN)
+
+readonly WRITEBARRIER = "TRUE"
+readonly REFCOUNT = "FALSE"
+m3_option("-RefCount")

@@ -1,0 +1,26 @@
+SRCS=trans.cc work.cc rvm_def.c
+THISTREE:=$(shell cd ../../..; pwd)
+BENCHDIR=$(THISTREE)/user/sphinx/libbench
+CFLAGS=-g -I../rvm -I../rds -DRVM -I$(BENCHDIR)
+
+%.o : %.cc
+	cp $*.cc $*.c
+	$(CC) $(CFLAGS) -c $*.c
+
+LIB= ../rds/librds.a ../seg/libseg.a ../rvm/librvm.a $(BENCHDIR)/libbench.a
+all:: rvmbench
+
+OBJS:=$(SRCS:.c=.o)
+OBJS:=$(OBJS:.cc=.o)
+
+
+rvmbench:  $(OBJS) $(LIB)
+	$(CC) -non_shared -o $@ $(CFLAGS) $^
+	
+make.dep depend:
+	rm -f make.dep
+	touch make.dep
+	makedepend -f make.dep $(CFLAGS) $(SRCS) 
+
+
+include make.dep

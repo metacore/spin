@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>ExcHandlers Interface</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> ExcHandlers Interface</a> </br>
+</h1>
+<date>March 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+The ExcHandlers interface provides support for redirecting system calls
+to the OSF/1 server.  There are two entry points to ExcHandlers: from the
+OSF/1 server and from a user-level application.
+<p>
+The OSF/1 server drops threads into ExcHandlers using the
+exception_task_get_next_exception() system call.  This system call carries
+down a result state from a previous system call (if any) and waits for the
+next system call.
+<p>
+Entry from a user-level application comes when the syscall number does
+not match any in the Syscall case statement.  The syscall is then redirected
+to the ExcHandlers module, a server thread is kicked.  The application
+thread then waits for the server thread to return.
+<p>
+The ExcHandlers module relies heavily on the MarshallExc interface to 
+marshall arguments.
+<p>
+The ExcHandlers interface is <a href="../src/ExcHandlers.i3">
+ExcHandlers.i3</a>.
+
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

@@ -1,0 +1,5 @@
+implementation("MachineSyscallTrace")
+implementation("SphinxOSF1")
+implementation("SphinxMachineDep")
+Interface("MachineSigContext")
+Sieg_interface_with_info("Sphinx")

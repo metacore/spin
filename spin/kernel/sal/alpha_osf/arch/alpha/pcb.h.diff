@@ -1,0 +1,21 @@
+141a142,155
+> #ifdef SPIN 
+> 	/* BUGBUG: Total HACK.  We needed to add these because we define
+> 	   u to be the same as pcb.  We don't define a uthread struct. */
+>         struct proc *proc;              /* pointer to proc structure */
+> 
+> 	ulong_t uu_ieee_fp_trap_pc;
+>         ulong_t uu_ieee_fp_trigger_sum;
+>         uint_t  uu_ieee_fp_trigger_inst;
+>         ulong_t uu_ieee_fp_control;
+>         ulong_t uu_ieee_set_state_at_signal;
+>         ulong_t uu_ieee_fp_control_at_signal;
+>         ulong_t uu_ieee_fpcr_at_signal;
+> 
+> #endif /* SPIN */
+156a171,173
+> #ifdef SPIN
+> #define current_cpu()	(0)
+> #else /* SPIN */
+159a177
+> #endif /* SPIN */

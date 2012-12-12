@@ -1,0 +1,31 @@
+# HISTORY
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Change ALPHA_SPIN to variable $target which can be either
+#	 ALPHA_SPIN or ALPHA_SPIN_PROF.
+#
+# chintz is 234.
+set IPADDR 234
+
+echo --- loading urt ---
+script ~/spin/spindle/urt/osf.tcp.rc
+script ~/spin/spindle/urt/$target/urt.rc
+
+echo --- loading plexus ---
+script ~/spin/spindle/plexus/$target/plexus.rc
+
+echo --- configuring lance device ---
+ifconfig ln0 $ipaddr 255.255.255.255 255.255.255.0
+
+echo --- adding default route ---
+route add default 128.95.2.100
+
+echo $IPADDR
+echo --- loading background command ---
+script ~/spin/spindle/bg/$target/bg.rc
+
+echo --- loading WFS client ---
+script ~/spin/spindle/wfs/$target/wfs.rc
+
+mount wfs bauhaus /mnt
+
+

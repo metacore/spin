@@ -1,0 +1,21 @@
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("Stcp","user","stcp",overridepath)
+
+Package("NetDev")
+
+Module("NetDev")
+Module("EtherDev")
+Interface("EtherDevRep")
+implementation("BootDev")
+interface("EtherDevExtern")
+Interface("MbufPublic")
+Module("Mbuf")
+c_source("bootether")
+
+include_dir(BASETARGET)
+
+Extension({})

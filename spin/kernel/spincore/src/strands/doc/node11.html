@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Appendix  B:</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Appendix  B:">
+<meta name="keywords" value="strands">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html126 HREF="node12.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/general/latex2html_icons//next_motif.gif"></A>   <A NAME=tex2html124 HREF="index.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/general/latex2html_icons//up_motif.gif"></A>   <A NAME=tex2html118 HREF="node10.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/general/latex2html_icons//previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html127 HREF="node12.html">   About this document </A>
+<B>Up:</B> <A NAME=tex2html125 HREF="index.html">Strands</A>
+<B> Previous:</B> <A NAME=tex2html119 HREF="node10.html"> Appendix  A:</A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00090000000000000000> Appendix  B:</A></H1>
+<P>
+Anatomy of a context switch between two user-level strands
+<UL><LI> Suppose a user-level strand is executing in domain a.
+<LI> Clocktick event occurs. Suspended state pointer (<b> S</b>) points to
+  this state (<b> X</b>). When event handling is finished, ^S will be resumed.
+<LI> The handler for Clocktick is a piece of the global scheduler
+  that has registered to be executed in its own domain <b> g</b>.
+<LI> Scheduler raises <tt> Stop</tt>. <tt> Stop</tt> handler executes in its
+  registered domain a, and saves away as much state as it needs.
+<LI> Back to the scheduler in domain <b> g</b>. Scheduler changes the
+saved state pointer <b> S</b> to point to a context that will execute
+an idle loop.
+<LI> Scheduler changes the current domain to destination domain <b> b</b>.
+<LI> Scheduler raises <tt> Run</tt>.
+<LI> The <tt> Run</tt> handler should now change <b> S</b> to something that will
+  resume a user-level computation.
+<P>
+</UL><BR> <HR>
+<P><ADDRESS>
+<I>Emin Gun Sirer <BR>
+Sat Jun 22 19:01:37 PDT 1996</I>
+</ADDRESS>
+</BODY>

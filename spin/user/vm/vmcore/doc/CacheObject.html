@@ -1,0 +1,144 @@
+<head>
+<title>CacheObject</title>
+</head>
+<body>
+<h2>CacheObject</h2>
+<table width=100%>
+<td><td>
+ Cache object is a subcomponent of the <a href="MemoryObject.html">
+
+ MemoryObject</a>. It
+
+ records all the physical page frames currently held by
+
+ the memory object it belongs to.
+
+<p>
+ It also serves as the policy module for page eviction.
+
+<p>
+ In all the methods, the location is expressed in unit of MMU page. 
+
+</table><br>
+<br>
+<br>
+<blockquote>
+<code><b>INTERFACE CacheObject;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>IMPORT Word;
+</b></code><br><code><b>IMPORT VMError;
+</b></code><br><code><b>IMPORT PhysAddr;
+</b></code><br><code><b>IMPORT VMTypes;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>TYPE
+</b></code><br></blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;T &lt: TPublic;
+</b></code><br><code><b>&nbsp;&nbsp;TPublic = OBJECT 
+</b></code><br><code><b>&nbsp;&nbsp;METHODS
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;destroy();
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td>
+     XXX
+
+     This proc is notification from the memobject that the cache
+
+     is no longer used.
+
+     However, this proc is <em>never</em> called now because it is
+
+     difficult to know the timing the cache should be deleted when
+
+     the memory object participate in cow.
+
+     </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;lookup(offset: VMTypes.PageNumber; VAR frame: PhysAddr.T): BOOLEAN;
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> Find the frame for the location <code><b>offset</b></code>. Returns true if
+     found, false otherwise. </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;update(offset: VMTypes.PageNumber; frame: PhysAddr.T) RAISES {VMError.E};
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code>Record the block <code><b>b</b></code> at the location <code><b>offset</b></code>. <br>
+</blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;invalidate(offset: VMTypes.PageNumber) RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> <code><b>invalidate</b></code> is called after the content of page <code><b>offset</b></code> is
+       written out to a device. </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;chooseVictim(VAR frame: PhysAddr.T);
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> Choose a memory page to be paged out. <code><b>frame</b></code> is the page chosen by
+     the vmcore. The cache object is free to override the frame
+
+     (NIL is not allowed, though.)
+
+     in the simplest case, this proc is a nop.
+
+<br>
+     XXX Vino <code><b>disaster</b></code> paper talks something about the safety
+
+     of this procedure. I ignore all of their concerns.
+
+     </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;frameCount(): CARDINAL;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code>Return the # of frames stored in the object. <br>
+</blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;getMemoryObject(): REFANY;
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> Returns the memory object associated with the pager.
+     The return value is always of type <code><b>MemoryObject.T</b></code>, but we declare it
+
+     refany to avoid import loop.  </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;iterate(): Iterator;
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> XXX this is not mutexed. 
+<br>
+     Consider these to address atomicitiy problem with iterator
+
+<blockquote><code><b> lookupDirty(): ARRAY OF CacheBlock.T;</b></code><br>
+<code><b> flushDirty(): ARRAY OF CacheBlock.T;</b></code><br>
+    </blockquote></table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;print(): TEXT;
+</b></code><br><code><b>&nbsp;&nbsp;END;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;Iterator = OBJECT
+</b></code><br><code><b>&nbsp;&nbsp;METHODS
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;next(VAR off: VMTypes.PageNumber; VAR frame: PhysAddr.T): BOOLEAN;
+</b></code><br><code><b>&nbsp;&nbsp;END;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>CONST Brand = "CacheObject-1.0";
+</b></code><br></blockquote>
+<blockquote>
+<code><b>PROCEDURE Equal(co1, co2: T): BOOLEAN;
+</b></code><br><code><b>PROCEDURE Hash(co: T): Word.T;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>END CacheObject.
+</b></code><br></blockquote>
+<hr>
+Last updated: Sun Oct 13 16:36:49 PDT 1996
+<br>
+<address>Stefan Savage (savage@cs.washington.edu)</address>
+</body>

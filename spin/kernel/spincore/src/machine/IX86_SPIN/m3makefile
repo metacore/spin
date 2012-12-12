@@ -1,0 +1,69 @@
+#
+# Copyright 1994, 1995,1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 05-Jan-98  Tsutomu Owa (owa) at the University of Washington
+#	Added ESP.S, which save/restore ESP0.
+#
+# 11-Dec-96  Marc Fiuczynski (mef) at the University of Washington
+#	Fixed up S_source and added FULLTREE include path.
+#
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Added Profile.s, which enables call graph profiling. 
+#	
+# 10-Dec-94  Emin Gun Sirer (egs) at the University of Washington
+#	Created.
+
+
+if equal(PROFILE, "TRUE")
+   SFLAGS += "-DCALL_GRAPH"
+end
+
+include_dir("linker")
+include_dir("dispatch")
+
+Interface("CPUDep")
+Interface("MachineDep")
+Interface("TrapPrivate")
+interface("CPUExtern")
+implementation("CPU")
+interface("MachineThreadExtern")
+implementation("MachineThread")
+interface("AtomicOpsExtern")
+implementation("AtomicOps")
+implementation("Trap")
+implementation("MachineDebugger")
+
+
+c_source("M3Support")
+interface("LogExtern")
+c_source("Log")
+
+Module("Core")
+Interface("CoreExtern")
+
+S_source("Core")
+S_source("FPUState")
+S_source("Thread")
+S_source("AtomicOps")
+S_source("SwapContext")
+S_source("ESP")
+
+c_source("Interrupts")
+c_source("regs")
+
+DomainExport("SpinPublic","CPUDep")
+DomainExport("SpinPublic","MachineDep")
+
+% These commands point the include file paths to the build directories
+% for the current target. 
+add_CC_args("-I", [THISTREE & "/kernel/sal/" & TARGET, 
+	           THISTREE & "/kernel/m3core_sa/" & TARGET, 
+	           THISTREE & "/kernel/spincore/" & TARGET])
+add_CC_args("-I", [FULLTREE & "/kernel/sal/" & TARGET, 
+	           FULLTREE & "/kernel/m3core_sa/" & TARGET, 
+	           FULLTREE & "/kernel/spincore/" & TARGET])
+
+

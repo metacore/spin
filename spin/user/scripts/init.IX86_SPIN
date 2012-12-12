@@ -1,0 +1,28 @@
+#
+# init.IX86_SPIN is interpretted by the Init extension 
+# after the SPIN kernel is up and running.
+#
+# Init parsing is limited to the machine generated rc files and lines 
+#  starting with "script ~"
+#
+# Default is http
+# boot http 
+boot nfs
+# boot tftp
+script ~/spin/user/vm/vmcore/IX86_SPIN/vmcore.rc
+script ~/spin/user/vm/space/IX86_SPIN/space.rc
+script ~/spin/user/dev/devcore/IX86_SPIN/devcore.rc
+script ~/spin/user/dev/console/IX86_SPIN/console.rc
+script ~/spin/user/fs/fscore/IX86_SPIN/fscore.rc
+script ~/spin/user/fs/tmpfs/IX86_SPIN/tmpfs.rc
+script ~/spin/user/shell/shellcore/IX86_SPIN/shellcore.rc
+# need to be loaded after shellcore.  stcpfs relies on it.
+# enable tftp rather than stcpfs if you want to use tftp.
+#script ~/spin/user/fs/stcpfs/IX86_SPIN/stcpfs.rc
+script ~/spin/user/fs/tftp/IX86_SPIN/tftp.rc
+script ~/spin/user/shell/basiccmds/IX86_SPIN/basiccmds.rc
+script ~/spin/user/shell/expr/IX86_SPIN/expr.rc
+script ~/spin/user/shell/utils/IX86_SPIN/utils.rc
+script ~/spin/user/thread/threadcore/IX86_SPIN/threadcore.rc
+script ~/spin/user/thread/exec/IX86_SPIN/exec.rc
+script ~/spin/user/shell/consoleshell/IX86_SPIN/consoleshell.rc

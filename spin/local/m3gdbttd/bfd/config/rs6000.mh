@@ -1,0 +1,5 @@
+# Host:  IBM RS/6000 running AIX
+# This #define is a kludge to allow coff-rs6000.c to compile on most host.
+# We only turn on archive & core support if this symbol is defined, since
+# we don't have distributable include files for them.
+HDEPFILES = rs6000-core.o

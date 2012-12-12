@@ -1,0 +1,157 @@
+<head>
+<title>AddressSpace</title>
+</head>
+<body>
+<h2>AddressSpace</h2>
+<table width=100%>
+<td><td>
+The VM extension provides two types of address spaces,
+
+"AddressSpace.T" and <!--ref="space"-->"Space.T"</a>.
+
+<p>
+<code><b>AddressSpace.T</b></code> provides the reservation of
+
+an address range, and mapping and unmapping of a memory object on
+
+the address space.
+
+<p>
+<code><b>Space.T</b></code> is a subtype of <code><b>AddressSpace.T</b></code>.
+
+Thus, it supports all the services that <code><b>AddressSpace.T</b></code>
+
+provides. In addition to them, <code><b>Space.T</b></code> provides reading and
+
+writing on it.
+
+<p>
+</table><br>
+<br>
+<blockquote>
+<code><b>INTERFACE AddressSpace;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>IMPORT Translation, MemoryObject, AddressMap;
+</b></code><br><code><b>IMPORT VMError;
+</b></code><br><code><b>IMPORT VMTypes;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>TYPE
+</b></code><br><code><b>&nbsp;&nbsp;T &lt: Public;
+</b></code><br><code><b>&nbsp;&nbsp;Public = Translation.T OBJECT
+</b></code><br><code><b>&nbsp;&nbsp;METHODS
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;init(name: TEXT): T;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code>This is the constructor. <code><b>name</b></code> is used only for debugging purposes. <br>
+</blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;destroy();
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code>Frees up all the resources held by the address space. <br>
+</blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;allocate(VAR pageNum: VMTypes.PageNumber;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; numPages: VMTypes.PageCount; anyWhere: BOOLEAN)
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RAISES {VMError.E};
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;deallocate(pageNum: VMTypes.PageNumber; numPages: VMTypes.PageCount)
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> These methods reserve or unreserve
+       the virtual address region without allocating
+
+       memory. 
+
+       They are used to reserve a certain region for later use.
+
+       If <code><b>anyWhere</b></code> is true, then <code><b>allocate</b></code> first tries the address
+
+       <code><b>pageNum</b></code>. If it is occupied, then it chooses a free region by
+
+       its own. If <code><b>anyWhere</b></code> is false and the address <code><b>pageNum</b></code> is
+
+       occupied, then <code><b>allocate</b></code> raises an exception.
+
+<br>
+       <bq><em>Note:</em> The semantics of when "anyWhere" is false is
+
+       different from UNIX "mmap". This has to be fixed soon!</bq>
+
+<br>
+       <code><b>pageNum</b></code> and <code><b>numPages</b></code> are counted in the MMU page size unit.       
+
+     </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;map(pageNum: VMTypes.PageNumber; numPages: VMTypes.PageCount;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mObj: MemoryObject.T;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mOff: VMTypes.PageNumber; lazy := FALSE) RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> <code><b>map</b></code> maps the region
+       <code><b>mOff</b></code> to <code><b>mOff+numPages</b></code>
+
+       of the <a href="memobj.html">memory object</a> "mObj"
+
+       on the virtual address <code><b>pageNum</b></code> to
+
+       <code><b>pageNum + numPages</b></code>. <code><b>mOff</b></code>, <code><b>pageNum</b></code>,
+
+       and <code><b>numPages</b></code> are all specified in machine MMU page
+
+       unit. On Alpha, the page size is 8192 bytes.
+
+<br>
+       The region <code><b>pageNum</b></code> to <code><b>pageNum + numPages</b></code> must
+
+       be reserved beforehand using <code><b>allocate</b></code>.
+
+<br>
+       If <code><b>lazy</b></code> is true, then the pages is the region is not
+
+       immediately paged in. Instead, they are brought in as the
+
+       user app page faults in the region. If <code><b>lazy</b></code> is false, then
+
+       the pages are eager copied.
+
+<br>
+     </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;unmap(pageNum: VMTypes.PageNumber; numPages: VMTypes.PageCount)
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> Unmaps the memory object mapped on the space.
+     Currently, the region <code><b>pageNum .. pageNum+numPages</b></code> must be
+
+     <em>exactly</em> same as the region specified in previous "mmap" call.
+
+     In other words, you can not unmap a subregion(or superregion) of
+
+     a region created by mmap. </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;clear() RAISES {VMError.E};
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;print(): TEXT;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;iterate(): Iterator;
+</b></code><br><code><b>&nbsp;&nbsp;END;
+</b></code><br><code><b>&nbsp;&nbsp;Iterator = AddressMap.Iterator;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>CONST
+</b></code><br><code><b>&nbsp;&nbsp;Brand = "AddressSpace-1.1";
+</b></code><br></blockquote>
+<blockquote>
+<code><b>PROCEDURE Equal(as1, as2: T): BOOLEAN;
+</b></code><br><code><b>PROCEDURE Hash(as: T): CARDINAL;
+</b></code><br><code><b>PROCEDURE Compare(as1, as2: T): [-1..1];
+</b></code><br></blockquote>
+<blockquote>
+<code><b>END AddressSpace. 
+</b></code><br></blockquote>
+<hr>
+Last updated: Sun Oct 13 16:36:48 PDT 1996
+<br>
+<address>Stefan Savage (savage@cs.washington.edu)</address>
+</body>

@@ -1,0 +1,20 @@
+#
+# m3makefile
+#
+# HISTORY
+# 
+# 09-Apr-97  Tsutomu Owa (owa) at the University of Washington
+#	Whisted.
+#
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+
+# load unsafe interface 
+# interface ("StcpEtherPacketExtern")
+Interface ("StcpIfDep")
+interface ("StcpMbufExtern")
+interface ("StcpNetExtern")
+Interface ("StcpMbufDep")
+# module("DefaultAddrDep")
+implementation ("StcpNetDep")

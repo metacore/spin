@@ -1,0 +1,28 @@
+# HISTORY
+# 24-Mar-96  Brian Bershad (bershad) at the University of Washington
+#	New build fmt.
+#
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Changed to simpler spindle build functions.
+#
+# WFS
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("SpinUnixNet","user/urt","net",overridepath)
+DomainImport ("FileSystem","user/fs","fscore",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+DomainImport ("NetDb","user/net","dns",overridepath)
+DomainImport ("IpServer","user/net","ip",overridepath)
+
+
+Package("WFS")
+
+Module("WFS")
+Module ("Fetch")
+
+Extension({})
+

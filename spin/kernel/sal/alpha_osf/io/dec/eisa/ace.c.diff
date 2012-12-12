@@ -1,0 +1,18 @@
+491a492
+> #ifndef SPIN
+499a501
+> #endif
+536a539
+> #ifndef SPIN
+544a548
+> #endif
+573a578,580
+> #ifdef SPIN
+> 	ACE_WRITE( rsp, ACE_IE, ACE_IE_RDINT);
+> #endif
+1854a1862
+> #ifndef SPIN
+1856a1865,1867
+> #else
+>     printf("signal the process group... yeah right\n");
+> #endif /* SPIN */

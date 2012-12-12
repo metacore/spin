@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>ALIGNED FOR</title>
+</head>
+
+<body>
+
+<h1>ALIGNED FOR description</br></h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+We need finer control over data structure alignment when dealing with
+C, because C compilers will make arbitrary alignment decisions that we
+have to match.
+
+<h2>Implementation</h2>
+
+<code> 
+   ALIGNED n FOR T
+</code>
+<p>
+
+<code>ALIGNED FOR</code> can be used to specify a particular alignment
+for a type (instead of the default alignment that a particular
+compiler may give).  However, no arbitrary alignment can be specified:
+in particular, a type's alignment may only be boosted (and only when
+the boosting does not introduce padding).  We have also disabled
+automatic alignment boosting in our compiler.
+
+<p>
+
+Analogous with <code>BITS FOR</code>, <code>ALIGNED n FOR T</code> is
+a subtype of <code>T</code>.
+
+<p>
+
+Let <code>d</code> be the most restrictive alignment of <code>T</code>
+(under the typical rules that one might expect).  <code>n</code> must
+be a multiple of <code>d</code>.  In addition, <code>n</code> must not
+be greater than then size of <code>T</code>; this prevents
+<code>ALIGNED FOR</code> from being used to insert padding, which must
+be inserted by hand.
+
+<p>
+
+Note: <code>ALIGNED FOR</code> works on <code>RECORD</code> and
+<code>ARRAY</code> types.  Given the above restrictions on the use of
+<code>ALIGNED FOR</code>, I don't think it can be usefully used with
+other types.
+
+<h2>Examples</h2>
+
+<pre>
+
+(* In the SRC M3 implementation, this record would be 32-bit aligned.
+   Our compiler aligns it to 8 bits, and type T1 would be used if a
+   32-bit aligned record were desired.
+ *)
+TYPE T = RECORD
+	   a: BITS 8 FOR [0..255];
+	   b: BITS 8 FOR [0..255];
+	   c: BITS 8 FOR [0..255];
+	   d: BITS 8 FOR [0..255];
+	 END;
+
+TYPE T1 = ALIGNED 32 FOR RECORD
+	   a: BITS 8 FOR [0..255];
+	   b: BITS 8 FOR [0..255];
+	   c: BITS 8 FOR [0..255];
+	   d: BITS 8 FOR [0..255];
+	 END;
+</pre>
+
+</body>
+<p><hr>
+
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>May 20, 1996</date> <br>
+<Address>
+whsieh@cs.washington.edu<br>
+</address>
+</html>

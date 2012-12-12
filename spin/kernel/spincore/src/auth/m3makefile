@@ -1,0 +1,110 @@
+#
+# Copyright 1994, 1995 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+#
+#
+# HISTORY
+# 03-Dec-97  Robert Grimm (rgrimm) at the University of Washington
+#       Added compiler flag for assertions
+#
+# 14-Oct-97  Tian Fung Lim (tian) at the University of Washington
+#	Added RTTypeSecurity implementation.
+#
+# 29-Jul-97  Robert Grimm (rgrimm) at the University of Washington
+#       New, revised security services
+#
+# 05-Mar-97  Robert Grimm (rgrimm) at the University of Washington
+#       Cleaned up and added comments for individual interfaces
+#
+# 12-Feb-97  Robert Grimm (rgrimm) at the University of Washington
+#       Added support for real security, killed Identity and Auth
+#
+# 20-Jun-96  Marc Fiuczynski (mef) at the University of Washington
+#	Cleaned up.
+#
+# 28-Mar-96  Brian Bershad (bershad) at the University of Washington
+#	Added NameServerPrivate.
+#
+# 24-Jan-96  Brian Bershad (bershad) at the University of Washington
+#	Added Auth. Removed DomainAuthorizer.
+#
+# 07-Aug-95  Brian Bershad (bershad) at the University of Washington
+#	Whisted.
+#
+#
+
+# Compile away asserts for performance experiments
+# m3_option("-A")
+
+Module("CoreNS") # don't domainexport this file 
+
+Module("NameServer")
+Interface("NameServerPrivate")
+table(NSNameRef, NSName, Refany)
+
+Module("SpinControl")
+Interface("SpinTrustedExtern")
+Interface("SpinTrusted")
+Interface("SpinPublicExtern")
+Interface("SpinPublic")
+interface("SpinTrustedPrivate")
+interface("SpinPublicPrivate")
+
+Module("Auth")
+
+#  The core security services
+# ----------------------------
+
+# Internal interfaces must not be domain exported!
+
+Interface("SecurityError")            # Security exception
+Interface("Permission")               # Permission abstract base class
+Module("AccessMode")                  # Access mode: collection of permissions
+interface("AccessModeRep")            # Internal revelation of AccessMode.T
+Interface("SecurityContext")          # Internal per-thread security state
+  # externalized for now, so threadcore can import StrandRep!
+interface("SIDStack")                 # Internal sid stack operations
+interface("BindingInfo")              # Internal per-binding information
+table(RefBindingInfo, Refany, BindingInfo)
+	                              # Internal map for dispatcher bindings
+Module("SecurityManager")             # Security management
+Interface("SecurityManagerProtected") # Protected interface
+Interface("SecurityManagerPrivate")   # Trusted interface for security manager
+Module("SecurityPolicy")              # Interface for security policy
+                                      # and null policy implementation
+Interface("SecurityPublic")           # Domain interface for SecurityPublic
+Interface("SecurityTrusted")          # Domain interface for SecurityTrusted
+
+
+implementation("RTTypeSecurity")    # Runtime support for type security
+
+
+# ----------------------------
+
+
+Generic_module("Interface")
+Module(InterfaceSub)
+Module(NSName)
+
+DomainExport("SpinPublic","Auth")
+DomainExport("SpinPublic","NameServer")
+DomainExport("SpinPublic","SpinPublic")
+DomainExport("SpinPublic","InterfaceSub")
+DomainExport("SpinPublic","NSName")
+DomainExport("SpinTrusted","NameServerPrivate")
+DomainExport("SpinTrusted","SpinTrusted")
+
+DomainExport("SecurityPublic","SecurityError")
+DomainExport("SecurityPublic","Permission")
+DomainExport("SecurityPublic","AccessMode")
+DomainExport("SecurityPublic","SecurityManager")
+DomainExport("SecurityPublic","SecurityManagerProtected")
+DomainExport("SecurityPublic","SecurityPublic")
+
+DomainExport("SecurityTrusted","SecurityContext") # Fix me!
+DomainExport("SecurityTrusted","SecurityManagerPrivate")
+DomainExport("SecurityTrusted","SecurityPolicy")
+DomainExport("SecurityTrusted","SecurityTrusted")
+

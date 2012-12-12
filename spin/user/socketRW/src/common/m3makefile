@@ -1,0 +1,18 @@
+/* Makefile for tcp library (generic) */
+/* Copyright 1993 Digital Equipment Corporation. */
+/* Distributed only by permission. */
+/* Last modified on Tue Jan 25 18:07:39 PST 1994 by wobber     */
+
+# HISTORY
+# 11-Mar-96  Charles Garrett (garrett) at the University of Washington
+#	Converted to a SPIN extension.
+#
+
+
+Interface(IP)
+Interface(TCP)
+Interface(ConnFD)
+Module(ConnRW)
+Module(ConnMsgRW)
+
+Module(SocketRW)

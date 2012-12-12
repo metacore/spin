@@ -1,0 +1,46 @@
+#############################################################
+# HISTORY
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Switched to simpler spindle build functions.
+#
+# 23-Aug-95  Emin Gun Sirer (egs) at the University of Washington
+#	Created. HTTP server.
+#############################################################
+
+overridepath = [ THISTREE , FULLTREE ]
+
+DomainImport ("TcpServer","user/net","tcp",overridepath)
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("SecurityPublic","kernel","spincore",overridepath)
+DomainImport("SecurityTrusted","kernel","spincore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport("SpinUnixNet","user/urt","net",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("IpServer", "user/net","ip",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("RWLock","user/sync","rwlock",overridepath)
+DomainImport("Extent","user/dev","extent",overridepath)
+DomainImport ("M3Tcp","user/net","m3tcp",overridepath)
+
+
+Package("Httpd")
+
+module("Mime")
+Module("Httpd")
+Module("BlockList")
+Module("FileCache")
+Module("Buffer")
+Module("BufferDesc")
+Module("TcpStuff")
+CommandModule("WWW")
+Table(FilenameBlockList,Text,BlockList)
+# Sorted_table(FilenameBlockList,Text,BlockList)
+
+Extension({""})
+
+#check_interface_records("plexus")
+
+

@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>FUNCTIONAL Procedures</title>
+<!-- Changed by: Wilson Hsieh, 19-Sep-1996 -->
+</head>
+
+<body>
+
+<h1>FUNCTIONAL</h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+We need the ability to identify procedures and methods that do not
+modify global state, which we call <code>FUNCTIONAL</a>.  <a
+href="../../../kernel/spincore/src/dispatch/doc/model.html">Event
+guards</a> are restricted to be <code>FUNCTIONAL</code>, so that the
+<a
+href="../../../kernel/spincore/src/dispatch/doc/index.html">dispatcher</a>
+can freely optimize their execution.
+
+<h2>Definition</h2>
+
+An <code>FUNCTIONAL</code> procedure or method is not allowed to call
+a non-<code>FUNCTIONAL</code> procedure or method.  Only the base
+library routines that do not modify global state are defined as
+<code>FUNCTIONAL</code>.  (We have identified "functional" procedures
+as <code>FUNCTIONAL</code> as needed.)
+
+<p>
+
+A <code>FUNCTIONAL</code> procedure or method has the following
+additional restriction on its behavior:
+
+<ul>
+<li> It cannot assign to a global.
+<li> It cannot dereference and assign a pointer.
+<li> It cannot assign to a <code>VAR</code> parameter.
+</ul>
+
+<h2>Syntax</h2>
+
+The keyword <code>PROCEDURE</code> can be preceded by the keyword
+<code>FUNCTIONAL</code>, both in a procedure type or a procedure
+definition.  A method name in an object type can be preceded by
+<code>FUNCTIONAL</code>.
+
+<h2>Examples</h2>
+
+<pre>
+FUNCTIONAL PROCEDURE f(a, b: INTEGER) : INTEGER =
+  BEGIN
+    RETURN a+b;
+  END f;
+
+PROCEDURE g(VAR a: INTEGER) =   (* cannot be FUNCTIONAL *)
+  BEGIN
+    a := 5;                     (* modifies global state! *)
+  END g;
+</pre>
+
+<P>
+
+</body>
+<p>
+<hr>
+
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>September 19, 1996</date><br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

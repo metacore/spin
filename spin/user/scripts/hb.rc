@@ -1,0 +1,55 @@
+nanny touch Paging
+nanny touch Sphinx
+set hbench /spin/tian/hbench-OS/bin/osf3.2-alpha-c
+script gcbenchstart
+sphinx exec $hbench/lat_syscall .00373409828382602340 262144 sigaction
+sphinx exec $hbench/lat_syscall .00373409828382602340 524288 gettimeofday
+sphinx exec $hbench/lat_syscall .00373409828382602340 524288 sbrk
+sphinx exec $hbench/lat_syscall .00373409828382602340 262144 getrusage
+sphinx exec $hbench/lat_syscall .00373409828382602340 262144 write
+sphinx exec $hbench/lat_syscall .00373409828382602340 524288 getpid
+sphinx exec $hbench/lat_sig .00373409828382602340 262144 install
+sphinx exec $hbench/lat_sig .00373409828382602340 65536 handle
+
+script gcbenchstart
+sphinx exec $hbench/lat_syscall .00373409828382602340 262144 sigaction
+sphinx exec $hbench/lat_syscall .00373409828382602340 524288 gettimeofday
+sphinx exec $hbench/lat_syscall .00373409828382602340 524288 sbrk
+sphinx exec $hbench/lat_syscall .00373409828382602340 262144 getrusage
+sphinx exec $hbench/lat_syscall .00373409828382602340 262144 write
+sphinx exec $hbench/lat_syscall .00373409828382602340 524288 getpid
+sphinx exec $hbench/lat_sig .00373409828382602340 262144 install
+sphinx exec $hbench/lat_sig .00373409828382602340 65536 handle
+
+sphinx exec $hbench/lat_fslayer .00373409828382602340 262144
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 524288 2k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 131072 4k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 65536 8k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 32768 16k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 16384 32k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 8192 64k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 4096 128k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 2048 256k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 1024 512k
+
+sphinx exec $hbench/lat_syscall .00373409828382602340 262144 sigaction
+sphinx exec $hbench/lat_syscall .00373409828382602340 524288 gettimeofday
+sphinx exec $hbench/lat_syscall .00373409828382602340 524288 sbrk
+sphinx exec $hbench/lat_syscall .00373409828382602340 262144 getrusage
+sphinx exec $hbench/lat_syscall .00373409828382602340 262144 write
+sphinx exec $hbench/lat_syscall .00373409828382602340 524288 getpid
+sphinx exec $hbench/lat_sig .00373409828382602340 262144 install
+sphinx exec $hbench/lat_sig .00373409828382602340 65536 handle
+sphinx exec $hbench/lat_fslayer .00373409828382602340 262144
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 524288 2k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 131072 4k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 65536 8k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 32768 16k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 16384 32k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 8192 64k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 4096 128k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 2048 256k
+sphinx exec $hbench/bw_mem_wr .00373409828382602340 1024 512k
+
+script gcbenchend
+

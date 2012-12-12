@@ -1,0 +1,6 @@
+interface ("MachineStitcherExtern")
+implementation ("MachineStitcher")
+module ("MachineDispatcher")
+c_source ("Stitcher")
+S_source ("DispatcherStubs")
+

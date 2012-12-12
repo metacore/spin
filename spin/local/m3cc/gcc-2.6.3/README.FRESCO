@@ -1,0 +1,220 @@
+Compiling Fresco with g++ 2.6
+-----------------------------
+
+Fresco is an evolving interface and toolkit for object-oriented
+graphics.  A preliminary version (written in C++) was released
+with x11r6.
+
+G++ 2.5.x had various bugs preventing Fresco from compiling properly.
+We believe these have all been fixed in g++ 2.6.  However, there
+are still a few portability problems in Fresco itself.  These should
+be fixed in the next release of Fresco.
+
+The following patches should help in working around the problems.
+I used these patches when I built Fresco, but I don't have time
+right now to verify them, or to check that they would apply cleanly.
+Perhaps someone could verify these patches against gcc 2.6 and
+the latest Fresco and clean it up?
+
+The most obvious problem is that Fresco defines false and true as constants.
+However, these are noe reserved words in ANSI C++.  Since g++ has
+implemented false, true, and bool, it complains about a syntax error.
+
+The first patch below to workInProgress/Fresco/include/Ox/base.h should
+fix that.  It also enables use of long long.
+
+I ran into the same "true/false" problem in some other file,
+but I can find it now.  (It was not in the library proper.)
+
+The second patch is to contrib/programs/dish/main.cxx.
+The first part of it is probably SunOS4-specific.
+It was somewhat puzzling, but it looks like the %p format conversion
+specifier in either sscanf or sprintf doesn't work properly, so I had to
+use (the less strictly correct) %x specifier.
+
+The other part is also Sun-specific.  The original code assumes
+it can call _main, but g++ does not provide that.  Instead, I changed
+the code to use a static destructor.  The fix in the next Fresco
+release will probably be different.
+
+Please try these patches, and let me know how they work.
+
+	--Per Bothner
+Cygnus Support     bothner@cygnus.com
+
+*** /cygint/x11r6/workInProgress/Fresco/include/Ox/base.h	Fri Apr  1 13:49:59 1994
+--- ./base.h	Thu May 19 21:02:24 1994
+***************
+*** 39,58 ****
+  #ifndef ox_Boolean
+  #define ox_Boolean
+  
+! typedef unsigned char Boolean;
+! 
+! static const unsigned char false = 0;
+! static const unsigned char true = 1;
+  
+  #ifndef TRUE
+  #define TRUE true
+  #endif
+- 
+  #ifndef FALSE
+  #define FALSE false
+  #endif
+  
+! #endif
+  
+  #ifndef ox_octet
+  #define ox_octet
+--- 39,68 ----
+  #ifndef ox_Boolean
+  #define ox_Boolean
+  
+! /* Note that 'bool', 'false', and 'true' are now reserved words in
+!    ANSI/ISO C++, though few compilers implement them. */
+! #ifndef __GNUC__
+! #ifndef false
+! #define false 0
+! #endif
+! #ifndef true
+! #define true 1
+! #endif
+! #ifndef bool
+! #define bool unsigned char
+! #endif
+! #endif
+  
++ /* Note:  Avoid obsolete identifiers Boolean/TRUE/FALSE. */
+  #ifndef TRUE
+  #define TRUE true
+  #endif
+  #ifndef FALSE
+  #define FALSE false
+  #endif
++ typedef bool Boolean;
+  
+! #endif /*!ox_Boolean*/
+  
+  #ifndef ox_octet
+  #define ox_octet
+***************
+*** 85,91 ****
+  #else
+  typedef long Long;
+  typedef unsigned long ULong;
+! #if defined(sgi)
+  /* compiler supports long long */
+  typedef long long LongLong;
+  typedef unsigned long long ULongLong;
+--- 95,101 ----
+  #else
+  typedef long Long;
+  typedef unsigned long ULong;
+! #if defined(sgi) || defined (__GNUC__)
+  /* compiler supports long long */
+  typedef long long LongLong;
+  typedef unsigned long long ULongLong;
+
+*** main.cxx.orig	Mon Apr 11 16:25:30 1994
+--- main.cxx.new	Sat May 14 12:48:09 1994
+***************
+*** 251,264 ****
+      if (strcmp(s, "0") == 0) {
+  	obj = nil;
+      } else {
+! 	b = sscanf(s, "_dish_%p", &obj) == 1;
+      }
+      return b;
+  }
+  
+  char* Dish::object_to_string(BaseObjectRef obj, char* result) {
+      if (is_not_nil(obj)) {
+! 	sprintf(result, "_dish_%p", obj);
+      } else {
+  	sprintf(result, "0");
+      }
+--- 251,268 ----
+      if (strcmp(s, "0") == 0) {
+  	obj = nil;
+      } else {
+! 	long val;
+! 	b = sscanf(s, "_dish_%lx", &val) == 1;
+! 	if (b)
+! 	  obj = (BaseObjectRef)(void*)val;
+      }
+      return b;
+  }
+  
+  char* Dish::object_to_string(BaseObjectRef obj, char* result) {
+      if (is_not_nil(obj)) {
+! 	long val = (long)obj;
+! 	sprintf(result, "_dish_%lx", val);
+      } else {
+  	sprintf(result, "0");
+      }
+***************
+*** 1087,1110 ****
+      }
+  }
+  
+! /*
+!  *  Called by main() defined in tcl lib.
+!  */
+  
+  #if defined(sun) && !defined(SVR4)
+  extern "C" {
+    void _main();
+    void on_exit(void (*)(), caddr_t);
+  }
+  #endif
+  
+  int Tcl_AppInit(Tcl_Interp* interp) {
+  #if defined(sun) && !defined(SVR4)
+      _main();
+      on_exit(&Dish::cleanup, NULL);
+  #else
+      atexit(&Dish::cleanup);
+  #endif
+      Dish* dish = new Dish(interp);
+      dish->add_commands(interp);
+      dish->add_variables(interp);
+--- 1091,1129 ----
+      }
+  }
+  
+! #if !defined(DISH_CLEANUP_USE_DESTRUCTOR) && defined(__GNUC__)
+! /* This assumes that the tcl library's main() has also been
+!    compiled with gcc, or else the destructors won't get run properly. */
+! #define DISH_CLEANUP_USE_DESTRUCTOR 1
+! #endif
+  
++ #if DISH_CLEANUP_USE_DESTRUCTOR
++ struct DishCleanup {
++   ~DishCleanup() { Dish::cleanup(); }
++ };
++ static DishCleanup DishCleanupObject;
++ #else /* !DISH_CLEANUP_USE_DESTRUCTOR */
+  #if defined(sun) && !defined(SVR4)
+  extern "C" {
+    void _main();
+    void on_exit(void (*)(), caddr_t);
+  }
+  #endif
++ #endif /* !DISH_CLEANUP_USE_DESTRUCTOR */
++ 
++ /*
++  *  Called by main() defined in tcl lib.
++  */
+  
+  int Tcl_AppInit(Tcl_Interp* interp) {
++ #if !DISH_CLEANUP_USE_DESTRUCTOR
+  #if defined(sun) && !defined(SVR4)
+      _main();
+      on_exit(&Dish::cleanup, NULL);
+  #else
+      atexit(&Dish::cleanup);
+  #endif
++ #endif /* !DISH_CLEANUP_USE_DESTRUCTOR */
+      Dish* dish = new Dish(interp);
+      dish->add_commands(interp);
+      dish->add_variables(interp);

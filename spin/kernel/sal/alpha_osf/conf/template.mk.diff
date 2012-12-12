@@ -1,0 +1,394 @@
+55d54
+< 
+72,73c71,72
+< target_machine = ${target_machine?${target_machine}:${MACHINE}}
+< current_machine = ${current_machine?${current_machine}:${MACHINE}}
+---
+> target_machine = alpha
+> current_machine = alpha
+79,80c78,79
+< CC_SUITE = ${CC_SUITE?${CC_SUITE}:${${target_machine}_CC_SUITE}}
+< cc_suite = ${cc_suite?${cc_suite}:${${target_machine}_cc_suite}}
+---
+> CC_SUITE = ${${target_machine}_CC_SUITE}
+> cc_suite = ${${target_machine}_cc_suite}
+117a117,118
+> CONFIG_DIR=	../conf
+> 
+155c156
+< OBJECT_FORMAT = ${OBJECT_FORMAT?${OBJECT_FORMAT}:COFF}
+---
+> OBJECT_FORMAT = COFF
+177c178
+< INCLUDES= -I -I. -I.. -I../include
+---
+> INCLUDES= -I -I. -I.. -I../include -I../include/alpha -I../arch/alpha -I../arch  $(patsubst %,-I%,$(PKGDIRS)) $(patsubst %,-I%/spincore/$(BUILD_DIR),$(PKGDIRS))
+194,197c195,198
+< ACC_CFLAGS = -no_excpt -Wb,-static -Wco,-nofloat -Olimit 1500
+< ACC_CFOPTS = -no_excpt -Wb,-static -Olimit 1500
+< ACC_DCFLAGS = -no_excpt -Wco,-nofloat -Olimit 1500
+< ACC_DCFOPTS = -no_excpt -Olimit 1500
+---
+> ACC_CFLAGS = -no_excpt -Wco,-nofloat -Olimit 2000
+> ACC_CFOPTS = -no_excpt -Olimit 2000
+> ACC_DCFLAGS = -no_excpt -Wco,-nofloat -Olimit 2000
+> ACC_DCFOPTS = -no_excpt -Olimit 2000
+223,228c224,229
+< 	conf/version.type \
+< 	conf/version.major \
+< 	conf/version.minor \
+< 	conf/version.variant \
+< 	conf/version.build \
+< 	conf/version.patch
+---
+> 	../conf/version.type \
+> 	../conf/version.major \
+> 	../conf/version.minor \
+> 	../conf/version.variant \
+> 	../conf/version.build \
+> 	../conf/version.patch
+236c237
+< ALPHA_LOBJS=	param.o ioconf.o
+---
+> ALPHA_LOBJS=	ioconf.o conf.o 
+242c243
+< ALPHA_LCFILES= ioconf.c param.c
+---
+> ALPHA_LCFILES= ioconf.c conf.c 
+372c373
+< ALPHA_TEXTBASE=${LOADADDR?${LOADADDR}:ffffffff00000000}
+---
+> ALPHA_TEXTBASE=fffffc0000230000
+433c434,446
+< 
+---
+> DATAFILES = data/autoconf_data.c data/pmap_data.c data/cons_sw_data.c \
+> 	data/ws_data.c data/vsxxx_data.c data/bt_data.c \
+> 	data/scc_data.c data/lk201_data.c \
+> 	data/ace_data.c data/pcxal_data.c data/pcxas_data.c \
+> 	data/if_ln_data.c data/if_tu_data.c \
+> 	data/fb_data.c data/tga_data.c
+> 
+> DATAOBJS = $(patsubst data/%.c,%.o,$(DATAFILES))
+> 
+> $(DATAOBJS):
+> 	@${RM} $@
+> 	${KCC} ${CCNFLAGS} ../data/$(@:.o=.c)
+> OBJS += $(DATAOBJS) ./tc_option_data.o ./pci_option_data.o ./isa_option_data.o
+449a463,652
+> 
+> # PKGDIRS are the kernel subtrees where we search for
+> #	includes, eg spincore/$(BUILD_DIR)/ConsolePrivate.h, through INCLUDES
+> #	libraries, eg -lm3core_sa, through LDOPTS
+> THISTREE:=$(shell cd ../../../..; pwd)
+> include ../../../../make.conf	# sets FULLTREE and THISTREE
+> PKGDIRS=$(THISTREE)/kernel $(FULLTREE)/kernel
+> 
+> 
+> LDOPTS= $(patsubst %, -L%/m3core_sa/$(BUILD_DIR), $(PKGDIRS))
+> LDOPTS+=$(patsubst %, -L%/libm3_sa/$(BUILD_DIR), $(PKGDIRS))
+> LDOPTS+=$(patsubst %, -L%/spincore/$(BUILD_DIR), $(PKGDIRS))
+> LDOPTS+=$(patsubst %, -L%/start/$(BUILD_DIR), $(PKGDIRS))
+> 
+> SPIN = -lm3_sa -lm3core_sa -lspin -lstart
+> 
+> vpath _m3main.o $(patsubst %, %/start/$(BUILD_DIR):, $(PKGDIRS))
+> vpath %.a $(patsubst %, %/start/$(BUILD_DIR):, $(PKGDIRS))
+> vpath %.a $(patsubst %, %/spincore/$(BUILD_DIR):, $(PKGDIRS))
+> vpath %.a $(patsubst %, %/libm3_sa/$(BUILD_DIR):, $(PKGDIRS))
+> vpath %.a $(patsubst %, %/m3core_sa/$(BUILD_DIR):, $(PKGDIRS))
+> 
+> INCLUDES += -I../io/fore
+> FORESRC=io/fore/fore_spin.c io/fore/driver/fore_atm_200.c	 \
+> 	io/fore/driver/fore_atm_aal5.c io/fore/driver/fore_atm_arp.c \
+> 	io/fore/driver/fore_atm_dmsg.c io/fore/driver/fore_atm_drv.c \
+> 	io/fore/driver/fore_atm_ieee802.c io/fore/driver/fore_atm_sar.c \
+> 	io/fore/driver/fore_atm_sar_re.c io/fore/driver/fore_atm_sig.c \
+> 	io/fore/driver/fore_atm_xdr.c \
+> 	rpc/xdr.c rpc/xdr_array.c rpc/xdr_mem.c
+> FOREOBJS	= $(patsubst %.c,%.o,$(notdir $(FORESRC)))
+> osf.fore: $(FOREOBJS)
+> 
+> TTSRC = io/tt/if_tt.c  io/tt/if_tt_spin.c  io/tt/if_tt_data.c 
+> TTOBJS	= $(patsubst %.c,%.o,$(notdir $(TTSRC)))
+> osf.tt: $(TTOBJS)
+> if_tt_data.o: io/tt/if_tt_data.c 
+> 	@${RM} $@
+> 	${KCC} ${CCNFLAGS} $<
+> 
+> TALSRC=io/tal/if_tal.c io/tal/if_tal_xilinx.c io/tal/if_tal_data.c \
+> 	io/tal/if_tal_spin.c io/tal/autonet.c
+> TALOBJS	= $(patsubst %.c,%.o,$(notdir $(TALSRC)))
+> osf.tal: $(TALOBJS)
+> if_tal_data.o: io/tal/if_tal_data.c 
+> 	@${RM} $@
+> 	${KCC} ${CCNFLAGS} $<
+> 
+> TCPSRC = bsd/uipc_socket.c bsd/uipc_socket2.c netinet/tcp_input.c \
+> 	netinet/tcp_output.c netinet/tcp_subr.c netinet/tcp_timer.c \
+> 	netinet/tcp_debug.c netinet/tcp_usrreq.c netinet/in.c \
+> 	netinet/in_pcb.c netinet/udp_usrreq.c
+> TCPOBJS	= $(patsubst %.c,%.o,$(notdir $(TCPSRC)))
+> 
+> osf.tcp: $(TCPOBJS)
+> 
+> CAMSRC = ../io/cam/cam_config.c ../io/cam/cam_debug.c ../io/cam/cam_disk.c \
+> 	../io/cam/cam_logger.c ../io/cam/cam_special.c ../io/cam/mips_dummy.c \
+> 	../io/cam/ccfg.c ../io/cam/pdrv_common.c ../io/cam/dme_3min_94_dma.c \
+> 	../io/cam/dme_turbo_94_ram.c ../io/cam/dme_kn03_94_dma.c \
+> 	../io/cam/dme_common.c ../io/cam/dme_tcds_94_dma.c \
+> 	../io/cam/tcds_adapt.c ../io/cam/sim_94_fast.c ../io/cam/sim_94.c \
+> 	../io/cam/sim_as.c ../io/cam/sim_common.c ../io/cam/sim_config.c \
+> 	../io/cam/sim_error.c ../io/cam/sim_kn02.c \
+> 	../io/cam/sim_sched.c ../io/cam/sim_sm.c ../io/cam/sim_target.c \
+> 	../io/cam/sim_xpt.c ../io/cam/special_audio.c \
+> 	../io/cam/special_direct.c ../io/cam/special_generic.c \
+> 	../io/cam/special_sequential.c ../io/cam/uagt.c ../io/cam/xpt.c \
+> 	../io/cam/dme_null.c \
+> 	../io/cam/siop/psiop.c \
+> 	../io/cam/siop/pci/psiop_pci.c \
+> 	../io/cam/io_routines.c \
+> 	data/cam_data.c data/cam_special_data.c
+> 
+> CAMOBJS = $(patsubst %.c,%.o,$(notdir $(CAMSRC)))
+> 
+> osf.cam: ufs/fs_proto.h $(CAMOBJS) $(CAMDATAOBJS)
+> 
+> cam_data.o: data/cam_data.c
+> 	@${RM} $@
+> 	${KCC} ${CCNFLAGS} ../data/$(@:.o=.c)
+> cam_special_data.o: data/cam_special_data.c
+> 	@${RM} $@
+> 	${KCC} ${CCNFLAGS} ../data/$(@:.o=.c)
+> 
+> STRIPPED=/tmp/$@.stripped.$$USER
+> spin.boot: spin_kernel.sys
+> 	cp $< $(STRIPPED)
+> 	strip $(STRIPPED)
+> 	$(PMERGE) $(SBOOT) $(STRIPPED) $@
+> 	dd if=$< bs=1k count=1 >> $@
+> 	rm $(STRIPPED)
+> 
+> sal.boot: sal_kernel.sys
+> 	cp $< $(STRIPPED)
+> 	strip $(STRIPPED)
+> 	$(PMERGE) $(SBOOT) $(STRIPPED) $@
+> 	dd if=$< bs=1k count=1 >> $@
+> 	rm $(STRIPPED)
+> #
+> # gmake magic here: if _m3main.o is listed first, $< will be the result
+> #	of the vpath search and to get it from COMMONPKG or LOCALPKG
+> #
+> spin_kernel.sys: _m3main.o ${SPIN}
+> 	-${RM} vers.o
+> 	${SHELL} ${CONFIG_DIR}/newvers.sh \
+> 			 ${CONFIG_DIR}/copyright \
+> 			`${CAT} ${VERSION_FILES}` \
+> 			"`${CAT} ${CONFIG_DIR}/version.banner`"
+> 	${KCC} ${ALLOPTS} -c vers.c
+> 	${LD} ${LDFLAGS} ${LDOBJS} vers.o \
+> 		$< ${SPIN} -o /tmp/$@.$$USER
+> 	mv /tmp/$@.$$USER $@
+> 
+> sal_kernel.sys:
+> 	-${RM} vers.o
+> 	${SHELL} ${CONFIG_DIR}/newvers.sh \
+> 			 ${CONFIG_DIR}/copyright \
+> 			`${CAT} ${VERSION_FILES}` \
+> 			"`${CAT} ${CONFIG_DIR}/version.banner`"
+> 	${KCC} ${ALLOPTS} -c vers.c
+> 	${LD} ${LDFLAGS} ${LDOBJS} vers.o -o /tmp/$@.$$USER
+> 	mv /tmp/$@.$$USER $@
+> 
+> SALDIR	= ..
+> 
+> IMPORTEDFILES=../dec.files
+> IMPORTEDDIRS=../dec.dirs
+> 
+> $(SALDIR)/%: $(DIGITALUNIX)/src/kernel/% 
+> 	@mkdir -p $(dir $@); echo $(dir $@) >> $(IMPORTEDDIRS)
+> 	@if [ -f  $@.diff ]; \
+> 		then patch -o $@ $< $@.diff ;\
+> 		else cp $< $@; \
+> 		fi; \
+> 		echo cp $< $@;
+> 	@echo $@ >> $(IMPORTEDFILES)
+> 
+> $(SALDIR)/%: $(DIGITALUNIX)/src/usr/%
+> 	@mkdir -p $(dir $@); echo $(dir $@) >> $(IMPORTEDDIRS)
+> 	cp -p $< $@
+> 	@echo $@ >> $(IMPORTEDFILES)
+> 
+> $(SALDIR)/include/stdarg.h: $(DIGITALUNIX)/src/usr/include/alpha/stdarg.h
+> 	@mkdir -p $(dir $@); echo $(dir $@) >> $(IMPORTEDDIRS)
+> 	cp -p $< $@
+> 	@echo $@ >> $(IMPORTEDFILES)
+> 
+> allsource = ${LCFILES} assym.s ${SFILES} ${CFILES} \
+> 	${DATAFILES} $(TCPSRC) $(CAMSRC) # $(TTSRC) $(FORESRC) $(TALSRC)
+> 
+> deps: $(allsource)
+> 	-${CC} -M ${ALLOPTS} ${DEFINES} $? > fullpath.tmp
+> 	sed -e 's,$(THISTREE)/kernel,../..,' \
+> 	-e 's,/arch/machine/,/arch/alpha/,' \
+> 	-e 's,/mach/machine/,/mach/alpha/,' \
+> 	-e 's/ALPHA_SPIN_HACK/$$(BUILD_DIR)/' \
+> 	-e 's/ALPHA_SPIN_PROF/$$(BUILD_DIR)/' \
+> 	-e 's/ALPHA_SPIN_PROF_REF/$$(BUILD_DIR)/' \
+> 	-e 's/ALPHA_SPIN_PROF_WB/$$(BUILD_DIR)/' \
+> 	-e 's/ALPHA_SPIN_REF/$$(BUILD_DIR)/' \
+>	-e 's/ALPHA_SPIN_WB/$$(BUILD_DIR)/' \
+> 	-e 's/ALPHA_SPIN/$$(BUILD_DIR)/' <  fullpath.tmp > dependencies.tmp 
+> 	sed 's/.*\.o:/import:/' < dependencies.tmp | sort -u > import.tmp
+> 	cat  dependencies.tmp import.tmp > dependencies
+> 	rm  dependencies.tmp import.tmp fullpath.tmp
+> 	for i in `find $(SALDIR) -name *.diff -print `; do \
+> 		echo `dirname $$i`/`basename $$i .diff`: $$i >> dependencies; \
+> 		done
+> 
+> 
+> unimport:	
+> 	sort -u $(IMPORTEDFILES) | xargs rm -f
+> 	-sort -u $(IMPORTEDDIRS) | xargs rmdir -p 2> /dev/null
+> 	-rm $(IMPORTEDFILES) $(IMPORTEDDIRS)
+> 
+> clobber: clean unimport
+> 	-rm vers.c spin_kernel.sys spin.boot
+> 
+> #
+> # Dependencies
+> #
+> 
+> # gmake halts if this does not already exists.  create an empty file and
+> # 	then run make deps
+> include dependencies
+> 
+> 
+> .PHONY: deps sdeps
+> 
+457a659,660
+> ioconf.sal.c: ioconf.c
+> 	patch -o $@ $< ../conf/ioconf.c.diff
+459c662
+< ioconf.o: ioconf.c
+---
+> ioconf.o: ioconf.sal.c
+461c664,671
+< 	${KCC} ${CCNFLAGS} ioconf.c
+---
+> 	${KCC} ${CCNFLAGS} $< -o $@
+> 
+> tc_option_data.sal.c: tc_option_data.c
+> 	patch -o $@ $< ../conf/tc_option_data.c.diff
+> 
+> tc_option_data.o: tc_option_data.sal.c
+> 	-${RM} tc_option_data.o
+> 	${KCC} ${CCNFLAGS} $< -o $@
+470a681,684
+> conf.o: conf.c 
+> 	-${RM} conf.o
+> 	${KCC} ${CCNFLAGS} conf.c
+> 
+509,513c723,727
+< assym.s: ${DEVENV}_genassym.o
+< 	${GENASSYM}
+< 	${RUN_GENASSYM}
+< 	@${RM} genassym
+< 	@${LN} -fs genassym.o ${DEVENV}_genassym.o
+---
+> #assym.s: ${DEVENV}_genassym.o
+> #	${GENASSYM}
+> #	${RUN_GENASSYM}
+> #	@${RM} genassym
+> #	@${LN} -fs genassym.o ${DEVENV}_genassym.o
+517,592c731,733
+< #
+< #  Mach IPC-based interfaces
+< #
+< 
+< MACH_DEFSFILES=\
+< 	mach/std_types.defs \
+< 	mach/mach_types.defs \
+< 	mach/mach.defs \
+< 	mach/mach_host.defs \
+< 	mach/exc.defs \
+< 	mach/memory_object.defs \
+< 	mach/memory_object_default.defs \
+< 	mach/device_types.defs \
+< 	mach/device.defs \
+< 	mach/monitor.defs
+< 
+< MACH_GENFILES=\
+< 	./mach/mach_server.c \
+< 	./mach/mach_user_internal.h \
+< 	./mach/mach_interface.h \
+< 	./mach/mach_host_server.c \
+< 	./mach/mach_host.h \
+< 	./mach/memory_object_server.c \
+< 	./mach/memory_object_user.c \
+< 	./mach/memory_object_user.h \
+< 	./mach/memory_object_default_server.c \
+< 	./mach/memory_object_default_user.c \
+< 	./mach/memory_object_default.h \
+< 	./mach/exc_server.c \
+< 	./mach/exc_user.c \
+< 	./mach/exc.h \
+< 	./mach/monitor_server.c \
+< 	./mach/monitor.h
+< 
+< # These are defined to allow specific flags to be passed to mig generated
+< # C files.  ${@}_MIG check above adds in MIG_CFLAGS the compilation of
+< # these files.
+< #
+< exc_server.o_MIG =
+< exc_user.o_MIG = 
+< mach_host_server.o_MIG =
+< mach_server.o_MIG =
+< memory_object_default_user.o_MIG =
+< memory_object_user.o_MIG =
+< monitor_server.o_MIG =
+< mach_debug_server.o_MIG =
+< mach_user_internal.o_MIG =
+< 
+< MACH_MKFILE=	mach/Makefile
+< 
+< $(MACH_GENFILES) : migfiles
+< 
+< migfiles :: $(MACH_DEFSFILES) $(MACH_MKFILE)
+< 	${RM} -rf ./mach
+< 	${MKDIR} ./mach
+< 	${CD} ./mach && \
+< 	 ${MAKE} ${MFLAGS} VPATH=../../mach && ${TOUCH} ../migfiles
+< 
+< MACH_DEBUG_DEFSFILES=\
+< 	mach_debug/mach_debug_types.defs \
+< 	mach_debug/mach_debug.defs
+< 
+< MACH_DEBUG_GENFILES=\
+< 	./mach_debug/mach_debug_server.c
+< 
+< MACH_DEBUG_MKFILE=	mach_debug/Makefile
+< 
+< $(MACH_DEBUG_GENFILES) : migdebugfiles
+< 
+< migdebugfiles :: $(MACH_DEBUG_DEFSFILES) $(MACH_DEBUG_MKFILE)
+< 	${RM} -rf ./mach_debug
+< 	${MKDIR} ./mach_debug
+< 	${CD} ./mach_debug && \
+< 	 ${MAKE} ${MFLAGS} VPATH=../../mach_debug && ${TOUCH} ../migdebugfiles
+< 
+< MIG_ALL_FILES = migfiles migdebugfiles
+---
+> # To fool config [savage]
+> migfiles:
+> migdebugfiles:
+614c755
+< 		${LCFILES} assym.s ${CFILES} ${SFILES} 
+---
+> 		${BCFILES} ${LCFILES} assym.s ${CFILES} ${SFILES} 
+675a817,819
+> 	-for i in ${DATAFILES} ; do \
+> 		echo "$$i" >> makedepfiles; \
+> 	done
+768d911
+< 

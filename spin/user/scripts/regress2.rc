@@ -1,0 +1,2 @@
+# this test consumes a lot of memory.
+script ~/spin/user/regress/memory/spacebasic/$target/spacebasic.rc

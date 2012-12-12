@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>Imposed guards</title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top">Imposed guards </a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+<h2> Overview </h2>
+
+The right to handle an event may not imply the right to handle all
+occurrences of that event. <i>SPIN</i> provides dynamic access control
+over event delivery that ensures that only legitimate handlers receive
+an instance of an event raise.  <i>SPIN</i> allows arbitrary
+predicates to be imposed on a handler which can be used to restrict
+when that handler may execute.  For example, the virtual memory system
+may impose a guard that restricts an extension to handling page fault
+events only within its own address space.  A predicate applied for the
+purpose of limiting access to an event is called an <b> imposed
+guard</b>.  Imposed guards enable an event occurrence to be
+dynamically checked before it is delivered to a handler.  There may be
+more than one imposed guard installed for a binding and the set of
+imposed guards for a binding can change in time.
+
+<p>
+
+The binding descriptor is passed only to the authorizer of the event
+for which the binding is created and to the caller of binding creation
+procedure.  As a result only the module that creates the binding and
+the module that control the event (and modules to which they pass the
+descriptor) have the capability of installing an imposed guard.
+
+<h2> Interface </h2>
+
+<pre>
+PROCEDURE ImposeGuard(binding    : Binding; 
+                      guard      : PROCANY;
+                      closure    : REFANY := NIL
+                     ): ImposedGuard
+	             RAISES { Error };
+
+PROCEDURE UnimposeGuard(guard: ImposedGuard)
+                       RAISES { Error };
+</pre>
+
+<h2> Usage </h2>
+
+<i> ImposeGuard </i> is used to add a guard to the set of imposed
+guard for a binding.  The guard can take a closure.  
+
+<p>
+
+<i> UnimposeGuard </i> is used to remove a guard from the set of
+imposed guards for a binding.
+
+
+<h2> Typing rules </h2>
+
+The dispatcher dynamically checks the type of the imposed guard at the time
+it is associated with a binding according to the following rules:
+<ul>
+<li> Procedure types:
+<ul>
+<li> imposed guard must be procedures (be of type PROCANY),
+<li> imposed guard must be legal procedures.
+</ul>
+<li> Taking closure:
+<ul>
+<li> an imposed guard must take a closure is the closure argument
+	is not <i>NIL</i>,
+<li> an imposed guard can take a closure if the corresponding
+	closure argument is <i>NIL</i>,
+</ul>
+<li> No closure:
+<ul>
+<li> an imposed guard that does not take a closure must have the same number
+	and types of arguments as the event for which the binding was
+        created but must return result of type <i> BOOLEAN</i>,
+</ul>
+<li> With closure:
+<ul>
+<li> if an imposed guard takes a closure than it must have an
+	additional argument (first, before all event arguments) of the
+	type which is a subtype of <i>REFANY</i>,
+</ul>
+<li> Closure:
+<ul>
+<li> a closure argument must be a subtype of the type of the first
+	argument of the corresponding procedure argument.
+</ul>
+</ul>
+
+
+
+
+<h2> Example </h2>
+
+See the discussion of <a href="auth.html">authorization</a> for an
+example of use of imposed guards.
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>

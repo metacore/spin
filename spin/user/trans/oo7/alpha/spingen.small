@@ -1,0 +1,1 @@
+db -bufsize 200 -oo7 -g Config.small

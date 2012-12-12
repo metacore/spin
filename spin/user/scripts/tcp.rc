@@ -1,0 +1,14 @@
+# echo Installing Negrin TCP
+nanny install m3tcp /m3tcp ~/spin/user/net/m3tcp/$target/m3tcp.rc
+
+nanny touch EtherServer
+nanny touch IpServer
+nanny touch TcpServer
+nanny touch IcmpClient
+nanny touch EtherClient
+nanny touch m3tcp
+
+echo --- ifconfig (for $hostnamefull) ---
+ifconfig $ETHERDEV $ipaddr 255.255.255.255 255.255.255.0
+echo route add default 128.95.2.100
+route add default 128.95.2.100

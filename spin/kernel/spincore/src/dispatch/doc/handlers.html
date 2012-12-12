@@ -1,0 +1,124 @@
+<html>
+<head>
+<title>Handler set manipulation</title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top"> Handler set manipulation </a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+<h2> Overview </h2>
+
+Several operations on sets of bindings are provided for more
+sophisticated changes to the state of events.  The provide the
+abitilty to query the set of handlers installed on an event, to
+atomically swap sets of handlers, obtain the identity of the <a
+href="model.html"> original handler</a>.
+
+<h2> Interface </h2>
+
+<pre>
+PROCEDURE SwapHandlers (deactivationList : REF ARRAY OF Binding;
+	                activationList   : REF ARRAY OF Binding)
+                       RAISES { Error };
+
+PROCEDURE GetHandlers (event: PROCANY;
+                       module   : RTCode.Module): REF ARRAY OF Binding
+                      RAISES { Error };
+
+PROCEDURE IsInstalled (binding: Binding): BOOLEAN;
+
+PROCEDURE GetOriginalHandler (event: PROCANY): Binding
+                              RAISES { Error };
+
+</pre>
+
+<h2> Usage </h2>
+
+<i>SwapHandlers</i> procedure allows changing the state of a number of
+bindings in one atomic operations.  It takes two lists of bindings,
+each of them can be for a different event.  The first list contains
+the bindings that should be uninstalled from their events, the second
+list contains the bindings that should be installed.  If an inactive
+binding is only on an uninstallation list, than the operation is a
+noop for this binding.  If an active binding is on the installation
+list than it will be reinstalled with the new options.  If the same
+binding is on the intallation and uninstallation list, it is treated
+as if it was only on the installation list.  All of the changes are
+done atomically with respect to invocations.
+
+<p>
+
+<i>GetHandlers</i> allows returns a list of bindings installed on a
+particular event.  
+
+<p>
+
+<i>GetOriginalHandler</i> returns the original handler of an event,
+i.e., the procedure implementing it.  The identity of the original
+handler is necessary of the original handler's properties should be
+changed, for example, to become the <a href="model.html"> default
+handler</a> or to be uninstalled.
+
+<p>
+
+<i> IsInstalled</i> allows checking whether a binding is active or not.
+
+<h2> Example </h2>
+
+Consider a service <i>S</i> that uses three events: <i>A.E</i>,
+<i>B.E</i>, <i>C.E</i>.  If this service is being replaced by its new
+version <i>S1</i> then <i>S</i>'s handlers should be atomically
+replaced with handler's provided by <i>S1</i> (in some cases this
+would also require some state transfer from <i>S</i> to <i>S1</i> but
+that's specific to the service and not provided by the dispatcher).
+In this example, <i>S1</i> calls <i>S</i> to get its list of handlers
+and then replaces it with its own handlers (<i>Service</i> is a known
+type of the service provided by <i>S</i> and <i>S1</i>,
+<i>"ServiceName</i> is a know name of that service):
+
+<pre>
+MODULE S1;
+
+PROCEDURE A (...) = BEGIN ... END A;
+PROCEDURE B (...) = BEGIN ... END B;
+PROCEDURE C (...) = BEGIN ... END C;
+
+VAR
+  oldVersion  : Service;
+  oldHandlers : REF ARRAY OF Dispatcher.Binding;
+  newHandlers : REF ARRAY OF Dispatcher.Binding;
+
+BEGIN
+  (* get the old handlers *)
+  oldVersion := NameServer.Get("ServiceName");
+  oldHandlers := oldVersion.GetHandlers();
+
+  (* create new handlers *)
+  newHandlers := NEW(REF ARRAY OF Dispatcher.Binding, 3);
+  newHandlers[0] := Dispatcher.Create(A.E, NIL, A);
+  newHandlers[1] := Dispatcher.Create(B.E, NIL, B);
+  newHandlers[2] := Dispatcher.Create(C.E, NIL, C);
+
+  (* swap them atomically *)
+  Dispatcher.SwapHandlers(oldHandlers, newHandlers);  
+END S1;
+</pre>
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>
+

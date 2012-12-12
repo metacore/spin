@@ -1,0 +1,37 @@
+210a211
+> #ifndef SPIN
+214a216
+> #endif /* SPIN */
+779a782,786
+> #ifdef SPIN
+> 	error = udpip_output(m, inp->inp_options, &inp->inp_route,
+> 	    inp->inp_socket->so_options & (SO_DONTROUTE | SO_BROADCAST), 
+> 		inp->inp_moptions);
+> #else
+782a790
+> #endif /* SPIN */
+846a855,857
+> #ifdef SPIN
+> 		udp_URT_unbind(inp->inp_lport);
+> #endif /* SPIN */
+852a864,867
+> #ifdef SPIN
+> 	        if (error == 0)
+> 		        udp_URT_bind(inp->inp_lport);
+> #endif /* SPIN */
+863a879,882
+> 
+> #ifdef SPIN
+> 		req = (inp->inp_laddr.s_addr == INADDR_ANY)
+> 			&& (inp->inp_lport == 0);
+864a884,893
+> 		/*
+> 		 * in_pcbconnect may have done a bind for us.
+> 		 * If so, report upstairs.
+> 		 */
+> 		if ( (error == 0) && req ) {
+> 		    udp_URT_bind(inp->inp_lport);
+> 		}
+> #else
+> 		error = in_pcbconnect(inp, addr);
+> #endif

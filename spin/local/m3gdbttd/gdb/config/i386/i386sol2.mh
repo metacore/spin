@@ -1,0 +1,26 @@
+# Host: Intel 386 running Solaris 2 (SVR4).
+
+# Solaris-2 makes `install' optional in the Berkeley compatability pkg.
+# cp will do fine.
+INSTALL = cp
+
+SYSV_DEFINE=-DSYSV
+REGEX=regex.o
+REGEX1=regex.o
+
+# Need to compile and link in support for SVR4's /proc and i386 host dependent
+# routines.
+XDEPFILES= 
+
+# Use the i386 SVR4 host configuration file.
+XM_FILE= xm-i386v4.h
+
+NAT_FILE= nm-i386v4.h
+# I'm told that gdb 4.11 gets "File in wrong format" on core files
+# with Solaris 2.1, so comment out corelow.o until it is fixed.
+NATDEPFILES= core-svr4.o exec.o procfs.o fork-child.o i386v4-nat.o # corelow.o
+
+# SVR4 comes standard with terminfo, and in some implementations, the
+# old termcap descriptions are incomplete.  So ensure that we use the
+# new terminfo interface and latest terminal descriptions.
+TERMCAP=-ltermlib

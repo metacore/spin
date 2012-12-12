@@ -1,0 +1,24 @@
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+# DO WE NEED SpinTrusted??
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("VMCore","user/vm","vmcore",overridepath)
+DomainImport("Space","user/vm","space",overridepath)
+DomainImport("Sieg","user","sieg",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("VMCore","user/vm","vmcore",overridepath)
+DomainImport ("Space","user/vm","space",overridepath)
+DomainImport("UserSpaceThread","user/thread","threadcore",overridepath)
+DomainImport(FastBuffer, user, fastbuffer, overridepath)
+
+Package("USyscall")
+
+implementation("USyscall")
+sieg_both("USyscall")
+
+
+Extension({})
+
+
+

@@ -1,0 +1,114 @@
+
+<a name="addressspace"></a>
+<h2>Address space interfaces</h2>
+
+The VM extension provides two types of address spaces,
+<a href="../src/AddressSpace.i3">AddressSpace.T</a>
+and <a href="../../space/src/Space.i3">Space.T</a>.
+
+<p>
+<code>AddressSpace.T</code> provides the reservation of
+an address range, and mapping and unmapping of a memory object on
+the address space.
+
+<p>
+The <a href="../../space/doc/index.html">
+<code>Space.T</code></a> is a subtype of <code>AddressSpace.T</code>.
+Thus, it supports all the services that <code>AddressSpace.T</code>
+provides. In addition to them, <code>Space.T</code> provides reading and
+writing on it.
+
+<h3>AddressSpace.T</h3>
+
+Below are the methods provided by 
+AddressSpace.T</a> object.
+
+<dl>
+  <dt> init(name: TEXT): T;
+  <dt> destroy();
+  <dd> Initializes and destroys the address space.
+  <dt>
+    allocate(VAR pageNum: PageNumber; numPages: PageCount; anyWhere: BOOLEAN)
+             RAISES {VMError.E};
+
+  <dt> deallocate(pageNum: PageNumber; numPages: PageCount)
+               RAISES {VMError.E};
+  <dd> These methods reserve or unreserve
+       the virtual address region without allocating
+       memory.
+       They are used to reserve a certain region for later use.
+
+       <p>
+
+  <dt>  map(pageNum: PageNumber; numPages: PageCount; mObj: MemoryObject.T;
+	mOff: PageNumber; lazy := FALSE) RAISES {VMError.E};
+  <dd> <code>map</code> maps the region
+       <var>mOff</var> to <var>mOff+numPages</var>
+       of the memory object <var>mObj</var>
+       on the virtual address <var>pageNum</var> to
+       <var>pageNum + numPages</var>. <var>mOff</var>, <var>pageNum</var>,
+       and <var>numPages</var> are all specified in machine MMU page
+       unit. On Alpha, the page size is 8192 bytes.
+       
+       <p>
+       The region <var>pageNum</var> to <var>pageNum + numPages</var> must
+       be reserved beforehand using <code>allocate</code>
+       
+  <dt> <samp>foo&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp             bar </samp> unmap(pageNum: PageNumber; numPages: PageCount)
+          RAISES {VMError.E};
+
+  <dd> Undos the previous <code>map</code>.
+
+  <dt> clear() RAISES {VMError.E};
+  <dd> Unmaps all the memory objects mapped on the address space.
+
+</dl>
+
+<h3>Space.T</h3>
+
+
+
+
+
+<dl>
+  <dt> PROCEDURE Create(): T;
+  <dt> PROCEDURE Destroy(space: T);
+  <dd> Create and destroy an address space.
+  <dt>  PROCEDURE Duplicate(space: T): T RAISES {VMError.E};  
+  <dd> Create a copy of the <var>space</var>
+       <blockquote>
+       Note: no copy on write now. Everything is copied eagerly.
+       </blockquote>
+  <dt> PROCEDURE Allocate(space: T; VAR addr: VirtAddr.Address; size: VirtAddr.Size;
+  anywhere: BOOLEAN := FALSE): VirtAddr.T 
+	  RAISES {VMError.E};
+
+     
+<dt> PROCEDURE Deallocate(space:T;v: VirtAddr.T := NIL;
+  addr: VirtAddr.Address; size: VirtAddr.Size): VirtAddr.T
+	  RAISES {VMError.E};
+     <dd> These two allocates a memory on the specified region.
+	  Note that unlike <code>AddressSpace.allocate</code>,
+	  <code>Allocate</code> actually allocates a memory
+	  on the region.
+  
+<dt>
+PROCEDURE Read(space: T; fromaddr: VirtAddr.Address;
+	       VAR to: ARRAY OF CHAR;
+	       size := -1) RAISES {VMError.E};
+<dt>  
+PROCEDURE Write(space: T; READONLY from: ARRAY OF CHAR;
+		to : VirtAddr.Address;
+		size := -1) RAISES {VMError.E};
+     
+<dd> These procedures reads or writes the specified region.
+     Page faults may happen.
+     If <var>size</var> is ommitted, it is assumed to be
+     <code>NUMBER(to)</code> or <code>NUMBER(from)</code>.
+<dt>
+PROCEDURE Protect(space: T; v: VirtAddr.T := NIL; addr: VirtAddr.Address;
+  size: VirtAddr.Size; prot: <a href="../../space/src/Space.i3">Protection
+     </a>) RAISES {VMError.E};
+<dd>
+     This procedure changes the protection mode.
+</dl>

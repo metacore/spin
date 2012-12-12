@@ -1,0 +1,13 @@
+#############################################################
+# HISTORY
+# 19-Oct-96  Marc Fiuczynski (mef) at the University of Washington
+#	SAL specific interface files.
+#
+#############################################################
+implementation("NetDep")
+interface("NetExtern")
+Interface("DiskLabel")
+Interface("SocketDep")
+Interface("ProtoswDep")
+Interface("IfDep")
+Interface("UioDep")

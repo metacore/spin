@@ -1,0 +1,11 @@
+
+script -b
+
+script ~/spin/user/GCtree/$target/GCtree.rc
+
+
+
+
+
+
+

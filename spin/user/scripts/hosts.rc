@@ -1,0 +1,11 @@
+nanny touch NetDb
+
+#This file lists hosts on your network that you want SPIN to know about.
+#Used in nfs mounts for example.
+#Here the machine name is "frank" and the last portion of frank's IP
+#address is "100" i.e. IP=xxx.xxx.xxx.100
+
+netdb -add frank $ipaddr0 $ipaddr1 $ipaddr2 100
+
+
+

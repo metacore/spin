@@ -1,0 +1,93 @@
+% Copyright (C) 1994, Digital Equipment Corporation
+
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+%
+%
+
+%
+
+% Note that some of the earlier sections are required when building
+% later sections.
+%
+
+%
+% HISTORY
+% 04-Jan-96  Wilson Hsieh (whsieh) at the University of Washington
+%	removed debugging write call
+%
+%
+
+if equal (OS_TYPE, "WIN32")
+  SEP   = "&&"
+  RMDIR = "rmdir /s"
+  TOUCH = "copy nul >"
+else
+  SEP   = ";"
+  RMDIR = "rm -rf"
+  TOUCH = "cat /dev/null >"
+end
+
+# Where is the path to these templates
+SPIN_COMP_TMPL = path() & "/../templates"
+
+readonly new_m3build = format ("%s%s%s%s%s%s%s", BIN_USE, SL, "m3build -v", " -DINSTALL_ROOT=", INSTALL_ROOT, " -T ", SPIN_COMP_TMPL)
+readonly new_m3ship  = format ("%s%s%s%s%s%s%s", BIN_USE, SL, "m3ship -v", 
+" -DINSTALL_ROOT=", INSTALL_ROOT, " -T ", SPIN_COMP_TMPL )
+
+readonly proc BuildChunk (x, opt) is
+  if not stale (x, x)
+    % we've already built this chunk
+    write ("-- ", x, " done --", CR)
+    return
+  end
+
+  local goto_chunk = format ("cd ..%s%s %s", SL, x, SEP)
+
+  % let'm know what we're doing
+  write (CR, "---------------------- building ", x,
+            " ----------------------", CR,CR)
+
+  write(new_m3build)
+  % build and ship the chunk
+  exec ("@", goto_chunk, new_m3build)
+  if equal(opt,"ship")
+  	write(new_m3ship)
+  	exec ("@", goto_chunk, new_m3ship)
+  end
+  
+  % If you don't want to delete derived objects as soon as they are
+  % installed, comment out the following line.
+%  exec ("@-", goto_chunk, RMDIR, BUILD_DIR)
+
+  % remember that we've built this chunk
+  exec ("@", TOUCH, x)
+end
+
+
+%--- m3middle --- library -------------------------------------------------
+% the Modula-3 compiler's IL definition
+% requires: libm3
+BuildChunk ("m3middle", "")  %-- built as part of the bootstrap process
+
+%--- m3linker --- library -------------------------------------------------
+% the Modula-3 prelinker
+% requires: m3middle
+BuildChunk ("m3linker", "")  %-- built as part of the bootstrap process
+
+%--- m3front --- library -------------------------------------------------
+% the Modula-3 compiler front-end
+% requires: m3middle
+BuildChunk ("m3front", "")  %-- built as part of the bootstrap process
+
+
+%--- m3 --- utility -------------------------------------------------
+% the Modula-3 compiler (main program)
+% requires: m3linker, m3front, m3middle, libm3 
+% Can't ship if built with overrides
+BuildChunk("m3", "")  %-- built as part of the bootstrap process
+#LibExport("../m3/ALPHA_OSF/m3")
+
+install_file("../m3/ALPHA_OSF/m3", LIB_INSTALL, "0755")
+
+ 

@@ -1,0 +1,11 @@
+#
+# Telnetd.
+# 
+#
+
+nanny touch Network
+
+script ~/spin/user/socketRW/$target/socketRW.rc
+
+echo Telnetd installed.  Invoke as 'telnet_shell port#'
+

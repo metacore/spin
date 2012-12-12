@@ -1,0 +1,5 @@
+This is the RVM benchmark, the one used in '94 RVM SOSP paper.
+The original is written in C++, but I ported it into C.
+
+-yasushi
+

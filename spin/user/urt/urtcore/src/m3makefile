@@ -1,0 +1,32 @@
+#############################################################
+# HISTORY
+# 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+#	TARGET -> BASETARGET
+#
+#############################################################
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+
+m3_option ("-NoLoopholeWarning")
+m3_option ("-keep")
+
+Package ("SpinUnixRunTime")
+
+Module ("Net")
+Interface ("DiskLabelCommon")
+Module("If")
+Module ("Ioctl")
+Interface ("Uio")
+Interface ("Protosw")
+Interface ("SocketRep")
+Interface ("SocketAddr")
+Interface ("SocketAddrIn")
+
+include_dir(BASETARGET)
+
+Module ("SpinUnixRunTime")
+Extension({})

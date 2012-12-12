@@ -1,0 +1,37 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+% 27-Feb-96  Marc Fiuczynski (mef) at the University of Washington
+%	Both the HTTP and Scale module are obsolete.
+%
+% 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+%	These modules are now hidden. Change module to Module to export
+%	 the interfaces from the Plexus domain.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+DomainImport ("IpServer","user/net","ip",overridepath)
+DomainImport ("TcpServer","user/net","tcp",overridepath)
+DomainImport ("IpClient","user/net","ipClient",overridepath)
+DomainImport ("NetDb","user/net","dns",overridepath)
+
+Package("TcpClient")
+
+CommandModule ("TcpDefault")
+CommandModule ("TcpClassification")
+CommandModule ("TcpGen")
+
+#Module ("TcpHTTP")
+#Module ("TcpScale")
+
+linkmodule("TcpClient")
+module ("TcpClient")
+
+Extension({})

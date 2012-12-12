@@ -1,0 +1,19 @@
+# HISTORY
+# 25-Apr-97  Michael Berg (berg) at the University of Washington
+#       Created.
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+
+Package("Draw")
+
+# This is the Modula-3 module.
+Module("Draw")
+
+# This is the C code that implements part of the framebuffer interface. 
+interface("DrawExtern")
+c_source("draw")
+
+# This is needed for SPIN extensions.
+Extension({})

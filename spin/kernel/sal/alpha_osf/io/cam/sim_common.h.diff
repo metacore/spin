@@ -1,0 +1,10 @@
+86a87,92
+> /*
+>  * Different strokes for different folks..
+>  */
+> #ifdef __STDC__
+> #define SIM_MODULE(name) static char *module = #name
+> #else
+87a94,95
+> #endif
+> 

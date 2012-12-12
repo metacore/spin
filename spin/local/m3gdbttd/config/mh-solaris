@@ -1,0 +1,16 @@
+# Makefile changes for Suns running Solaris 2
+
+SYSV = -DSYSV
+RANLIB = true
+CFLAGS = -g 
+# if you're using Sun's C compiler, add -xs to the CFLAGS line
+
+# this is for Emacs, since Sun's ANSI mode preprocessor does some
+# very wierd things to the input stream, breaking $(FOO) into
+# $ ( FOO ), which breaks the ymakefile system that Emacs uses
+CC = cc -Xs
+
+# X11 
+OPENWINHOME = /usr/openwin
+X11_INCLUDE_FLAGS = -I$(OPENWINHOME)/include
+X11_LIB_FLAGS = -L$(OPENWINHOME)/lib

@@ -1,0 +1,3 @@
+ALL=all-h8500
+CLEAN=clean-h8500
+DO_INSTALL=install-h8500

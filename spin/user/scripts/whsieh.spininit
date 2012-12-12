@@ -1,0 +1,20 @@
+
+script -b
+
+set httpd      ~/spin/user/scripts/httpd.rc
+set regress    ~/spin/user/scripts/regress.rc
+set unix       ~/spin/user/scripts/unix.rc
+set test       ~/spin/user/scripts/test.rc
+set x11        ~/spin/user/scripts/X11.rc
+set cthread    ~/spin/user/thread/cthread/$target/cthread.rc
+set threat     ~/spin/user/threat/$target/threat.rc
+set benchmark  ~/spin/user/benchmark/$target/benchmark.rc
+set rcg        ~/spin/user/rcg/$target/rcg.rc
+
+set xxx        ~/spin/user/test/$target/xxx.rc
+
+
+
+
+
+

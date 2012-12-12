@@ -1,0 +1,38 @@
+<BASE HREF="http://www.cs.washington.edu">
+<html>
+<head>
+	<title><b> Dynamic Binding for an Extensible System</title>
+</head>
+
+<body>
+
+<center>
+<h1>Dynamic Binding for an Extensible System</h1>
+<i><a href="/homes/pardy">Przemyslaw Pardyak</a> &amp; <a href="/homes/bershad">Brian N. Bershad</a></i><br>
+<i><a href="/">Department of Computer Science and Engineering</a>,<a href="http://www.washington.edu">University of Washington</a></i><br>
+E-mail: {<tt><a href="mailto:pardy@cs.washington.edu">pardy</a></tt>,<tt><a href="mailto:bershad@cs.washington.edu">bershad</a></tt>}<tt>@cs.washington.edu</tt><br>
+In the Proceedings of the <a href="http://www.usenix.org/osdi96/index.html">
+Second USENIX Symposium on Operating Systems Design and Implementation
+(OSDI)</i>, 1996. </a>
+</center>
+
+<h2>Abstract</h2>
+
+An extensible system requires a means to dynamically bind extensions
+into executing code.  <i>SPIN</i> extensible operating system uses an
+event-based invocation mechanism to provide this functionality in a
+flexible, transparent, safe, and efficient way.  Events offer a
+uniform model of extensibility, whereby the system's configuration can
+change without changing any of its components.  Events are defined
+with the granularity and syntax of procedures but provide extended
+procedure call semantics such as conditional execution, multicast, and
+asynchrony. By installing a handler on an event, an extension's code
+can execute in response to activities at the granularity of procedure
+call.  Our system uses runtime code generation to ensure that event
+delivery has low overhead and scales well with the number of handlers.
+This paper describes the design, use and performance of events in the
+<i>SPIN</i> operating system.
+
+<hr>
+
+</html>

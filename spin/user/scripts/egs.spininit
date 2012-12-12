@@ -1,0 +1,18 @@
+# HISTORY
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Change ALPHA_SPIN to variable $target which can be either
+#	 ALPHA_SPIN or ALPHA_SPIN_PROF.
+#
+
+echo Gun's initialization script
+script -b
+
+set dlib         ~/spin/user/scripts/dlib.rc
+set http         ~/spin/user/scripts/httpd.rc
+set regressrc    ~/spin/user/scripts/regress.rc
+set unixrc       ~/spin/user/scripts/unix.rc
+set testrc       ~/spin/user/scripts/test.rc
+set threatrc     ~/spin/user/threat/$target/threat.rc
+set benchmarkrc  ~/spin/user/benchmark/$target/benchmark.rc
+
+echo Script Done.

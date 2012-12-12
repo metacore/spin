@@ -1,0 +1,35 @@
+# Copyright 1994, 1995 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# m3makefile for CAM spindle
+#
+
+# HISTORY
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Add the TARGET directory to the include path.
+#
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Switched to simpler spindle build functions.
+#
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainLink("osf.cam","")
+
+Package("CAM")
+
+Module("CAM")
+interface("CAMPrivate") 
+interface("CAMExtern")
+
+add_CC_args("-I../", TARGET)
+
+c_source("ioconf")
+c_source("cam_ops")
+
+Extension({})

@@ -1,0 +1,24 @@
+############################################################
+# HISTORY
+# 25-Mar-95  Marc Fiuczynski (mef) at the University of Washington
+#	Created.
+#
+############################################################
+
+Module ("An1Default")
+DomainExport ("Plexus","An1Default")
+Module ("An1Classification")
+DomainExport ("Plexus","An1Classification")
+Interface ("An1GenPrivate")
+Module ("An1Gen")
+DomainExport ("Plexus","An1Gen")
+Module ("An1Client")
+
+Module ("An1Arp")
+DomainExport ("Plexus","An1Arp")
+Table  ("An1Arp", "An1Arp", "An1Arp")
+
+
+#Module ("An1AM")
+#Module ("An1Scale")
+#DomainExport ("Plexus","An1Scale")

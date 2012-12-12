@@ -1,0 +1,32 @@
+# This file tells config what files go into building a kernel,
+# files marked standard are always included.
+#
+#	$Id: files.i386,v 1.2 1997/06/25 18:26:27 becker Exp $
+#
+i386/boot/salboot/salboot.c	optional salboot
+i386/boot/salboot/bootmenu.c	optional salboot
+i386/boot/salboot/stub_subr.c	optional salboot
+
+# library routines
+i386/boot/salboot/free.c	optional salboot
+i386/boot/salboot/morecore.c	optional salboot
+i386/boot/salboot/malloc.c	optional salboot
+i386/boot/salboot/malloc_lmm.c	optional salboot
+i386/boot/salboot/printf.c	optional salboot
+i386/boot/salboot/bzero.S	optional salboot
+i386/boot/salboot/bcopy.S	optional salboot
+
+# sal support
+../salnet/arp.c		optional salboot
+../salnet/bootp.c	optional salboot
+../salnet/salnet.c	optional salboot
+../salnet/salnfs.c	optional salboot
+freebsd_netsubr.c	optional salboot
+cyclecount.c	optional salboot
+
+# code from freebsd
+i386/boot/biosboot/serial.S	optional salboot
+i386/isa/pcibus.c		optional	pci	device-driver
+i386/isa/isa.c			optional	isa	device-driver
+i386/i386/in_cksum.c		optional	salboot
+kern/uipc_mbuf.c	optional salboot

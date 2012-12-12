@@ -1,0 +1,41 @@
+160a161,164
+> #ifdef SPIN
+> /* DEC Bug.  I wish they'd ship kernel source that would build - savage */
+> int     sccspeedi(), scc_half_speed();
+> #else /* SPIN */
+161a166
+> #endif /* SPIN */
+1213a1219
+> #ifndef SPIN
+1214a1221,1225
+> #else /* SPIN */
+>     if (tp->t_state&TS_XCLUDE)
+> 	    printf("I'm taking a chance letting you in here again.  Don't embarass me\n");
+>     if (FALSE) {
+> #endif /* SPIN */
+1258a1270
+> #ifndef SPIN
+1259a1272,1276
+> #else /* SPIN */
+>     else if (tp->t_state&TS_XCLUDE)
+> 	    printf("I'm taking a another chance letting you in here.  Don't embarass me\n");
+>     if (FALSE)
+> #endif /* SPIN */
+1302a1320,1322
+> #ifdef SPIN
+> 	if ((*linesw[tp->t_line].l_open)==0) return 1;
+> #endif
+1822a1843,1844
+> 
+> #ifndef SPIN
+1827c1849,1850
+<     
+---
+> #endif /* SPIN */
+> 
+3152a3176
+> #ifndef SPIN
+3154a3179,3181
+> #else
+>     printf("signal the process group... yeah right\n");
+> #endif /* SPIN */

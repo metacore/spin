@@ -1,0 +1,50 @@
+# HISTORY
+# 25-Apr-97  Michael Berg (berg) at the University of Washington
+#       Created.
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+#DomainImport("SpinTrusted","kernel","spincore",overridepath)
+#DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+#DomainImport("SpinUnixNet","user/urt","net",overridepath)
+#DomainImport("IpServer", "user/net","ip",overridepath)
+#DomainImport("Device","user/dev","devcore",overridepath)
+
+# Added this domain so we can access the file system modules
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+
+# Added this domain so we can use the existing support for 
+# command modules.
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+
+# This is for bitblit'ing pictures to the framebuffer
+DomainImport("Draw","user","draw",overridepath)
+
+remove_m3_option("-X6@-mno-fp-regs@")
+
+Package("MPEG1")
+
+# This is where all the modules and interfaces are listed.
+Module("SequenceLayer")
+Module("GroupOfPicturesLayer")
+Module("PictureLayer")
+Module("SliceLayer")
+Module("MacroblockLayer")
+Module("BlockLayer")
+Module("GeneralTools")
+Module("PostProcessing")
+Module("MpegData")
+Module("BitIO")
+Module("MpegPlay")
+#Module("Draw")
+
+# This is the C code that makes up the framebuffer interface. 
+#interface("DrawExtern")
+#c_source("draw")
+
+# This is the command module. It parses the command line to invoke
+# the mpeg player and starts the program. 
+CommandModule("MpegShell")
+
+# This is needed for SPIN extensions
+Extension({})

@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+	<TITLE>ONCRPC (or better known as SunRpc)</TITLE>
+</HEAD>
+
+<BODY>
+<H1> <A NAME="top"><i>SPIN</i> ONCRPC Support</A></H1>
+<HR> <P>
+
+<H1>Remote Procedure Call Support in SPIN</H1>
+
+<P>The <EM>remote procedure call</EM> (RPC) mechanism provides a service
+to the application programmer to allow transparent use of a server to
+provide some activity on behalf of the application.  </P>
+
+<P>ONCRPC implements <A HREF="rfc1057.html">Sun's ONC/RPC protocol</A>
+and is based on the m3rpc package from Xerox Parc.  Each call to an
+RPC function calls a stub function that doesn't actually implement the
+desired computation, but packs its arguments into a flattened (or
+marshalled) representation.  The stubs used at the client and server
+processes are generated automatically; the programmer need not define
+flattening and restructuring mechanisms for each function in the
+interface.  There is a stub generator called <A
+HREF="../../../local/m3rpcgen/doc/index.html">m3rpcgen</A> that generates
+Modula-3 rpc stubs for SPIN.  You can use it with the following quake
+commands:
+
+<dl>
+<dt> oncrpc(X)
+<dd> the file X.x contains the rpc interface which will be translated into:
+<dd> X.i3		(the M3 version)
+<dd> X_c.m3		(the client stub)
+<dd> X_s.m3		(the client stub)
+<dd> X_x.i3 X_x.m3	(the marshalling routines)
+
+<dt> oncrpc_interface(X)
+<dd>	the file X.x contains the rpc interface which will be translated into
+<dd>	X.i3		(the M3 version)
+
+<dt> oncrpc_client(X)
+<dd>	the file X.x contains the rpc interface which will be translated into
+<dd>	X_c.m3		(the client stub)
+
+<dt> oncrpc_server(X)
+<dd>	the file X.x contains the rpc interface which will be translated into
+<dd>	X_s.m3		(the client stub)
+
+<dt> oncrpc_xdr(X)
+<dd>	the file X.x contains the rpc interface which will be translated into
+<dd>	X_x.i3 X_x.m3	(the marshalling routines)
+
+</dl>
+
+The commands assume that you have a X.x file in the src directory of
+your rpc program.  Right now only marshalling for UDP based RPC calls
+is supported; record based marshalling for TCP based RPC does not
+work.</P>
+
+<H2>MISC</H2> 
+
+<P>The ONCRPC module includes a built in portmap server, which didn't
+originally exist with the original m3rpc implementation.  The portmap
+server should probably be separated into its own module.</P>
+
+<P>The m3rpc package from Xerox was written for the old m3 runtime and
+a socket based network interface.  It has been updated to work with
+the v3.x based m3 runtime and to be operating system independent.  The
+next step is to move the rpc package over to a <A
+HREF="../../net/doc/index.html">Plexus</A> networking stack, rather than a unix
+socket based network stack.</P>
+
+<HR>
+<ADDRESS>
+
+<I>
+<A HREF="mailto:mef@cs.washington.edu">Marc Fiuczynski</A>
+<BR>DAY/MONTH/YEAR
+</I>
+
+</ADDRESS>
+</BODY>
+</HTML>
+

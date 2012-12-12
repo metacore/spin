@@ -1,0 +1,96 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+<h2> The Table interface </h2>
+
+<p>
+ A "Table(Key, Value).T", or table, is a partial map from "Key.T"s
+   to "Value.T"s.  Actually, it turns out to be useful for a table to
+   treat two different keys as if they are the same whenever they are
+   equivalent according to some specified equivalence relation.  For
+   example, if you are creating a table with a "Key.T" of "TEXT", you
+   are likely to want "Text.Equal" as the equivalence relation.
+<p>
+   Formally, a table "tbl" has the components:
+<p>
+| canon(tbl) `a map on elements of "Key.T"`
+| map(tbl)   `a map from elements of "Key.T" to elements of "Value.T"`
+<p>
+   "canon(tbl)" represents an equivalence relation: "canon(tbl)(k)" is
+   the {\em canonical representative} of all the keys that are
+   equivalent to "k".  The domain of "map(tbl)" includes only
+   canonical representatives, that is, elements in the range of
+   "canon(tbl)".  The equivalence relation underlying "canon(tbl)"
+   must be time-invariant.  For example, it can't depend on the values
+   of particular references since some garbage collectors move "REF"
+   values.
+<p>
+   The methods of an object "tbl" of type "Table.T" have the following
+   specifications:
+<p>
+   The call "tbl.get(k, v)" sets "v" to "map(tbl)(canon(tbl)(k))" and
+   returns "TRUE" if "canon(tbl)(k)" is in "dom(map(tbl))".  Otherwise,
+   it returns "FALSE" without changing "v".
+<p>
+   The call "tbl.put(k, v)" changes "map(tbl)(canon(tbl)(k))" to "v"
+   and returns "TRUE" if "canon(k)" is in "dom(map(tbl))".  Otherwise,
+   it sets the value of "map(tbl)(canon(tbl)(k))" to "v", and returns
+   "FALSE".
+<p>
+   The call "tbl.delete(k, v)" sets "v" to "map(tbl)(canon(tbl)(k))",
+   removes "(canon(tbl)(k), v)" from "map(tbl)", and returns "TRUE" if
+   "canon(tbl)(k)" is in "dom(map(tbl))".  Otherwise, it returns
+   "FALSE" without changing "v".
+<p>
+   The call "tbl.size()" returns the size of "dom(map(tbl))", that is,
+   the number of entries in "tbl".
+<p>
+   The call "tbl.iterate()" returns an iterator, which is an object
+   that can be used to iterate over the key-value pairs in "tbl".  See
+   the definition of the type "Iterator" below.
+<p>
+   If "i" is the result of the call "tbl.iterate()", then the call
+   "it.next(k, v)" selects an entry from "tbl" that has not already
+   been returned by "i", sets "k" and "v" to its key and value, and
+   returns "TRUE".  If no entries remain, the call returns "FALSE"
+   without setting "k" or "v".  It is a checked runtime error to call
+   "next" after it has returned "FALSE".  The client must ensure that
+   while an iterator is in use, the parent table is not modified.
+<p>
+   The type "Default" is an implementation of "T" using chained
+   hashing.  The methods specific to an object "dflt" of type
+   "Default" have the following specifications:
+<p>
+   The call "dflt.init(sizeHint)" returns "dflt" after initializing it
+   to a table with an empty "map(dflt)".  If "sizeHint" is greater
+   than 0, "init" assumes that "put" will subsequently be called with
+   at least "sizeHint" different keys; these calls on "put" may
+   execute somewhat faster than if "sizeHint" was 0.  The "init"
+   method has side-effects on the table.
+<p>
+   The call "dflt.keyEqual(k1, k2)" returns "Key.Equal(k1, k2)" and
+   the call "dflt.keyHash(k)" returns "Key.Hash(k)".  The other
+   methods call "keyEqual" and "keyHash" whenever they need to consult
+   the table's equivalence relation. This means a subtype of "Default"
+   can determine the equivalence relation by overriding "keyEqual" and
+   "keyHash", providing "keyEqual" implements an equivalence relation
+   and "keyHash" respects that relation.
+<p>
+   For efficiency, tables and their iterators are not monitored, so a
+   client accessing a table from multiple threads must ensure that if
+   two operations are active concurrently, then neither of them has
+   side effects on the same table or iterator.  The "T.put",
+   "T.delete", and "Default.init" methods are the only ones with side
+   effects on the table.  An iterator's "next" method has side-effects
+   on the iterator.
+
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

@@ -1,0 +1,20 @@
+#####################################################################
+# Copyright 1994, 1995 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 16-Jul-97  Tian Fung Lim (tian) at the University of Washington
+#	Writebarrier platform does not like refcounting stuff
+#
+#####################################################################
+
+if equal(WRITEBARRIER,"TRUE")
+	c_source("SpinProgram")
+else
+	if equal(REFCOUNT, "TRUE")
+		c_source("SpinProgramRC")
+	else
+		c_source("SpinProgram")
+	end
+end

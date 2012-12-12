@@ -1,0 +1,22 @@
+############################################################
+# HISTORY
+############################################################
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport   ("SpinPublic","kernel","spincore",overridepath)
+DomainImport   ("Shell","user/shell","shellcore",overridepath)
+DomainImport   ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport   ("SpinUnixNet","user/urt","net",overridepath)
+DomainImport   ("Device","user/dev","devcore",overridepath)
+DomainImport   ("NetDev","user/dev","netdev",overridepath)
+DomainImport   ("EtherServer","user/net","ether",overridepath)
+DomainImport   ("Ip6Server","user/net","ip6",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+m3_option("-Y3@true@")
+m3_option("-Y4@touch@")
+Package("Ether6Client")
+Module("Ether6Gen")
+linkmodule("Ether6Client")
+module("Ether6Client")
+Extension({})

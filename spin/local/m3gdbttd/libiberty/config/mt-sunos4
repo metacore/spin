@@ -1,0 +1,2 @@
+XTRAFLAGS = -I../sun4includes
+LOADLIBES = -L../sun4libs

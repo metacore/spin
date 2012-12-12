@@ -1,0 +1,236 @@
+.\" @(#)rpcgen.1	2.2 88/08/02 4.0 RPCSRC
+.TH RPCGEN 1 "18 January 1988"
+.SH NAME
+m3rpcgen \- an RPC protocol compiler for Modula-3
+.SH SYNOPSIS
+.B m3rpcgen
+.RI [ options ]
+.I infile
+.br
+.B m3rpcgen
+.RI [ options ]
+[
+.BR \-c \|| \|\-h \|| \|\-l \||\fB\|\-s
+] [
+.BI \-o " outfile"
+] [
+.I infile
+]
+.SH DESCRIPTION
+.B m3rpcgen
+is a tool that generates Modula-3 code to implement an
+.SM RPC
+protocol.  The input to
+.B m3rpcgen
+is a language similar to C known as
+.SM RPC
+Language (Remote Procedure Call Language).  Information
+about the syntax of
+.SM RPC
+Language is available in Sun Microsystem's
+.RI ` rpcgen ' " Programming Guide."
+.LP
+.B m3rpcgen
+is normally used as in the first synopsis where it takes an input file
+and generates up to five output files. If the
+.I infile
+is named
+.BR proto.x ,
+then
+.B m3rpcgen
+will generate an interface file in
+.BR proto.i3 ,
+marshalling routines in
+.BR proto_x.i3
+and
+.BR proto_x.m3 ,
+server-side stubs in
+.BR proto_s.m3 ,
+and client-side stubs in
+.BR proto_c.m3 .
+.LP
+If
+.BR proto.x
+contains no type definitions in it then the files
+.BR proto_x.i3
+and
+.BR proto_x.m3
+will not be produced since there will be no marshalling routines.  If 
+.BR proto.x
+does not contain any program definitions (i.e. it contains only constant 
+and/or type definitions) then the files
+.BR proto_c.m3
+and
+.BR proto_s.m3
+will not be produced since there will be no client or server stubs.
+.LP
+The other synopses shown above are used when one does not want to
+generate all the output files, but only a particular one.  Their
+usage is described in the
+.SM USAGE
+section below.
+.LP
+The C-preprocessor,
+.BR cpp (1),
+is run on all input files before they are actually
+interpreted by
+.BR m3rpcgen ,
+so all the
+.B cpp
+directives are legal within an
+.B m3rpcgen
+input file.  For each type of output file,
+.B m3rpcgen
+defines a special
+.B cpp
+symbol for use by the
+.B m3rpcgen
+programmer:
+.PP
+.PD 0
+.TP 12
+.SM RPC_HDR
+defined when compiling into interface files
+.TP
+.SM RPC_XDR
+defined when compiling into marshalling routines
+.TP
+.SM RPC_SVC
+defined when compiling into server-side stubs
+.TP
+.SM RPC_CLNT
+defined when compiling into client-side stubs
+.PD
+.LP
+In addition,
+.B m3rpcgen
+does a little preprocessing of its own.
+Any line beginning with
+.RB ` % '
+is passed directly into the output file, uninterpreted by
+.BR m3rpcgen .
+.LP
+In order to satisfy the type safety requirements of Modula-3, m3rpcgen
+must support explicit importation of other .x
+interface files.  This is achieved by having m3rpcgen recognize the
+line
+.LP
+.RS
+%#include "proto1.h"
+.RE
+.LP
+(yes, 
+.RI proto1 .h )
+as meaning IMPORT the interface file
+.B proto1.i3
+into the various files emitted.  Note that most interface files will
+actually contain line sequences of the form:
+.LP
+.RS
+#if RPC_HDR
+.br
+%#ifndef proto1_h
+.br
+%#define proto1_h
+.br
+%#include "proto1_h"
+.br
+%#endif proto1_h
+.br
+#endif RPC_HDR
+.RE
+.LP
+in order to accomodate the generation of C code for an interface file.
+.SH OPTIONS
+.TP
+.B \-c
+Emit only the marshalling routine files (e.g.\ \fBproto_x.i3\fP and
+.BR proto_x.m3 ).
+.TP
+.B \-h
+Emit only the Modula-3 data-definitions file (e.g.\ \fBproto.i3\fP).
+.TP
+.B \-l
+Emit only the client-side stubs file (e.g.\ \fBproto_c.m3\fP).
+.TP
+.B \-s
+Emit only the server-side stubs file (e.g.\ \fBproto_s.m3\fP).
+.TP
+.BI \-o " outfile"
+Specify the name of the output file.
+If none is specified, standard output is used
+.RB ( \-h ,
+.BR \-l ,
+.B \-s
+modes only).  NOTE: Only the base name should be specified when this option
+is used in conjunction with
+.B \-c
+(which generates two files).  For example,
+.B \-s \-o proto_xdr
+will yield the output files
+.B proto_xdr.i3
+and
+.BR proto_xdr.m3 .
+.TP
+.B \-p
+Strip module prefix names from all symbol names encountered.  Whereas
+RPC interface symbols exist in a single name space, Modula-3 symbols
+are defined relative to the modules they are defined.  Without this
+option symbols in an interface file
+.B proto.x
+of the form
+.I proto_foo
+will turn into Modula-3 names of the form
+.IR proto.proto_foo .
+When this option is specified
+.B m3rpcgen
+will strip the 
+.I proto_
+off each symbol name encountered.  That is, the symbol
+.I proto_foo
+will be turned into the Modula-3 symbol
+.IR proto.foo .
+.TP
+.B \-e
+Expand input structure parameters.  RPC Language allows only one parameter
+to each routine.  If this flag is specified, and the parameter to a
+routine is a structure, then the corresponding client and server stub
+routines produced will expect one parameter for each field of the
+structure.
+.TP
+.B \-f
+Emit all five files, even if they are not needed.  This option is
+useful when dependency makefiles are generated automatically using
+facilities such as
+.BR imake .
+.TP
+.B \-r
+Emit code in the client stubs to assist recovery from failed RPC calls.
+When creating the client object, the application can provide a routine to
+be called when an RPC fails.  This routine can attempt application-specific
+recovery and return a new connection that the stub will use for the retry.
+.br
+.ne 5
+.SH "SEE ALSO"
+.BR cpp (1)
+.LP
+Sun Microsystem's
+.RI ` rpcgen ' " Programming Guide."
+.br
+.ne 4
+.SH BUGS
+.LP
+Nesting is not supported.
+As a work-around, structures can be declared at
+top-level, and their name used inside other structures in order to achieve
+the same effect.
+.LP
+Name clashes can occur when using program definitions, since the apparent
+scoping does not really apply. Most of these can be avoided by giving
+unique names for programs, versions, procedures and types.
+.SH "AUTHOR OF PROGRAM"
+Sun Microsystems
+.br
+Marvin Theimer, Xerox PARC
+.SH "AUTHOR OF DOCUMENTATION"
+David Nichols, Xerox PARC, from Sun's man page.

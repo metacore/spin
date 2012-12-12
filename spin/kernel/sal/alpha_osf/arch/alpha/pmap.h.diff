@@ -1,0 +1,14 @@
+365a366,368
+> #ifdef SPIN
+> #define	PMAP_SEGMENTATION	0
+> #else /* SPIN */
+370a374
+> #endif /* SPIN */
+435a440,446
+> 
+> #ifdef SPIN
+> /*
+>  * For UNITY_BASE and NBPG
+>  */
+> #include <machine/machparam.h>
+> #endif /* SPIN */

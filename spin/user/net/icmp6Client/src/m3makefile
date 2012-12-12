@@ -1,0 +1,31 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+%  08-Feb-96  Charles Garrett (garrett) at the University of Washington
+% 	These modules are now hidden. Change module to Module to export
+% 	 the interfaces from the Plexus domain.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+DomainImport ("EtherServer","user/net","ether",overridepath)
+DomainImport ("Ip6Server","user/net","ip6",overridepath)
+DomainImport ("Icmp6Server","user/net","icmp6",overridepath)
+DomainImport ("TcpServer","user/net","tcp",overridepath)
+DomainImport ("UdpServer","user/net","udp",overridepath)
+
+DomainImport ("Ip6Client","user/net","ip6Client",overridepath)
+
+Package("Icmp6Client")
+Module ("Icmp6Classification")
+Module ("Icmp6Gen")
+linkmodule("Icmp6Client")
+module ("Icmp6Client")
+Extension({})

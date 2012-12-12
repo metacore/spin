@@ -1,0 +1,149 @@
+*** m3.c	Wed Nov 13 18:21:14 1996
+--- ../gcc-2.6.x/m3.c	Wed Aug 14 21:32:38 1996
+***************
+*** 1043,1049 ****
+    memcpy (current_dbg_type_tag + 3, id, UID_SIZE);
+  
+    fmt = va_arg (args, char *);
+!   vsprintf (current_dbg_type_tag + UID_SIZE + 3, fmt, args);
+    va_end (args);
+  }
+  
+--- 1032,1039 ----
+    memcpy (current_dbg_type_tag + 3, id, UID_SIZE);
+  
+    fmt = va_arg (args, char *);
+!   if (fmt != (char *) 0)
+!     vsprintf (current_dbg_type_tag + UID_SIZE + 3, fmt, args);
+    va_end (args);
+  }
+  
+***************
+*** 1244,1249 ****
+--- 1234,1241 ----
+  static int compiling_body;
+  static char *current_unit_name;
+  static tree current_segment;
++ static tree unit_segment;
++ static tree link_segment;
+  static int max_lineno;
+  
+  /* the stack */
+***************
+*** 2172,2177 ****
+--- 2154,2162 ----
+        INTEGER (n);
+        exported_interfaces = 0;
+        declare_runtime_functions ();
++       current_segment = NULL;
++       unit_segment = NULL;
++       link_segment = NULL;
+        break; }
+  
+      case M3_END_UNIT: {
+***************
+*** 2255,2260 ****
+--- 2240,2252 ----
+        debug_struct ();
+        break; }
+  
++     case M3_DECLARE_ALIGNED: {
++       TYPEID (my_id); BITSIZE(size); BITSIZE(align); TYPEID (target_id);
++       debug_field_id (target_id);
++       debug_tag ('E', my_id, "_%d_%d", size, align);
++       debug_struct ();
++       break; }
++ 
+      case M3_DECLARE_RECORD: {
+        TYPEID (my_id); BITSIZE (size); INTEGER (nfields);
+        debug_tag ('R', my_id, "_%d", size);
+***************
+*** 2422,2433 ****
+        rest_of_decl_compilation (v, 0, 1, 0); 
+        TREE_CHAIN (v) = global_vars;
+        global_vars = v;
+-       current_segment = v;
+  
+!       /* do not use n, it is going to go away at the next instruction;
+! 	 skip the 'MI_' or 'MM_' prefix. */
+!       current_unit_name = IDENTIFIER_POINTER (DECL_NAME (v)) + 3;
+  
+        break; }
+        
+      case M3_BIND_SEGMENT: {
+--- 2414,2434 ----
+        rest_of_decl_compilation (v, 0, 1, 0); 
+        TREE_CHAIN (v) = global_vars;
+        global_vars = v;
+  
+!       if(unit_segment == NULL) {
+! 	unit_segment = v;
+  
++ 	/* do not use n, it is going to go away at the next instruction;
++ 	   skip the 'MI_' or 'MM_' prefix. */
++ 	current_unit_name = IDENTIFIER_POINTER (DECL_NAME (v)) + 3;
++       } else if(link_segment == NULL) {
++ 	link_segment = v;
++       } else {
++ 	fatal ("******* there may be only two segments per unit");
++       }
++ 
++       current_segment = v;
++ 
+        break; }
+        
+      case M3_BIND_SEGMENT: {
+***************
+*** 3356,3361 ****
+--- 3358,3408 ----
+        expand_start_cond (m3_build2 (LT_EXPR, t_int, temp1, a), 0);
+        generate_fault (RANGE_FAULT);
+        expand_end_cond ();
++       break; }
++ 
++     case M3_CHECK_SIZE: {
++       /* WCH: copied from M3_CHECK_LO case, pretty much
++ 	 the differences are:
++ 	   different fault code
++ 	   pop the stack an extra time
++        */
++       TARGET_INTEGER (a);
++       tree temp1 = declare_temp (t_int, 0, 0);
++ 
++       if (TREE_TYPE (stack [tos-1]) != t_int) {
++ 	stack [tos-1] = m3_build1 (CONVERT_EXPR, t_int, stack [tos-1]); }
++       m3_store (temp1, 0, t_int);
++       stack [tos++] = temp1;
++ 
++       expand_start_cond (m3_build2 (LT_EXPR, t_int, temp1, a), 0);
++       generate_fault (SIZE_FAULT);
++       expand_end_cond ();
++ 
++       /* pop */
++       tos--;
++       break; }
++ 
++     case M3_CHECK_ALIGN: {
++       /* WCH: copied from M3_CHECK_LO case, pretty much
++ 	 the differences are:
++ 	   different fault code
++ 	   BIT_AND_EXPR instead of LT_EXPR
++ 	   pop the stack an extra time
++        */
++       TARGET_INTEGER (a);
++       tree temp1 = declare_temp (t_int, 0, 0);
++ 
++       if (TREE_TYPE (stack [tos-1]) != t_int) {
++ 	stack [tos-1] = m3_build1 (CONVERT_EXPR, t_int, stack [tos-1]); }
++       m3_store (temp1, 0, t_int);
++       stack [tos++] = temp1;
++ 
++       expand_start_cond (m3_build2 (BIT_AND_EXPR, t_int, temp1, a), 0);
++       generate_fault (ALIGN_FAULT);
++       expand_end_cond ();
++ 
++       /* pop */
++       tos--;
+        break; }
+  
+      case M3_CHECK_HI: {

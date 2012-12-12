@@ -1,0 +1,4 @@
+# HPPA host running BSD.
+RANLIB=echo
+HDEFINES=-DHPUX_CORE -DHPPABSD_CORE
+HDEPFILES=hpux-core.o hppabsd-core.o

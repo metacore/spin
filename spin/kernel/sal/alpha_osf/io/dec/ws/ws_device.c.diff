@@ -1,0 +1,335 @@
+90a91,94
+> #ifdef SPIN
+> #include <sys/ioctl.h>
+> #include <vm/vm_map.h>
+> #else /* SPIN */
+95a100,101
+> #endif /* SPIN */
+> 
+101a108
+> #ifndef SPIN
+103a111
+> #endif /* SPIN */
+106d113
+< 
+112a120
+> #ifndef SPIN
+117a126
+> #endif /* SPIN */
+145,146d153
+< 
+< 
+248c255
+< static struct ws_region_db_s {
+---
+> struct ws_region_db_s {
+255c262
+< static int ws_region_db_max = -1;
+---
+> int ws_region_db_max = -1;
+408a416
+> #ifndef SPIN
+409a418,422
+> #else /* SPIN */
+> 	if (tp->t_state&TS_XCLUDE)
+> 		printf("I'm taking a chance letting you in here.  Don't embarass me\n");
+> 	if (FALSE)
+> #endif /* SPIN */
+545a559
+> #ifndef SPIN
+551a566,568
+> #else /* SPIN */
+> 		printf("wsclose: unregister our vm hook\n");
+> #endif /* SPIN */
+614a632,654
+> #ifdef SPIN
+> /*
+>  * Fake entry to take care of ARRAY OF CHAR we
+>  * are passed from M3.  This is not on a critical
+>  * path, so we can stand the overhead.  We are also
+>  * passed a function that will do any memory mapping
+>  * necessary.
+>  */
+> int (*map_func)() = 0;
+> 
+> wsioctl(dev, cmd, data, flag, domap)
+> 	dev_t dev;
+> 	u_int cmd;
+> 	register caddr_t *data;
+> 	int (*domap)();
+> {
+>     extern int real_wsioctl();
+>     map_func = domap;
+>     return(real_wsioctl(dev, cmd, *data, flag));
+> }
+> 
+> real_wsioctl(dev, cmd, data, flag)
+> #else
+615a656
+> #endif
+627d667
+< 	int error, i;
+628a669,672
+> 	int error, i;
+> #ifdef SPIN
+> 	int s;
+> #endif
+805a863,865
+> 		/*
+> 		 * XXX Fix this when we hit the big-time.
+> 		 */
+903d962
+< 
+906a966,968
+> 		if ( wi->user_queue_address == (ws_event_queue *) 0 ) {
+> 		    return -1;
+> 		}
+1179a1257
+> #ifndef SPIN
+1208c1286
+< 
+---
+> #endif /* SPIN */
+1222a1301,1303
+> #ifdef SPIN
+> 	return -1;
+> #else /* SPIN */
+1241a1323
+> #endif /* SPIN */
+1243a1326
+> #ifndef SPIN
+1289a1373
+> #endif /* SPIN */
+1292a1377
+> #ifdef SPIN
+1293a1379,1553
+> ws_map_region(kaddr, uaddr, nbytes, how, erroraddr)
+>         caddr_t kaddr;          /* kernel address of memory to map */
+>         caddr_t uaddr;          /* try to put it in curproc at this address */
+>         register int nbytes;    /* it is this many bytes big */
+>         int how;                /* ULTRIX-style protection argument */
+>         int *erroraddr;         /* errno address (NULL to discard value) */
+> {
+> 	caddr_t result;
+>         long unsigned int tmp1;
+>         long unsigned int start = DWN(kaddr);
+>         long unsigned int end = (long unsigned int)kaddr + nbytes - 1;
+>         long int size;
+>         dev_t  dev_num;
+> 	register struct ws_region_db_s *rdbp;
+> 	vm_offset_t physaddr;
+> 
+>         int error;
+>         int prot;
+>         int fd;
+>         int s;
+>         int elem;
+>         int i;
+> 
+>         size = DWN(end + CLBYTES) - start;      /* Round up to next page */
+>         prot = 0;
+>         if (how & 0400)
+>             prot |= PROT_READ;
+>         if (how & 0200)
+>             prot |= PROT_WRITE;
+> 
+> #ifdef DEBUG_PRINT_MAPPING
+> 	DPRINTF("ws_map_region(0x%lx, 0x%lx, 0x%x, 0x%x, 0x%lx)\n",
+> 		kaddr, uaddr, nbytes, how, erroraddr);
+> 	DPRINTF("ws_map_region: size 0x%x  start 0x%lx  end 0x%lx\n",
+> 		size, start, end);
+> #endif /* DEBUG_PRINT_MAPPING */
+> 
+>         /*
+>          * Determine if we already have a region which encompasses (or is the
+>          * same as) the requested one.  If so, use the previous definition.
+>          */
+>         s = spltty();
+>         elem = -1;
+>         for (i=0; i<=ws_region_db_max; i++) {
+>             caddr_t db_start = ws_region_db[i].start;
+>             caddr_t db_end = db_start + ws_region_db[i].size;
+>             caddr_t end = (caddr_t) start + size;
+> 
+>             if ((db_start <= (caddr_t) start) && (end <= db_end)) {
+>                 elem = i;
+> 		/* allow the greater access */
+>                 ws_region_db[elem].prot |= prot;
+> #ifdef DEBUG_PRINT_MAPPING
+> 		DPRINTF("ws_map_region: region encompassed or same as %d\n",
+> 			elem);
+> #endif /* DEBUG_PRINT_MAPPING */
+>                 break;
+>             }
+>         }
+>         /*
+>          * We couldn't find (or couldn't use) a previous definition, so add
+>          * one.  For the 'offset' value, choose zero (if this is the first
+>          * region) or use the next available offset (the last region's offset
+>          * plus the size of the last region).
+>          */
+>         if (elem < 0) {
+>             if ((ws_region_db_max + 1) < WS_REGION_MAX) {
+> 
+>                 elem = (++ws_region_db_max);
+>                 rdbp = &ws_region_db[elem];
+>                 rdbp->offset =          /* offset always paligned (size is) */
+>                     ( elem==0 ? 0 : (rdbp-1)->offset + (rdbp-1)->size );
+>                 rdbp->start = (caddr_t) start;
+>                 rdbp->size = size;      /* size always page aligned */
+>                 rdbp->prot = prot;
+>             }
+>         } else
+> 		rdbp = &ws_region_db[elem];
+>         splx(s);
+> 
+>         /*
+>          * If we *still* don't have an element, then flag an error and
+>          * quit.  Otherwise, get the region mapped for us (which results in
+>          * a set of calls back to wsmmap() ).
+>          */
+>         if (elem < 0) {
+>             error = ENOSPC;
+>             goto bad;
+>         }
+> 
+> 	/*
+> 	 * Following is for Alphas only.  See the original
+> 	 * ws_map_region for details.
+> 	 */
+> #define GH_THRESHHOLD(SIZE, ADDR) ((SIZE) >= (1<<16) /* enough for gh > 0 */ \
+> 				   && (ADDR) >= (1L << 32)) /* FLAMINGO TC */
+> 
+> 	physaddr = KSEG_TO_PHYS(rdbp->start);
+> 	if (GH_THRESHHOLD(rdbp->size, physaddr)) {
+> 		if (uaddr == (caddr_t)0) {
+> 			/*
+> 			 * Select a virtual address which is equivalent to
+> 			 * the physical address modulo the granularity hint
+> 			 * size.
+> 			 */
+> 			register vm_offset_t bigpage; /* GH size */
+> 			
+> 			bigpage = 1 << (PGSHIFT + 3);
+> 			if (rdbp->size >= (1 <<  (PGSHIFT + 6)))
+> 			    bigpage = 1 <<  (PGSHIFT + 6);
+> 			if (rdbp->size >= (1 <<  (PGSHIFT + 9)))
+> 			    bigpage = 1 <<  (PGSHIFT + 9);
+> 			ws_user_addr
+> 			       = (ws_user_addr + (bigpage-1)) & ~(bigpage-1);
+> 			uaddr = (caddr_t)(ws_user_addr
+> 					  | (physaddr & (bigpage-1)));
+> 			ws_user_addr = (vm_offset_t)uaddr + rdbp->size;
+> 		}
+> #ifdef DEBUG_PRINT_MAPPING
+> 		DPRINTF("ws_map_region: pmap: uaddr 0x%lx  physaddr 0x%lx\n",
+> 			uaddr, physaddr);
+> #endif /* DEBUG_PRINT_MAPPING */
+> 		/*
+> 		 * Upcall to whoever is doing the mapping.
+> 		 */
+> 		i = (*map_func)(physaddr, uaddr,
+> 			rdbp->size);
+> 		if ( i ) {
+> 		    printf("MapPhysToVirt failed\n");
+> 		    error = ENOMEM;
+> 		    goto bad;
+> 		}
+> 		result = uaddr;
+> 	}
+> 	else {
+> 	    /*
+> 	     * We are almost certainly trying to map the Event
+> 	     * queue.  The frame buffer itself is done above.
+> 	     */
+> 	    caddr_t user_addr = uaddr;
+> 	    
+> 	    if ( user_addr == (vm_offset_t) 0 ) user_addr =
+> 		(caddr_t) ws_user_addr;
+> 	    /*
+> 	     * Upcall to whoever is doing the mapping.
+> 	     */
+> 	    i = (*map_func)(physaddr,
+> 			 user_addr, size);
+> 	    if ( i ) {
+> 		printf("MapPhysToVirt on event queue failed\n");
+> 		error = ENOMEM;
+> 		goto bad;
+> 	    }
+> 	    result = user_addr;
+> 	    if ( uaddr == 0 ) ws_user_addr = 
+> 		(vm_offset_t) user_addr + rdbp->size;
+> 	}
+>         /* the following returns the low order bits to the mapped result. */
+>         tmp1 = (long unsigned int)result;
+>         tmp1 |= (long unsigned int) kaddr & (CLBYTES-1);
+>         if (erroraddr)
+>             *erroraddr = 0;
+>         return ((caddr_t) tmp1);
+> bad:
+>         printf ("ws0: cannot map shared data structures\n");
+>         printf ("u_error = %d\n", error);
+>         if (erroraddr)
+>             *erroraddr = error;
+>         return ((caddr_t) NULL);
+> 	
+> }
+> 
+> #else /* !SPIN */
+> 
+> caddr_t
+1428a1689,1690
+> #ifndef SPIN
+> 
+1430a1693,1696
+> #else /* SPIN */
+> 		DPRINTF("ws_map_region: pmap: uaddr 0x%lx  physaddr 0x%lx\n",
+> 			uaddr, physaddr);
+> #endif /* SPIN */
+1432a1699
+> #ifndef SPIN
+1464a1732,1734
+> #else /* SPIN */
+> 		printf("something crazy in ws_map_region\n");
+> #endif /* SPIN */
+1493a1764
+> #endif /* !SPIN */
+2305a2577,2594
+> 
+> #ifdef SPIN
+> /*
+>  * In OSF, /dev/console output goes through the normal tty driver
+>  * (wsstart).  In SPIN output goes through a rather complicated
+>  * Wr/Rd/BootIO thingy directly to wsputc.  Result is that cursor
+>  * position is not updated on SPIN shell output.  Filthy hack
+>  * below makes things a little prettier.
+>  */
+> 	/*
+>  	 * Position the cursor to the next character location.
+>  	 */
+> 	if (!(wi->dev_in_use & GRAPHIC_DEV))
+> 	    ws_set_cursor_position
+> 		(wsp->cf->cc, wsp, 
+> 			wsp->sp->col * wsp->sp->f_width, 
+> 			wsp->sp->row * wsp->sp->f_height);
+> #endif
+2561a2851,2853
+> #ifdef SPIN
+> 	vs_gdioctl = real_wsioctl;
+> #else
+2562a2855
+> #endif
+2633c2926
+< 
+---
+> #ifndef SPIN
+2660a2954,2956
+> #else /* SPIN */
+>     printf("ws_register_vm_callback\n");
+> #endif /* SPIN */
+2680a2977
+> #ifndef SPIN
+2696a2994,2996
+> #else /* SPIN */
+>     printf("ws_unregister_vm_callback\n");
+> #endif /* SPIN */

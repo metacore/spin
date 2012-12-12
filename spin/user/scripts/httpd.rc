@@ -1,0 +1,105 @@
+#
+# Copyright 1995, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# This script loads httpd.  It reads shell variable ipaddr[0-3] for the
+# host's IP address
+#
+# HISTORY
+# 16-Jun-97  Wilson Hsieh (whsieh) at the University of Washington
+#	fixed IP notation
+#
+# 31-Jan-97  Przemek Pardyak (pardy) at the University of Washington
+#	Bumped up the extent size to 10MB.  Turned off logging.
+#
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Change ALPHA_SPIN to variable $target which can be either
+#	 ALPHA_SPIN or ALPHA_SPIN_PROF.
+#
+# 29-Mar-96  Brian Bershad (bershad) at the University of Washington
+#	Revised for nanny.
+#
+# 12-Mar-96  Marc Fiuczynski (mef) at the University of Washington
+#	Changed plexus and urt loading to use domain rc scripts.
+#
+# 14-Jan-96  Przemek Pardyak (pardy) at the University of Washington
+#	Created on the bases of other scripts floating around. 
+#
+#
+#
+# This scripts loads and initializes all the extensions necessary for
+# running httpd (cam, rofsufs, plexus, and httpd)
+
+
+# This first set of touches is just for appearance.  Only the ones under 
+# the Force comment are truly needed.
+nanny touch osf.tcp
+nanny touch SpinUnixRunTime
+nanny touch SpinUnixNet
+nanny touch EtherServer
+nanny touch IpServer
+nanny touch IcmpServer
+nanny touch UdpServer
+nanny touch TcpServer
+nanny touch NetDb
+nanny touch OsfNetEmulation
+nanny touch EtherClient
+nanny touch IcmpClient
+nanny touch IpClient
+
+# Force all of Plexus to be loaded.
+nanny touch SpinUnixRunTime
+nanny touch OsfNetEmulation
+nanny touch IcmpClient
+nanny touch EtherClient
+
+# Set the Ether device
+echo --- ifconfig (for $hostnamefull) ---
+ifconfig $ETHERDEV $ipaddr 255.255.255.255 255.255.255.0
+
+# Route nonlocal packets to gateway
+route add default 128.95.2.100
+
+echo --- mounting http root device ---
+nanny touch Mount
+mkdir /mnt
+mount nfs lace:/nfs_spin/www/www-spin /mnt
+mount nfs lace:/nfs_spin/www /mnt/www
+
+echo --- setting up extent ---
+nanny touch Extent
+echo creating 10 MB http extent
+extent mkdev $EDISKDEV httpextent -size 10485760
+
+echo --- loading httpd ---
+script ~/spin/user/net/m3tcp/$target/m3tcp.rc
+script ~/spin/user/sync/rwlock/$target/rwlock.rc
+script ~/spin/user/httpd/$target/httpd.rc
+
+echo --- setting up http server ---
+touch /mnt/log-$hostname
+www log /mnt/log-$hostname
+www swapon httpextent
+
+echo --- web server initialized ---
+
+www quiet
+
+echo -- web server: turning off logging
+www logoff
+
+# echo -- web server: turning off caching
+# www swapoff
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,16 @@
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("Stcp","user","stcp",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+
+Package("StcpFileSystem")
+
+
+Module("StcpFileSystem")
+
+
+Extension({})

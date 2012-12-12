@@ -1,0 +1,11 @@
+
+Interface ("Residue")
+
+Module ("Ir")
+Module ("BasicBlock")
+Module ("Procedure")
+Module ("JumpTable")
+Module ("Program")
+
+build_generic_intf ("BasicBlockQueue", "Queue", "BasicBlock", VISIBLE)
+build_generic_impl ("BasicBlockQueue", "Queue", "BasicBlock")

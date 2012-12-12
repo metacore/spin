@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+<h1>
+M3 Core Standalone Library
+</h1>
+<date>January 15, 1996</date>
+ <P>
+<HR>
+<P>
+
+<h2> Motivation </h2>
+Modula-3 is a high level language which strong typing and garbage 
+collection. It takes a lot of work behind the scenes to support these
+services on a real computer. The m3core library does that work.
+
+<h2> Overview </h2>
+
+The SRC Modula-3 distribution comes with 2 standard libraries of
+code that are necessary for running most Modula-3 programs. The first
+library, m3core contains essential interfaces for all programs, such
+as Word, Thread, Text and Float. It also has the runtime support for
+linking modules together, performing garbage collection, converting
+Modula-3 types to C, etc. 
+
+For SPIN, we have made standalone versions of these libararies which
+contain the standard library services that we need while omitting 
+some that we don't need. These libraries are statically linked with
+the kernel and some of the standard library interfaces, such as
+Thread, are now implemented by SPIN kernel code.
+
+<P>
+
+<h2> The components of m3core_sa </h2>
+
+The m3core_sa library is made up of the following parts:
+
+<dl>
+<dt> <A href="C.html">C</A>
+<dd> Interfaces describing C types and standard C libraries.
+<p>
+<dt> Csupport
+<dd> C code which implements SET operations.
+<p>
+<dt> <A href="fingerprint.html">fingerprint</A>
+<dd> A fingerprint is a 64-bit checksum. It can be used to quickly determine
+	if two objects are different.
+<p>
+<dt> main
+<dd> The empty interface implemented by the Main module of a program.
+<p>
+<dt> <A href="runtime.html">runtime</A>
+<dd> Code for linking, initialization and garbage collection.
+<p>
+<dt> strongref
+<dd> The StrongRef interface can be used to make a reference immovable
+	and uncollectable by the garbage collector.
+<p>
+<dt> <A href="text.html">text</A>
+<dd> The interface for Modula-3 TEXT objects, as described in Systems 
+	Programming in Modula-3, page 68.
+<p>
+<dt> <A href="thread.html">thread</A>
+<dd> The Modula-3 Thread interface. The implementation has changed and
+	is located in the SPIN kernel, but the interface is nearly
+	unchanged.
+<p>
+<dt> <A href="weakref.html">weakref</A>
+<dd> A WeakRef.T is a reference to a piece of memory which will not
+	prevent the memory from being garbage collected.
+<p>
+<dt> <A href="word.html">word</A>
+<dd> The builtin Modula-3 Word interface which is implemented as inline
+	code by the compiler. This interface is described on page 71 of
+	Systems Programming in Modula-3, but see this link for changes
+	that have happened since that book was written.
+</dl>
+
+<h2> Remaining Issues </h2>
+We believe that we are paying too large a performance penalty for garbage
+collection at present. At some unspecified time in the future, we may
+replace the SRC collector with another one.
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

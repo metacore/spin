@@ -1,0 +1,25 @@
+#
+# Copyright 1994, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 19-Mar-96  Stefan Savage (savage) at the University of Washington
+#	Created.
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Sieg","user","sieg",overridepath)
+DomainImport("Mach","user/vm","mach",overridepath)
+DomainImport("VMCore","user/vm","vmcore",overridepath)
+DomainImport("UserSpaceThread","user/thread","threadcore",overridepath)
+DomainImport("USyscall","user","usyscall",overridepath)
+
+Package("LibMach")
+
+sieg_both("LibMach")
+implementation("LibMach")
+
+Extension({})

@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+<TITLE>SPIN name server and file system extensions</TITLE>
+
+<META NAME="GENERATOR" CONTENT="Internet Assistant for Microsoft Word 2.0z">
+</HEAD>
+<BODY>
+<H1>SPIN name server and file system extensions</H1>
+
+SPIN tries to integrate generic name service and file systems.  The
+Spincore <a href="../../kernel/spincore/src/auth/doc/NameServer.html">
+name server</a> module provides a generic graph-structured name space.
+
+<P>
+The SPIN <CODE>NameServer.T</CODE> type defines a basic directory
+object with which one can represent directory nodes for file systems.
+Using the <CODE>NameServer.T</CODE> as the super type of file
+system directories allows us to use common file system tools,
+such as <CODE>ls</CODE> and <CODE>cat</CODE>, to list objects
+in the global name space in addition to the file system name space.
+
+<p>
+The <A HREF="../fscore/doc/FileSystem.html">FileSystem</A> module
+is the top-level manager for all file systems.
+The SPIN file system is a subsystem of spin space. Thus, in theory,
+it supports all the operations provided by the
+<a href="../../kernel/spincore/src/auth/doc/NameServer.html">
+basic name server</a> (though, some of the operations may raise exceptions
+if a particular file system is not powerful enough to support them).
+In addition, it provides the
+interface to register and deregister, mount and unmount file system.
+It also provides an interface to get the current root file system
+directory.
+
+<H1>Standard name hierarchy</h1>
+
+How do the SPIN global name space and the file system name space fit
+together? There are two different "root"s in the system; the
+<dfn>global root</dfn> and the <dfn>file system root</dfn>. It turns
+out that the file system root is a subdirectory of the global root
+directory.
+
+<p> The global root contains two directories, <code>svc</code> and
+<code>fs</code>. The <code>svc</code> directory is used to hold SPIN
+internal names such as domain names and <a
+href="../../nanny/doc/index.html">nanny</a> placeholder.
+
+<p> The <code>fs</code> directory is the root of the file system, and
+it is written as "<code>/</code>".  Passing
+<code>FileSystem.Lookup</code> with "<code>/</code>" returns the file
+system root.  To get the global root, use "<code>/..</code>" (for
+example, <code>/../svc/domains</code>).
+
+<p>There is a similar but slightly different lookup procedure called
+NameServer.Lookup. They differ only in the root directory from which
+traversal starts.  <code>NameServer.LookupName</code> traverses the
+name from "<code>/..</code>" (aka global root), and
+<code>FileSystem.LookupName</code> traverses the name from
+"<code>/</code>" (aka file system root).
+
+<p>To avoid confusion resulting from having two different roots, it is
+strongly recommended that "<code>/..</code>" is used to represent the
+global root even in <code>NameServer.LookupName</code>(note:
+<code>..</code> in the global root points to itself).
+
+<p>Below are some of the standard directories used in SPIN.
+
+<dl>
+  <dt> /../svc/domains
+  <dd> This directory contains the list of domains installed on the system.
+  <dt> /../svc/fs
+  <dd> This directory contains the list of file systems
+       installed on the system.
+  <dt> /../svc/devices
+  <dd> This directory contains the list of devices installed on the system.
+  <dt> /../svc/nanny
+  <dd> Nanny aliases are installed here.
+  <dt> /../fs/
+  <dd> This is also known as "<code>/</code>". This is the file system root.
+  <dt> /../fs/proc
+  <dd> Contains information about SPIN status. I think this should be
+       moved to <code>/..</code>.
+</dl>
+
+<h1>To do list</h1>
+
+<ul>
+  <li> Mount mechanism is broken. First, it doesn't handle
+       ".." from the mount root. Next, it doesn't allow mounting
+       file systems on non-tmpfs file systems.
+
+       <p>Mount code should be moved to spincore, and we should do
+       more traditional mount table lookup (as in bsd).
+
+  <li> Got rid of the ad-hoc Directory.T caching.
+  <li> CharArray module is separated into the FastBuffer extension.
+       
+</ul>
+</BODY>
+</HTML>

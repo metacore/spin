@@ -1,0 +1,94 @@
+
+%
+% HISTORY
+% 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+%	TARGET -> BASETARGET
+%
+% 29-Jul-96  Charles Garrett (garrett) at the University of Washington
+%	ALPHA_SPIN_PROF is also a recognized target architecture.
+%
+
+
+overridepath = [ THISTREE , FULLTREE ]
+
+m3_option("-A")
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("VMCore","user/vm","vmcore",overridepath)
+DomainImport("Space","user/vm","space",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport ("TmpFileSystem","user/fs","tmpfs",overridepath)
+DomainImport("InodePager","user/vm","inodepager",overridepath)
+DomainImport("Sieg","user","sieg",overridepath)
+DomainImport("UserSpaceThread","user/thread","threadcore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("NetDev","user/dev","netdev",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport("Exec","user/thread","exec",overridepath)
+DomainImport("USyscall","user","usyscall",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+# For IX86 changes.
+# DomainImport("SpinUnixNet","user/urt","net",overridepath)
+DomainImport("ConsoleShell","user/shell","consoleshell",overridepath)
+DomainImport("FastBuffer","user","fastbuffer",overridepath)
+
+# For IX86 changes.
+# implementation("Sockets")
+DomainImport("SpinUnixNet","user/urt","net",overridepath)
+implementation("Sockets")
+# end of IX86 changes.
+
+Package("Sphinx")
+
+Interface(GenericQ)
+Interface(RefAnyQ)
+Dequeue("", GenericQ)
+Dequeue("Ref", RefAnyQ)
+Dequeuex(Proc, Proc, ProcRep)
+Dequeue(OpenFile, OpenFile)
+
+implementation("Sphinx")
+implementation("SphinxIoctl")
+implementation("SphinxFcntl")
+implementation("SphinxSelect")
+
+proc create_i3_from_h (cname, m3name) is
+    local hdr_name = cname
+    local i3_name = format("%s.i3", m3name)
+
+    if stale (i3_name, hdr_name)
+        exec("perl", "../src/h_to_i3.pl", m3name, hdr_name, i3_name)
+    end
+    derived_interface(m3name, HIDDEN)
+end
+# m3_option("-keep")
+Interface("Types")
+implementation("Dummies")
+Module("Round")
+Module("Sig")
+Interface("SphinxMachineDep")
+Module("OpenFile")
+Module("StreamFile")
+Module(Proc)
+Interface(ProcRep)
+Module("SphinxUtils")
+implementation("PipeFile")
+Interface("SphinxPrivate")
+Module("SyscallTrace")
+Interface("MachineSyscallTrace")
+Module("SyscallBoot")
+Module("BsdWait")
+Module("BsdSignal")
+interface("Fcntl")
+Module("IoctlPosix")
+template("sphinx")
+Generic_module("SyscallBootGen")
+implementation("SphinxCmd")
+include_dir(BASETARGET)
+
+HtmlFile("index")
+HtmlFile("tracer")
+DocFile("sphinx.jpg")
+
+Extension({})
+

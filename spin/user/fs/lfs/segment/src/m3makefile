@@ -1,0 +1,21 @@
+#
+# segment
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("Extent","user/dev","extent",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+
+Sequence(IntQueue,Integer)
+
+Package("Segment")
+Module("SegBuffer")
+Module("Segment")
+Module("FastBuffer")
+
+Extension({})
+

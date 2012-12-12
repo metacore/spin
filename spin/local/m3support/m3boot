@@ -1,0 +1,19 @@
+#! /bin/sh 
+#
+# top-level bootstrap build script
+#
+
+TOP=`pwd`
+QUAKE=$TOP/quake/$LOCALTARGET/quake
+CONFIG=$TOP/m3build/templates/$LOCALTARGET
+top_root="$1/"
+install_root="$1/$LOCALTARGET/"
+
+ 
+echo ---- building quake ----
+mkdir quake/$LOCALTARGET
+mkdir m3build/$LOCALTARGET
+(cd quake/$LOCALTARGET; $MAKE -f ../src/makefile TARGET=$LOCALTARGET)
+ 
+echo ---- building m3build ----
+(cd m3build/$LOCALTARGET; $QUAKE -DINSTALL_ROOT=$install_root -D_bootstrap -D_all -DBUILD_DIR=$LOCALTARGET -DPACKAGE=m3build -DPACKAGE_DIR=$TOP/m3build $CONFIG $TOP/m3build/src/m3makefile) || exit 1

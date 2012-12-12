@@ -1,0 +1,11 @@
+#This is an example file.  This sets variables based on the hardware 
+#of the machine specified by the filename.  Here the machine has a 
+#IDE controller and disks.  Note the name of the DISKDEV.  You can 
+#create one of these files for each machine where you boot SPIN 
+#and name the file <machine_name>.rc
+set ETHERDEV vx0
+set DISKDRV BDev
+set DISKDEV wd0
+set ROOTDEV a
+set USRDEV a
+set SWAPDEV b

@@ -1,0 +1,2 @@
+rm -f trans_log OO7_data_file*
+../rds/seg_create OO7_data_file 0x142000000 0x3000000 0x100000

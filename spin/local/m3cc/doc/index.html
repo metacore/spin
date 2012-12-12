@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>SPIN backend changes</title>
+</head>
+
+<body>
+<h1>Backend changes</br></h1>
+
+The SRC M3 backend is based on gcc.  In order to implement some of our
+<a href="../../m3/doc/index.html">language changes</a>, as well as to
+support dynamic linking, we have had to modify the backend.  The
+changes are in the files gcc/m3.c and gcc/m3.def.
+
+<dl>
+<dt> VIEW
+<dd> In order to support VIEW, two new IR instructions
+M3_CHECK_SIZE and M3_CHECK_ALIGN were added.  These instructions
+generate code that are used to perform the dynamic checks that
+VIEW performs.
+
+<dt> ALIGNED FOR
+<dd> In order to support ALIGNED FOR, a new IR instruction
+DECLARE_ALIGNED was added.  It generates debugging info that
+gdb must recognize.
+</dl>
+ 
+<P>
+
+<h1> PC Calling Convention</h1>
+
+The PC has a particularly simple calling convention, with all
+arguments passed on the stack. The same convention is used by the gcc
+compiler on both the Linux and FreeBSD platforms. Here is the calling
+sequence for a procedure of n arguments (e.g. foo(x1, x2, ..., xn)): 
+<ol>
+<li> Save any of the caller-saved registers (EAX, ECX, EDX) which are
+     live across the call.
+<li> Push the argument values on the stack, beginning with xn and
+     working back to x1.
+<li> Execute the CALL instruction.
+<li> Add 4*n to ESP (the stack pointer), thus removing all argument 
+     values from the stack.
+</ol>
+
+The callee does the following:
+<ol> 
+<li> Save any callee-saved registers (EBX, ESI, EDI, EBP, ESP) which
+     are overwritten by the procedure. Typically ESP (the stack
+     pointer) is preserved by
+     adding and subtracting the same number of bytes rather than by
+     copying its value to another location. 
+<li> Do some work.
+<li> Execute the RET instruction with no arguments. This leaves ESP
+     unchanged which is why the caller has to do step 4 itself.
+</ol>
+
+</body>
+<p>
+<hr>Last changed <date>July 22, 1996</date> <br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

@@ -1,0 +1,145 @@
+# This file is a shell script that supplies the information necessary
+# to tailor a template configure script into the configure script
+# appropriate for this directory.  For more information, check any
+# existing configure script.
+
+srctrigger=z8k-dis.c
+srcname="opcodes"
+
+# per-host:
+
+. ${srcdir}/../bfd/configure.host
+
+# Set up to make a link between the host's include file and "sysdep.h".
+files="../bfd/hosts/${my_host}.h"
+links="sysdep.h"
+
+if [ ! -f ${srcdir}/${files} ] ; then
+	files=../bfd/hosts/std-host.h
+	echo "[${srcname} has no specific support for host ${host} -- using std-host]"
+fi
+
+host_makefile_frag=
+if [ -f ${srcdir}/../bfd/config/${my_host}.mh ] ; then
+	host_makefile_frag=../bfd/config/${my_host}.mh
+fi
+
+# per-target:
+
+# Canonicalize the secondary target names.
+if [ -n "$enable_targets" ]; then
+    for targ in `echo $enable_targets | sed 's/,/ /g'`
+    do
+	result=`$configsub $targ 2>/dev/null`
+	if [ -n "$result" ]; then
+	    canon_targets="$canon_targets $result"
+	else
+	    # Allow targets that config.sub doesn't recognize, like "all".
+	    canon_targets="$canon_targets $targ"
+	fi
+    done
+fi
+
+all_targets=false
+
+for targ in $target $canon_targets
+do
+    bfd_target=`$srcdir/../bfd/config.bfd $targ`
+
+    if [ "x$bfd_target" = "xall" ]; then
+        all_targets=true
+    else
+	if [ ! -f ${srcdir}/../bfd/config/${bfd_target}.mt ] ; then
+	    echo '***' No file ${srcdir}/../bfd/config/${bfd_target}.mt 1>&2
+	    echo '***' opcodes does not support target ${bfd_target} 1>&2
+	    echo '***' Look in bfd/config.bfd for supported targets 1>&2
+	    exit 1
+	fi
+
+	if [ "x$targ" = "x$target" ]; then
+	    target_makefile_frag=${srcdir}/../bfd/config/${bfd_target}.mt
+	else
+	    target_extra_frags="$target_extra_frags ${srcdir}/../bfd/config/${bfd_target}.mt"
+	fi
+    fi
+done
+
+# We don't do any links based on the target system, just makefile config.
+
+# post-target:
+
+rm -f Makefile.tmp Makefile.2
+mv Makefile Makefile.tmp
+
+if [ x${all_targets} = xfalse ]; then
+
+    allfrags="$target_makefile_frag $target_extra_frags"
+
+    # The architectures in all the configured targets.
+    SELECT_ARCHITECTURES=`sed -n '
+    s/SELECT_ARCHITECTURES[ 	]*=[ 	]*//p
+    ' $allfrags`
+
+    # Target architecture .o files.
+    ta=
+
+    for arch in $SELECT_ARCHITECTURES
+    do
+	ad=`echo $arch | sed -e s/bfd_//g -e s/_arch//g`
+	archdefs="$archdefs -DARCH_$ad"
+	case "$arch" in
+	bfd_a29k_arch)		ta="$ta a29k-dis.o" ;;
+	bfd_alpha_arch)		ta="$ta alpha-dis.o" ;;
+	bfd_h8300_arch)		ta="$ta h8300-dis.o" ;;
+	bfd_h8500_arch)		ta="$ta h8500-dis.o" ;;
+	bfd_hppa_arch)		ta="$ta hppa-dis.o" ;;
+	bfd_i386_arch)		ta="$ta i386-dis.o" ;;
+	bfd_i960_arch)		ta="$ta i960-dis.o" ;;
+	bfd_m68k_arch)		ta="$ta m68k-dis.o" ;;
+	bfd_m88k_arch)		ta="$ta m88k-dis.o" ;;
+	bfd_mips_arch)		ta="$ta mips-dis.o mips-opc.o" ;;
+	bfd_ns32k_arch)		ta="$ta ns32k-dis.o" ;;
+	bfd_powerpc_arch)	ta="$ta ppc-dis.o ppc-opc.o" ;;
+	bfd_rs6000_arch)	ta="$ta ppc-dis.o ppc-opc.o" ;;
+	bfd_sh_arch)		ta="$ta sh-dis.o" ;;
+	bfd_sparc_arch)		ta="$ta sparc-dis.o sparc-opc.o" ;;
+	bfd_vax_arch)		;;
+	bfd_we32k_arch)		;;
+	bfd_z8k_arch)		ta="$ta z8k-dis.o" ;;
+
+	"")			;;
+	*) echo "*** unknown target architecture $arch" 1>&2; exit 1 ;;
+	esac
+    done
+
+    # Weed out duplicate .o files.
+    f=""
+    for i in $ta ; do
+	case " $f " in
+	*" $i "*) ;;
+	*) f="$f $i" ;;
+	esac
+    done
+    ta="$f"
+
+    # And duplicate -D flags.
+    f=""
+    for i in $archdefs ; do
+	case " $f " in
+	*" $i "*) ;;
+	*) f="$f $i" ;;
+	esac
+    done
+    archdefs="$f"
+
+    echo "ARCHDEFS = $archdefs"			>> Makefile.2
+    echo "BFD_MACHINES = $ta"			>> Makefile.2
+
+else	# all_targets is true
+    echo 'ARCHDEFS = -DARCH_all'		>> Makefile.2
+    echo 'BFD_MACHINES = $(ALL_MACHINES)'	>> Makefile.2
+fi	# all_targets is true
+
+cat Makefile.tmp >> Makefile.2
+rm -f Makefile.tmp
+mv Makefile.2 Makefile

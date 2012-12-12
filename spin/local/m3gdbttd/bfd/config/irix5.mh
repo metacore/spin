@@ -1,0 +1,4 @@
+HDEFINES = -DIRIX_CORE
+HDEPFILES = irix-core.o
+RANLIB = echo
+INSTALL = cp

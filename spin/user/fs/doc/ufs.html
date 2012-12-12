@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>UNIX Fast File System</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> UNIX Fast File System</a> </br>
+</h1>
+<date>Thu May 23 12:13:58 1996</date>
+</br>
+Yasushi Saito
+ <P>
+<HR>
+<P>
+
+<H2>Overview</H2>
+
+Unix Fast File System(<dfn>UFS</dfn> from now on) is a
+<strong>readonly</strong>
+<!href="fs"><a href="../../../user/fs/doc/index.html">file system</a> that
+can read common ufs file system on a local disk.
+
+
+<H2>Design and Implementation</H2> 
+
+It's an another kind of <!href="fs"><a href="../../../user/fs/doc/index.html">file system</a> extension.
+
+It's a full fledged file system except that you can't write on it.
+
+It has extensive block cache and inode cache. The performance is
+comparable to the DEC OSF/1 UFS file system.  (about 15% slower with
+warm cache, almost same performance with cold cache).
+
+<blockquote>
+Note : I'm kind of cheating on caches. It's 2-way set associative with LRU
+purging on each line. We should implement full associative one.
+</blockquote>
+
+<H2>Using the service</H2>
+
+UFS is usually loaded via <!href="nanny"><a href="../../../user/nanny/doc/index.html">nanny</a>, so
+no special command is required to load it.
+When UFS is loaded, it installs inself in the
+<!href="ns"><a href="../../../user/ns/doc/index.html">name server</a>. <p>
+
+To use the file system, you first have to mount it like below.
+
+<pre>
+!>mount rz3a ufs /usr
+</pre>
+
+The first argument to <code>mount</code> specifies the local device name.
+You can see the list of device names by
+
+<pre>
+!>show devices
+</pre>
+
+<H2>Caveats</H2> 
+
+<ul>
+  <li> It's read only.
+</ul>
+
+<P>
+<HR>
+<P>
+<ADDRESS>yasushi@cs.washington.edu</ADDRESS>
+</HTML>

@@ -1,0 +1,33 @@
+proc ProtocolModule (protocol,link) is
+  local inf   = link & "Interface"
+  build_generic_intf (protocol, "Protocol", [], VISIBLE)
+  build_generic_impl (protocol, "Protocol", [inf])
+end
+
+proc protocolmodule (protocol,link) is
+  local inf   = link & "Interface"
+  build_generic_intf (protocol, "Protocol", [], HIDDEN)
+  build_generic_impl (protocol, "Protocol", [inf])
+end
+
+proc TrustedModule (protocol) is
+	write ("TrustedModule command now obsolete",CR)
+end
+
+proc trustedmodule (protocol) is
+	write ("trustedModule command now obsolete",CR)	
+end
+
+proc LinkModule (protocol) is
+  local cmd = protocol & "Link"
+  local intf = cmd & "Interface"
+  build_generic_intf (cmd, "Link", [intf], VISIBLE)
+  build_generic_impl (cmd, "Link", [intf])
+end
+
+proc linkmodule (protocol) is
+  local cmd = protocol & "Link"
+  local intf = protocol & "Interface"
+  build_generic_intf (cmd, "Link", [intf], HIDDEN)
+  build_generic_impl (cmd, "Link", [intf])
+end

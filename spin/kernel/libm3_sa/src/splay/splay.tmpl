@@ -1,0 +1,16 @@
+
+%
+%  Quake functions to instantiate a generic splay tree.
+%
+
+readonly proc Splay (nm, key, value) is
+  local tab = nm & "SplayTree"
+  build_generic_intf (tab, "Splay", [key, value], VISIBLE)
+  build_generic_impl (tab, "Splay", [key, value])
+end
+
+readonly proc splay (nm, key, value) is
+  local tab = nm & "SplayTree"
+  build_generic_intf (tab, "Splay", [key, value], HIDDEN)
+  build_generic_impl (tab, "Splay", [key, value])
+end

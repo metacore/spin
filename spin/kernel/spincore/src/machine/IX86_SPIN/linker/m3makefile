@@ -1,0 +1,27 @@
+#
+# Copyright 1994, 1995,1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+#
+# HISTORY
+# 27-Jan-95  Emin Gun Sirer (egs) at the University of Washington
+#	Created.
+
+interface ("MachineLinkerExtern")
+implementation ("MachineLinker")
+
+h_source ("Interface")
+h_source ("Module")
+c_source ("Module")
+h_source ("Section")
+c_source ("Section")
+h_source ("Symbol")
+c_source ("Symbol")
+h_source ("Hash")
+c_source ("Hash")
+c_source ("Link")
+h_source ("Resolve")
+c_source ("Resolve")
+c_source ("Unresolve")
+c_source ("Strip")

@@ -1,0 +1,50 @@
+<html>
+<head>
+<title>m3core_sa C</title>
+</head>
+
+<body>
+<h1>
+m3core_sa C </br>
+</h1>
+ <P>
+<HR>
+
+<h2> Motivation </h2>
+You can't deny that a lot of useful code exists in C. In order to
+combine Modula-3 code and C code in the same program, you need to
+equate C's types with some Modula-3 types. 
+
+<h2> Overview </h2>
+The Ctypes are used heavily in SPIN, because we communicate a lot
+of information between our own code written in Modula-3 and the
+SAL layer written in C.
+
+<h2> Contents of the C language interface </h2>
+
+<dl>
+<dt> Cerrno
+<dd> The variable set by many C library functions to indicate error 
+	conditions. SPIN uses a procedural interface with GetErrno
+	and SetErrno rather than exposing the actual variable.
+
+<dt> Cstddef
+<dd> The type size_t.
+
+<dt> Cstdlib
+<dd> Only malloc() and free() functions are retained by SPIN.
+
+<dt> <A href="http://www.research.digital.com/SRC/m3sources/html/C/src/Common/Ctypes.i3.html">Ctypes</A>
+<dt> <A href="http://www.research.digital.com/SRC/m3sources/html/C/src/64BITS/BasicCtypes.i3.html">BasicCtypes</A>
+<dd> Define the mapping between C types and Modula-3 types.
+
+<dt> <A href="http://www.research.digital.com/SRC/m3sources/html/C/src/Common/M3toC.i3.html">M3toC</A>
+<dd> Procedures for changing TEXTs to C strings and vice versa.
+</dl>
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

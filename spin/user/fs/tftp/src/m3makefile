@@ -1,0 +1,14 @@
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+
+Package("TftpFileSystem")
+
+
+Module("TftpFileSystem")
+
+
+Extension({})

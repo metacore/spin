@@ -1,0 +1,18 @@
+#
+# HISTORY
+# 20-Mar-97  Tsutomu Owa at the University of Washington
+#	Removed TARGET if-else-end and added DomainImport("Stcp"...)
+#
+# 12-Feb-97 Tsutomu Owa at the University of Washington
+#	Added TARGET if-else-end condition.
+#
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Stcp","user","stcp",overridepath)
+
+Package("Init")
+Module("Init")
+module("Fetch")
+
+Extension({})

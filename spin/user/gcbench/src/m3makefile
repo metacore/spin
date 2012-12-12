@@ -1,0 +1,15 @@
+# HISTORY
+# 03-Dec-97  Przemek Pardyak (pardy) at the University of Washington
+#	Created
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+
+CommandModule("GCBench")
+
+Extension({})
+

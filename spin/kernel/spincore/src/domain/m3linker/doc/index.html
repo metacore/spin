@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>Extensible Modula-3 runtime</title>
+</head>
+
+<body>
+<img align=right src="../../../../../../doc/at-work.gif">
+<h1>
+<A name = "top"> Extensible Modula-3 runtime </a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+SPIN and its extensions are written in Modula-3.  An extension is a
+collection of Modula-3 interfaces and modules that provide definitions
+and implementations of types, procedures, and variables.  A Modula-3
+program is required to maintain a number of consistency conditions:
+<ul>
+<li> all interfaces are exported by a module,
+<li> all procedures defined in an interface are implemented in a module,
+<li> all opaque types are fully revealed in a module,
+<li> all opaque types' partial revelations are consistent,
+<li> there is only one full revelation of a type,
+<li> there is only one implementation of each defined procedure.
+</ul>
+
+A SPIN kernel is conceptually a single Modula-3 program and as such it
+has to maintain all of the above conditions.  When an extension is
+dynamically loaded into the system, Modula-3 runtime has to be
+notified about it to verify that type and interface information is
+correct and consistent and to update its state to reflect addition of
+the new code.  This notification is done during loading the extension.
+
+
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>
+
+

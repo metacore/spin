@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>Overview</title>
+</head>
+
+<body>
+<img align=right src="../../../../../doc/at-work.gif">
+<h1>
+<A name = "top"> Overview </a> </br>
+</h1>
+
+<P>
+<HR>
+<P>
+
+SPIN supports extensibility by allowing application code to interpose
+on kernel interfaces.  These system extensions are directly linked
+into the kernel address space, and their memory safety is guaranteed
+by writing them in a type-safe programming language (Modula-3).
+Interposition is implemented using an event-based invocation mechanism
+that centralizes all communication through the SPIN dispatcher
+service.  The dispatcher allows extensions to dynamically change the
+body of code executed in response to a service request.  Because the
+dispatcher is involved in all communication, it is able to implement
+access control and provide a consistent semantics of interposition on
+that communication.
+
+<p>
+
+Events provide a uniform programming model for extensibility.  Events
+are specified using Modula-3 procedure syntax, and event invocation
+semantics, as observed by callers and callees, is that of a Modula-3
+procedure call.  Events also provide a uniform way of specifying
+extension configurations.  A single interface, the event dispatcher,
+is used to specify bindings and their properties.  A third aspect of
+event uniformity is the fact that any procedure in the system is
+automatically eligible for extensions.    
+
+<H2> Example </H2>
+
+The following code declares a procedure <i>Syscall</i> within a <a
+href="../../machine/MachineTrap.i3"> <i>MachineTrap</i> interface </a>.  This declaration
+becomes automatically a declaration of a <i> MachineTrap.Syscall</i>
+<a href="model.html">event</a>.
+
+<pre>
+INTERFACE MachineTrap;
+
+PROCEDURE Syscall(strand: Strand.T; VAR ms: MachineCPU.SavedState);
+
+END MachineTrap.
+</pre>
+
+This procedures is implemented in the <a href="../../machine/MachineTrap.i3">
+<i>MachineTrap</i> module </a>.  It provides the default <i> SPIN</i>
+syscalls available to all user space programs.  The procedure becomes
+also automatically a <a href="model.html">handler</a> for the <i>
+MachineTrap.Syscall</i> event.
+
+<pre>
+UNSAFE MODULE MachineTrap; (* unsafe because of loophole *)
+
+PROCEDURE Syscall(<*UNUSED*>strand: Strand.T; VAR ss: MachineCPU.SavedState) =
+  BEGIN
+    CASE ss.v0 OF
+    | 0 =>
+    | 1 => Strand.Block(Strand.GetCurrent());
+    | 5 => IO.Put(Fmt.Char(VAL(ss.a0, CHAR)));
+    | 6 => IO.Put("User Print: 0x" & Fmt.Unsigned(ss.a0) & "\n");
+    | 43 => Strand.Yield();
+    ELSE
+    END;
+  END Syscall;
+
+BEGIN
+END MachineTrap.
+</pre>
+
+The USTSyscall</a> module implements a procedure
+(<i>Syscall</i>) that provides additional syscalls for programs that
+use user space threads.  This procedure is installed as an additional
+handler for the <i> MachineTrap.Syscall</i> event by calling the event
+dispatcher. As a result, this procedure is <b>imposed</b> on the
+original procedure that implemented the event and from now on, the two
+procedures together provide the functionality that is the new
+implementation of the event. Each time the <i> MachineTrap.Syscall</i>
+procedure is called (which is equivalent to raising the <i>
+MachineTrap.Syscall</i> event) both procedures are executed.
+
+<pre>
+MODULE USTSyscall;
+
+PROCEDURE Syscall(ss: REF Machine.SavedState) =
+  BEGIN
+    ...
+  END Syscall;
+
+BEGIN
+    ...
+    EVAL Dispatcher.InstallHandler(MachineTrap.Syscall, NIL, Syscall);
+    ...
+END USTSyscall.
+</pre>
+
+
+<h2> Goals </h2>
+
+The goal of the events is to provide a binding mechanism for extensitions.
+We expect such a mechanism to exhibit four features:
+
+<ul>
+<li> it should be <b> expressive </b> to provide flexibility in
+	composing extensions,
+<li> it should be <b> simple </b> to simplify writing extensions and
+	extending existing code,
+<li> it should be <b> safe </b> to maintain protection guarantees
+	given by the system,
+<li> it should have <b> good performance </b> so that extensibility
+	can happen at a fine grain.
+</ul>
+
+
+Expressiveness is achieved in <i> SPIN </i> by flexible semantics of
+event based invocation: multiple procedures can be imposed on a single
+procedure call, the procedures can be executed conditionally, and they
+can be invoked asynchronously.  Simplicity is achieved by providing a
+uniform model of extensibility: all procedures can be extended and
+events use procedure syntax and procedure call semantics.  Safety is
+guaranteed by making events typesafe and providing mechanisms like <a
+href="auth.html">authorization</a> and <a href="imposed.html"> imposed
+guards</a> that allow enforcing safety.  Good performance is achieved
+by integrating event mechanisms with the Modula-3 runtime and by using
+run-time code generation to optimize invocations.
+
+<P>
+<HR>
+
+<P>
+<ADDRESS>
+<I>
+<A HREF="mailto:pardy@cs.washington.edu">Przemek Pardyak</A>, 
+<date>May 20th, 1996</date>
+</I>
+</HTML>

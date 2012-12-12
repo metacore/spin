@@ -1,0 +1,3 @@
+# HPPA host running HPUX.
+HDEFINES=-DHPUX_CORE
+HDEPFILES=hpux-core.o

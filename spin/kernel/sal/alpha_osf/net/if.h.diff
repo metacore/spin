@@ -1,0 +1,5 @@
+214a215,218
+> #ifdef SPIN
+> 	struct ifqueue if_rcv;
+> 	void	(*if_recv)(struct ifnet *);
+> #endif

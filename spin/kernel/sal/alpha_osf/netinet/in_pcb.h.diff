@@ -1,0 +1,31 @@
+201a202
+> #ifdef SPIN
+202a204
+>         int s = splhigh(); \
+205a208
+>         splx(s); \
+208a212
+>         int s = splhigh(); \
+211a216
+> 		splx(s); \
+215a221
+> 		splx(s); \
+217a224,241
+> #else 
+> #define	INPCBRC_REF(inp) { \
+> 	INPCBRC_LOCK(inp); \
+> 	(inp)->inp_refcnt++; \
+> 	INPCBRC_UNLOCK(inp); \
+> }
+> 
+> #define	INPCBRC_UNREF(inp) { \
+> 	INPCBRC_LOCK(inp); \
+> 	if ((inp)->inp_refcnt == 1) { \
+> 		INPCBRC_UNLOCK(inp); \
+> 		in_pcbfree(inp); \
+> 	} else { \
+> 		(inp)->inp_refcnt--; \
+> 		INPCBRC_UNLOCK(inp); \
+> 	} \
+> }
+> #endif /* SPIN */

@@ -1,0 +1,4 @@
+55a56,58
+> #ifdef SPIN
+> 	struct thread *ev_thread;	/* A SPIN thread */
+> #endif

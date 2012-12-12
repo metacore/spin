@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+<TITLE>URT: Unix Runtime Support</TITLE>
+</HEAD>
+<BODY>
+
+<H1> URT: Unix Runtime Support</H1>
+
+<em>SPIN</em> borrows code from Digitial Unix V3.2 that implements
+device management, Berkeley memory buffers, sockets and support for
+TCP.  This code is very low-level and not designed to be used by
+untrusted extensions, and exporting direct access to these services
+may enable extensions to subvert system integrity.  
+<em>URT</em> is a trusted system extension that bridges the gap
+between untrusted system and the borrowed unix code.  <em>URT</em>
+defines <em>Modula-3</em> types for kernel data structures (such as
+mbufs, uio, socket, etc.), and interfaces to existing Unix services.
+Presently, <em>URT</em> is designed to work with a Digital Unix V3.2
+based <a href="../../../kernel/sal/doc/index.html">SAL</a>.
+
+URT is currently split into two subsystems that can be linked
+separately.  <A HREF="urtcore.html">URT core</A> provides a set of
+basic interfaces, whereas <A HREF="urtnet.html">URT net</A> provides
+services that are specific to the networking code found in Digital
+Unix V3.2.
+
+<HR>
+<ADDRESS>
+
+<I>
+<A HREF="mailto:mef@cs.washington.edu">Marc Fiuczynski</A>
+<BR>DAY/MONTH/YEAR
+</I>
+
+</ADDRESS>
+</BODY>
+
+</HTML>

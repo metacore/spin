@@ -1,0 +1,78 @@
+39a40
+> #include <ttd.h>
+42a44
+> #include <mach/mach_types.h>
+56a59,62
+> #ifndef SPIN 
+> /*
+>  * Don't have these includes in SPIN now
+>  */
+62a69
+> #endif /* SPIN */
+156a164
+> 	int done;
+171a180,186
+> 	 * Initialize the cycleclock with uses rpcc and clock interrupts
+> 	 * to provide a 64bit cycle counter.  This is the earliest we
+> 	 * can call it.
+> 	 */
+> 	/* FIXME: init_cycleclock(); */
+> 
+> 	/*
+179a195
+> 	  	done = 0;
+210a227,258
+> #ifdef SPIN
+> 			case '#':
+> 				/*
+> 				 * The rest is SPIN specific, ignore for now,
+> 				 * let SPIN pick it up
+> 				 */
+> 				done = 1;
+> 				break;
+> 			case 'L':
+> 			case 'l':
+> 				/*
+> 				   Local boot - no bootp or tftp
+> 				 */
+> 				{
+> 				extern boolean_t local_boot;
+> 				local_boot=TRUE;
+> 				}
+> 				break;
+> #if     TTD
+> 			case 'T':
+> 			case 't':
+> 				/*
+> 				   Tell ttd to stop and wait for connect
+> 				   as soon as it is initialized.
+> 				 */
+> 				{
+> 				extern boolean_t ttd_init_debug;
+> 				ttd_init_debug=TRUE;
+> 				}
+> 				break;
+> #endif
+> #endif
+214a263,265
+> 			if(done) {
+> 				break;
+> 			}
+292a344
+> #ifndef SPIN
+297a350
+> #endif /* SPIN */
+505a559,565
+> #ifdef SPIN
+> 	/*
+> 	 * XXX once pcb and thread struct is setup right by
+> 	 * picco-kernel we should be able to do the same
+> 	 */
+> 	setup_main();
+> #else /* SPIN */
+508a569
+> #endif /* SPIN */
+564a626
+> #ifndef SPIN
+624a687
+> #endif /* SPIN */

@@ -1,0 +1,24 @@
+# LFS
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("Extent","user/dev","extent",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+#DomainImport("SegBuffer","user/fs/lfs","buffer",overridepath)
+DomainImport("Segment","user/fs/lfs","segment",overridepath)
+DomainImport("LFSCore","user/fs/lfs","lfscore",overridepath)
+DomainImport("Cleaner","user/fs/lfs","cleaner",overridepath)
+
+Package("LFS")
+
+Module("LFS")
+Interface("LFSRep")
+Module("DiskExtents")
+Module("LFSSuperBlock")
+
+Extension({})
+
+
+

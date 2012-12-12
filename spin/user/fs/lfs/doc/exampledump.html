@@ -1,0 +1,339 @@
+Eric Christoffersen, 6/19/96<p>
+
+<h1>Dump of LFS performing commands</h1>
+
+
+This is a dump of lfs performing a set of <a href="examplecommands.html">commands</a>.
+Dump was made on 6/19/96 with spin-23 on tweed, which is a single disk machine.  All instances of <b>rz5b</b>
+in the command list were changed to <b>rz3b</b>.<p>
+Text I typed to shell is in bold.
+<pre>
+
+>>> <b>b -fi</b>
+.
+.
+.
+BOOT STUFF DELETED
+.
+.
+.
+!><b>script -i</b>
+script: opening file /spin/ericc/spin/user/scripts/ericc.spininit for reading.
+Gun's initialization script 
+script: opening file /spin/ericc/spin/user/scripts/boot.rc for reading.
+ns .... 24 KB  link complete.
+$hostnamefull tweed.cs.washington.edu
+$hostname tweed
+Booting tweed @ 128.95.2.232 
+$ETHERDEV ln
+$ROOTDEV rz3h
+$HTTPSWAP swapoff
+$HTTPSWAPDEV none
+$HTTPSWAPPRT none
+$HTTPLOGGING logoff
+$HTTPCONLOG quiet
+Loading nanny.... 
+nanny .... 30 KB  link complete.
+Nanny names initialized 
+usyscall ........ 75 KB sieg ...... 29 KB  link complete.
+ link complete.
+MachineTrap.syscall auth :PRIVILEGED SYSCALL
+syscall extension for [-17 .. -1] is installed.
+USyscall handler ready.
+USyscall installed
+$http /spin/ericc/spin/user/scripts/httpd.rc
+$regressrc /spin/ericc/spin/user/scripts/regress.rc
+$unixrc /spin/ericc/spin/user/scripts/unix.rc
+$testrc /spin/ericc/spin/user/scripts/test.rc
+$lfs /spin/ericc/spin/user/scripts/lfs.rc
+$threatrc /spin/ericc/spin/user/threat/ALPHA_SPIN/threat.rc
+$benchmarkrc /spin/ericc/spin/user/benchmark/ALPHA_SPIN/benchmark.rc
+Script Done. 
+!><b>script $lfs</b>
+urtcore ................................... 242 KB  link complete.
+SpinUnixRunTime init done.
+osf.cam .....retrying..........retrying.retrying.................retrying... 3080 KB  link complete.
+cam .......... 124 KB  link complete.
+CAM main body
+  Initializing CAM...
+  Initializing XPT threads...
+tc0 at nexus
+Warning: TURBOchannel bus already has loadable framework extension.
+tcds0 at tc0 slot 4
+scsi0 at tcds0 slot 0
+rz3 at scsi0 bus 0 target 3 lun 0 (DEC     RZ26L    (C) DEC 440C)
+nanny touch: "cam" loaded but not entered in NameServer
+Loading LFS and extra commands 
+lfs ......... 143 KB segment ........ 73 KB extent ....... 45 KB  link complete.
+Exported disk extents...
+ link complete.
+Exported  Segment...
+lfscore ................................ 274 KB  link complete.
+ link complete.
+Registering new LFS file system
+Exported LFS.
+touch ........ 29 KB  link complete.
+touch loaded 
+read ........ 33 KB  link complete.
+read loaded 
+write ........ 32 KB  link complete.
+write loaded 
+sync ........ 30 KB  link complete.
+sync fully linked.
+sync loaded 
+makefs ........ 37 KB  link complete.
+...command not found
+makefs loaded 
+LFS loaded, second drive tmp partition is none. 
+!><b>makefs rz3b lfs /mnt</b>
+ParseParams: parameter 2 = "lfs" should be an integer.
+makefs dev blocks_in_segment
+!>makefs rz3b 1024
+Creating mountable lfs on rz3b
+!><b>show domains</b>
+1. SpinPublic
+2. SpinTrusted
+3. VMCore
+4. Space
+5. Device
+6. Console
+7. FileSystem
+8. Shell
+9. UserSpaceThread
+10. Exec
+11. Sieg
+12. USyscall
+13. SpinUnixRunTime
+14. Extent
+15. Segment
+16. LFSCore
+17. LFS
+!><b>mount rz3b lfs /mnt</b>
+segments on disk    : 544
+blocks in segment   : 1024
+bytes in block      : 512
+mounting lfs at /mnt, mountpoint 2.
+!><b>touch /mnt/test1</b>
+inode.update: remapping blocks...0...
+!><b>touch /mnt/test2</b>
+inode.update: remapping blocks...0...1...
+!><b>touch /mnt/test3</b>
+inode.update: remapping blocks...1...
+!><b>write /mnt/test1 0 ThisIsTest1</b>
+Write called.
+Attempting to write to file:/mnt/test1 at byte:0.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 11 chars to file /mnt/test1
+!><b>cat /mnt/test1</b>
+File /mnt/test1
+Read 11 from file /mnt/test1
+ThisIsTest1!><b>write /mnt/test1 11 ThisIsNotTest2</b>
+Write called.
+Attempting to write to file:/mnt/test1 at byte:11.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 14 chars to file /mnt/test1
+!><b>write /mnt/test2 0 ThisIsTest2</b>
+Write called.
+Attempting to write to file:/mnt/test2 at byte:0.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 11 chars to file /mnt/test2
+!><b>cat /mnt/test1</b>
+File /mnt/test1
+Read 25 from file /mnt/test1
+ThisIsTest1ThisIsNotTest2!><b>cat /mnt/test2</b>
+File /mnt/test2
+Read 11 from file /mnt/test2
+ThisIsTest2!><b>write /mnt/test1 15 Isn't</b>
+Write called.
+Attempting to write to file:/mnt/test1 at byte:15.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 5 chars to file /mnt/test1
+!><b>write /mnt/test3 0 012345678901234567890123456789012345678901234567890</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:0.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 51 chars to file /mnt/test3
+!><b>cat /mnt/test3 </b>
+File /mnt/test3
+Read 51 from file /mnt/test3
+012345678901234567890123456789012345678901234567890!><b>write -t /mnt/test3 25 ThisIsTheEnd</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:25.
+Opening for truncation.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 12 chars to file /mnt/test3
+!><b>cat /mnt/test3</b>
+File /mnt/test3
+Read 37 from file /mnt/test3
+0123456789012345678901234ThisIsTheEnd!><b>write -t /mnt/test3 25 5678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:25.
+Opening for truncation.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 55 chars to file /mnt/test3
+!><b>write /mnt/test3 80 012345678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:80.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 60 chars to file /mnt/test3
+!><b>write /mnt/test3 140 012345678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:140.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 60 chars to file /mnt/test3
+!><b>write /mnt/test3 200 012345678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:200.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 60 chars to file /mnt/test3
+!><b>write /mnt/test3 260 012345678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:260.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 60 chars to file /mnt/test3
+!><b>write /mnt/test3 320 012345678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:320.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 60 chars to file /mnt/test3
+!><b>write /mnt/test3 380 012345678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:380.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 60 chars to file /mnt/test3
+!><b>write /mnt/test3 440 012345678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:440.
+inode.update: remapping blocks...0...
+Write exited, thinks it sent 60 chars to file /mnt/test3
+!><b>write /mnt/test3 500 012345678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:500.
+inode.update: remapping blocks...0...1...
+Write exited, thinks it sent 60 chars to file /mnt/test3
+!><b>write /mnt/test3 560 012345678901234567890123456789012345678901234567890123456789</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:560.
+inode.update: remapping blocks...1...
+Write exited, thinks it sent 60 chars to file /mnt/test3
+!><b>write /mnt/test3 500 XXXXXXXXXXXXXXXXXXXX</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:500.
+inode.update: remapping blocks...0...1...
+Write exited, thinks it sent 20 chars to file /mnt/test3
+!><b>sync /mnt/test1 </b>
+Syncing with mountpoint /mnt/test1.
+FlushToDisk  Called
+Sync complete.
+!><b>halt</b>
+
+?05 HLT INSTR
+  PC= FFFFFC00.0024FA10 PSL= 00000000.00000000
+>>> b -fi
+.
+.
+.
+BOOT STUFF DELETED
+.
+.
+.
+!><b>script -i</b>
+script: opening file /spin/ericc/spin/user/scripts/ericc.spininit for reading.
+Gun's initialization script 
+script: opening file /spin/ericc/spin/user/scripts/boot.rc for reading.
+ns .... 24 KB  link complete.
+$hostnamefull tweed.cs.washington.edu
+$hostname tweed
+Booting tweed @ 128.95.2.232 
+$ETHERDEV ln
+$ROOTDEV rz3h
+$HTTPSWAP swapoff
+$HTTPSWAPDEV none
+$HTTPSWAPPRT none
+$HTTPLOGGING logoff
+$HTTPCONLOG quiet
+Loading nanny.... 
+nanny .... 30 KB  link complete.
+Nanny names initialized 
+usyscall ........ 75 KB sieg ...... 29 KB  link complete.
+ link complete.
+MachineTrap.syscall auth :PRIVILEGED SYSCALL
+syscall extension for [-17 .. -1] is installed.
+USyscall handler ready.
+USyscall installed
+$http /spin/ericc/spin/user/scripts/httpd.rc
+$regressrc /spin/ericc/spin/user/scripts/regress.rc
+$unixrc /spin/ericc/spin/user/scripts/unix.rc
+$testrc /spin/ericc/spin/user/scripts/test.rc
+$lfs /spin/ericc/spin/user/scripts/lfs.rc
+$threatrc /spin/ericc/spin/user/threat/ALPHA_SPIN/threat.rc
+$benchmarkrc /spin/ericc/spin/user/benchmark/ALPHA_SPIN/benchmark.rc
+Script Done. 
+!><b>script $lfs</b>
+urtcore ................................... 242 KB  link complete.
+SpinUnixRunTime init done.
+osf.cam .....retrying..........retrying.retrying.................retrying... 3080 KB  link complete.
+cam .......... 124 KB  link complete.
+CAM main body
+  Initializing CAM...
+  Initializing XPT threads...
+tc0 at nexus
+Warning: TURBOchannel bus already has loadable framework extension.
+tcds0 at tc0 slot 4
+scsi0 at tcds0 slot 0
+rz3 at scsi0 bus 0 target 3 lun 0 (DEC     RZ26L    (C) DEC 440C)
+nanny touch: "cam" loaded but not entered in NameServer
+Loading LFS and extra commands 
+lfs ......... 143 KB segment ........ 73 KB extent ....... 45 KB  link complete.
+Exported disk extents...
+ link complete.
+Exported  Segment...
+lfscore ................................ 274 KB  link complete.
+ link complete.
+Registering new LFS file system
+Exported LFS.
+touch ........ 29 KB  link complete.
+touch loaded 
+read ........ 33 KB  link complete.
+read loaded 
+write ........ 32 KB  link complete.
+write loaded 
+sync ........ 30 KB  link complete.
+sync fully linked.
+sync loaded 
+makefs ........ 37 KB  link complete.
+...command not found
+makefs loaded 
+LFS loaded, second drive tmp partition is none.
+!><b>mount rz3b lfs /mnt</b>
+segments on disk    : 544
+blocks in segment   : 1024
+bytes in block      : 512
+mounting lfs at /mnt, mountpoint 2.
+!><b>cat /mnt/test3</b>
+File /mnt/test3
+Read 620 from file /mnt/test3
+01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789XXXXXXXXXXXXXXXXXXXX0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789!><b>cat /mnt/test2</b>
+File /mnt/test2
+Read 11 from file /mnt/test2
+ThisIsTest2!><b>cat /mnt/test1</b>
+File /mnt/test1
+Read 25 from file /mnt/test1
+ThisIsTest1ThisIsNotTest2!><b>write /mnt/test3 600 ThisIsInASeparateBlockOnASeparateSegment.</b>
+Write called.
+Attempting to write to file:/mnt/test3 at byte:600.
+inode.update: remapping blocks...1...
+Write exited, thinks it sent 41 chars to file /mnt/test3
+!><b>cat /mnt/test3</b>
+File /mnt/test3
+Read 641 from file /mnt/test3
+01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789XXXXXXXXXXXXXXXXXXXX01234567890123456789012345678901234567890123456789012345678901234567890123456789ThisIsInASeparateBlockOnASeparateSegment.!>
+
+<hr>
+
+<a href="index.html">Main LFS Page</a><p>
+
+<Address>
+ericc@cs.washington.edu<br>
+</address>
+</html>

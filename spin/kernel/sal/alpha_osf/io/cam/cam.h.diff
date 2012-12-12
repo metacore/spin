@@ -1,0 +1,5 @@
+625a626,629
+> #ifdef SPIN
+> extern int cam_memory_daemons;
+> #endif
+> 

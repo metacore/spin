@@ -1,0 +1,3170 @@
+%!PS-Adobe-3.0
+%%BoundingBox: (atend)
+%%Pages: (atend)
+%%PageOrder: (atend)
+%%DocumentFonts: (atend)
+%%Creator: Frame 4.0
+%%DocumentData: Clean7Bit
+%%EndComments
+%%BeginProlog
+%
+% Frame ps_prolog 4.0, for use with Frame 4.0 products
+% This ps_prolog file is Copyright (c) 1986-1993 Frame Technology
+% Corporation.  All rights reserved.  This ps_prolog file may be
+% freely copied and distributed in conjunction with documents created
+% using FrameMaker, FrameBuilder and FrameViewer as long as this 
+% copyright notice is preserved.
+%
+% Frame products normally print colors as their true color on a color printer
+% or as shades of gray, based on luminance, on a black-and white printer. The
+% following flag, if set to True, forces all non-white colors to print as pure
+% black. This has no effect on bitmap images.
+/FMPrintAllColorsAsBlack             false def
+%
+% Frame products can either set their own line screens or use a printer's 
+% default settings. Three flags below control this separately for no 
+% separations, spot separations and process separations. If a flag
+% is true, then the default printer settings will not be changed. If it is
+% false, Frame products will use their own settings from a table based on
+% the printer's resolution.
+/FMUseDefaultNoSeparationScreen      true  def
+/FMUseDefaultSpotSeparationScreen    true  def
+/FMUseDefaultProcessSeparationScreen false def
+%
+% For any given PostScript printer resolution, Frame products have two sets of 
+% screen angles and frequencies for printing process separations, which are 
+% recomended by Adobe. The following variable chooses the higher frequencies
+% when set to true or the lower frequencies when set to false. This is only
+% effective if the appropriate FMUseDefault...SeparationScreen flag is false.
+/FMUseHighFrequencyScreens true def
+%
+% PostScript Level 2 printers contain an "Accurate Screens" feature which can
+% improve process separation rendering at the expense of compute time. This 
+% flag is ignored by PostScript Level 1 printers.
+/FMUseAcccurateScreens true def
+%
+% The following PostScript procedure defines the spot function that Frame
+% products will use for process separations. You may un-comment-out one of
+% the alternative functions below, or use your own.
+%
+% Dot function
+/FMSpotFunction {abs exch abs 2 copy add 1 gt 
+		{1 sub dup mul exch 1 sub dup mul add 1 sub }
+		{dup mul exch dup mul add 1 exch sub }ifelse } def
+%
+% Line function
+% /FMSpotFunction { pop } def
+%
+% Elipse function
+% /FMSpotFunction { dup 5 mul 8 div mul exch dup mul exch add 
+%		sqrt 1 exch sub } def
+%
+%
+/FMversion (4.0) def 
+/FMLevel1 /languagelevel where {pop languagelevel} {1} ifelse 2 lt def
+/FMPColor
+	FMLevel1 {
+		false
+		/colorimage where {pop pop true} if
+	} {
+		true
+	} ifelse
+def
+/FrameDict 400 dict def 
+systemdict /errordict known not {/errordict 10 dict def
+		errordict /rangecheck {stop} put} if
+% The readline in PS 23.0 doesn't recognize cr's as nl's on AppleTalk
+FrameDict /tmprangecheck errordict /rangecheck get put 
+errordict /rangecheck {FrameDict /bug true put} put 
+FrameDict /bug false put 
+mark 
+% Some PS machines read past the CR, so keep the following 3 lines together!
+currentfile 5 string readline
+00
+0000000000
+cleartomark 
+errordict /rangecheck FrameDict /tmprangecheck get put 
+FrameDict /bug get { 
+	/readline {
+		/gstring exch def
+		/gfile exch def
+		/gindex 0 def
+		{
+			gfile read pop 
+			dup 10 eq {exit} if 
+			dup 13 eq {exit} if 
+			gstring exch gindex exch put 
+			/gindex gindex 1 add def 
+		} loop
+		pop 
+		gstring 0 gindex getinterval true 
+		} bind def
+	} if
+/FMshowpage /showpage load def
+/FMquit /quit load def
+/FMFAILURE { 
+	dup = flush 
+	FMshowpage 
+	/Helvetica findfont 12 scalefont setfont
+	72 200 moveto
+	show FMshowpage 
+	FMquit 
+	} def 
+/FMVERSION {
+	FMversion ne {
+		(Frame product version does not match ps_prolog!) FMFAILURE
+		} if
+	} def 
+/FMBADEPSF { 
+	(PostScript Lang. Ref. Man., 2nd Ed., H.2.4 says EPS must not call X              )
+	dup dup (X) search pop exch pop exch pop length 
+	4 -1 roll 
+	putinterval 
+	FMFAILURE
+	} def
+/FMLOCAL {
+	FrameDict begin
+	0 def 
+	end 
+	} def 
+/concatprocs
+	{
+	/proc2 exch cvlit def/proc1 exch cvlit def/newproc proc1 length proc2 length add array def
+	newproc 0 proc1 putinterval newproc proc1 length proc2 putinterval newproc cvx
+}def
+FrameDict begin 
+/FMnone 0 def
+/FMcyan 1 def
+/FMmagenta 2 def
+/FMyellow 3 def
+/FMblack 4 def
+/FMcustom 5 def
+/FrameNegative false def 
+/FrameSepIs FMnone def 
+/FrameSepBlack 0 def
+/FrameSepYellow 0 def
+/FrameSepMagenta 0 def
+/FrameSepCyan 0 def
+/FrameSepRed 1 def
+/FrameSepGreen 1 def
+/FrameSepBlue 1 def
+/FrameCurGray 1 def
+/FrameCurPat null def
+/FrameCurColors [ 0 0 0 1 0 0 0 ] def 
+/FrameColorEpsilon .001 def	
+/eqepsilon {		
+	sub dup 0 lt {neg} if
+	FrameColorEpsilon le
+} bind def
+/FrameCmpColorsCMYK { 
+	2 copy 0 get exch 0 get eqepsilon {
+		2 copy 1 get exch 1 get eqepsilon {
+			2 copy 2 get exch 2 get eqepsilon {
+				3 get exch 3 get eqepsilon
+			} {pop pop false} ifelse
+		}{pop pop false} ifelse
+	} {pop pop false} ifelse
+} bind def
+/FrameCmpColorsRGB { 
+	2 copy 4 get exch 0 get eqepsilon {
+		2 copy 5 get exch 1 get eqepsilon {
+			6 get exch 2 get eqepsilon
+		}{pop pop false} ifelse
+	} {pop pop false} ifelse
+} bind def
+/RGBtoCMYK { 
+	1 exch sub 
+	3 1 roll 
+	1 exch sub 
+	3 1 roll 
+	1 exch sub 
+	3 1 roll 
+	3 copy 
+	2 copy 
+	le { pop } { exch pop } ifelse 
+	2 copy 
+	le { pop } { exch pop } ifelse 
+	dup dup dup 
+	6 1 roll 
+	4 1 roll 
+	7 1 roll 
+	sub 
+	6 1 roll 
+	sub 
+	5 1 roll 
+	sub 
+	4 1 roll 
+} bind def
+/CMYKtoRGB { 
+	dup dup 4 -1 roll add 						  
+	5 1 roll 3 -1 roll add 						  
+	4 1 roll add 								  
+	1 exch sub dup 0 lt {pop 0} if 3 1 roll 	  
+	1 exch sub dup 0 lt {pop 0} if exch 	      
+	1 exch sub dup 0 lt {pop 0} if exch	  		  
+} bind def
+/FrameSepInit {
+	1.0 RealSetgray
+} bind def
+/FrameSetSepColor { 
+	/FrameSepBlue exch def
+	/FrameSepGreen exch def
+	/FrameSepRed exch def
+	/FrameSepBlack exch def
+	/FrameSepYellow exch def
+	/FrameSepMagenta exch def
+	/FrameSepCyan exch def
+	/FrameSepIs FMcustom def
+	setCurrentScreen	
+} bind def
+/FrameSetCyan {
+	/FrameSepBlue 1.0 def
+	/FrameSepGreen 1.0 def
+	/FrameSepRed 0.0 def
+	/FrameSepBlack 0.0 def
+	/FrameSepYellow 0.0 def
+	/FrameSepMagenta 0.0 def
+	/FrameSepCyan 1.0 def
+	/FrameSepIs FMcyan def
+	setCurrentScreen	
+} bind def
+ 
+/FrameSetMagenta {
+	/FrameSepBlue 1.0 def
+	/FrameSepGreen 0.0 def
+	/FrameSepRed 1.0 def
+	/FrameSepBlack 0.0 def
+	/FrameSepYellow 0.0 def
+	/FrameSepMagenta 1.0 def
+	/FrameSepCyan 0.0 def
+	/FrameSepIs FMmagenta def
+	setCurrentScreen
+} bind def
+ 
+/FrameSetYellow {
+	/FrameSepBlue 0.0 def
+	/FrameSepGreen 1.0 def
+	/FrameSepRed 1.0 def
+	/FrameSepBlack 0.0 def
+	/FrameSepYellow 1.0 def
+	/FrameSepMagenta 0.0 def
+	/FrameSepCyan 0.0 def
+	/FrameSepIs FMyellow def
+	setCurrentScreen
+} bind def
+ 
+/FrameSetBlack {
+	/FrameSepBlue 0.0 def
+	/FrameSepGreen 0.0 def
+	/FrameSepRed 0.0 def
+	/FrameSepBlack 1.0 def
+	/FrameSepYellow 0.0 def
+	/FrameSepMagenta 0.0 def
+	/FrameSepCyan 0.0 def
+	/FrameSepIs FMblack def
+	setCurrentScreen
+} bind def
+ 
+/FrameNoSep { 
+	/FrameSepIs FMnone def
+	setCurrentScreen
+} bind def
+/FrameSetSepColors { 
+	FrameDict begin
+	[ exch 1 add 1 roll ]
+	/FrameSepColors  
+	exch def end
+	} bind def
+/FrameColorInSepListCMYK { 
+	FrameSepColors {  
+       		exch dup 3 -1 roll 
+       		FrameCmpColorsCMYK 
+       		{ pop true exit } if
+    	} forall 
+	dup true ne {pop false} if
+	} bind def
+/FrameColorInSepListRGB { 
+	FrameSepColors {  
+       		exch dup 3 -1 roll 
+       		FrameCmpColorsRGB 
+       		{ pop true exit } if
+    	} forall 
+	dup true ne {pop false} if
+	} bind def
+/RealSetgray /setgray load def
+/RealSetrgbcolor /setrgbcolor load def
+/RealSethsbcolor /sethsbcolor load def
+end 
+/setgray { 
+	FrameDict begin
+	FrameSepIs FMnone eq
+		{ RealSetgray } 
+		{ 
+		FrameSepIs FMblack eq 
+			{ RealSetgray } 
+			{ FrameSepIs FMcustom eq 
+			  FrameSepRed 0 eq and
+			  FrameSepGreen 0 eq and
+			  FrameSepBlue 0 eq and {
+			  	RealSetgray
+			  } {
+				1 RealSetgray pop 
+			  } ifelse
+			} ifelse
+		} ifelse
+	end
+} bind def
+/setrgbcolor { 
+	FrameDict begin
+	FrameSepIs FMnone eq
+	{  RealSetrgbcolor }
+	{
+		3 copy [ 4 1 roll ] 
+		FrameColorInSepListRGB
+		{
+				FrameSepBlue eq exch 
+			 	FrameSepGreen eq and exch 
+			 	FrameSepRed eq and
+			 	{ 0 } { 1 } ifelse
+		}
+		{
+			FMPColor {
+				RealSetrgbcolor
+				currentcmykcolor
+			} {
+				RGBtoCMYK
+			} ifelse
+			FrameSepIs FMblack eq
+			{1.0 exch sub 4 1 roll pop pop pop} {
+			FrameSepIs FMyellow eq
+			{pop 1.0 exch sub 3 1 roll pop pop} {
+			FrameSepIs FMmagenta eq
+			{pop pop 1.0 exch sub exch pop } {
+			FrameSepIs FMcyan eq
+			{pop pop pop 1.0 exch sub } 
+			{pop pop pop pop 1} ifelse } ifelse } ifelse } ifelse 
+		} ifelse
+		RealSetgray
+	} 
+	ifelse
+	end
+} bind def
+/sethsbcolor {
+	FrameDict begin
+	FrameSepIs FMnone eq 
+	{ RealSethsbcolor } 
+	{
+		RealSethsbcolor 
+		currentrgbcolor  
+		setrgbcolor 
+	} 
+	ifelse
+	end
+} bind def
+FrameDict begin
+/setcmykcolor where {
+	pop /RealSetcmykcolor /setcmykcolor load def
+} {
+	/RealSetcmykcolor {
+		4 1 roll
+		3 { 3 index add 0 max 1 min 1 exch sub 3 1 roll} repeat 
+		setrgbcolor pop
+	} bind def
+} ifelse
+userdict /setcmykcolor { 
+		FrameDict begin
+		FrameSepIs FMnone eq
+		{ RealSetcmykcolor } 
+		{
+			4 copy [ 5 1 roll ]
+			FrameColorInSepListCMYK
+			{
+				FrameSepBlack eq exch 
+				FrameSepYellow eq and exch 
+				FrameSepMagenta eq and exch 
+				FrameSepCyan eq and 
+				{ 0 } { 1 } ifelse
+			}
+			{
+				FrameSepIs FMblack eq
+				{1.0 exch sub 4 1 roll pop pop pop} {
+				FrameSepIs FMyellow eq
+				{pop 1.0 exch sub 3 1 roll pop pop} {
+				FrameSepIs FMmagenta eq
+				{pop pop 1.0 exch sub exch pop } {
+				FrameSepIs FMcyan eq
+				{pop pop pop 1.0 exch sub } 
+				{pop pop pop pop 1} ifelse } ifelse } ifelse } ifelse 
+			} ifelse
+			RealSetgray
+		}
+		ifelse
+		end
+	} bind put
+FMLevel1 not { 
+	
+	/patProcDict 5 dict dup begin
+		<0f1e3c78f0e1c387> { 3 setlinewidth -1 -1 moveto 9 9 lineto stroke 
+											4 -4 moveto 12 4 lineto stroke
+											-4 4 moveto 4 12 lineto stroke} bind def
+		<0f87c3e1f0783c1e> { 3 setlinewidth -1 9 moveto 9 -1 lineto stroke 
+											-4 4 moveto 4 -4 lineto stroke
+											4 12 moveto 12 4 lineto stroke} bind def
+		<8142241818244281> { 1 setlinewidth -1 9 moveto 9 -1 lineto stroke
+											-1 -1 moveto 9 9 lineto stroke } bind def
+		<03060c183060c081> { 1 setlinewidth -1 -1 moveto 9 9 lineto stroke 
+											4 -4 moveto 12 4 lineto stroke
+											-4 4 moveto 4 12 lineto stroke} bind def
+		<8040201008040201> { 1 setlinewidth -1 9 moveto 9 -1 lineto stroke 
+											-4 4 moveto 4 -4 lineto stroke
+											4 12 moveto 12 4 lineto stroke} bind def
+	end def
+	/patDict 15 dict dup begin
+		/PatternType 1 def		
+		/PaintType 2 def		
+		/TilingType 3 def		
+		/BBox [ 0 0 8 8 ] def 	
+		/XStep 8 def			
+		/YStep 8 def			
+		/PaintProc {
+			begin
+			patProcDict bstring known {
+				patProcDict bstring get exec
+			} {
+				8 8 true [1 0 0 -1 0 8] bstring imagemask
+			} ifelse
+			end
+		} bind def
+	end def
+} if
+/combineColor {
+    FrameSepIs FMnone eq
+	{
+		graymode FMLevel1 or not {
+			
+			[/Pattern [/DeviceCMYK]] setcolorspace
+			FrameCurColors 0 4 getinterval aload pop FrameCurPat setcolor
+		} {
+			FrameCurColors 3 get 1.0 ge {
+				FrameCurGray RealSetgray
+			} {
+				FMPColor graymode and {
+					0 1 3 { 
+						FrameCurColors exch get
+						1 FrameCurGray sub mul
+					} for
+					RealSetcmykcolor
+				} {
+					4 1 6 {
+						FrameCurColors exch get
+						graymode {
+							1 exch sub 1 FrameCurGray sub mul 1 exch sub
+						} {
+							1.0 lt {FrameCurGray} {1} ifelse
+						} ifelse
+					} for
+					RealSetrgbcolor
+				} ifelse
+			} ifelse
+		} ifelse
+	} { 
+		FrameCurColors 0 4 getinterval aload
+		FrameColorInSepListCMYK {
+			FrameSepBlack eq exch 
+			FrameSepYellow eq and exch 
+			FrameSepMagenta eq and exch 
+			FrameSepCyan eq and
+			FrameSepIs FMcustom eq and
+			{ FrameCurGray } { 1 } ifelse
+		} {
+			FrameSepIs FMblack eq
+			{FrameCurGray 1.0 exch sub mul 1.0 exch sub 4 1 roll pop pop pop} {
+			FrameSepIs FMyellow eq
+			{pop FrameCurGray 1.0 exch sub mul 1.0 exch sub 3 1 roll pop pop} {
+			FrameSepIs FMmagenta eq
+			{pop pop FrameCurGray 1.0 exch sub mul 1.0 exch sub exch pop } {
+			FrameSepIs FMcyan eq
+			{pop pop pop FrameCurGray 1.0 exch sub mul 1.0 exch sub } 
+			{pop pop pop pop 1} ifelse } ifelse } ifelse } ifelse 
+		} ifelse
+		graymode FMLevel1 or not {
+			
+			[/Pattern [/DeviceGray]] setcolorspace
+			FrameCurPat setcolor
+		} { 
+			graymode not FMLevel1 and {
+				
+				dup 1 lt {pop FrameCurGray} if
+			} if
+			RealSetgray
+		} ifelse
+	} ifelse
+} bind def
+/savematrix {
+	orgmatrix currentmatrix pop
+	} bind def
+/restorematrix {
+	orgmatrix setmatrix
+	} bind def
+/dmatrix matrix def
+/dpi    72 0 dmatrix defaultmatrix dtransform
+    dup mul exch   dup mul add   sqrt def
+	
+/freq dpi dup 72 div round dup 0 eq {pop 1} if 8 mul div def
+/sangle 1 0 dmatrix defaultmatrix dtransform exch atan def
+/dpiranges   [  2540    2400    1693     1270    1200     635      600      0      ] def
+/CMLowFreqs  [ 100.402  94.8683 89.2289 100.402  94.8683  66.9349  63.2456 47.4342 ] def
+/YLowFreqs   [  95.25   90.0    84.65    95.25   90.0     70.5556  66.6667 50.0    ] def
+/KLowFreqs   [  89.8026 84.8528 79.8088  89.8026 84.8528  74.8355  70.7107 53.033  ] def
+/CLowAngles  [  71.5651 71.5651 71.5651 71.5651  71.5651  71.5651  71.5651 71.5651 ] def
+/MLowAngles  [  18.4349 18.4349 18.4349 18.4349  18.4349  18.4349  18.4349 18.4349 ] def
+/YLowTDot    [  true    true    false    true    true     false    false   false   ] def
+/CMHighFreqs [ 133.87  126.491 133.843  108.503 102.523  100.402   94.8683 63.2456 ] def
+/YHighFreqs  [ 127.0   120.0   126.975  115.455 109.091   95.25    90.0    60.0    ] def
+/KHighFreqs  [ 119.737 113.137 119.713  128.289 121.218   89.8026  84.8528 63.6395 ] def
+/CHighAngles [  71.5651 71.5651 71.5651  70.0169 70.0169  71.5651  71.5651 71.5651 ] def
+/MHighAngles [  18.4349 18.4349 18.4349  19.9831 19.9831  18.4349  18.4349 18.4349 ] def
+/YHighTDot   [  false   false   true     false   false    true     true    false   ] def
+/PatFreq     [	10.5833 10.0     9.4055  10.5833 10.0	  10.5833  10.0	   9.375   ] def
+/screenIndex {
+	0 1 dpiranges length 1 sub { dup dpiranges exch get 1 sub dpi le {exit} {pop} ifelse } for
+} bind def
+/getCyanScreen {
+	FMUseHighFrequencyScreens { CHighAngles CMHighFreqs} {CLowAngles CMLowFreqs} ifelse
+		screenIndex dup 3 1 roll get 3 1 roll get /FMSpotFunction load
+} bind def
+/getMagentaScreen {
+	FMUseHighFrequencyScreens { MHighAngles CMHighFreqs } {MLowAngles CMLowFreqs} ifelse
+		screenIndex dup 3 1 roll get 3 1 roll get /FMSpotFunction load
+} bind def
+/getYellowScreen {
+	FMUseHighFrequencyScreens { YHighTDot YHighFreqs} { YLowTDot YLowFreqs } ifelse
+		screenIndex dup 3 1 roll get 3 1 roll get { 3 div
+			{2 { 1 add 2 div 3 mul dup floor sub 2 mul 1 sub exch} repeat
+			FMSpotFunction } } {/FMSpotFunction load } ifelse
+			0.0 exch
+} bind def
+/getBlackScreen  {
+	FMUseHighFrequencyScreens { KHighFreqs } { KLowFreqs } ifelse
+		screenIndex get 45.0 /FMSpotFunction load 
+} bind def
+/getSpotScreen {
+	getBlackScreen
+} bind def
+/getCompositeScreen {
+	getBlackScreen
+} bind def
+/FMSetScreen 
+	FMLevel1 { /setscreen load 
+	}{ {
+		8 dict begin
+		/HalftoneType 1 def
+		/SpotFunction exch def
+		/Angle exch def
+		/Frequency exch def
+		/AccurateScreens FMUseAcccurateScreens def
+		currentdict end sethalftone
+	} bind } ifelse
+def
+/setDefaultScreen {
+	FMPColor {
+		orgrxfer cvx orggxfer cvx orgbxfer cvx orgxfer cvx setcolortransfer
+	}
+	{
+		orgxfer cvx settransfer
+	} ifelse
+	orgfreq organgle orgproc cvx setscreen
+} bind def
+/setCurrentScreen {
+	FrameSepIs FMnone eq {
+		FMUseDefaultNoSeparationScreen {
+			setDefaultScreen
+		} {
+			getCompositeScreen FMSetScreen
+		} ifelse
+	} {
+		FrameSepIs FMcustom eq {
+			FMUseDefaultSpotSeparationScreen {
+				setDefaultScreen
+			} {
+				getSpotScreen FMSetScreen
+			} ifelse
+		} {
+			FMUseDefaultProcessSeparationScreen {
+				setDefaultScreen
+			} {
+				FrameSepIs FMcyan eq {
+					getCyanScreen FMSetScreen
+				} {
+					FrameSepIs FMmagenta eq {
+						getMagentaScreen FMSetScreen
+					} {
+						FrameSepIs FMyellow eq {
+							getYellowScreen FMSetScreen
+						} {
+							getBlackScreen FMSetScreen
+						} ifelse
+					} ifelse
+				} ifelse
+			} ifelse
+		} ifelse
+	} ifelse 
+} bind def
+end
+	/gstring FMLOCAL
+	/gfile FMLOCAL
+	/gindex FMLOCAL
+	/orgrxfer FMLOCAL
+	/orggxfer FMLOCAL
+	/orgbxfer FMLOCAL
+	/orgxfer FMLOCAL
+	/orgproc FMLOCAL
+	/orgrproc FMLOCAL
+	/orggproc FMLOCAL
+	/orgbproc FMLOCAL
+	/organgle FMLOCAL
+	/orgrangle FMLOCAL
+	/orggangle FMLOCAL
+	/orgbangle FMLOCAL
+	/orgfreq FMLOCAL
+	/orgrfreq FMLOCAL
+	/orggfreq FMLOCAL
+	/orgbfreq FMLOCAL
+	/yscale FMLOCAL
+	/xscale FMLOCAL
+	/edown FMLOCAL
+	/manualfeed FMLOCAL
+	/paperheight FMLOCAL
+	/paperwidth FMLOCAL
+/FMDOCUMENT { 
+	array /FMfonts exch def 
+	/#copies exch def
+	FrameDict begin
+	0 ne /manualfeed exch def
+	/paperheight exch def
+	/paperwidth exch def
+	0 ne /FrameNegative exch def 
+	0 ne /edown exch def 
+	/yscale exch def
+	/xscale exch def
+	FMLevel1 {
+		manualfeed {setmanualfeed} if
+		/FMdicttop countdictstack 1 add def 
+		/FMoptop count def 
+		setpapername 
+		manualfeed {true} {papersize} ifelse 
+		{manualpapersize} {false} ifelse 
+		{desperatepapersize} {false} ifelse 
+		{ (Can't select requested paper size for Frame print job!) FMFAILURE } if
+		count -1 FMoptop {pop pop} for
+		countdictstack -1 FMdicttop {pop end} for 
+		}
+		{{1 dict dup /PageSize [paperwidth paperheight]put setpagedevice}stopped
+		{ (Can't select requested paper size for Frame print job!) FMFAILURE } if
+		 {1 dict dup /ManualFeed manualfeed put setpagedevice } stopped pop }
+	ifelse 
+	
+	FMPColor {
+		currentcolorscreen
+			cvlit /orgproc exch def
+				  /organgle exch def 
+				  /orgfreq exch def
+			cvlit /orgbproc exch def
+				  /orgbangle exch def 
+				  /orgbfreq exch def
+			cvlit /orggproc exch def
+				  /orggangle exch def 
+				  /orggfreq exch def
+			cvlit /orgrproc exch def
+				  /orgrangle exch def 
+				  /orgrfreq exch def
+			currentcolortransfer 
+			FrameNegative {
+				1 1 4 { 
+					pop { 1 exch sub } concatprocs 4 1 roll
+				} for
+				4 copy
+				setcolortransfer
+			} if
+			cvlit /orgxfer exch def
+			cvlit /orgbxfer exch def
+			cvlit /orggxfer exch def
+			cvlit /orgrxfer exch def
+	} {
+		currentscreen 
+			cvlit /orgproc exch def
+				  /organgle exch def 
+				  /orgfreq exch def
+				  
+		currenttransfer 
+		FrameNegative {
+			{ 1 exch sub } concatprocs
+			dup settransfer
+		} if 
+		cvlit /orgxfer exch def
+	} ifelse
+	end 
+} def 
+/pagesave FMLOCAL
+/orgmatrix FMLOCAL
+/landscape FMLOCAL
+/pwid FMLOCAL
+/FMBEGINPAGE { 
+	FrameDict begin 
+	/pagesave save def
+	3.86 setmiterlimit
+	/landscape exch 0 ne def
+	landscape { 
+		90 rotate 0 exch dup /pwid exch def neg translate pop 
+	}{
+		pop /pwid exch def
+	} ifelse
+	edown { [-1 0 0 1 pwid 0] concat } if
+	0 0 moveto paperwidth 0 lineto paperwidth paperheight lineto 
+	0 paperheight lineto 0 0 lineto 1 setgray fill
+	xscale yscale scale
+	/orgmatrix matrix def
+	gsave 
+} def 
+/FMENDPAGE {
+	grestore 
+	pagesave restore
+	end 
+	showpage
+	} def 
+/FMFONTDEFINE { 
+	FrameDict begin
+	findfont 
+	ReEncode 
+	1 index exch 
+	definefont 
+	FMfonts 3 1 roll 
+	put
+	end 
+	} def 
+/FMFILLS {
+	FrameDict begin dup
+	array /fillvals exch def
+	dict /patCache exch def
+	end 
+	} def 
+/FMFILL {
+	FrameDict begin
+	 fillvals 3 1 roll put
+	end 
+	} def 
+/FMNORMALIZEGRAPHICS { 
+	newpath
+	0.0 0.0 moveto
+	1 setlinewidth
+	0 setlinecap
+	0 0 0 sethsbcolor
+	0 setgray 
+	} bind def
+	/fx FMLOCAL
+	/fy FMLOCAL
+	/fh FMLOCAL
+	/fw FMLOCAL
+	/llx FMLOCAL
+	/lly FMLOCAL
+	/urx FMLOCAL
+	/ury FMLOCAL
+/FMBEGINEPSF { 
+	end 
+	/FMEPSF save def 
+	/showpage {} def 
+% See Adobe's "PostScript Language Reference Manual, 2nd Edition", page 714.
+% "...the following operators MUST NOT be used in an EPS file:" (emphasis ours)
+	/banddevice {(banddevice) FMBADEPSF} def
+	/clear {(clear) FMBADEPSF} def
+	/cleardictstack {(cleardictstack) FMBADEPSF} def 
+	/copypage {(copypage) FMBADEPSF} def
+	/erasepage {(erasepage) FMBADEPSF} def
+	/exitserver {(exitserver) FMBADEPSF} def
+	/framedevice {(framedevice) FMBADEPSF} def
+	/grestoreall {(grestoreall) FMBADEPSF} def
+	/initclip {(initclip) FMBADEPSF} def
+	/initgraphics {(initgraphics) FMBADEPSF} def
+	/initmatrix {(initmatrix) FMBADEPSF} def
+	/quit {(quit) FMBADEPSF} def
+	/renderbands {(renderbands) FMBADEPSF} def
+	/setglobal {(setglobal) FMBADEPSF} def
+	/setpagedevice {(setpagedevice) FMBADEPSF} def
+	/setshared {(setshared) FMBADEPSF} def
+	/startjob {(startjob) FMBADEPSF} def
+	/lettertray {(lettertray) FMBADEPSF} def
+	/letter {(letter) FMBADEPSF} def
+	/lettersmall {(lettersmall) FMBADEPSF} def
+	/11x17tray {(11x17tray) FMBADEPSF} def
+	/11x17 {(11x17) FMBADEPSF} def
+	/ledgertray {(ledgertray) FMBADEPSF} def
+	/ledger {(ledger) FMBADEPSF} def
+	/legaltray {(legaltray) FMBADEPSF} def
+	/legal {(legal) FMBADEPSF} def
+	/statementtray {(statementtray) FMBADEPSF} def
+	/statement {(statement) FMBADEPSF} def
+	/executivetray {(executivetray) FMBADEPSF} def
+	/executive {(executive) FMBADEPSF} def
+	/a3tray {(a3tray) FMBADEPSF} def
+	/a3 {(a3) FMBADEPSF} def
+	/a4tray {(a4tray) FMBADEPSF} def
+	/a4 {(a4) FMBADEPSF} def
+	/a4small {(a4small) FMBADEPSF} def
+	/b4tray {(b4tray) FMBADEPSF} def
+	/b4 {(b4) FMBADEPSF} def
+	/b5tray {(b5tray) FMBADEPSF} def
+	/b5 {(b5) FMBADEPSF} def
+	FMNORMALIZEGRAPHICS 
+	[/fy /fx /fh /fw /ury /urx /lly /llx] {exch def} forall 
+	fx fw 2 div add fy fh 2 div add  translate
+	rotate
+	fw 2 div neg fh 2 div neg translate
+	fw urx llx sub div fh ury lly sub div scale 
+	llx neg lly neg translate 
+	/FMdicttop countdictstack 1 add def 
+	/FMoptop count def 
+	} bind def
+/FMENDEPSF {
+	count -1 FMoptop {pop pop} for 
+	countdictstack -1 FMdicttop {pop end} for 
+	FMEPSF restore
+	FrameDict begin 
+	} bind def
+FrameDict begin 
+/setmanualfeed {
+%%BeginFeature *ManualFeed True
+	 statusdict /manualfeed true put
+%%EndFeature
+	} bind def
+/max {2 copy lt {exch} if pop} bind def
+/min {2 copy gt {exch} if pop} bind def
+/inch {72 mul} def
+/pagedimen { 
+	paperheight sub abs 16 lt exch 
+	paperwidth sub abs 16 lt and
+	{/papername exch def} {pop} ifelse
+	} bind def
+	/papersizedict FMLOCAL
+/setpapername { 
+	/papersizedict 14 dict def 
+	papersizedict begin
+	/papername /unknown def 
+		/Letter 8.5 inch 11.0 inch pagedimen
+		/LetterSmall 7.68 inch 10.16 inch pagedimen
+		/Tabloid 11.0 inch 17.0 inch pagedimen
+		/Ledger 17.0 inch 11.0 inch pagedimen
+		/Legal 8.5 inch 14.0 inch pagedimen
+		/Statement 5.5 inch 8.5 inch pagedimen
+		/Executive 7.5 inch 10.0 inch pagedimen
+		/A3 11.69 inch 16.5 inch pagedimen
+		/A4 8.26 inch 11.69 inch pagedimen
+		/A4Small 7.47 inch 10.85 inch pagedimen
+		/B4 10.125 inch 14.33 inch pagedimen
+		/B5 7.16 inch 10.125 inch pagedimen
+	end
+	} bind def
+/papersize {
+	papersizedict begin
+		/Letter {lettertray letter} def
+		/LetterSmall {lettertray lettersmall} def
+		/Tabloid {11x17tray 11x17} def
+		/Ledger {ledgertray ledger} def
+		/Legal {legaltray legal} def
+		/Statement {statementtray statement} def
+		/Executive {executivetray executive} def
+		/A3 {a3tray a3} def
+		/A4 {a4tray a4} def
+		/A4Small {a4tray a4small} def
+		/B4 {b4tray b4} def
+		/B5 {b5tray b5} def
+		/unknown {unknown} def
+	papersizedict dup papername known {papername} {/unknown} ifelse get
+	end
+	statusdict begin stopped end 
+	} bind def
+/manualpapersize {
+	papersizedict begin
+		/Letter {letter} def
+		/LetterSmall {lettersmall} def
+		/Tabloid {11x17} def
+		/Ledger {ledger} def
+		/Legal {legal} def
+		/Statement {statement} def
+		/Executive {executive} def
+		/A3 {a3} def
+		/A4 {a4} def
+		/A4Small {a4small} def
+		/B4 {b4} def
+		/B5 {b5} def
+		/unknown {unknown} def
+	papersizedict dup papername known {papername} {/unknown} ifelse get
+	end
+	stopped 
+	} bind def
+/desperatepapersize {
+	statusdict /setpageparams known
+		{
+		paperwidth paperheight 0 1 
+		statusdict begin
+		{setpageparams} stopped 
+		end
+		} {true} ifelse 
+	} bind def
+/DiacriticEncoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /space /exclam /quotedbl
+/numbersign /dollar /percent /ampersand /quotesingle /parenleft
+/parenright /asterisk /plus /comma /hyphen /period /slash /zero /one
+/two /three /four /five /six /seven /eight /nine /colon /semicolon
+/less /equal /greater /question /at /A /B /C /D /E /F /G /H /I /J /K
+/L /M /N /O /P /Q /R /S /T /U /V /W /X /Y /Z /bracketleft /backslash
+/bracketright /asciicircum /underscore /grave /a /b /c /d /e /f /g /h
+/i /j /k /l /m /n /o /p /q /r /s /t /u /v /w /x /y /z /braceleft /bar
+/braceright /asciitilde /.notdef /Adieresis /Aring /Ccedilla /Eacute
+/Ntilde /Odieresis /Udieresis /aacute /agrave /acircumflex /adieresis
+/atilde /aring /ccedilla /eacute /egrave /ecircumflex /edieresis
+/iacute /igrave /icircumflex /idieresis /ntilde /oacute /ograve
+/ocircumflex /odieresis /otilde /uacute /ugrave /ucircumflex
+/udieresis /dagger /.notdef /cent /sterling /section /bullet
+/paragraph /germandbls /registered /copyright /trademark /acute
+/dieresis /.notdef /AE /Oslash /.notdef /.notdef /.notdef /.notdef
+/yen /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef
+/ordfeminine /ordmasculine /.notdef /ae /oslash /questiondown
+/exclamdown /logicalnot /.notdef /florin /.notdef /.notdef
+/guillemotleft /guillemotright /ellipsis /.notdef /Agrave /Atilde
+/Otilde /OE /oe /endash /emdash /quotedblleft /quotedblright
+/quoteleft /quoteright /.notdef /.notdef /ydieresis /Ydieresis
+/fraction /currency /guilsinglleft /guilsinglright /fi /fl /daggerdbl
+/periodcentered /quotesinglbase /quotedblbase /perthousand
+/Acircumflex /Ecircumflex /Aacute /Edieresis /Egrave /Iacute
+/Icircumflex /Idieresis /Igrave /Oacute /Ocircumflex /.notdef /Ograve
+/Uacute /Ucircumflex /Ugrave /dotlessi /circumflex /tilde /macron
+/breve /dotaccent /ring /cedilla /hungarumlaut /ogonek /caron
+] def
+/ReEncode { 
+	dup 
+	length 
+	dict begin 
+	{
+	1 index /FID ne 
+		{def} 
+		{pop pop} ifelse 
+	} forall 
+	0 eq {/Encoding DiacriticEncoding def} if 
+	currentdict 
+	end 
+	} bind def
+FMPColor 
+	
+	{
+	/BEGINBITMAPCOLOR { 
+		BITMAPCOLOR} def
+	/BEGINBITMAPCOLORc { 
+		BITMAPCOLORc} def
+	/BEGINBITMAPTRUECOLOR { 
+		BITMAPTRUECOLOR } def
+	/BEGINBITMAPTRUECOLORc { 
+		BITMAPTRUECOLORc } def
+	}
+	
+	{
+	/BEGINBITMAPCOLOR { 
+		BITMAPGRAY} def
+	/BEGINBITMAPCOLORc { 
+		BITMAPGRAYc} def
+	/BEGINBITMAPTRUECOLOR { 
+		BITMAPTRUEGRAY } def
+	/BEGINBITMAPTRUECOLORc { 
+		BITMAPTRUEGRAYc } def
+	}
+ifelse
+/K { 
+	FMPrintAllColorsAsBlack {
+		dup 1 eq 2 index 1 eq and 3 index 1 eq and not
+			{7 {pop} repeat 0 0 0 1 0 0 0} if
+	} if 
+	FrameCurColors astore 
+	pop combineColor
+} bind def
+/graymode true def
+	/bwidth FMLOCAL
+	/bpside FMLOCAL
+	/bstring FMLOCAL
+	/onbits FMLOCAL
+	/offbits FMLOCAL
+	/xindex FMLOCAL
+	/yindex FMLOCAL
+	/x FMLOCAL
+	/y FMLOCAL
+/setPatternMode {
+	FMLevel1 {
+		/bwidth  exch def
+		/bpside  exch def
+		/bstring exch def
+		/onbits 0 def  /offbits 0 def
+		freq sangle landscape {90 add} if 
+			{/y exch def
+			 /x exch def
+			 /xindex x 1 add 2 div bpside mul cvi def
+			 /yindex y 1 add 2 div bpside mul cvi def
+			 bstring yindex bwidth mul xindex 8 idiv add get
+			 1 7 xindex 8 mod sub bitshift and 0 ne FrameNegative {not} if
+			 {/onbits  onbits  1 add def 1}
+			 {/offbits offbits 1 add def 0}
+			 ifelse
+			}
+			setscreen
+		offbits offbits onbits add div FrameNegative {1.0 exch sub} if
+		/FrameCurGray exch def
+	} { 
+		pop pop
+		dup patCache exch known {
+			patCache exch get
+		} { 
+			dup
+			patDict /bstring 3 -1 roll put
+			patDict 
+			9 PatFreq screenIndex get div dup matrix scale
+			makepattern
+			dup 
+			patCache 4 -1 roll 3 -1 roll put
+		} ifelse
+		/FrameCurGray 0 def
+		/FrameCurPat exch def
+	} ifelse
+	/graymode false def
+	combineColor
+} bind def
+/setGrayScaleMode {
+	graymode not {
+		/graymode true def
+		FMLevel1 {
+			setCurrentScreen
+		} if
+	} if
+	/FrameCurGray exch def
+	combineColor
+} bind def
+/normalize {
+	transform round exch round exch itransform
+	} bind def
+/dnormalize {
+	dtransform round exch round exch idtransform
+	} bind def
+/lnormalize { 
+	0 dtransform exch cvi 2 idiv 2 mul 1 add exch idtransform pop
+	} bind def
+/H { 
+	lnormalize setlinewidth
+	} bind def
+/Z {
+	setlinecap
+	} bind def
+	
+/PFill {
+	graymode FMLevel1 or not {
+		gsave 1 setgray eofill grestore
+	} if
+} bind def
+/PStroke {
+	graymode FMLevel1 or not {
+		gsave 1 setgray stroke grestore
+	} if
+	stroke
+} bind def
+	/fillvals FMLOCAL
+/X { 
+	fillvals exch get
+	dup type /stringtype eq
+	{8 1 setPatternMode} 
+	{setGrayScaleMode}
+	ifelse
+	} bind def
+/V { 
+	PFill gsave eofill grestore
+	} bind def
+/Vclip {
+	clip
+	} bind def
+/Vstrk {
+	currentlinewidth exch setlinewidth PStroke setlinewidth
+	} bind def
+/N { 
+	PStroke
+	} bind def
+/Nclip {
+	strokepath clip newpath
+	} bind def
+/Nstrk {
+	currentlinewidth exch setlinewidth PStroke setlinewidth
+	} bind def
+/M {newpath moveto} bind def
+/E {lineto} bind def
+/D {curveto} bind def
+/O {closepath} bind def
+	/n FMLOCAL
+/L { 
+ 	/n exch def
+	newpath
+	normalize
+	moveto 
+	2 1 n {pop normalize lineto} for
+	} bind def
+/Y { 
+	L 
+	closepath
+	} bind def
+	/x1 FMLOCAL
+	/x2 FMLOCAL
+	/y1 FMLOCAL
+	/y2 FMLOCAL
+/R { 
+	/y2 exch def
+	/x2 exch def
+	/y1 exch def
+	/x1 exch def
+	x1 y1
+	x2 y1
+	x2 y2
+	x1 y2
+	4 Y 
+	} bind def
+	/rad FMLOCAL
+/rarc 
+	{rad 
+	 arcto
+	} bind def
+/RR { 
+	/rad exch def
+	normalize
+	/y2 exch def
+	/x2 exch def
+	normalize
+	/y1 exch def
+	/x1 exch def
+	mark
+	newpath
+	{
+	x1 y1 rad add moveto
+	x1 y2 x2 y2 rarc
+	x2 y2 x2 y1 rarc
+	x2 y1 x1 y1 rarc
+	x1 y1 x1 y2 rarc
+	closepath
+	} stopped {x1 y1 x2 y2 R} if 
+	cleartomark
+	} bind def
+/RRR { 
+	/rad exch def
+	normalize /y4 exch def /x4 exch def
+	normalize /y3 exch def /x3 exch def
+	normalize /y2 exch def /x2 exch def
+	normalize /y1 exch def /x1 exch def
+	newpath
+	normalize moveto 
+	mark
+	{
+	x2 y2 x3 y3 rarc
+	x3 y3 x4 y4 rarc
+	x4 y4 x1 y1 rarc
+	x1 y1 x2 y2 rarc
+	closepath
+	} stopped
+	 {x1 y1 x2 y2 x3 y3 x4 y4 newpath moveto lineto lineto lineto closepath} if
+	cleartomark
+	} bind def
+/C { 
+	grestore
+	gsave
+	R 
+	clip
+	setCurrentScreen
+} bind def
+/CP { 
+	grestore
+	gsave
+	Y 
+	clip
+	setCurrentScreen
+} bind def
+	/FMpointsize FMLOCAL
+/F { 
+	FMfonts exch get
+	FMpointsize scalefont
+	setfont
+	} bind def
+/Q { 
+	/FMpointsize exch def
+	F 
+	} bind def
+/T { 
+	moveto show
+	} bind def
+/RF { 
+	rotate
+	0 ne {-1 1 scale} if
+	} bind def
+/TF { 
+	gsave
+	moveto 
+	RF
+	show
+	grestore
+	} bind def
+/P { 
+	moveto
+	0 32 3 2 roll widthshow
+	} bind def
+/PF { 
+	gsave
+	moveto 
+	RF
+	0 32 3 2 roll widthshow
+	grestore
+	} bind def
+/S { 
+	moveto
+	0 exch ashow
+	} bind def
+/SF { 
+	gsave
+	moveto
+	RF
+	0 exch ashow
+	grestore
+	} bind def
+/B { 
+	moveto
+	0 32 4 2 roll 0 exch awidthshow
+	} bind def
+/BF { 
+	gsave
+	moveto
+	RF
+	0 32 4 2 roll 0 exch awidthshow
+	grestore
+	} bind def
+/G { 
+	gsave
+	newpath
+	normalize translate 0.0 0.0 moveto 
+	dnormalize scale 
+	0.0 0.0 1.0 5 3 roll arc 
+	closepath 
+	PFill fill
+	grestore
+	} bind def
+/Gstrk {
+	savematrix
+    newpath
+    2 index 2 div add exch 3 index 2 div sub exch 
+    normalize 2 index 2 div sub exch 3 index 2 div add exch 
+    translate
+    scale 
+    0.0 0.0 1.0 5 3 roll arc 
+    restorematrix
+    currentlinewidth exch setlinewidth PStroke setlinewidth
+    } bind def
+/Gclip { 
+	newpath
+	savematrix
+	normalize translate 0.0 0.0 moveto 
+	dnormalize scale 
+	0.0 0.0 1.0 5 3 roll arc 
+	closepath 
+	clip newpath
+	restorematrix
+	} bind def
+/GG { 
+	gsave
+	newpath
+	normalize translate 0.0 0.0 moveto 
+	rotate 
+	dnormalize scale 
+	0.0 0.0 1.0 5 3 roll arc 
+	closepath
+	PFill
+	fill
+	grestore
+	} bind def
+/GGclip { 
+	savematrix
+	newpath
+    normalize translate 0.0 0.0 moveto 
+    rotate 
+    dnormalize scale 
+    0.0 0.0 1.0 5 3 roll arc 
+    closepath
+	clip newpath
+	restorematrix
+	} bind def
+/GGstrk { 
+	savematrix
+    newpath
+    normalize translate 0.0 0.0 moveto 
+    rotate 
+    dnormalize scale 
+    0.0 0.0 1.0 5 3 roll arc 
+    closepath 
+	restorematrix
+    currentlinewidth exch setlinewidth PStroke setlinewidth
+	} bind def
+/A { 
+	gsave
+	savematrix
+	newpath
+	2 index 2 div add exch 3 index 2 div sub exch 
+	normalize 2 index 2 div sub exch 3 index 2 div add exch 
+	translate 
+	scale 
+	0.0 0.0 1.0 5 3 roll arc 
+	restorematrix
+	PStroke
+	grestore
+	} bind def
+/Aclip {
+	newpath
+	savematrix
+	normalize translate 0.0 0.0 moveto 
+	dnormalize scale 
+	0.0 0.0 1.0 5 3 roll arc 
+	closepath 
+	strokepath clip newpath
+	restorematrix
+} bind def
+/Astrk {
+	Gstrk
+} bind def
+/AA { 
+	gsave
+	savematrix
+	newpath
+	
+	3 index 2 div add exch 4 index 2 div sub exch 
+	
+	normalize 3 index 2 div sub exch 4 index 2 div add exch
+	translate 
+	rotate 
+	scale 
+	0.0 0.0 1.0 5 3 roll arc 
+	restorematrix
+	PStroke
+	grestore
+	} bind def
+/AAclip {
+	savematrix
+	newpath
+    normalize translate 0.0 0.0 moveto 
+    rotate 
+    dnormalize scale 
+    0.0 0.0 1.0 5 3 roll arc 
+    closepath
+	strokepath clip newpath
+	restorematrix
+} bind def
+/AAstrk {
+	GGstrk
+} bind def
+	/x FMLOCAL
+	/y FMLOCAL
+	/w FMLOCAL
+	/h FMLOCAL
+	/xx FMLOCAL
+	/yy FMLOCAL
+	/ww FMLOCAL
+	/hh FMLOCAL
+	/FMsaveobject FMLOCAL
+	/FMoptop FMLOCAL
+	/FMdicttop FMLOCAL
+/BEGINPRINTCODE { 
+	/FMdicttop countdictstack 1 add def 
+	/FMoptop count 7 sub def 
+	/FMsaveobject save def
+	userdict begin 
+	/showpage {} def 
+	FMNORMALIZEGRAPHICS 
+	3 index neg 3 index neg translate
+	} bind def
+/ENDPRINTCODE {
+	count -1 FMoptop {pop pop} for 
+	countdictstack -1 FMdicttop {pop end} for 
+	FMsaveobject restore 
+	} bind def
+/gn { 
+	0 
+	{	46 mul 
+		cf read pop 
+		32 sub 
+		dup 46 lt {exit} if 
+		46 sub add 
+		} loop
+	add 
+	} bind def
+	/str FMLOCAL
+/cfs { 
+	/str sl string def 
+	0 1 sl 1 sub {str exch val put} for 
+	str def 
+	} bind def
+/ic [ 
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0223
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0223
+	0
+	{0 hx} {1 hx} {2 hx} {3 hx} {4 hx} {5 hx} {6 hx} {7 hx} {8 hx} {9 hx}
+	{10 hx} {11 hx} {12 hx} {13 hx} {14 hx} {15 hx} {16 hx} {17 hx} {18 hx}
+	{19 hx} {gn hx} {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12}
+	{13} {14} {15} {16} {17} {18} {19} {gn} {0 wh} {1 wh} {2 wh} {3 wh}
+	{4 wh} {5 wh} {6 wh} {7 wh} {8 wh} {9 wh} {10 wh} {11 wh} {12 wh}
+	{13 wh} {14 wh} {gn wh} {0 bl} {1 bl} {2 bl} {3 bl} {4 bl} {5 bl} {6 bl}
+	{7 bl} {8 bl} {9 bl} {10 bl} {11 bl} {12 bl} {13 bl} {14 bl} {gn bl}
+	{0 fl} {1 fl} {2 fl} {3 fl} {4 fl} {5 fl} {6 fl} {7 fl} {8 fl} {9 fl}
+	{10 fl} {11 fl} {12 fl} {13 fl} {14 fl} {gn fl}
+	] def
+	/sl FMLOCAL
+	/val FMLOCAL
+	/ws FMLOCAL
+	/im FMLOCAL
+	/bs FMLOCAL
+	/cs FMLOCAL
+	/len FMLOCAL
+	/pos FMLOCAL
+/ms { 
+	/sl exch def 
+	/val 255 def 
+	/ws cfs 
+	/im cfs 
+	/val 0 def 
+	/bs cfs 
+	/cs cfs 
+	} bind def
+400 ms 
+/ip { 
+	is 
+	0 
+	cf cs readline pop 
+	{	ic exch get exec 
+		add 
+		} forall 
+	pop 
+	
+	} bind def
+/rip { 
+	   
+	  
+	  bis ris copy pop 
+      is
+      0
+      cf cs readline pop 
+      {       ic exch get exec 
+              add 
+              } forall 
+	  pop pop 
+	  ris gis copy pop 
+	  dup is exch 
+	  
+      cf cs readline pop 
+      {       ic exch get exec 
+              add 
+              } forall 
+	  pop pop
+	  gis bis copy pop 
+	  dup add is exch 
+	  
+      cf cs readline pop 
+      {       ic exch get exec 
+              add 
+              } forall 
+      pop 
+      
+      } bind def
+/wh { 
+	/len exch def 
+	/pos exch def 
+	ws 0 len getinterval im pos len getinterval copy pop
+	pos len 
+	} bind def
+/bl { 
+	/len exch def 
+	/pos exch def 
+	bs 0 len getinterval im pos len getinterval copy pop
+	pos len 
+	} bind def
+/s1 1 string def
+/fl { 
+	/len exch def 
+	/pos exch def 
+	/val cf s1 readhexstring pop 0 get def
+	pos 1 pos len add 1 sub {im exch val put} for
+	pos len 
+	} bind def
+/hx { 
+	3 copy getinterval 
+	cf exch readhexstring pop pop 
+	} bind def
+	/h FMLOCAL
+	/w FMLOCAL
+	/d FMLOCAL
+	/lb FMLOCAL
+	/bitmapsave FMLOCAL
+	/is FMLOCAL
+	/cf FMLOCAL
+/wbytes { 
+      dup dup
+      24 eq { pop pop 3 mul }
+      { 8 eq {pop} {1 eq {7 add 8 idiv} {3 add 4 idiv} ifelse} ifelse } ifelse
+	} bind def
+/BEGINBITMAPBWc { 
+	1 {} COMMONBITMAPc
+	} bind def
+/BEGINBITMAPGRAYc { 
+	8 {} COMMONBITMAPc
+	} bind def
+/BEGINBITMAP2BITc { 
+	2 {} COMMONBITMAPc
+	} bind def
+/COMMONBITMAPc { 
+		 
+	/r exch def
+	/d exch def
+	gsave
+	
+	3 index 2 div add exch	
+	4 index 2 div add exch	
+	translate		
+	rotate			
+	1 index 2 div neg	
+	1 index 2 div neg	
+	translate		
+	scale			
+	/h exch def /w exch def
+	/lb w d wbytes def 
+	sl lb lt {lb ms} if 
+	/bitmapsave save def 
+	r                    
+	/is im 0 lb getinterval def 
+	ws 0 lb getinterval is copy pop 
+	/cf currentfile def 
+	w h d [w 0 0 h neg 0 h] 
+	{ip} image 
+	bitmapsave restore 
+	grestore
+	} bind def
+/BEGINBITMAPBW { 
+	1 {} COMMONBITMAP
+	} bind def
+/BEGINBITMAPGRAY { 
+	8 {} COMMONBITMAP
+	} bind def
+/BEGINBITMAP2BIT { 
+	2 {} COMMONBITMAP
+	} bind def
+/COMMONBITMAP { 
+	/r exch def
+	/d exch def
+	gsave
+	
+	3 index 2 div add exch	
+	4 index 2 div add exch	
+	translate		
+	rotate			
+	1 index 2 div neg	
+	1 index 2 div neg	
+	translate		
+	scale			
+	/h exch def /w exch def
+	/bitmapsave save def 
+	r                    
+	/is w d wbytes string def
+	/cf currentfile def 
+	w h d [w 0 0 h neg 0 h] 
+	{cf is readhexstring pop} image
+	bitmapsave restore 
+	grestore
+	} bind def
+/ngrayt 256 array def
+/nredt 256 array def
+/nbluet 256 array def
+/ngreent 256 array def
+	/gryt FMLOCAL
+	/blut FMLOCAL
+	/grnt FMLOCAL
+	/redt FMLOCAL
+	/indx FMLOCAL
+	/cynu FMLOCAL
+	/magu FMLOCAL
+	/yelu FMLOCAL
+	/k FMLOCAL
+	/u FMLOCAL
+FMLevel1 {
+/colorsetup {
+	currentcolortransfer
+	/gryt exch def
+	/blut exch def
+	/grnt exch def
+	/redt exch def
+	0 1 255 {
+		/indx exch def
+		/cynu 1 red indx get 255 div sub def
+		/magu 1 green indx get 255 div sub def
+		/yelu 1 blue indx get 255 div sub def
+		/k cynu magu min yelu min def
+		/u k currentundercolorremoval exec def
+%		/u 0 def
+		nredt indx 1 0 cynu u sub max sub redt exec put
+		ngreent indx 1 0 magu u sub max sub grnt exec put
+		nbluet indx 1 0 yelu u sub max sub blut exec put
+		ngrayt indx 1 k currentblackgeneration exec sub gryt exec put
+	} for
+	{255 mul cvi nredt exch get}
+	{255 mul cvi ngreent exch get}
+	{255 mul cvi nbluet exch get}
+	{255 mul cvi ngrayt exch get}
+	setcolortransfer
+	{pop 0} setundercolorremoval
+	{} setblackgeneration
+	} bind def
+}
+{
+/colorSetup2 {
+	[ /Indexed /DeviceRGB 255 
+		{dup red exch get 255 div 
+		 exch dup green exch get 255 div 
+		 exch blue exch get 255 div}
+	] setcolorspace
+} bind def
+} ifelse
+	/tran FMLOCAL
+/fakecolorsetup {
+	/tran 256 string def
+	0 1 255 {/indx exch def 
+		tran indx
+		red indx get 77 mul
+		green indx get 151 mul
+		blue indx get 28 mul
+		add add 256 idiv put} for
+	currenttransfer
+	{255 mul cvi tran exch get 255.0 div}
+	exch concatprocs settransfer
+} bind def
+/BITMAPCOLOR { 
+	/d 8 def
+	gsave
+	
+	3 index 2 div add exch	
+	4 index 2 div add exch	
+	translate		
+	rotate			
+	1 index 2 div neg	
+	1 index 2 div neg	
+	translate		
+	scale			
+	/h exch def /w exch def
+	/bitmapsave save def
+	FMLevel1 {	
+		colorsetup
+		/is w d wbytes string def
+		/cf currentfile def 
+		w h d [w 0 0 h neg 0 h] 
+		{cf is readhexstring pop} {is} {is} true 3 colorimage 
+	} {
+		colorSetup2
+		/is w d wbytes string def
+		/cf currentfile def 
+		7 dict dup begin
+			/ImageType 1 def
+			/Width w def
+			/Height h def
+			/ImageMatrix [w 0 0 h neg 0 h] def
+			/DataSource {cf is readhexstring pop} bind def
+			/BitsPerComponent d def
+			/Decode [0 255] def
+		end image	
+	} ifelse
+	bitmapsave restore 
+	grestore
+	} bind def
+/BITMAPCOLORc { 
+	/d 8 def
+	gsave
+	
+	3 index 2 div add exch	
+	4 index 2 div add exch	
+	translate		
+	rotate			
+	1 index 2 div neg	
+	1 index 2 div neg	
+	translate		
+	scale			
+	/h exch def /w exch def
+	/lb w d wbytes def 
+	sl lb lt {lb ms} if 
+	/bitmapsave save def 
+	FMLevel1 {	
+		colorsetup
+		/is im 0 lb getinterval def 
+		ws 0 lb getinterval is copy pop 
+		/cf currentfile def 
+		w h d [w 0 0 h neg 0 h] 
+		{ip} {is} {is} true 3 colorimage
+	} {
+		colorSetup2
+		/is im 0 lb getinterval def 
+		ws 0 lb getinterval is copy pop 
+		/cf currentfile def 
+		7 dict dup begin
+			/ImageType 1 def
+			/Width w def
+			/Height h def
+			/ImageMatrix [w 0 0 h neg 0 h] def
+			/DataSource {ip} bind def
+			/BitsPerComponent d def
+			/Decode [0 255] def
+		end image	
+	} ifelse
+	bitmapsave restore 
+	grestore
+	} bind def
+/BITMAPTRUECOLORc { 
+	/d 24 def
+        gsave
+ 	
+	3 index 2 div add exch	
+	4 index 2 div add exch	
+	translate		
+	rotate			
+	1 index 2 div neg	
+	1 index 2 div neg	
+	translate		
+	scale			
+	/h exch def /w exch def
+	/lb w d wbytes def 
+	sl lb lt {lb ms} if 
+        /bitmapsave save def 
+        
+	/is im 0 lb getinterval def	
+	/ris im 0 w getinterval def	
+	/gis im w w getinterval def	
+	/bis im w 2 mul w getinterval def 
+        
+        ws 0 lb getinterval is copy pop 
+        /cf currentfile def 
+        w h 8 [w 0 0 h neg 0 h] 
+        {w rip pop ris} {gis} {bis} true 3 colorimage
+        bitmapsave restore 
+        grestore
+        } bind def
+/BITMAPTRUECOLOR { 
+        gsave
+		
+		3 index 2 div add exch	
+		4 index 2 div add exch	
+		translate		
+		rotate			
+		1 index 2 div neg	
+		1 index 2 div neg	
+		translate		
+		scale			
+		/h exch def /w exch def
+        /bitmapsave save def 
+        /is w string def
+        /gis w string def
+        /bis w string def
+        /cf currentfile def 
+        w h 8 [w 0 0 h neg 0 h] 
+        { cf is readhexstring pop } 
+        { cf gis readhexstring pop } 
+        { cf bis readhexstring pop } 
+        true 3 colorimage 
+        bitmapsave restore 
+        grestore
+        } bind def
+/BITMAPTRUEGRAYc { 
+	/d 24 def
+        gsave
+	
+	3 index 2 div add exch	
+	4 index 2 div add exch	
+	translate		
+	rotate			
+	1 index 2 div neg	
+	1 index 2 div neg	
+	translate		
+	scale			
+	/h exch def /w exch def
+	/lb w d wbytes def 
+	sl lb lt {lb ms} if 
+        /bitmapsave save def 
+        
+	/is im 0 lb getinterval def	
+	/ris im 0 w getinterval def	
+	/gis im w w getinterval def	
+	/bis im w 2 mul w getinterval def 
+        ws 0 lb getinterval is copy pop 
+        /cf currentfile def 
+        w h 8 [w 0 0 h neg 0 h] 
+        {w rip pop ris gis bis w gray} image
+        bitmapsave restore 
+        grestore
+        } bind def
+/ww FMLOCAL
+/r FMLOCAL
+/g FMLOCAL
+/b FMLOCAL
+/i FMLOCAL
+/gray { 
+        /ww exch def
+        /b exch def
+        /g exch def
+        /r exch def
+        0 1 ww 1 sub { /i exch def r i get .299 mul g i get .587 mul
+			b i get .114 mul add add r i 3 -1 roll floor cvi put } for
+        r
+        } bind def
+/BITMAPTRUEGRAY { 
+        gsave
+		
+		3 index 2 div add exch	
+		4 index 2 div add exch	
+		translate		
+		rotate			
+		1 index 2 div neg	
+		1 index 2 div neg	
+		translate		
+		scale			
+		/h exch def /w exch def
+        /bitmapsave save def 
+        /is w string def
+        /gis w string def
+        /bis w string def
+        /cf currentfile def 
+        w h 8 [w 0 0 h neg 0 h] 
+        { cf is readhexstring pop 
+          cf gis readhexstring pop 
+          cf bis readhexstring pop w gray}  image
+        bitmapsave restore 
+        grestore
+        } bind def
+/BITMAPGRAY { 
+	8 {fakecolorsetup} COMMONBITMAP
+	} bind def
+/BITMAPGRAYc { 
+	8 {fakecolorsetup} COMMONBITMAPc
+	} bind def
+/ENDBITMAP {
+	} bind def
+end 
+	/ALDsave FMLOCAL
+	/ALDmatrix matrix def ALDmatrix currentmatrix pop
+/StartALD {
+	/ALDsave save def
+	 savematrix
+	 ALDmatrix setmatrix
+	} bind def
+/InALD {
+	 restorematrix
+	} bind def
+/DoneALD {
+	 ALDsave restore
+	} bind def
+/I { setdash } bind def
+/J { [] 0 setdash } bind def
+%%EndProlog
+%%BeginSetup
+(4.0) FMVERSION
+1 1 0 0 612 792 0 1 17 FMDOCUMENT
+0 0 /Helvetica FMFONTDEFINE
+1 0 /Times-Roman FMFONTDEFINE
+2 0 /Times-Italic FMFONTDEFINE
+3 0 /Times-Bold FMFONTDEFINE
+4 0 /Courier FMFONTDEFINE
+5 0 /Courier-Bold FMFONTDEFINE
+32 FMFILLS
+0 0 FMFILL
+1 0.1 FMFILL
+2 0.3 FMFILL
+3 0.5 FMFILL
+4 0.7 FMFILL
+5 0.9 FMFILL
+6 0.97 FMFILL
+7 1 FMFILL
+8 <0f1e3c78f0e1c387> FMFILL
+9 <0f87c3e1f0783c1e> FMFILL
+10 <cccccccccccccccc> FMFILL
+11 <ffff0000ffff0000> FMFILL
+12 <8142241818244281> FMFILL
+13 <03060c183060c081> FMFILL
+14 <8040201008040201> FMFILL
+16 1 FMFILL
+17 0.9 FMFILL
+18 0.7 FMFILL
+19 0.5 FMFILL
+20 0.3 FMFILL
+21 0.1 FMFILL
+22 0.03 FMFILL
+23 0 FMFILL
+24 <f0e1c3870f1e3c78> FMFILL
+25 <f0783c1e0f87c3e1> FMFILL
+26 <3333333333333333> FMFILL
+27 <0000ffff0000ffff> FMFILL
+28 <7ebddbe7e7dbbd7e> FMFILL
+29 <fcf9f3e7cf9f3f7e> FMFILL
+30 <7fbfdfeff7fbfdfe> FMFILL
+%%EndSetup
+%%Page: "1" 1
+%%BeginPaperSize: Letter
+%%EndPaperSize
+612 792 0 FMBEGINPAGE
+[0 0 0 1 0 0 0]
+[ 0 1 1 0 1 0 0]
+[ 1 0 1 0 0 1 0]
+[ 1 1 0 0 0 0 1]
+[ 1 0 0 0 0 1 1]
+[ 0 1 0 0 1 0 1]
+[ 0 0 1 0 1 1 0]
+ 7 FrameSetSepColors
+FrameNoSep
+0 0 0 1 0 0 0 K
+J
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 72 522 720 R
+7 X
+0 0 0 1 0 0 0 K
+V
+0 16 Q
+0 X
+(Automatic Dynamic Compilation Support for) 150.84 709.33 T
+(Event Dispatching in Extensible Systems) 161.06 690.33 T
+0 13 Q
+(Craig Chambers, Susan J. Eggers,) 205.57 663.33 T
+(Joel Auslander) 103.71 648.33 T
+(, Matthai Philipose, Markus Mock, Przemyslaw Pardyak) 188.98 648.33 T
+1 10 Q
+(Department of Computer Science and Engineering) 204.77 629.33 T
+(University of Washington) 254.06 617.33 T
+(Box 352350, Seattle, WA 98195-2350) 229.06 605.33 T
+(\050206\051 685-2094; fax: \050206\051 543-2969) 231.85 593.33 T
+({chambers,eggers,ausland,matthai,mock,pardy}@cs.washington.edu) 168.43 581.33 T
+0 12 Q
+(Abstract) 90 551 T
+1 11 Q
+2.53 (This paper describes extensions to an automatic dynamic compilation framework to support) 90 532.67 P
+(optimized event dispatching in the SPIN extensible operating system.) 90 518.67 T
+0 13 Q
+(1) 90 494.33 T
+(Introduction) 108 494.33 T
+1 11 Q
+2.48 (In several extensible operating systems, application-level software that replaces or augments) 90 474.67 P
+0.18 (system services is downloaded into the kernel at run-time [Y) 90 459.67 P
+0.18 (ok92,CT95,RL95,vDHT95,BSP) 357.83 459.67 P
+1 8.8 Q
+0.14 (+) 499.62 464.07 P
+1 11 Q
+0.18 (95].) 504.59 459.67 P
+0.02 (One of them, SPIN, relies on an implicit event invocation mechanism to connect the disparate and) 90 444.67 P
+3.13 (dynamically-loaded parts of the kernel. Modules \050either pre-de\336ned or dynamically-loaded\051) 90 429.67 P
+-0.56 (register interest in particular events, and the system implicitly noti\336es them whenever an interesting) 90 414.67 P
+-0.33 (event is raised. A straightforward implementation of event dispatching would maintain a global list) 90 399.67 P
+0.64 (of guard/handler procedure pairs \050or one global list per event\051. The guard procedure encodes the) 90 384.67 P
+0.32 (circumstances \050expressed as a boolean predicate over the ar) 90 369.67 P
+0.32 (guments to the event and other global) 354.46 369.67 P
+0.25 (system state\051 under which the module is interested in the event, and the handler procedure carries) 90 354.67 P
+1.25 (out the module\325) 90 339.67 P
+1.25 (s desired actions whenever those circumstances arise. When a module registers) 161.56 339.67 P
+-0.66 (interest in an event, it adds a pair of procedures to the global list. When an event is raised, the system) 90 324.67 P
+2.26 (invokes all guard predicate procedures on the list, and for those guards that return true, the) 90 309.67 P
+(corresponding handler procedures are invoked.) 90 294.67 T
+0.98 (This implicit event invocation mechanism provides a \337exible base for having dif) 90 273.67 P
+0.98 (ferent modules) 455.33 273.67 P
+0.18 (interact in a decoupled fashion. However) 90 258.67 P
+0.18 (, the straightforward implementation of event processing) 271.31 258.67 P
+3.59 (is too slow for frequently-raised events with many handlers. Improving upon this simple) 90 243.67 P
+0.76 (implementation is dif) 90 228.67 P
+0.76 (\336cult, since guard/handler pairs are added and removed dynamically as the) 185.43 228.67 P
+3.45 (system runs. One promising strategy applies run-time compilation to dynamically produce) 90 213.67 P
+0.57 (specialized machine code for event dispatching, for a particular list of guard/handler pairs; when) 90 198.67 P
+3.54 (the list changes, the specialized machine code is regenerated for the new list. An initial) 90 183.67 P
+1.63 (implementation of dynamic compilation for event dispatching [PSB] unrolls the loop over the) 90 168.67 P
+1.39 (guard/handler pairs into a linear sequence of machine code. The code for each iteration of the) 90 153.67 P
+1.45 (unrolled loop is produced by copying hand-generated machine code templates, patching in the) 90 138.67 P
+3.94 (guard and handler procedure addresses, and performing simple inline-expansion of guard) 90 123.67 P
+1.22 (procedures that are short. This implementation of event dispatching performs two to \336ve times) 90 108.67 P
+(faster than the straightforward data-structure-based implementation.) 90 93.67 T
+0 0 0 1 0 0 0 K
+FMENDPAGE
+%%EndPage: "1" 1
+%%Page: "2" 2
+612 792 0 FMBEGINPAGE
+[0 0 0 1 0 0 0]
+[ 0 1 1 0 1 0 0]
+[ 1 0 1 0 0 1 0]
+[ 1 1 0 0 0 0 1]
+[ 1 0 0 0 0 1 1]
+[ 0 1 0 0 1 0 1]
+[ 0 0 1 0 1 1 0]
+ 7 FrameSetSepColors
+FrameNoSep
+0 0 0 1 0 0 0 K
+90 36 522 54 R
+7 X
+0 0 0 1 0 0 0 K
+V
+0 10 Q
+0 X
+(2) 303.22 47.33 T
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 72 522 720 R
+7 X
+V
+1 11 Q
+0 X
+-0.5 (W) 90 712.67 P
+-0.5 (e have developed a framework for automating much of the dynamic compilation process [APC) 99.5 712.67 P
+1 8.8 Q
+-0.4 (+) 510.62 717.07 P
+1 11 Q
+-0.5 (].) 515.59 712.67 P
+3.33 (Given some simple programmer annotations, our compiler automatically performs constant) 90 697.67 P
+1.86 (propagation, constant folding, branch folding, and loop unrolling based on variables and data) 90 682.67 P
+-0.06 (structures identi\336ed as invariant at run-time. T) 90 667.67 P
+-0.06 (o minimize dynamic compile time, a static compiler) 293.26 667.67 P
+0.62 (plans out much of the optimization ef) 90 652.67 P
+0.62 (fort ahead of time; at run-time, a simple dynamic compiler) 258.53 652.67 P
+(copies pre-compiled machine code templates and \336lls in the appropriate run-time constant values.) 90 637.67 T
+0.31 (In this paper we show how our dynamic compilation framework, when extended in several ways,) 90 616.67 P
+1.29 (can produce optimized event dispatching code lar) 90 601.67 P
+1.29 (gely automatically) 315.64 601.67 P
+1.29 (. The generated dispatchers) 397.79 601.67 P
+0.02 (include a number of optimizations of guard and handler code currently not supported by the hand-) 90 586.67 P
+-0.63 (written version, such as the elimination of redundant guard predicates and the collapsing of multiple) 90 571.67 P
+0.39 (related predicates into a single n-way branch, both after inlining. Several of the extensions to our) 90 556.67 P
+(framework are likely to be useful in ef) 90 541.67 T
+(fective dynamic compilation of other applications as well.) 258.73 541.67 T
+0.73 (The next section of this paper describes our current dynamic compilation framework and brie\337y) 90 520.67 P
+-0.59 (compares it to some other dynamic compilation systems. Section 3 shows how our techniques apply) 90 505.67 P
+0.94 (to the event dispatching application, and describes several extensions to our framework that are) 90 490.67 P
+2.32 (either necessary or desirable to achieve high-quality generated code. The last section brie\337y) 90 475.67 P
+(summarizes.) 90 460.67 T
+0 13 Q
+(2) 90 435.33 T
+(The Dynamic Compilation Framework) 108 435.33 T
+1 11 Q
+1.08 (The framework for automating dispatcher optimizations [APC) 90 415.67 P
+1 8.8 Q
+0.86 (+) 370.82 420.07 P
+1 11 Q
+1.08 (] is a compiler infrastructure for) 375.79 415.67 P
+-0.53 (dynamic compilation that optimizes portions of programs at run-time \050called) 90 400.67 P
+2 F
+-0.53 (dynamic r) 424.47 400.67 P
+-0.53 (egions) 467.83 400.67 P
+1 F
+-0.53 (\051 with) 496.56 400.67 P
+-0.02 (respect to values of variables that are unknown until run-time, but remain constant once computed) 90 385.67 P
+-0.11 (\050called) 90 370.67 P
+2 F
+-0.11 (run-time constants) 122.57 370.67 P
+1 F
+-0.11 (\051. In our current implementation programmers add simple annotations to) 204.65 370.67 P
+0.5 (their programs which trigger dynamic compilation: the annotations identify dynamic regions, the) 90 355.67 P
+1.35 (variables that are run-time constants at the start of the regions, and which loops over run-time) 90 340.67 P
+(constant data structures should be completely unrolled.) 90 325.67 T
+1.75 (The framework itself is composed of two compilers: an optimizing) 90 304.67 P
+2 F
+1.75 (static compiler) 404.42 304.67 P
+1 F
+1.75 ( and a fast) 471.86 304.67 P
+2 F
+-0.21 (dynamic compiler) 90 289.67 P
+1 F
+-0.21 (. The static compiler produces pre-compiled) 168.31 289.67 P
+2 F
+-0.21 (machine-code templates) 364.09 289.67 P
+1 F
+-0.21 (\050see Figure) 473.03 289.67 P
+1.44 (1\051) 90 274.67 P
+2 F
+1.44 (,) 99.16 274.67 P
+1 F
+1.44 (whose instructions contain) 106.1 274.67 P
+2 F
+1.44 (holes) 230.5 274.67 P
+1 F
+1.44 ( that are \336lled in with run-time constant values. The static) 253.72 274.67 P
+-0.51 (compiler also generates) 90 259.67 P
+2 F
+-0.51 (set-up code) 195.09 259.67 P
+1 F
+-0.51 ( to calculate the values of run-time constants that can be derived) 244.99 259.67 P
+-0.46 (from the original, programmer) 90 244.67 P
+-0.46 (-annotated set, and) 222.83 244.67 P
+2 F
+-0.46 (dir) 307 244.67 P
+-0.46 (ectives) 319.43 244.67 P
+1 F
+-0.46 ( that instruct the dynamic compiler how) 349.36 244.67 P
+0.2 (to produce executable code from the templates and the set-up code\325) 90 229.67 P
+0.2 (s computed constants. It is the) 388.37 229.67 P
+0.69 (set-up code and directives that provide the mechanism for performing optimizations at run-time.) 90 214.67 P
+-0.55 (The second component of the framework is a fast dynamic compiler \050called the) 90 199.67 P
+2 F
+-0.55 (stitcher) 434.48 199.67 P
+1 F
+-0.55 (\051 that simply) 467.48 199.67 P
+2.4 (follows the directives, copying the machine-code templates and \336lling in the holes with the) 90 184.67 P
+(appropriate constants.) 90 169.67 T
+(The rest of this section discusses the static and dynamic compilers in more detail.) 90 148.67 T
+0 12 Q
+(2.1) 90 125.25 T
+(The Static Compiler) 117 125.25 T
+1 11 Q
+2.53 (The static compiler compiles procedures that do not contain dynamic regions normally) 90 107.29 P
+2.53 (. For) 498.69 107.29 P
+(procedures with dynamic regions, it performs four separate steps.) 90 92.29 T
+0 0 0 1 0 0 0 K
+FMENDPAGE
+%%EndPage: "2" 2
+%%Page: "3" 3
+612 792 0 FMBEGINPAGE
+[0 0 0 1 0 0 0]
+[ 0 1 1 0 1 0 0]
+[ 1 0 1 0 0 1 0]
+[ 1 1 0 0 0 0 1]
+[ 1 0 0 0 0 1 1]
+[ 0 1 0 0 1 0 1]
+[ 0 0 1 0 1 1 0]
+ 7 FrameSetSepColors
+FrameNoSep
+0 0 0 1 0 0 0 K
+90 36 522 54 R
+7 X
+0 0 0 1 0 0 0 K
+V
+0 10 Q
+0 X
+(3) 303.22 47.33 T
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 72 522 720 R
+7 X
+V
+3 11 Q
+0 X
+0.84 (Run-time Constant Identi\336cation) 90 536.67 P
+1 F
+0.84 (. The \336rst step computes the set of variables and expressions) 247.51 536.67 P
+1.31 (that are constant) 90 521.67 P
+1 8.8 Q
+1.05 (*) 164.71 526.08 P
+1 11 Q
+1.31 ( at each point in the dynamic region. This analysis is similar to binding time) 169.11 521.67 P
+1.56 (analysis in of) 90 506.67 P
+1.56 (f-line partial evaluators [SZ88,JGS93] \050except that our analysis is at the level of) 151.59 506.67 P
+0.73 (control \337ow graphs rather than abstract syntax trees\051 and to traditional constant propagation and) 90 491.67 P
+-0.02 (folding \050except that our analysis must cope with knowing only that a variable will be constant, not) 90 476.67 P
+-0.61 (what the constant value is\051. W) 90 461.67 P
+-0.61 (e have developed a pair of interconnected analyses, one that computes) 219.27 461.67 P
+1.06 (the set of run-time constant variables at each program point within the region, and another that) 90 446.67 P
+3.12 (re\336nes that solution by computing reachability information downstream of branches whose) 90 431.67 P
+-0.63 (predicates are run-time constants. When executed in parallel, they provide an analysis that identi\336es) 90 416.67 P
+(run-time constants over a potentially unstructured control \337ow graph program representation.) 90 401.67 T
+0.66 (The run-time constant analysis is a forward \050iterative\051 data\337ow analysis that computes the set of) 90 380.67 P
+-0.38 (variables that are run-time constant for each program point. At the start of a dynamic region, the set) 90 365.67 P
+0.15 (of constants is the set of variables speci\336ed by the programmer; each instruction in the region can) 90 350.67 P
+0.45 (either add to or remove constants from the set. For example, if the operands of an instruction are) 90 335.67 P
+1.32 (constants, the result is a constant as well, and so it is added to the set. The analysis places no) 90 320.67 P
+-0.08 (restrictions on the type of data that can be treated as a run-time constant; in particular) 90 305.67 P
+-0.08 (, the contents) 463.81 305.67 P
+2.54 (of arrays and pointer) 90 290.67 P
+2.54 (-based data structures are assumed by default to be run-time constants) 188.72 290.67 P
+0.36 (whenever accessed through run-time constant pointers. \050W) 90 275.67 P
+0.36 (e include a mechanism to override this) 350 275.67 P
+(default for partially-constant data structures.\051) 90 260.67 T
+-0.22 (T) 90 239.67 P
+-0.22 (o make the run-time constants analysis ef) 95.95 239.67 P
+-0.22 (fective for an arbitrary control \337ow graph, we perform a) 276.53 239.67 P
+1.67 (reachability analysis in parallel with the run-time constants analysis. The reachability analysis) 90 224.67 P
+0.44 (computes the restricted conditions, expressed in terms of outcomes of branches whose predicates) 90 209.67 P
+3.25 (are run-time constants, under which a given program point can be reached after dynamic) 90 194.67 P
+-0.37 (compilation. The successors of a run-time constant branch will have restricted reachability: true for) 90 179.67 P
+1.14 (one path, false for the other) 90 164.67 P
+1.14 (. At mer) 216.09 164.67 P
+1.14 (ges, the reachability analysis can determine whether mer) 254.53 164.67 P
+1.14 (ge) 511.62 164.67 P
+0.85 (predecessors are mutually exclusive; if so, any variable identi\336ed as constant on all predecessor) 90 149.67 P
+-0.21 (paths will be considered constant after the mer) 90 134.67 P
+-0.21 (ge, even if dif) 293.33 134.67 P
+-0.21 (ferent predecessors bound the variable) 353.61 134.67 P
+90 98 522 112.98 C
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 98 522 112.98 R
+7 X
+0 0 0 1 0 0 0 K
+V
+90 103.91 243 103.91 2 L
+V
+0.5 H
+2 Z
+0 X
+N
+0 -208 1000 792 C
+1 8 Q
+0 X
+0 0 0 1 0 0 0 K
+(*) 90 95.33 T
+1 10 Q
+-0.28 (For brevity we use the term \322constant\323 to refer to run-time constants, which include compile-time constants) 95.68 91.33 P
+(as a special case.) 95.68 79.33 T
+90.54 550.01 521.46 720 C
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+135.54 572.53 261.3 712.41 R
+7 X
+0 0 0 1 0 0 0 K
+V
+2 H
+0 Z
+3 X
+N
+2 12 Q
+0 X
+(Static Compile T) 149.75 582.2 T
+(ime) 229.76 582.2 T
+261.54 572.53 518.74 712.41 R
+7 X
+V
+3 X
+N
+0 0 1 0 1 1 0 K
+278.62 666.61 296.81 656.11 278.62 645.61 278.62 656.11 4 Y
+0 0 1 0 1 1 0 K
+V
+225.95 656.11 278.62 656.11 2 L
+7 X
+V
+10 H
+2 Z
+3 X
+N
+414.23 665.8 432.42 655.3 414.23 644.8 414.23 655.3 4 Y
+V
+360.5 655.3 414.23 655.3 2 L
+7 X
+V
+3 X
+N
+377.43 607.48 359.24 617.98 377.43 628.48 377.43 617.98 4 Y
+V
+502.63 669.54 508.89 669.54 508.89 617.98 377.43 617.98 4 L
+N
+278.62 645.08 296.81 634.58 278.62 624.08 278.62 634.58 4 Y
+V
+210.21 656.66 210.21 634.58 278.62 634.58 3 L
+N
+144.5 689.03 162.69 678.53 144.5 668.03 144.5 678.53 4 Y
+V
+109.13 678.53 144.5 678.53 2 L
+N
+415.18 696.32 433.36 685.82 415.18 675.32 415.18 685.82 4 Y
+V
+226.02 685.82 415.18 685.82 2 L
+N
+0 0 0 1 0 0 0 K
+1 11 Q
+0 X
+0 0 0 1 0 0 0 K
+(annotated) 110.23 682.23 T
+(templates) 233.02 653.68 T
+(set-up code) 228.91 632.19 T
+(static code) 300.63 683.78 T
+(run-time values) 402.29 616.06 T
+(dynamic code) 364.08 651.9 T
+297.74 595.46 361.51 665.15 R
+7 X
+V
+297.74 595.46 361.51 665.15 R
+1 H
+0 Z
+0 X
+N
+1 12 Q
+(Dynamic) 307.63 644.59 T
+(Compiler) 306.96 626.11 T
+432.79 644.06 498.33 694.42 R
+7 X
+V
+432.79 644.06 498.33 694.42 R
+0 X
+N
+(Executable) 438.91 675.44 T
+(Program) 444.9 656.75 T
+1 11 Q
+(source code) 105.5 670.23 T
+0 0 1 0 1 1 0 K
+278.62 624.17 296.81 613.67 278.62 603.17 278.62 613.67 4 Y
+3 X
+0 0 1 0 1 1 0 K
+V
+190.39 645.74 190.39 613.67 278.62 613.67 3 L
+10 H
+2 Z
+N
+0 0 0 1 0 0 0 K
+0 X
+0 0 0 1 0 0 0 K
+(directives) 232.72 611.99 T
+162.8 643.01 226.57 697.82 R
+7 X
+V
+162.8 643.01 226.57 697.82 R
+1 H
+0 Z
+0 X
+N
+1 12 Q
+(Static) 181.02 677.45 T
+(Compiler) 172.02 657.1 T
+153.54 544.41 441.54 562.41 R
+7 X
+V
+0 11 Q
+0 X
+(Figure 1: Overall Static/Dynamic Compiler Structure) 171.32 555.08 T
+2 12 Q
+(Dynamic Compile T) 333.48 582.2 T
+(ime) 429.48 582.2 T
+1 F
+(\050Stitcher\051) 306.97 607.64 T
+0 -208 1000 792 C
+0 0 0 1 0 0 0 K
+FMENDPAGE
+%%EndPage: "3" 3
+%%Page: "4" 4
+612 792 0 FMBEGINPAGE
+[0 0 0 1 0 0 0]
+[ 0 1 1 0 1 0 0]
+[ 1 0 1 0 0 1 0]
+[ 1 1 0 0 0 0 1]
+[ 1 0 0 0 0 1 1]
+[ 0 1 0 0 1 0 1]
+[ 0 0 1 0 1 1 0]
+ 7 FrameSetSepColors
+FrameNoSep
+0 0 0 1 0 0 0 K
+90 36 522 54 R
+7 X
+0 0 0 1 0 0 0 K
+V
+0 10 Q
+0 X
+(4) 303.22 47.33 T
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 72 522 720 R
+7 X
+V
+1 11 Q
+0 X
+1.45 (to dif) 90 712.67 P
+1.45 (ferent run-time constants. This analysis works well for) 114.79 712.67 P
+4 F
+3.49 (if) 369.3 712.67 P
+1 F
+1.45 ( and) 382.5 712.67 P
+4 F
+3.49 (switch) 406.79 712.67 P
+1 F
+1.45 ( branches whose) 446.39 712.67 P
+(predicates are run-time constant, and can cope with unstructured \337ow graphs.) 90 697.67 T
+2.56 (Unrolled loops are handled by treating the loop head mer) 90 676.67 P
+2.56 (ge as one in which the incoming) 364.27 676.67 P
+-0.2 (predecessors have mutually exclusive reachability) 90 661.67 P
+-0.2 (. This treatment enables loop induction variables) 309.04 661.67 P
+(\050and values derived from induction variables\051 to be identi\336ed as run-time constants.) 90 646.67 T
+3 F
+0.36 (Extracting Set-up Code and T) 90 625.67 P
+0.36 (emplates) 231.61 625.67 P
+1 F
+0.36 (. The second step of compiling dynamic regions divides) 273.16 625.67 P
+-0.28 (each region subgraph into two separate subgraphs, one for set-up code, the other for template code.) 90 610.67 P
+0.63 (The set-up subgraph contains the calculations that de\336ne run-time constants \050as identi\336ed by the) 90 595.67 P
+0.44 (\336rst phase\051, plus code to store the constants into a table for communication with the stitcher; this) 90 580.67 P
+0.41 (code is run at most once per dynamic region. The template subgraph contains all the calculations) 90 565.67 P
+1.64 (that depend at least in part on non-constant variables, with \322holes\323 for constant operands; the) 90 550.67 P
+0.53 (instantiated template code is executed each time the region is entered. Once constructed, the two) 90 535.67 P
+(subgraphs replace the original dynamic region.) 90 520.67 T
+3 F
+1.11 (Optimization) 90 499.67 P
+1 F
+1.11 (. The third step optimizes the control \337ow graph for each procedure, applying all) 152.34 499.67 P
+0.31 (standard optimizations without regard to template boundaries. For the most part, the analyses can) 90 484.67 P
+3.74 (treat template holes as compile-time constants of unknown value. In some situations the) 90 469.67 P
+1.05 (optimizations were updated to work correctly with holes; for example, since holes shouldn\325) 90 454.67 P
+1.05 (t be) 504.76 454.67 P
+1.95 (treated as legal values outside a dynamic region, they are not copy propagated across region) 90 439.67 P
+(boundaries.) 90 424.67 T
+3 F
+0.92 (Code Generation) 90 403.67 P
+1 F
+0.92 (. The \336nal step generates machine code and stitcher directives. The directives) 171.27 403.67 P
+0.6 (instruct the stitcher how to patch the template holes, adjust pc-relative of) 90 388.67 P
+0.6 (fsets, eliminate untaken) 416.61 388.67 P
+(branches and completely unroll loops.) 90 373.67 T
+0 12 Q
+(2.2) 90 350.25 T
+(The Stitcher) 117 350.25 T
+1 11 Q
+1.94 (Given the preparation by the static compiler) 90 332.29 P
+1.94 (, the stitcher has only to follow the directives to) 294.91 332.29 P
+1.48 (instantiate the machine-code templates. Most of the tasks are straightforward, such as copying) 90 317.29 P
+0.24 (blocks of template code and \336lling in hole values. It also performs simple peephole optimizations) 90 302.29 P
+(on the template code that exploit the actual values of the run-time constant operands.) 90 287.29 T
+0 12 Q
+(2.3) 90 263.88 T
+(Putting Them T) 117 263.88 T
+(ogether) 197.7 263.88 T
+1 11 Q
+-0.17 (Our dynamic compilation framework was designed to produce high-quality dynamically-compiled) 90 245.92 P
+0.34 (code, at low dynamic compilation cost. T) 90 230.92 P
+0.34 (o generate high-quality code, the static compiler applies) 273.37 230.92 P
+1.04 (standard global optimizations to the machine-code templates, optimizing them in the context of) 90 215.92 P
+0.18 (their enclosing procedure. It also plans out the ef) 90 200.92 P
+0.18 (fect of run-time constant-based optimizations, so) 306.01 200.92 P
+4.4 (that the \336nal, optimized templates contain only the calculations that remain after these) 90 185.92 P
+0.57 (optimizations have been performed. Lastly) 90 170.92 P
+0.57 (, the entire analysis is embedded within an optimizing) 280.05 170.92 P
+-0.01 (compiler \050in our case, the Multi\337ow compiler [LFK) 90 155.92 P
+1 8.8 Q
+-0 (+) 317.88 160.32 P
+1 11 Q
+-0.01 (93]\051. The low) 322.84 155.92 P
+-0.01 (dynamic compilation overhead) 385.76 155.92 P
+1.2 (is achieved by presenting the stitcher with almost completely constructed machine code. Initial) 90 140.92 P
+0.74 (results on two C utility programs exhibit speed-ups of 1.6 and 1.9 over statically-compiled code) 90 125.92 P
+(with negligible dynamic compilation time overhead [APC) 90 110.92 T
+1 8.8 Q
+(+) 345.43 115.32 T
+1 11 Q
+(].) 350.39 110.92 T
+0 0 0 1 0 0 0 K
+FMENDPAGE
+%%EndPage: "4" 4
+%%Page: "5" 5
+612 792 0 FMBEGINPAGE
+[0 0 0 1 0 0 0]
+[ 0 1 1 0 1 0 0]
+[ 1 0 1 0 0 1 0]
+[ 1 1 0 0 0 0 1]
+[ 1 0 0 0 0 1 1]
+[ 0 1 0 0 1 0 1]
+[ 0 0 1 0 1 1 0]
+ 7 FrameSetSepColors
+FrameNoSep
+0 0 0 1 0 0 0 K
+90 36 522 54 R
+7 X
+0 0 0 1 0 0 0 K
+V
+0 10 Q
+0 X
+(5) 303.22 47.33 T
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 72 522 720 R
+7 X
+V
+1 11 Q
+0 X
+-0.39 (Our dynamic compilation framework is novel in several respects. First, it is capable of handling the) 90 712.67 P
+-0.51 (full functionality of C, without restricting its normal programming style.) 90 697.67 P
+1 8.8 Q
+-0.41 (*) 404.08 702.07 P
+1 11 Q
+-0.51 ( Second, it can derive run-) 408.48 697.67 P
+1.53 (time constants automatically via its two interconnected data\337ow algorithms; when executed in) 90 682.67 P
+1.18 (parallel, they provide an analysis that handles unstructured control \337ow well. Finally) 90 667.67 P
+1.18 (, since the) 475.34 667.67 P
+-0.63 (analyses is integrated into an optimizing compiler) 90 652.67 P
+-0.63 (, dynamically-compiled code is heavily optimized) 305.16 652.67 P
+(with its surrounding code, without limitations on the kinds of optimizations that can be applied.) 90 637.67 T
+0.5 (Consel and No\221l [CN96] describe a similar framework for dynamic compilation which follows a) 90 616.67 P
+1.61 (more traditional partial evaluation approach. Their binding time analysis is done over abstract) 90 601.67 P
+0.28 (syntax trees, and as such is conservative in the face of unstructured control \337ow) 90 586.67 P
+0.28 (. They are able to) 444.22 586.67 P
+0.5 (identify run-time constants interprocedurally) 90 571.67 P
+0.5 (, while our analysis is currently intraprocedural. Our) 287.84 571.67 P
+2.61 (implementation is integrated with an existing optimizing compiler) 90 556.67 P
+2.61 (, enabling us to adapt the) 398.99 556.67 P
+3.61 (compiler) 90 541.67 P
+3.61 (\325) 129.51 541.67 P
+3.61 (s optimizations to work properly in the face of template code with holes; their) 132.57 541.67 P
+1.63 (implementation relies on recognizing certain assembly code idioms for holes and assumes the) 90 526.67 P
+1.08 (optimizing compiler will not disturb these idioms. Annotations in the two frameworks are used) 90 511.67 P
+(dif) 90 496.67 T
+(ferently as well.) 102.02 496.67 T
+0.22 (Leone and Lee [LL96] describe a simpler framework for compiling a \336rst-order purely functional) 90 475.67 P
+1.7 (language. They do not perform aggressive static optimizations or planning, leading to poorer) 90 460.67 P
+1.7 (-) 518.34 460.67 P
+0.31 (quality generated code and slower dynamic compilation \050since some optimizations are performed) 90 445.67 P
+1.7 (at run-time rather than statically\051. Engler) 90 430.67 P
+2 F
+1.7 (et al.) 282.6 430.67 P
+1 F
+1.7 ( [EHK96] describe a more manual but \337exible) 306.31 430.67 P
+0.74 (approach, which provides the programmer with \336rst-class code fragments that can be assembled) 90 415.67 P
+2.58 (and dynamically-compiled under programmer control. This approach allows programmers to) 90 400.67 P
+0.25 (perform their own high-level optimizations, such as run-time constant folding and loop unrolling,) 90 385.67 P
+3.95 (but, conversely) 90 370.67 P
+3.95 (, requires the programmers to perform their own optimizations. Low-level) 160.45 370.67 P
+(optimizations across code fragments are not supported.) 90 355.67 T
+0.56 (Still two other systems optimize operating systems code less automatically: Pardyak et al. [PSB]) 90 334.67 P
+1.67 (optimized the implicit event invocation mechanism in SPIN; Pu et al. [P) 90 319.67 P
+1.67 (AAB) 425.11 319.67 P
+1 8.8 Q
+1.33 (+) 448.33 324.07 P
+1 11 Q
+1.67 (95] proposed a) 453.29 319.67 P
+(specialization model for Synthetix and applied it to \336le reads.) 90 304.67 T
+0 13 Q
+(3) 90 279.33 T
+(Dynamic Compilation of Event Dispatching) 108 279.33 T
+1 11 Q
+1.45 (Dynamic compilation greatly speeds up event dispatching in SPIN [PSB] and similar systems.) 90 259.67 P
+1.54 (Conceptually) 90 244.67 P
+1.54 (, a naive, statically-compiled implementation of dispatching interprets a relatively) 147.95 244.67 P
+0.24 (invariant data structure, namely the linked list of guard/handler pairs \050see example code in Figure) 90 229.67 P
+0.65 (2) 90 214.67 P
+1 8.8 Q
+0.52 (\240) 95.5 219.07 P
+1 11 Q
+0.65 (\051. This interpreter would iterate through the linked list, evaluating the guard procedure at each) 99.9 214.67 P
+(element, and invoking the corresponding handler procedure if the guard returns true.) 90 199.67 T
+0.25 (Since the set of handlers for events is \336xed for relatively long periods of time, we would treat the) 90 178.67 P
+1.6 (interpreter loop over this data structure as a dynamic region, and dynamically-compile it with) 90 163.67 P
+90 136 522 150.98 C
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 136 522 150.98 R
+7 X
+0 0 0 1 0 0 0 K
+V
+90 141.91 243 141.91 2 L
+V
+0.5 H
+2 Z
+0 X
+N
+0 0 612 792 C
+1 8 Q
+0 X
+0 0 0 1 0 0 0 K
+(*) 90 133.33 T
+1 10 Q
+(A Modula-3 front-end will be added for dynamically compiling SPIN extensions.) 95.68 129.33 T
+1 8 Q
+(\240) 90 119.33 T
+1 10 Q
+0.12 (We are simplifying the semantics and interfaces to event dispatching, guards, and handlers to focus on the) 95.68 115.33 P
+2.29 (aspects most interesting for dynamic compilation. Annotations for the dynamic region, the run-time) 95.68 103.33 P
+0.93 (constants \050) 95.68 91.33 P
+4 F
+2.23 (event) 139.66 91.33 P
+1 F
+0.93 ( and) 169.66 91.33 P
+4 F
+2.23 (handlers) 190.96 91.33 P
+1 F
+0.93 (\051, the key to the cache of specialized versions of the dynamic region) 238.96 91.33 P
+(\050) 95.68 79.33 T
+4 F
+(event) 99.01 79.33 T
+1 F
+(\051, and the loop to unroll fully are indicated in bold.) 129.01 79.33 T
+0 0 0 1 0 0 0 K
+FMENDPAGE
+%%EndPage: "5" 5
+%%Page: "6" 6
+612 792 0 FMBEGINPAGE
+[0 0 0 1 0 0 0]
+[ 0 1 1 0 1 0 0]
+[ 1 0 1 0 0 1 0]
+[ 1 1 0 0 0 0 1]
+[ 1 0 0 0 0 1 1]
+[ 0 1 0 0 1 0 1]
+[ 0 0 1 0 1 1 0]
+ 7 FrameSetSepColors
+FrameNoSep
+0 0 0 1 0 0 0 K
+90 36 522 54 R
+7 X
+0 0 0 1 0 0 0 K
+V
+0 10 Q
+0 X
+(6) 303.22 47.33 T
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 72 522 720 R
+7 X
+V
+1 11 Q
+0 X
+-0.33 (respect to the current set of installed handlers. Our dynamic compiler framework can automatically) 90 540.66 P
+0.57 (produce a specialized version of the body of the dynamic region for each dif) 90 525.66 P
+0.57 (ferent) 432.89 525.66 P
+4 F
+1.36 (event) 461.86 525.66 P
+1 F
+0.57 ( name) 494.86 525.66 P
+0.92 (being dispatched, with the body of the dispatching loop unrolled fully for all installed handlers.) 90 510.66 P
+3.4 (W) 90 495.66 P
+3.4 (ithin each iteration, the) 99.94 495.66 P
+4 F
+8.16 (guard_proc) 217.72 495.66 P
+1 F
+3.4 ( and) 283.72 495.66 P
+4 F
+8.16 (handler_proc) 311.91 495.66 P
+1 F
+3.4 ( code addresses are known) 391.11 495.66 P
+(statically) 90 480.66 T
+(, and therefore their procedures can be called directly) 129.01 480.66 T
+(.) 362.57 480.66 T
+0.42 (Although this applies some of the bene\336ts of) 90 459.66 P
+0.42 (dynamic compilation to dynamic dispatching, more) 293.19 459.66 P
+1.33 (opportunities for optimization exist. Below we identify the extensions we need to make to our) 90 444.66 P
+(framework to generate better code for event dispatching.) 90 429.66 T
+3 F
+0.29 (Support for infr) 90 408.66 P
+0.29 (equently changing quasi-constants.) 166.16 408.66 P
+1 F
+0.29 (Our framework needs to support constants) 333.89 408.66 P
+0.6 (that occasionally change, such as the) 90 393.66 P
+4 F
+1.43 (handlers) 258.23 393.66 P
+1 F
+0.6 ( global variable above. This can easily be done) 311.03 393.66 P
+1.55 (with an additional annotation that denotes quasi-constants [P) 90 378.66 P
+1.55 (AAB) 367.21 378.66 P
+1 8.8 Q
+1.24 (+) 390.43 383.06 P
+1 11 Q
+1.55 (95] placed on the code that) 395.4 378.66 P
+2.16 (changes them. The annotation would cause the compiled code that had been cached for this) 90 363.66 P
+0.32 (dynamic region to be \337ushed. A simple implementation would enable the \337ushing of all dynamic) 90 348.66 P
+-0.42 (regions whenever any quasi-constants changed; more sophisticated systems would allow regions to) 90 333.66 P
+0.15 (be named and \337ushed selectively) 90 318.66 P
+0.15 (, or would automatically track which regions depended on which) 235.31 318.66 P
+-0.33 (quasi-constants. A harder problem is synchronizing cache \337ushing when there is code concurrently) 90 303.66 P
+3.75 (executing within the dynamic region [P) 90 288.66 P
+3.75 (AAB) 281.6 288.66 P
+1 8.8 Q
+3 (+) 304.82 293.06 P
+1 11 Q
+3.75 (95]; in the SPIN dispatcher) 309.79 288.66 P
+3.75 (, updates to the) 444.13 288.66 P
+4 F
+2.07 (handlers) 90 273.66 P
+1 F
+0.86 ( list af) 142.8 273.66 P
+0.86 (fect only future event dispatches; the old dispatcher code is garbage-collected) 171.83 273.66 P
+(once all executing dispatches have completed.) 90 258.66 T
+3 F
+2.59 (Inlining of run-time constant pr) 90 237.66 P
+2.59 (ocedur) 249.89 237.66 P
+2.59 (es.) 282.08 237.66 P
+1 F
+2.59 ( SPIN dispatching makes heavy use of run-time) 293.99 237.66 P
+0.91 (constant code pointers \050as illustrated by) 90 222.66 P
+4 F
+2.18 (guard_proc) 272.66 222.66 P
+1 F
+0.91 ( and) 338.66 222.66 P
+4 F
+2.18 (handler_proc) 361.86 222.66 P
+1 F
+0.91 ( in Figure 2\051. The) 441.06 222.66 P
+0.07 (guard procedures are often very simple, and many guards contain partial redundancies in the form) 90 207.66 P
+1.13 (of predicate subexpressions that perform the same test or similar tests \050such as multiple guards) 90 192.66 P
+3.13 (testing the system-call-number ar) 90 177.66 P
+3.13 (gument against dif) 246.13 177.66 P
+3.13 (ferent constant values\051. If simple guard) 334.07 177.66 P
+3.01 (procedures were inlined, the run-time overhead of the procedure call and return would be) 90 162.66 P
+1.5 (eliminated, and a number of important post-inlining optimizations could be performed: checks) 90 147.66 P
+0.24 (against the constant true could be folded away) 90 132.66 P
+0.24 (, repeated predicate subexpressions across \050inlined\051) 294.74 132.66 P
+0.21 (guards could be identi\336ed and eliminated, and multiple tests of a value against dif) 90 117.66 P
+0.21 (ferent constants) 452.45 117.66 P
+0.52 (could be collapsed into a single, multi-way branch. When these optimizations are completed, the) 90 102.66 P
+83.27 547.99 528.73 720 C
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+101.27 541 515.27 714 R
+7 X
+0 0 0 1 0 0 0 K
+V
+4 10 Q
+0 X
+(struct HandlerList {) 110.27 707.33 T
+(int \050*guard_proc\051\050EventName event, ArgList* args\051;) 119.27 696.83 T
+(void \050*handler_proc\051\050EventName event, ArgList* args\051;) 119.27 686.33 T
+(struct HandlerList *next;) 119.27 675.83 T
+(} *handlers;) 110.27 665.33 T
+(void process_event\050EventName event, ArgList *args\051 {) 110.27 652.83 T
+5 F
+(dynamicRegion foreach\050event\051 constant\050handlers\051) 119.27 642.33 T
+4 F
+({) 407.27 642.33 T
+5 F
+(unrolled) 128.27 631.83 T
+4 F
+( for\050; handlers != NULL; handlers = handlers->next\051 {) 176.27 631.83 T
+(if \050\050*handlers->guard_proc\051\050event, args\051\051 {) 137.27 621.33 T
+(\050*handlers->handler_proc\051\050event, args\051;) 146.27 610.83 T
+(}) 137.27 600.33 T
+(}) 128.27 589.83 T
+(}) 119.27 579.33 T
+0 11 Q
+(Figure 2: Annotated Event Dispatcher) 216.56 559.17 T
+0 0 612 792 C
+0 0 0 1 0 0 0 K
+FMENDPAGE
+%%EndPage: "6" 6
+%%Page: "7" 7
+612 792 0 FMBEGINPAGE
+[0 0 0 1 0 0 0]
+[ 0 1 1 0 1 0 0]
+[ 1 0 1 0 0 1 0]
+[ 1 1 0 0 0 0 1]
+[ 1 0 0 0 0 1 1]
+[ 0 1 0 0 1 0 1]
+[ 0 0 1 0 1 1 0]
+ 7 FrameSetSepColors
+FrameNoSep
+0 0 0 1 0 0 0 K
+90 36 522 54 R
+7 X
+0 0 0 1 0 0 0 K
+V
+0 10 Q
+0 X
+(7) 303.22 47.33 T
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 72 522 720 R
+7 X
+V
+1 11 Q
+0 X
+1.91 (simple linear list of guard/handler call pairs is transformed into a decision-tree-like structure,) 90 712.67 P
+(implemented with executable code rather than passive data structures.) 90 697.67 T
+3.21 (Simple inlining of run-time constant procedures can be easily implemented in our current) 90 676.67 P
+0.26 (framework: fragments of machine code would simply be spliced into the dynamic region in place) 90 661.67 P
+-0.2 (of the call. However) 90 646.67 P
+-0.2 (, much of the bene\336t of inlining guards comes from the simpli\336cations that are) 178.76 646.67 P
+0.52 (made after inlining. This is much more dif) 90 631.67 P
+0.52 (\336cult to support with our current framework, since we) 279.83 631.67 P
+0.28 (have intentionally stripped away all of the sophistication of the dynamic compiler to make it fast.) 90 616.67 P
+2.46 (T) 90 601.67 P
+2.46 (o support post-inlining optimizations, we will need to augment our machine-code template) 95.95 601.67 P
+-0.49 (representation of programs that is available at dynamic compile time to include enough information) 90 586.67 P
+0.35 (to perform selected optimizations after inlining. W) 90 571.67 P
+0.35 (e consider this extension and the studies of the) 314.53 571.67 P
+-0.32 (trade-of) 90 556.67 P
+-0.32 (fs among dif) 124.62 556.67 P
+-0.32 (ferent run-time program representations, their dynamic compilation times, and) 179.37 556.67 P
+(the quality of their dynamically-generated code to be a relatively long-term research ef) 90 541.67 T
+(fort.) 471.64 541.67 T
+-0.02 (In the shorter term, we are side-stepping this run-time inlining issue in our experimental prototype) 90 520.67 P
+0.07 (by recasting the guard procedures as explicit data structures akin to Lisp S-expressions. Instead of) 90 505.67 P
+0.29 (writing Modula-3 code for a guard, the programmer will construct a data structure that represents) 90 490.67 P
+0.58 (the test that the guard performs.) 90 475.67 P
+1 8.8 Q
+0.47 (*) 232.83 480.07 P
+1 11 Q
+0.58 ( A separate S-expression optimizer will transform the linear list) 237.23 475.67 P
+-0.01 (representation of guard/handler pairs into the faster decision-tree factored representation \050actually) 90 460.67 P
+-0.01 (,) 519.25 460.67 P
+2.52 (to avoid unnecessary duplication of code, the decision \322tree\323 is a DAG\051. Finally) 90 445.67 P
+2.52 (, the event) 471.44 445.67 P
+1.72 (dispatching interpreter will become an interpreter over the decision tree rather than the initial) 90 430.67 P
+0.39 (handler list. W) 90 415.67 P
+0.39 (e will use this alternative implementation to gain an understanding of the potential) 154.97 415.67 P
+-0.55 (bene\336ts due to dynamic compilation, dif) 90 400.67 P
+-0.55 (ferent forms of redundancy elimination and factoring in the) 264.89 400.67 P
+(guard decision tree, and simple inlining of the guards and \050short\051 handlers.) 90 385.67 T
+3 F
+1.75 (Multi-way loop unr) 90 364.67 P
+1.75 (olling.) 184.98 364.67 P
+1 F
+1.75 ( Unrolled loops are usually thought of as linear sequences of loop) 214.02 364.67 P
+0.57 (bodies. But an interpreter over a decision tree has multiple successor paths down which the loop) 90 349.67 P
+1.13 (can proceed. Each of these paths needs its own unrolled loop, to produce a tree of loop bodies) 90 334.67 P
+-0.56 (isomorphic to the decision tree\325) 90 319.67 P
+-0.56 (s structure. Moreover) 226.46 319.67 P
+-0.56 (, since the decision tree is, in fact, a DAG, with) 319.28 319.67 P
+1.27 (some subgraphs shared, loop unrolling needs to detect when unrolled loop iterations should be) 90 304.67 P
+(shared.) 90 289.67 T
+2.18 (Both of these extensions can be accommodated by annotating) 90 268.67 P
+2.18 (the unrolled loop with a loop) 383.68 268.67 P
+0.35 (induction variable \050such as the current S-expression being evaluated\051 that will be maintained as a) 90 253.67 P
+-0.09 (run-time constant. If the S-expression variable is assigned dif) 90 238.67 P
+-0.09 (ferent constant values along dif) 358.83 238.67 P
+-0.09 (ferent) 496.35 238.67 P
+-0.05 (cases within the loop iteration \050such as the two successor S-expressions after an) 90 223.67 P
+4 F
+-0.11 (if) 442.86 223.67 P
+1 F
+-0.05 ( S-expression\051,) 456.06 223.67 P
+2.15 (the static compiler will ensure \050through tail duplication\051 that dif) 90 208.67 P
+2.15 (ferent control \337ow paths are) 389.36 208.67 P
+0.49 (maintained for each distinct value of the annotated) 90 193.67 P
+0.49 (variable, and that each loop back-edge with a) 319.39 193.67 P
+-0.59 (dif) 90 178.67 P
+-0.59 (ferent value will lead to a distinct unrolled loop iteration. If dif) 102.02 178.67 P
+-0.59 (ferent loop back edges end up with) 371.55 178.67 P
+1.12 (the same value for the annotated variable \050this can happen with shared subtrees in the decision) 90 163.67 P
+1.99 (DAG\051, then the stitcher will ensure that both back-edges lead to the same unrolled iteration;) 90 148.67 P
+0.83 (consequently) 90 133.67 P
+0.83 (, the compiled code will be shared in the same shape as the sharing in the decision) 147.33 133.67 P
+(DAG being interpreted.) 90 118.67 T
+90 98 522 112.98 C
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 98 522 112.98 R
+7 X
+0 0 0 1 0 0 0 K
+V
+90 103.91 243 103.91 2 L
+V
+0.5 H
+2 Z
+0 X
+N
+0 0 612 792 C
+1 8 Q
+0 X
+0 0 0 1 0 0 0 K
+(*) 90 95.33 T
+1 10 Q
+0.53 (A more sophisticated implementation would have the Modula-3 compiler automatically produce these S-) 95.68 91.33 P
+(expressions.) 95.68 79.33 T
+0 0 0 1 0 0 0 K
+FMENDPAGE
+%%EndPage: "7" 7
+%%Page: "8" 8
+612 792 0 FMBEGINPAGE
+[0 0 0 1 0 0 0]
+[ 0 1 1 0 1 0 0]
+[ 1 0 1 0 0 1 0]
+[ 1 1 0 0 0 0 1]
+[ 1 0 0 0 0 1 1]
+[ 0 1 0 0 1 0 1]
+[ 0 0 1 0 1 1 0]
+ 7 FrameSetSepColors
+FrameNoSep
+0 0 0 1 0 0 0 K
+90 36 522 54 R
+7 X
+0 0 0 1 0 0 0 K
+V
+0 10 Q
+0 X
+(8) 303.22 47.33 T
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 72 522 720 R
+7 X
+V
+3 11 Q
+0 X
+2.13 (Specializing event dispatchers for differ) 90 712.67 P
+2.13 (ent event invocation sites) 284.69 712.67 P
+1 F
+2.13 (. Our current framework) 408.1 712.67 P
+0.2 (supports specialized versions of a dynamic region for each distinct value of some parameter \050e.g.,) 90 697.67 P
+0.51 (the) 90 682.67 P
+4 F
+1.24 (event) 106.71 682.67 P
+1 F
+0.51 ( variable in Figure 2\051. This will allow each version of the dispatching code to include) 139.71 682.67 P
+1.94 (only the guard evaluations that pertain to a particular event; the other guards will have been) 90 667.67 P
+0.58 (eliminated, due to constant-folding of comparisons of the) 90 652.67 P
+4 F
+1.4 (event) 349.8 652.67 P
+1 F
+0.58 ( variable against other constant) 382.8 652.67 P
+(event names.) 90 637.67 T
+0.51 (It is also possible to exploit more invariant information at particular sites where events are being) 90 616.67 P
+-0.69 (raised. For example, if an event invocation site always passes a particular constant to the event \050such) 90 601.67 P
+-0.09 (as the number of the system call being invoked\051, then an even more specialized event dispatcher is) 90 586.67 P
+-0.29 (possible, where all comparisons against the constant ar) 90 571.67 P
+-0.29 (gument are folded away) 329.1 571.67 P
+-0.29 (. T) 433.5 571.67 P
+-0.29 (o support this, we) 444.66 571.67 P
+1.17 (would need some mechanism to indicate which ar) 90 556.67 P
+1.17 (guments to the event invocation are run-time) 317.63 556.67 P
+-0.05 (constants. W) 90 541.67 P
+-0.05 (e anticipate handling this by extending the notion of dynamic regions to operate more) 145.9 541.67 P
+0.02 (interprocedurally; a call site would be annotated as a dynamic region and would include the callee) 90 526.67 P
+(procedure.) 90 511.67 T
+0 13 Q
+(4) 90 486.33 T
+(Summary) 108 486.33 T
+1 11 Q
+0.31 (This paper described extensions to a dynamic compilation framework that will support optimized) 90 467.67 P
+0.88 (dispatching in the SPIN extensible operating system. The dispatch-related optimizations include) 90 453.67 P
+-0.18 (support for infrequently changing quasi-constants, inlining of run-time constant procedures, multi-) 90 439.67 P
+(way loop unrolling, and specializing event dispatchers for dif) 90 425.67 T
+(ferent event invocation sites.) 359.57 425.67 T
+3 F
+(Acknowledgments) 90 405.67 T
+1 F
+-0.34 (W) 90 384.67 P
+-0.34 (e would like to thank John O\325Donnell \050Equator T) 99.5 384.67 P
+-0.34 (echnologies, Inc.\051 and T) 312.96 384.67 P
+-0.34 (ryggve Fossum \050Digital) 418.17 384.67 P
+-0.67 (Equipment Corp.\051 for the source for the Alpha AXP version of the Multi\337ow compiler) 90 369.67 P
+-0.67 (. The research) 461.35 369.67 P
+1.64 (is supported by ARP) 90 354.67 P
+1.64 (A contract N00014-94-1-1) 185.26 354.67 P
+1.64 (136, NSF PYI A) 305.43 354.67 P
+1.64 (ward MIP-9058439, NSF NYI) 382.66 354.67 P
+(A) 90 339.67 T
+(ward CCR94-57767, and ONR grant N00014-92-J-1395.) 96.93 339.67 T
+3 F
+(Refer) 90 318.67 T
+(ences) 116.06 318.67 T
+1 10 Q
+([APC) 90 293.33 T
+0 0 0 1 0 0 0 K
+(+) 112.78 298.33 T
+0 0 0 1 0 0 0 K
+(96]) 118.42 293.33 T
+0.02 (J.) 155.2 293.33 P
+0.02 (Auslander, M.) 164.09 293.33 P
+0.02 (Philipose, C.) 224.09 293.33 P
+0.02 (Chambers, S.J. Eggers, and B.N. Bershad. Fast, effective dy-) 278.01 293.33 P
+1.41 (namic compilation.) 155.2 281.33 P
+2 F
+1.41 (Conference on Programming Language Design and Implementation) 237.74 281.33 P
+1 F
+1.41 (,) 519.5 281.33 P
+(May 1996.) 155.2 269.33 T
+([BSP) 90 246.33 T
+0 0 0 1 0 0 0 K
+(+) 111.12 251.33 T
+0 0 0 1 0 0 0 K
+(95]) 116.76 246.33 T
+0.39 (B.N. Bershad, S.) 155.2 246.33 P
+0.39 (Savage, P.) 225.7 246.33 P
+0.39 (Pardyak, E.G. Sirer, M.) 270.53 246.33 P
+0.39 (Fiuczynski, D.) 368.63 246.33 P
+0.39 (Becker, S.) 430.13 246.33 P
+0.39 (Eggers, and) 474.4 246.33 P
+0.37 (C.) 155.2 234.33 P
+0.37 (Chambers. Extensibility, safety and performance in the SPIN operating system. In) 166.87 234.33 P
+0 0 0 1 0 0 0 K
+2 F
+0.37 (Sym-) 502.01 234.33 P
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+(posium on Operating Systems Principles) 155.2 222.33 T
+0 0 0 1 0 0 0 K
+1 F
+(, November 1995.) 317.97 222.33 T
+([CN96]) 90 204.33 T
+-0.01 (C.) 155.2 204.33 P
+-0.01 (Consel and F.) 166.87 204.33 P
+-0.01 (Noel. A general approach for run-time specialization and its application to) 224.63 204.33 P
+(C. In) 155.2 192.33 T
+0 0 0 1 0 0 0 K
+2 F
+(Symposium on Principles of Programming Languages) 177.7 192.33 T
+0 0 0 1 0 0 0 K
+1 F
+(, January 1996.) 394.64 192.33 T
+([CT95]) 90 174.33 T
+-0.07 (R.H. Campbell and S.-M. Tan. Microchoices: An object-oriented multimedia operating sys-) 155.2 174.33 P
+(tem. In) 155.2 162.33 T
+0 0 0 1 0 0 0 K
+2 F
+(5th Workshop on Hot Topics in Operating Systems) 186.03 162.33 T
+0 0 0 1 0 0 0 K
+1 F
+(, May 1995.) 389.08 162.33 T
+([EHK96]) 90 144.33 T
+0.19 (D.R. Engler, W.C. Hsieh, and M.F. Kaashoek. \324C: A language for high-level, efficient, and) 155.2 144.33 P
+0.89 (machine-independent dynamic code generation. In) 155.2 132.33 P
+0 0 0 1 0 0 0 K
+2 F
+0.89 (Symposium on Principles of Program-) 364.58 132.33 P
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+(ming Languages) 155.2 120.33 T
+0 0 0 1 0 0 0 K
+1 F
+(, January 1996.) 221.59 120.33 T
+([JGS93]) 90 102.33 T
+0.82 (N.) 155.2 102.33 P
+0.82 (Jones, C.) 167.42 102.33 P
+0.82 (Gomard, and P.) 207.13 102.33 P
+0.82 (Sestoft.) 274.03 102.33 P
+0 0 0 1 0 0 0 K
+2 F
+0.82 (Partial Evaluation and Automatic Program Genera-) 307.63 102.33 P
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+(tion) 155.2 90.33 T
+0 0 0 1 0 0 0 K
+1 F
+(. Prentice Hall, 1993.) 170.76 90.33 T
+0 0 0 1 0 0 0 K
+FMENDPAGE
+%%EndPage: "8" 8
+%%Page: "9" 9
+612 792 0 FMBEGINPAGE
+[0 0 0 1 0 0 0]
+[ 0 1 1 0 1 0 0]
+[ 1 0 1 0 0 1 0]
+[ 1 1 0 0 0 0 1]
+[ 1 0 0 0 0 1 1]
+[ 0 1 0 0 1 0 1]
+[ 0 0 1 0 1 1 0]
+ 7 FrameSetSepColors
+FrameNoSep
+0 0 0 1 0 0 0 K
+90 36 522 54 R
+7 X
+0 0 0 1 0 0 0 K
+V
+0 10 Q
+0 X
+(9) 303.22 47.33 T
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+90 72 522 720 R
+7 X
+V
+1 F
+0 X
+([LFK) 90 708.33 T
+0 0 0 1 0 0 0 K
+(+) 112.22 713.33 T
+0 0 0 1 0 0 0 K
+(93]) 117.86 708.33 T
+0.62 (P.G. Lowney, S.M. Freudenberger, T.J. Karzes, W.D. Lichtenstein, R.P. Nix, J.S. O\325Don-) 155.2 708.33 P
+0.52 (nell, and J.C. Ruttenberg. The Multiflow trace scheduling compiler.) 155.2 696.33 P
+0 0 0 1 0 0 0 K
+2 F
+0.52 (Journal of Supercom-) 433.75 696.33 P
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+(puting) 155.2 684.33 T
+0 0 0 1 0 0 0 K
+1 F
+(, 7, 1993.) 180.76 684.33 T
+([LL96]) 90 666.33 T
+-0.31 (M.) 155.2 666.33 P
+-0.31 (Leone and P.) 169.09 666.33 P
+-0.31 (Lee. Optimizing ML with run-time code generation. In) 223.46 666.33 P
+2 F
+-0.31 (Conference on Pro-) 443.19 666.33 P
+(gramming Language Design and Implementation) 155.2 654.33 T
+1 F
+(, May 1996.) 352.41 654.33 T
+([PAAB) 90 631.33 T
+0 0 0 1 0 0 0 K
+(+) 120 636.33 T
+0 0 0 1 0 0 0 K
+(95]) 125.64 631.33 T
+1.86 (C.) 155.2 631.33 P
+1.86 (Pu, T.) 166.87 631.33 P
+1.86 (Autrey, C.) 195.4 631.33 P
+1.86 (Consel A.) 241.7 631.33 P
+1.86 (Black, C.) 286.06 631.33 P
+1.86 (Cowan, J.) 327.92 631.33 P
+1.86 (Inouye, L.) 372.01 631.33 P
+1.86 (Kethana, J.) 417.75 631.33 P
+1.86 (Walpole, and) 466.82 631.33 P
+0.26 (K.) 155.2 619.33 P
+0.26 (Zhang. Optimistic incremental specialization: Streamlining a commercial operating sys-) 167.42 619.33 P
+(tem. In) 155.2 607.33 T
+0 0 0 1 0 0 0 K
+2 F
+(Symposium on Operating Systems Principles) 186.03 607.33 T
+0 0 0 1 0 0 0 K
+1 F
+(, November 1995.) 365.46 607.33 T
+([PSB]) 90 589.33 T
+-0.33 (P.) 155.2 589.33 P
+-0.33 (Pardyak, S.) 165.76 589.33 P
+-0.33 (Savage, and B.N. Bershad. Language and runtime support for the dynamic in-) 213.76 589.33 P
+0.65 (terposition of system code. See http:/www.cs.washington.edu/research/projects/spin/www/) 155.2 577.33 P
+(papers/WCS/dispatcher.ps.) 155.2 565.33 T
+([RL95]) 90 547.33 T
+0.37 (J.) 155.2 547.33 P
+0.37 (Itoh R.) 164.09 547.33 P
+0.37 (Lea, Y.) 194.74 547.33 P
+0.37 (Yokote. Adaptive operating system design using reflection. In) 227.32 547.33 P
+0 0 0 1 0 0 0 K
+2 F
+0.37 (5th Work-) 481.36 547.33 P
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+(shop on Hot Topics in Operating Systems) 155.2 535.33 T
+0 0 0 1 0 0 0 K
+1 F
+(, May 1995.) 321.31 535.33 T
+([SZ88]) 90 517.33 T
+1.71 (P.) 155.2 517.33 P
+1.71 (Sestoft and A.V. Zamulin.) 165.76 517.33 P
+0 0 0 1 0 0 0 K
+2 F
+1.71 (Annotated Bibliography on Partial Evaluation and Mixed) 280.64 517.33 P
+0 0 0 1 0 0 0 K
+0 0 0 1 0 0 0 K
+(Computation) 155.2 505.33 T
+0 0 0 1 0 0 0 K
+1 F
+(. North-Holland, 1988.) 207.43 505.33 T
+([vDHT95]) 90 487.33 T
+0.7 (L.) 155.2 487.33 P
+0.7 (van Dorn, P.) 166.31 487.33 P
+0.7 (Homburg, and A.S. Tanenbaum. Paramecium: An extensible object-based) 220.76 487.33 P
+(kernel. In) 155.2 475.33 T
+0 0 0 1 0 0 0 K
+2 F
+(5th Workshop on Hot Topics in Operating Systems) 196.02 475.33 T
+0 0 0 1 0 0 0 K
+1 F
+(, May 1995.) 399.07 475.33 T
+([Yok92]) 90 457.33 T
+-0.21 (Y.) 155.2 457.33 P
+-0.21 (Yokote. The Apertos reflective operating system: The concept and its implementation. In) 167.42 457.33 P
+0 0 0 1 0 0 0 K
+2 F
+(Object-Oriented Programming Systems, Languages and Application) 155.2 445.33 T
+0 0 0 1 0 0 0 K
+1 F
+(, October 1992.) 429.07 445.33 T
+0 0 0 1 0 0 0 K
+FMENDPAGE
+%%EndPage: "9" 9
+%%Trailer
+%%BoundingBox: 0 0 612 792
+%%PageOrder: Ascend
+%%Pages: 9
+%%DocumentFonts: Helvetica
+%%+ Times-Roman
+%%+ Times-Italic
+%%+ Times-Bold
+%%+ Courier
+%%+ Courier-Bold
+%%EOF

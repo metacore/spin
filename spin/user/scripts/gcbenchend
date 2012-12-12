@@ -1,0 +1,13 @@
+spy dump
+gc frag
+gc histo
+# netstats dump
+gc stat
+
+#gc collect
+#gc collect
+#gc collect
+#gc heap -bytes 10
+
+echo DONE
+

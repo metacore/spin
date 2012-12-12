@@ -1,0 +1,53 @@
+% Copyrighb (C) 1992, Digital Equipment Corporation
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+%
+% HISTORY
+% 12-Apr-96  Wilson Hsieh (whsieh) at the University of Washington
+%	add NoLoopholeWarning
+%
+%
+% Last modified on Tue Feb 22 14:43:46 PST 1994 by kalsow
+%      modified on Tue Aug 24 15:08:42 PDT 1993 by heydon
+%      modified on Mon May 24 12:00:19 PDT 1993 by swart
+%      modified on Fri May  7 12:06:08 PDT 1993 by mjordan
+%      modified on Thu Dec 31 16:23:49 PST 1992 by mcjones
+%      modified on Wed May 20 21:18:03 PDT 1992 by muller
+%      modified on Fri Feb 28 13:50:29 PST 1992 by meehan
+
+# m3_option("-keep")
+
+overridepath = [ THISTREE, FULLTREE ]
+importfrompath("kernel","m3core_sa",overridepath)
+
+#############################################################################
+# Turn on profiling for .c files
+if equal(PROFILE, "TRUE")
+	m3_option("-cc -pg")
+end
+
+#
+# Do nothing after building the .a
+#
+proc library_hooks(x) is
+  local lib_a  = format ("lib%s.a", x)
+  write ("Done building ", lib_a, CR)
+end	
+
+
+include_dir ("fmtlex")
+include_dir ("types")
+include_dir ("atom")
+include_dir ("list")
+include_dir ("table")
+include_dir ("rw")
+include_dir ("sortedtable")
+include_dir ("sort")
+include_dir ("sequence")
+include_dir ("splay")
+include_dir ("dequeue")
+
+m3_option ("-times")
+m3_option ("-NoLoopholeWarning")
+
+Library ("m3_sa")

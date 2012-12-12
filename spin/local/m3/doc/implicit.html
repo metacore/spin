@@ -1,0 +1,51 @@
+<html>
+<head>
+<title>IMPLICIT exceptions </title>
+</head>
+
+<body>
+
+<h1>IMPLICIT exceptions</br></h1>
+<P>
+<HR>
+<P>
+
+<h2>Motivation</h2>
+
+We need some mechanism for handling checked runtime errors in
+Modula-3.  We have added implicit exceptions, which are exceptions
+that any procedure can raise.
+
+
+<h2>Implementation</h2>
+
+The compiler takes a pragma <* IMPLICIT *>, which is used to suppress
+warnings about implicit exceptions.
+<p>
+
+<code>
+<* IMPLICIT *> EXCEPTION Foo;
+</code>
+<p>
+
+This pragma means that foo can be raised by any procedure.
+<ul>
+<li> Do not issue a warning if a procedure raises it, and Foo is not
+in its RAISES clause.
+<li> Do not issue a warning if a TRY EXCEPT block catches Foo, even if
+nothing in the block apparently RAISES Foo.
+</ul>
+
+The SPIN runtime translates checked runtime errors into implicit
+exceptions.
+
+
+</body>
+<p>
+<hr>
+
+<a href="index.html">Other SPIN Modula-3 changes</a><p>
+
+<date>May 20, 1996</date> <br>
+<Address>whsieh@cs.washington.edu<br> </address>
+</html>

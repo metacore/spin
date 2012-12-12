@@ -1,0 +1,22 @@
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+
+Package("Device")
+
+Module("Device")
+
+Module("CharDevice")
+Module("CharDevRd")
+Module("CharDevWr")
+
+Module("BSDtty")
+Interface("Disk")
+Interface("Tape")
+
+Module("Error")
+
+# Interface("PacketDevice")
+
+Extension({})

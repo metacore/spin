@@ -1,0 +1,24 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+% 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+%	These modules are now hidden. Change module to Module to export
+%	 the interfaces from the Plexus domain.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+Package("IcmpServer")
+
+Interface ("IcmpPktFormat")
+ProtocolModule ("Icmp","IcmpServer")   
+#TrustedModule ("Icmp")
+#linkmodule ("IcmpServer")
+
+module ("IcmpServer")
+
+Extension({})

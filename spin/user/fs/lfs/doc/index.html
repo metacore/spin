@@ -1,0 +1,281 @@
+<html>
+<head>
+<title>Log Structured File System</title>
+</head>
+<IMG src="log_from_blammo.jpg">
+<body>
+<h1>
+<A name = "top">Log Structured File System</a> </br>
+</h1>
+<date>10/14/1996</date>
+</br>
+Implemented by Eric Christoffersen, Tim Bradley and Scott VanWoudenberg<P>
+<HR>
+<P>
+
+<H1>Overview</H1>
+
+The Log Structured File System (LFS) provides a heirarchical disk
+file system that is accessed through the nameserver interface.<p>
+
+The LFS is a file system extension that allows the user to format, 
+mount and unmount a disk extent, as well as open/close, read/write
+and make/delete files and directories on the extent.<p>
+
+LFS defines FileSystem.T, File.T and Mount.T as the nameserver expects.<p>
+
+There are several utility programs for using or demonstrating the
+capabilities of this file system.<p>
+
+The LFS relies upon the <a href="../../../dev/extent/src/Extent.i3">Extents</a>
+domain to access the disk, and the <a href="../../doc/index.html">FSCore</a>
+filesystem object to give it commands.<p>
+
+
+<H2>What's so special about an LFS?</H2>
+
+
+In an LFS, the disk is seen as a large log, and all writes
+are made to the end of this log.  The LFS partitions a disk extent into
+contiguous sections called  "Segments", usually consisting of about 1000
+blocks.
+All writes are initially made to an in-memory
+buffer called the segment buffer.  When this segment buffer becomes full it is dumped in
+its entirety to a free segment on disk.  This means that all writes to
+disk require the disk head to only make a single seek to the free segment<p>
+The main advantage of an LFS is the increased disk bandwidth utilization
+it can provide.
+This increase is accomplished by storing all disk writes in
+a buffer until the buffer is full, then dumping the buffer to disk in one
+large contiguous write.  The large contiguous write amortizes a single 
+seek across (hopefully) lots of files.  As seeks are what make disks 
+slow, the LFS is historically very fast for writing many small files.<p>
+
+For small files this scheme has historically provided much better disk
+bandwidth utilization than the UNIX FFS; the FFS might require multiple disk
+head seeks for each file that is written.  As an LFS causes all writes are made to the
+current end of the segment buffer, any change to a file requires that a 
+part of that files iNode also be written out, thus a file's iNode might 
+be scattered across the disk.  As new data is never written over the 
+blocks that it replaces, invalid data blocks will accumulate on disk.
+Lest the disk become full of dead blocks, those blocks must be 
+removed by a <a href="cleaner.html">cleaner</a>.<p>
+
+The cleaner is used to reclaim disk space.  When run on a segment, it
+flags each live block, copies all live blocks to the segment buffer, and
+declares the segment as free to be reused.<p>
+
+When the segment buffer is full, or Sync is called, all dirty data from
+the segment buffer is flushed to the disk, and surrounds that data with
+a segment descriptor.  Roll-forward can then reclaim data by rolling forward
+a segment descriptor at a time.<p>
+
+Here's a <a href="examplecommands.html">list of commands</a> that put LFS
+through its paces.
+<b>Note</b> that the $lfs script will print out the device name of the
+second drive tmp partition, and this is the partition you should use.
+This is so we won't hurt other partitions if the extension bug rears
+its ugly head.  <b> I only use rz5b as an example.</b><p>
+
+Want to read more about LFS?  Here's some <a href = "lfs_info.html">relevant papers</a>.<p>
+
+<hr>
+
+<h2> So, how do I use that LFS-thing anyway?</h2>
+Note again that: <b> I only use rz5b as an example drive name.</b><p>
+First you need to load the relevant domains.<br>
+To do this type:<br>
+<b>script -b</b> to load the nanny
+<b>nanny touch lfs</b> to tell nanny to load the lfs extension and create an /lfs directory that you will later mount to.
+
+Now, if you haven't done this already, you need to format the b partition
+of a drive on your crash machine.<p>
+
+To format the partition, type:<br>
+<b>makefs rz5b 1024 NoFormat</b><br>
+This initializes the b partition on the second drive with segments of size 1024*512=512K.  If you want to do a low level disk format then change NoFormat to Format<p>
+
+Mount the partition:<br>
+<b>mount rz5b lfs /lfs</b><p>
+
+Create a file:<br>
+<b>touch /lfs/file</b><p>
+
+Create a directory:<br>
+<b>mkdir /lfs/dir</b><p>
+
+Create two files in that directory:<br>
+<b>touch /lfs/dir/file1</b><br>
+<b>touch /lfs/dir/file2</b><p>
+
+Write something at position 0 in one of the files:<br>
+<b>write /lfs/dir/file1 0 something</b><p>
+
+cat the new file:<br>
+<b>cat /lfs/dir/file1</b><p>
+
+view the files in that dir:<br>
+<b>ls -l /lfs/dir</b><p>
+
+read the 5 letters starting after the 2nd letter:<br>
+<b>read /lfs/dir/file1 2 5</b><p>
+
+unlink one of the files from the directory:<br>
+<b>rm /lfs/dir/file2</b><p>
+
+view the dir again:<br>
+<b>ls -l /lfs/dir</b><p>
+
+unlink the last file in the dir and remove the dir:<br>
+<b>unlink /lfs/dir/file1<br>
+rmdir /lfs/dir</b><p>
+
+Note that the cleanse call is currently broken.<p>
+
+call upon the cleaner to clean the a dirty segment:<br>
+<b>cleanse /lfs</b><br>
+(a valid file is currently needed as an argument, will change in the future)
+You can continue to call this command, for each call the cleaner will try to
+clean another dirty segment<br>
+<hr>
+
+<H2>Internal Structures</H2>
+
+To build the file system we implemented the following structures:<p>
+
+
+
+<b>Block</b><br>
+A block is defined as an array of CHARs.  The file system block size
+should match the disk drive block size, currently 512 bytes.  The size
+can be changed easily, but there are places in the code that assume
+a block size of more than 128 bytes.<p>
+
+
+
+<b>Disk Address</b><br>
+This is a record used internally to represent a location of a block on 
+the LFS log.  It consists of a segment number and a segment block offset.<br>
+<pre>  DiskAddress = RECORD
+    segment : BITS 16 FOR [0..65535];
+    block   : BITS 16 FOR [0..65535];
+  END;</pre>
+
+<b>Segment</b><br>
+The file systems disk extent is divided up into segments.  Segments
+consist of a data section and a meta-data section.  Data in segments
+is addressed by blocks.  The meta-data consists of a segment descriptor,
+which is a mapping from blocks in the segment to iNode numbers (iNums) and
+file block offsets.  This mapping is needed by the LFS cleaner in order
+to distinguish live blocks from dead ones.<br>
+SegmentSummeryEntry looks like this:<br>
+<pre>  SegSummaryEntry = RECORD
+    iNode  : BITS 16 FOR [0..65535];
+    offset : BITS 16 FOR [0..65535];
+    version: BITS 16 FOR [0..65535];
+  END;</pre>
+
+<b>Segment Buffer</b><br>
+Our segment buffer is thesame size as segments on disk.  The segment 
+buffer writes itself to disk when full.
+As blocks for a single file can be distributed across the disk, a file's 
+block will be written to the segment buffer when it is changed, thus
+any particular block that a user might need may currently reside in the
+segment buffer.  This means that all reads must first check to see if the 
+desired segment (as indicated by a file's inode) is represented by the 
+Segment Buffer.  If it is, no disk access is needed.<br>
+Segment Buffer code is located in SegBuffer.m3/i3 in: <b><a href="../segment/src/SegBuffer.i3">/spin/user/fs/lfs/segment/src</a></b><p>
+
+
+<b>iNode</b><br>
+iNodes keep track of the blocks that make up a file.  The LFS iNodes are
+very similar to those in UNIX with direct and indirect blocks.
+There is a filesize limit of 8megs.  If there is need the max
+can be extended.
+In order to remain internally consistant, iNodes maintain their
+own internal locking.<br>
+INodes keep track of recently used meta-data, and if the iNode represents
+a directory, the iNode will maintain a pointer to a directory object.<br>
+iNode code is located in iNode.m3/i3 in: <b><a href="../lfscore/src/INode.i3">/spin/user/fs/lfs/lfscore/src</a></b><p>
+
+
+<b>iMap</b><br>
+The iMap is the distributer of iNode pointers for old and new files.  Thus
+all users interact with the same iNode object (though not directly).  The
+iMap is loaded into memory at mount-time and should be written to disk at
+each checkpoint (checkpoints not implemented).  The iMap maps iNumbers
+to DiskAddresses, the current address of an iNodes first block on disk.
+The iMap is synchronized so that only one user may access it at once.
+The iMap also holds pointers to iNodes that have been accessed since 
+mount time.  The iMap should have a cleaning mechanism so that long unused 
+iNodes can be dropped, to allow garbage collection to free up stagnant 
+memory.<br>
+iMap code is located in iMap.m3/i3 in: <b><a href="../lfscore/src/IMap.i3">/spin/user/fs/lfs/lfscore/src</b></a><p>
+
+
+<hr>
+
+<H2>Utility Programs</H2>
+<b><a href="../fsutils/makefs/src/MakeFs.i3">makefs</a></b><br>
+Takes a disk partition name and the block size of a segment (1024 is typical
+ and good), and formats that partition to look like an empty lfs.  This
+command must be issued before a disk partition can be mounted for the
+first time.<p>
+
+<b><a href="../fsutils/sync/src/Sync.i3">sync</a></b><br>
+Takes a device name and the name of the fs registered on the device.
+
+Causes the current
+segment buffer to become full and be written to disk, and causes the lfs
+iMap to be written to disk.  This is required before crashing or halting
+the machine if you want recent changes to be there when you re-mount!<p>
+
+
+<b><a href="../fsutils/read/src/Read.i3">read</a></b><br>
+Takes a file path name, place in file to begin read and length of file to
+read.  Prints out bytes read.<p>
+
+<b><a href="../fsutils/write/src/Write.i3">write</a></b><br>
+Takes a file path name, place in file to begin write and a string to write to
+file.  Will also accept a -t (truncate) flag to cause the end of the written string
+to become the new end of the file.<p>
+
+<b><a href="../fsutils/cleanse/src/Cleanse.i3">cleanse</a></b><br>
+Tells the cleaner to run on the 'next' dirty segment.<p>
+
+<hr>
+
+<H3>Current drawbacks (watch this section as its likely to change!)</H2>
+
+
+
+<li> No crash protection of unsync'ed data.<p>
+
+
+<HR>
+<P>
+last modified <date>10/14/96</date>
+<ADDRESS>ericc@cs.washington.edu</ADDRESS>
+</HTML>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

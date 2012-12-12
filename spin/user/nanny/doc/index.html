@@ -1,0 +1,108 @@
+<title>Nanny and the Professor</title>
+
+<html>
+
+<body>
+<h1>
+<IMG align=bottom src="http://www.cs.washington.edu/research/projects/spin/www/pics/nanhdr.gif">
+<A name = "top"></a> </br>
+</h1>
+<date>July 29, 1997</date>
+ <P>
+<HR>
+<P>
+
+<H2>Motivation</H2>
+
+Nanny provides a way to use system services without having to worry
+about manually loading them or without having to load everything from
+boot.
+
+
+<H2>Overview</H2>
+
+<IMG align=left src="http://www.cs.washington.edu/research/projects/spin/www/pics/nancartn.gif">
+
+The nanny provides a demand-loading service for objects, such as
+domains and devices. For each named entity implemented by a
+dynamically linked server, nanny watches for references to the entity
+and executes a script associated with the name before the lookup is
+allowed to complete.
+
+<P>
+Nanny is an extension that is generally loaded at system boot time.
+
+<H2>Using Nanny</H2>
+
+Nanny can be used from the shell and directly from programs.  Both interfaces
+are described in the <A HREF="../src/Nanny.i3">interface file.</A>
+
+We'll only describe the shell interface here.
+
+<DL>
+<DT> <b>nanny install [-f] [-n <var>alias</var>] [<var>name</var>]
+     <var>script</var></b>
+<DD> will execute "script" whenever anyone goes to lookup "name" in the name service.
+
+     <p>If the "name" is already present in the name space, nanny does nothing,
+     unless the <code>-f</code> option is given.
+     With <code>-f</code>, nanny reinstalls the name.
+
+     <p><code>-n</code> option is used to set the alias used in
+     <code>nanny touch</code>. Without this option, the alias defaults to
+     the last component of <code>name</code>. For example,
+
+     <pre>
+nanny install /../svc/domains/Sphinx $USER/sphinx/$target/sphinx.rc
+     </pre>
+
+     is same as the below.
+     
+     <pre>
+nanny install -n Sphinx /../svc/domains/Sphinx $USER/sphinx/$target/sphinx.rc
+     </pre>
+     
+<DT> <b>nanny delete <var>name</var></b>
+<DD> removes name from nanny's purview.
+
+<DT> <b>nanny touch <var>alias</var></b>
+<DD> forces nanny to query the alias (registered by <code>install</code>).
+
+<DT> <b>nanny zap</b>
+<DD> deinstall the current incarnation of nanny. (hackville USA)
+</DL>
+
+<H3>An example</H3>
+
+Here's an example that shows how to demand-load CAM whenever anyone
+tries to mount a disk.
+
+<PRE>
+nanny install /../svc/fs/ufs $USER/fs/ufs/$target/ufs.rc
+nanny install /../svc/domains/Sieg $USER/sieg/$target/sieg.rc
+</PRE>
+
+This says:
+<UL>
+<LI> 	if the file system <code>ufs</code> is referred to in
+     "mount" or some other file system related commands the first time,
+     nanny executes 
+     <code>script $USER/fs/ufs/$target/ufs.rc</code>.
+<li> If the domain "Sieg" is referred to during dynamic linking
+     (or other occasions where domain is used), 
+     <code>script $USER/sieg/$target/sieg.rc</code> is executed.
+
+</UL>
+
+<H3>Nanny Internals</H3>
+
+Nanny creates the directory <code>/../svc/nanny</code> to store
+aliases.
+
+</body>
+<p><hr>
+<Address>
+bershad@cs.washington.edu<br>
+</address>
+</html>
+<TITLE>Nanny</TITLE>

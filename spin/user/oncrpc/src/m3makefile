@@ -1,0 +1,59 @@
+#
+# Modula-3 Sun RPC
+#
+# Copyright (c) 1991, 1992 Xerox Corporation.  All rights reserved.
+#
+# Use and copying of this software and preparation of derivative works
+# based upon this software are permitted.  Any distribution of this
+# software or derivative works must comply with all applicable United
+# States export control laws.  This software is made available AS IS, and
+# Xerox Corporation makes no warranty about the software, its performance
+# or its conformity to any specification.
+#
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport ("SpinPublic","kernel","spincore",overridepath)
+DomainImport ("SecurityPublic","kernel","spincore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("SpinUnixNet","user/urt","net",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+DomainImport ("NetDb","user/net","dns",overridepath)
+
+# turds
+# needed for DomainPrivate and M3toC
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+
+template("oncrpc")
+Package("OncRpc")
+
+Interface("ExceptionArg")
+Interface("RPC")
+Interface("RPCSunPriv")
+Module("RPCSun")
+implementation("RPCSunUDP")
+Module("XDR")
+Module("XDRMem") 
+
+# not yet
+#implementation("RPCSunTCP")
+#Module("XDRRec")
+#Module("XDRFloat")
+
+include_dir(OS_TYPE)
+
+#oncrpc_server("PortMapper") inlined into PortMapper module
+oncrpc_Interface("PortMapper")
+oncrpc_client("PortMapper")
+oncrpc_xdr("PortMapper")
+implementation("PortMapper")
+module("PortMapperKey") 
+interface("PortMapperVal") 
+table ("PortMapper", "PortMapperKey", "PortMapperVal")
+
+oncrpc_Interface("RPCAuth")
+oncrpc_Xdr("RPCAuth")
+
+Module ("OncRpc")
+
+Extension({""})
+

@@ -1,0 +1,24 @@
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+DomainImport("RWLock","user/sync","rwlock",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport("VMCore","user/vm","vmcore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+
+Package("FileDataCache")
+
+Module("CacheFile")
+Module("FileDataCache")
+module("BaseMObjCache")
+module("FileMObjCache")
+Interface("Buffer")
+Module("DoubleList")
+Module("Victim")
+table(FileMObjCache, CacheFile, FileMObjCache)
+
+CommandModule("CacheCmd")
+
+Extension({})

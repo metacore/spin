@@ -1,0 +1,22 @@
+#
+# init.IX86_SPIN_PROF is interpretted by the Init extension 
+# after the SPIN kernel is up and running.
+#
+# Init parsing is limited to the machine generated rc files and lines 
+#  starting with "script ~"
+#
+boot nfs
+script ~/spin/user/vm/vmcore/IX86_SPIN_PROF/vmcore.rc
+script ~/spin/user/vm/space/IX86_SPIN_PROF/space.rc
+script ~/spin/user/dev/devcore/IX86_SPIN_PROF/devcore.rc
+script ~/spin/user/dev/console/IX86_SPIN_PROF/console.rc
+script ~/spin/user/fs/fscore/IX86_SPIN_PROF/fscore.rc
+script ~/spin/user/fs/tmpfs/IX86_SPIN_PROF/tmpfs.rc
+script ~/spin/user/fs/tftp/IX86_SPIN_PROF/tftp.rc
+script ~/spin/user/shell/shellcore/IX86_SPIN_PROF/shellcore.rc
+script ~/spin/user/shell/basiccmds/IX86_SPIN_PROF/basiccmds.rc
+script ~/spin/user/shell/expr/IX86_SPIN_PROF/expr.rc
+script ~/spin/user/shell/utils/IX86_SPIN_PROF/utils.rc
+script ~/spin/user/thread/threadcore/IX86_SPIN_PROF/threadcore.rc
+script ~/spin/user/thread/exec/IX86_SPIN_PROF/exec.rc
+script ~/spin/user/shell/consoleshell/IX86_SPIN_PROF/consoleshell.rc

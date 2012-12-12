@@ -1,0 +1,33 @@
+<title>OO7 benchmark</title>
+<h2>OO7 benchmark</h2>
+
+<h3>What's this?</h3>
+
+OO7 is the standard OODB benchmark program developed at U Wisc at
+Madison.  It simulates a CAD kind of database in which there are
+atomic parts, composite parts, connections among parts, and an index
+that addresses the parts.
+
+<p> The number of parts and size of the index structure is
+configurable, but there are three stardard configurations, small,
+medium, and large.  Small takes about 15MB of disk space, medium takes
+about 150MB of disk space and large takes a large amount of disk
+space.  In addition to these three standard configurations, I created
+the tiny configuration that only takes about 2MB of disk space.
+
+
+<p>
+You can run about 17 types of transactions on the oo7 database.
+See <a href="../oo7/OO7.cc">OO7.cc</a> for the full listing, but
+below are the ones I often use.
+
+<ul>
+  <li> t1 : traverses all the parts read only
+  <li> t2a : traverses parts and updates portion of them.
+  <li> t2b : traverses parts and updates all of them.
+  <li> t2c : traverses parts and updates all of them four times.       
+</ul>
+
+<h3>Invoking the OO7 benchmark</h3>
+
+

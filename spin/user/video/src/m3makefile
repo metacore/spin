@@ -1,0 +1,38 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set the location of the spindle directory and load the spindle 
+% makefile template.
+SPINDLEDIR = "/afs/cs/project/spin/mef/s2/dl2/spindle"
+include (SPINDLEDIR & "/spindletemplate")
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% libraries
+
+override("sys", SPINDIR)
+import ("sys")
+override("m3core_sa", "/afs/cs/project/spin/pardy/Spin/spin-2/spin")
+import ("m3core_sa")
+override("m3_sa", "/afs/cs/project/spin/pardy/Spin/spin-2/spin")
+import ("m3_sa")
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% spindle code
+
+Interface("FliClient")
+Module ("FliClient1")
+%Module ("FliClient2")
+%Module ("FliClient3")
+%Module ("FliClient4")
+
+Module("RealTime")
+Interface ("Video")
+h_source ("video")
+c_source ("video")
+Interface ("Fli")
+h_source ("fli")
+c_source ("fli")
+
+library ("flivideo")

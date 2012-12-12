@@ -1,0 +1,34 @@
+<h2>The Default Pager</h2>
+
+The default pager is one of external <a href="../../vmcore/doc/memobj.html">pager</a>.
+It swaps the memory in and out of file system.
+
+<p>
+When it is loaded into the memory, it interposes itself onto
+<a href="../../vmcore/src/DefaultPager.i3"><code>
+DefaultPager.Create</code></a> and
+<code>DefaultPager.SwapOn</code> events.
+
+<p>
+The default pager is controlled through the shell command <code>vm</code>.
+Below is the typical command sequence to enable the default pager.
+
+<pre>
+# mount the efs on /efs
+mount rz3b <a href="../../../fs/efs/doc/index.html">efs</a> /efs
+# clear the contents
+efs nuke /efs
+# create a swap file.
+efs create /efs swap 10000
+# enable the pager.
+vm swapon /efs/swap
+</pre>
+
+To test the default pager, you may want to tweak the vm parameters.
+See the <a href="../../../../kernel/spincore/src/memory/doc/index.html">
+spincore vm system</a> for how to get and set the vm parameters.
+
+There is no swapoff command now.
+
+
+

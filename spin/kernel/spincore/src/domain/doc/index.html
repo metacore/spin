@@ -1,0 +1,188 @@
+<html>
+<body>
+
+<h1>Protection Domains</h1>
+
+<p>The SPIN protection domain interface enables applications that reside
+in the same address space to share as well as protect their code and data.
+More specifically, the domain interface allows applications to draw protection
+boundaries around themselves that are traditionally provided by hardware
+mechanisms on conventional systems. Further, the same interface enables
+applications to pass direct references to their code and data to other
+modules, hence eliminating the costly protection boundary crossings 
+necessitated by conventional systems.
+
+<p>
+The WCSSS paper</a> on domains further explains the general
+concepts behind domains and gives an overview of the interface.
+Essentially, <a href="index.html#domainint">the domain interface</a> is a veneer
+over dynamic linking which enables applications to share and protect
+as much or as little of their code and data as they desire. The
+primitives allow arbitrary nesting of domains, which simplifies domain
+management. A <a href=index.html#shellcommand>kernel shell command</a> provides
+access to primitives from the command line. A <a href="index.html#staticint">set
+of templates and build tools</a> help create domain management code
+automatically.
+
+<a name=domainint>
+<h2>Domain Interface</h2>
+
+The run-time interface to protection domains consists of the
+following operations:
+
+<p>
+
+<br><b>Create(objectfile: REF ARRAY OF CHAR) : T</b>
+<br><b>CreateFromInterface(interface: RTCode.InterfaceUnit) : T</b>
+<br>These operations enable an application to create a new domain. 
+Create takes an object file in native format as an argument. For example, 
+on the alpha, the domain implementation expects Alpha ECOFF. Create parses
+the object file format and returns a runtime handle that describes the 
+resources that are in the given domain. More specifically, a domain handle
+acts as a capability to the symbols exported by that piece of code. That is,
+if the object file defines a variable, procedure or interface <b>Foo</b>,
+the domain handle acts as a capability to Foo. Clients will need to link
+with the Foo domain in order to be able to access the function Foo. In
+addition to acting as a capability to the exported symbols, a domain
+provides a handle to the underlying object code and can be used to 
+manipulate it. The domain handle embodies all external references made by the
+domain to symbols defined by other domains, and subsequent domain
+operations such as <b>Resolve</b> can be used to manipulate them.
+
+<p>
+CreateFromInterface is similar to Create in that it creates a new
+domain that acts as a capability to the named interface. The argument
+is of type RTCode.InterfaceUnit. A typical client will obtain an interface
+handle via a call to INTERFACE_UNIT() with any interface as an argument.
+For instance, INTERFACE_UNIT(Foo) will return a runtime handle for the 
+<b>Foo</b> interface, which the client can then pass to CreateFromInterface
+to obtain a domain that contains the interface Foo.
+
+<p>
+<br><b>Resolve(mapper, mappee: T)</b>
+<b>Resolve</b> enables one domain to import the symbols defined in another
+domain. Any outstanding reference to a symbol in the mapper domain that
+is unresolved and of the same type as an exported symbol in the mappee
+domain will be resolved to the mappee domain. Following this operation,
+a record is made of the fact that the mapper was linked against the mappee.
+
+<p>
+<br><b>Unresolve(mapper, mappee: T)</b>
+<b>Unresolve</b> enables one domain to "unimport" the references it acquired
+to another domain. It is the dual of Resolve, in that it performs unlinking.
+Any reference to a symbol in the mapper domain that was previously 
+resolved to an exported symbol in the mappee
+domain will revert to unresolved.
+
+<p>
+<br><b>Add(container, element: T)</b>
+Domains can contain other domains. <b>Add</b> enables one domain to be
+contained within a higher level domain. Through <b>Add</b>, domains can
+form trees that contain arbitrary numbers of smaller subdomains. This 
+facilitates capability management, especially for applications that export
+or import a number of related interfaces.
+
+<p>
+<br><b>Delete(container, element: T)</b>
+<b>Delete</b> is the complement of <b>Add</b> in that it allows a contained
+domain to be taken out of the container. It is used to manage sets of 
+capabilities.
+
+<p>
+<br><b>Initialize(mapper, mappee: T) : BOOLEAN</b>
+<b>Initialize</b> integrates a fully resolved domain with the rest of the
+runtime. It performs various integrity checks to make sure that the
+resulting program is valid, and runs any initialization code. For Modula-3,
+this consists of type-integrity checking, followed by execution of 
+module bodies. It returns false upon failure. The main bodies are run
+in the context of the thread that called Initialize.
+
+<a name=staticint>
+<h2>Static Interface</h2>
+
+<p>
+Most clients use the preceding rich interface in stylized ways. We have
+extracted these boilerplate templates into a set of build-time
+templates.
+
+<p>
+Applications can specify which domains they will be importing and
+exporting at build time. They do this by using a set of
+primitives in m3makefiles. The primitives are:
+
+<dl>
+<dt><b>Package(DomainName)</b>
+<dd>Indicates that the extension should be placed in a domain named
+DomainName. This domain should be automatically registered with the
+name server after successful initialization. In the current
+implementation, this export step needs to be done manually by the
+programmer, who can then specify an appropriate authorizer. In the
+near future, the package primitive will perform the export
+automatically and the programmer will specify the authorizer as part
+of a generic instantiation.
+
+<dt><b>DomainImport(ImportedDomainName, PathToDirectory, DirectoryName, SearchPath)</b>
+<dd>Imports the named domain from the specified location in the
+filesystem. The interfaces in the exported domain become visible in
+the importing domain. A missing DomainImport will cause the compiler
+to complain about interfaces that are not found.
+
+<p>Various quake complications make the DomainImport arguments more
+complicated and numerous than they need to be. The second argument is
+the path from the spin root to the parent directory containing the
+package of interest (e.g. "user/thread"). The third argument is the
+name of the directory itself that the package is located in
+(e.g. "cthread"). Finally, the last argument indicates where the
+package should come from in the filesystem. It is a search path of
+(potentially sparsely populated) SPIN tree roots. A typical example
+will be an overridepath that contains THISTREE and FULLTREE. For current
+usage, it is best to look at the hello example.
+
+<dt><b>Module/module</b>
+<dd>A <b>Module</b> primitive (with the capital M) indicates that the
+specified module should be exported as part of the domain that is
+named in the Package primitive. <b>module</b> (with a small m)
+indicates that the module is private and should not be exported.
+</dl>
+
+
+The m3makefile in the hello extension demonstrates the use of the 
+static interface in creating domains.
+
+<a name=shellcommand>
+<h2>Domain Shell Command</h2>
+
+The <b>domain</b> command provides a way to access the primitive
+domain operations from the <a href="../../../../../user/shell/doc/index.html">kernel shell</a> command line.
+These commands are one-to-one with the preceding operations
+in the primitive domain interface.
+
+<p>
+<br><b>create domainname</b>
+<br>Creates a new domain with
+<b>Domain.Create</b>. The domain name is any arbitrary string. It is
+registered with the nameserver upon creation. The domain is empty
+upon creation.
+
+<p>
+<br><b>add domainname filename</b>
+<br>Creates a new anonymous domain with
+<b>Domain.Create</b>, and makes it a subdomain of the named domain.
+The named file should be a pathname to a valid object file.
+
+<p>
+<br><b>link mappername mappeename</b>
+<br><b>Resolve</b>s the mapper domain against the mappee domain.
+
+<p>
+<br><b>debug domainname</b>
+<br>Prints out a list of all unresolved symbols in the named domain.
+
+<p>
+<br><b>run domainname</b>
+<br><b>Initialize</b>s the named domain.
+
+<hr>
+Emin Gun Sirer
+</body>
+</html>

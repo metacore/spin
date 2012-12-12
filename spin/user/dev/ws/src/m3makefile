@@ -1,0 +1,16 @@
+# Tacky front end to underlying SAL ws_device
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport ("VMCore","user/vm","vmcore",overridepath)
+DomainImport ("Space","user/vm","space",overridepath)
+
+
+Package("WS")
+Module("WS")
+interface("SALWSExtern")
+
+Extension({})

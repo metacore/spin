@@ -1,0 +1,279 @@
+# Copyright 1994, 1995 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 26-Sep-96  Yasushi Saito (yasushi) at the University of Washington
+#	Added STATIC_C_EXTENSIONS support.
+# 25-Jul-96  Marc Fiuczynski (mef) at the University of Washington
+#	Created to replace the mkextender shell script.  Was a lot of
+#	work for little gain.  Main benefit is that we are now producing
+#	a BootEncapInit file that initializes the encapsulated domains in
+#	the correct order.  Side benefit is that we don't rely on the
+#	shell script.  
+#
+
+include("ints")
+
+#
+# Ugly hack to convert rc filename into domain name.
+#
+
+DOM_TO_MODULE={}
+DOM_TO_MODULE{"osf.cam"} = "osfcam"
+DOM_TO_MODULE{"osf.tcp"} = "osftcp"
+proc dom_to_module(dom) is
+  if DOM_TO_MODULE contains dom
+    return DOM_TO_MODULE{dom}
+  else
+    return dom
+  end
+end
+
+####################################################################
+# The EncapPrefix variable needs to be kept 
+# with the local/bin/encap prefix variable
+
+EncapPrefix = "encap_"
+ENCAPCOMMAND=THISTREE&"/local/"&BUILD_ARCH&"/bin/encap"
+if stale(ENCAPCOMMAND,ENCAPCOMMAND)
+   ENCAPCOMMAND=FULLTREE&"/local/"&BUILD_ARCH&"/bin/encap"
+   if stale(ENCAPCOMMAND,ENCAPCOMMAND)
+      ENCAPCOMMAND="encap"
+   end
+end
+
+proc GenerateEncap(nm,staticDomains) is
+    local objectExtension = {}
+    objectExtension{OBJ_ext}="o"
+    objectExtension{MO_ext}="mo"
+    objectExtension{IO_ext}="io"
+
+
+    # generate all of the encap modules, interfaces and assembly files
+    foreach entry in staticDomains
+	    local extension = STATIC_DATA{entry}[0]
+	    local subdir = STATIC_DATA{entry}[1]
+
+	    local conf = includefrompath(subdir & SL &  BUILD_DIR & SL & ".M3CONF",overridepath)
+	    if conf
+		include(conf)
+		ns = "no"
+	    else	
+		# C extension.
+		exec("perl ../src/script2m3conf.pl " & entry 
+			& " " & subdir & " " & TARGET, 
+			"> " & entry & ".m3info")
+		include("../" & TARGET & "/" & entry & ".m3info")
+		ns = "yes"
+	    end
+	    EncapImplementation(extension,ObjectPath,Objects,
+			ImportedDomains,ns)
+	    EncapInterface(extension,Objects)
+	    Encap(extension,ObjectPath,Objects)
+   end
+
+   Module(nm)
+   EncapInit(nm,staticDomains)
+end
+
+first = "" # gurk: have to make global to use in below function
+proc EncapImplementationIter(index,objects,unused2,objectextension,unused4) is
+	local obj = objects{int_to_string(index)}
+	if not first 
+		write (" ,")
+	end
+	write (" BootEncap.T{" , 
+	"\"" & obj[0] & obj[1] & "\"" ,
+	"," , 
+	obj[0] & "_" & objectExtension{obj[1]},"}",CR)
+	first = ""
+end
+
+proc EncapImplementation (nm,objectPath,Objects,domains,ns) is
+	local module = EncapPrefix & dom_to_module(nm)
+        local file   = module & ".m3"
+        local tmp    = ".generic.tmp"
+
+	> tmp in
+		write ("(* Static Encap module genereted by m3build",CR)
+		write (" * Copyright 1996, University of Washington",CR)
+		write (" * All rights reserved.",CR) 
+		write (" *)",CR)
+		write ("UNSAFE (* because interface file contains <*EXTERNAL*> *)",CR)
+		write ("MODULE ", module, ";", CR)
+		write ("IMPORT IO, Domain, Debugger, BootEncap;",CR,CR)
+	end
+	if equal(ns, "yes")
+	   >> tmp in
+		write ("IMPORT NameServer, Auth;",CR,CR)
+	   end
+	end
+	>> tmp in	
+		write ("PROCEDURE Init(verbose:BOOLEAN) =",CR)
+		write ("  VAR",CR)
+		write ("    spindle, domain: Domain.T;",CR)
+		write ("  BEGIN",CR)
+		write ("    IF verbose THEN",CR)
+		write ("      IO.Put(\"",nm," created ... \");",CR)
+		write ("    END;",CR,CR)
+
+		write ("    spindle := Domain.Create(\"",nm,"\",NIL);",CR,CR)
+	end
+	if equal(ns, "yes")
+	   >> tmp in
+		write("VAR component: TEXT;", CR)
+		write("    parent: NameServer.TBase;", CR)
+		write("    dir: NameServer.T;", CR)
+		write("BEGIN", CR)
+		write("  dir := NameServer.Lookup(NIL, \"/svc/domains\", component, parent);", CR)
+		write("  dir.attach(\"", nm, "\", spindle);", CR)
+		write("END;", CR)
+	   end
+	end
+	>> tmp in	
+		write ("    FOR i := FIRST(objects) TO LAST(objects) DO",CR)
+		write ("      WITH objectName  = objectsPath & objects[i].objectName,",CR)
+		write ("           objectImage = objects[i].objectImage DO",CR)
+		write ("         domain := Domain.NewCreate(objectName,objectImage^);",CR)
+		write ("         Domain.Add(spindle,domain);",CR)
+		write ("         Debugger.RegisterDomain(domain);",CR)
+		write ("      END;",CR)
+		write ("    END;",CR,CR)
+
+		write ("    FOR i := FIRST(domainNames) TO LAST(domainNames) DO",CR)
+		write ("      IF NOT BootEncap.Lookup(domainNames[i],domain) THEN",CR)
+		write ("        IO.Put(\"Domain \" & domainNames[i] & \" not found.\\n\");",CR)
+		write ("      END;",CR)
+		write ("      Domain.Resolve(spindle,domain);",CR)
+		write ("    END;",CR,CR)
+
+		write ("    Domain.Resolve(spindle,spindle);",CR,CR)
+
+		write ("    IF Domain.FullyResolved(spindle) THEN",CR)
+		write ("      IF verbose THEN IO.Put(\"fully linked\\n\") END;",CR)
+		write ("      EVAL Domain.Initialize(spindle);",CR)
+		write ("    ELSE",CR)
+		write ("      IF verbose THEN IO.Put(\"linked failed\\n\") END;",CR)
+		write ("      Domain.Resolve(spindle,Domain.debug);",CR)
+		write ("    END;",CR)
+		write ("  END Init;",CR,CR)
+
+		write ("CONST objectsPath = \"",objectPath,"\";",CR,CR)
+
+		write ("VAR objects := ARRAY [1..", 
+			int_to_string(array_length(Objects)),
+			"] OF BootEncap.T {",CR)
+
+		% list all the encapsulated objects
+		first = "true"
+		iterate(inc_int,EncapImplementationIter,
+			init_int(),Objects,first,objectExtension,"")
+
+		write ("};",CR,CR)
+
+		write ("CONST domainNames = ARRAY OF TEXT {",CR)
+		first = "true"
+		foreach domainName in domains
+			if not first
+			write (" ,")
+			end
+			if not equal(domainName,"") 
+			write ("	\"",domainName,"\"",CR)
+		end
+		first = ""
+		end	
+	write (" };",CR,CR)
+
+		write ("BEGIN",CR)
+		write ("END ", module, ".", CR)
+	   end
+	   cp_if (tmp, file)
+	   delete_file (tmp)
+        derived_implementation (module)
+end
+
+
+proc EncapInterface (nm,Objects) is
+	local interface = EncapPrefix & dom_to_module(nm)
+        local file      = interface & ".i3"
+        local tmp       = ".generic.tmp"
+
+	> tmp in
+		write ("(* Static Encap interface generated by m3build",CR)
+		write (" * Copyright 1996, University of Washington",CR)
+		write (" * All rights reserved.",CR) 
+		write (" *)",CR)
+		write ("UNSAFE (* because interface uses <*EXTERNAL*> *)",CR)
+		write ("INTERFACE ", interface, ";", CR)
+		write ("IMPORT BootEncap;",CR,CR)
+
+		write ("PROCEDURE Init(verbose:BOOLEAN);",CR)
+		foreach object in Objects
+			local name = Objects{object}[0]
+			local ext  = Objects{object}[1]
+
+			write ("<*EXTERNAL \"" & interface & "." )
+			write (name, ext, "\"*>",CR)
+			write ("             VAR ")
+			write (name, "_" , objectExtension{ext},":BootEncap.Image;",CR)
+		end
+		write ("END ", interface, ".", CR)
+           end
+	cp_if (tmp, file)
+	delete_file (tmp)
+	derived_interface (interface,HIDDEN)
+end
+
+proc EncapInit(nm,staticDomains) is 
+	local nmInit    = dom_to_module(nm) & "Init"
+        local file      = nmInit & ".m3"
+        local tmp       = ".generic.tmp"
+
+	> tmp in
+		write ("(* Static Encap interface generated by m3build",CR)
+		write (" * Copyright 1996, University of Washington",CR)
+		write (" * All rights reserved.",CR) 
+		write (" *)",CR)
+		write ("UNSAFE (* because interface uses <*EXTERNAL*> *)",CR)
+		write ("MODULE ", nmInit, " EXPORTS ", nm,";", CR)
+		foreach encapModule in staticDomains
+			write ("IMPORT ", EncapPrefix, dom_to_module(encapModule),";",CR)
+		end
+		write (CR)
+		
+		write ("PROCEDURE Init(verbose:BOOLEAN) =",CR)
+		write (" BEGIN",CR)
+		foreach encapModule in staticDomains
+			write ("   ", EncapPrefix, dom_to_module(encapModule),".Init(verbose);",CR)
+		end
+		write (" END Init;",CR,CR)
+
+		write ("BEGIN", CR)
+		write ("END ", nmInit, ".", CR)
+           end
+	   cp_if (tmp, file)
+	   delete_file (tmp)
+	derived_implementation (nmInit)
+end
+
+proc Encap(nm, path, Objects) is
+        local module  = dom_to_module(nm)
+	local encap   = EncapPrefix & module
+	local encap_s = encap & ".s"
+	local objects = []
+	# yuk
+	foreach obj in Objects
+		local name = Objects{obj}[0]
+		local ext  = Objects{obj}[1]
+		objects += path & name & ext
+	end
+
+        if stale(encap_s,objects)
+          # only rewrite the M3 extender if the conf file changed
+          write("Make encapsulation of ",extension," > ",encap_s,CR)
+          exec("@"&ENCAPCOMMAND, module, objects,">",encap_s)
+        end
+        derived_s(encap)
+
+end

@@ -1,0 +1,11 @@
+Generic_module(Dequeue)
+readonly proc Dequeue (nm, key) is
+  local tab = nm & "Q"
+  build_generic_intf (tab, "Dequeue", [key], VISIBLE)
+  build_generic_impl (tab, "Dequeue", [key])
+end
+readonly proc dequeue (nm, key) is
+  local tab = nm & "Q"
+  build_generic_intf (tab, "Dequeue", [key], HIDDEN)
+  build_generic_impl (tab, "Dequeue", [key])
+end

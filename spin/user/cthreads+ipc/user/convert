@@ -1,0 +1,18 @@
+#!/uns/bin/rc
+for(i in $*) {
+	j = `{basename $i | sed s/\./_/ }
+	echo 'char ' $j ^ '_code[] = {'
+	od -vxw1 $i | nawk 'NF > 1 {print " 0x" $2 ","}'
+	echo '	0
+};'
+}
+echo 'InitCode() {'
+j = `{basename $1 | sed s/\./_/ }
+k = `{basename $2 | sed s/\./_/ }
+echo '	  void *d1, *d2, *maind;'
+echo '	  extern void *download();'
+echo '    d1 = download(' $j ^ '_code, sizeof(' $j ^ '_code));'
+echo '    d2 = download(' $k ^ '_code, sizeof(' $j ^ '_code));'
+echo '    drop(d1, d2);'
+echo '}'
+

@@ -1,0 +1,265 @@
+<html>
+<head>
+<title>Sphinx</title>
+</head>
+
+<body>
+
+<img align=left src="sphinx.jpg">
+<pre>
+
+
+
+
+
+</pre>
+<h1>Sphinx : A UNIX Emulator Extension
+</h1>
+
+
+Last updated : Wed May  7 14:24:04 1997<br>
+
+
+<hr>
+<pre>
+
+
+
+
+
+</pre>
+
+<!--menu-->
+
+<a name="overview"></a>
+<h2>Overview</h2>
+
+<strong>Sphinx</strong> is an extension that implements the UNIX
+system calls.  It can run programs compiled for DEC UNIX or
+FreeBSD.
+
+<p>
+Dynamic linking is supported on OSF/1, however with some warnings.
+
+<ul>
+  <li> The default loader is at <code>/spin/bin/loader</code>.
+       You can change the loader path by setting the SPIN shell variable
+       <code>LOADER_PATH</code>.
+  <li> You need NFS to execute any dynlinked app
+       (do <code>script ~/spin/user/scripts/mount.rc</code>)
+</ul>
+
+<p>
+The PC version does not support dynlinking.
+
+<p>
+Lots of system calls are missing. You won't be able to
+run some applications. If you are in doubt, use the
+system call tracer(<code>syscall trace</code>)
+to find out what system calls your app is using.
+
+<a name="linking"></a>
+<h2>Compilation, and Link</h2>
+
+<h3>DEC UNIX</h3>
+
+No special flags are needed any more.
+
+<h3>PC Compatibles</h3>
+
+<p>
+You have to use FreeBSD statically linked binaries.
+At UW, <code>/spin/bin/bsd-newcc</code> on Linux box(es) is the
+cross compiler that produces FreeBSD binary. It is actually gcc, so
+you have to pass
+
+<pre>
+-static
+</pre>
+
+option when linking.
+
+<p>
+When installing GNU softwares, do
+<pre>
+<code>
+% setenv LDFLAGS -static
+</code>
+</pre>
+
+before running <code>configure</code>.
+
+<a name="running"></a>
+<h2>Running</h2>
+
+The sphinx apps are first started using <code>sphinx</code> shell command.
+
+<blockquote>
+<b>Note:</b> <code>exec</code> shell command does not work any more.
+</blockquote>
+
+<pre>
+!>sphinx exec ~/spin/user/sphinx/progs/hello
+</pre>
+
+When running a dynamically linked binary, you first have to load NFS.
+
+<pre>
+!> nanny touch Sphinx
+!> script ~/spin/user/script/mount.rc
+!> sphinx exec /usr/local/bin/wish -f <em>your-script</em>
+</pre>
+
+You can also pass arguments to the child proc.
+
+<pre>
+!>sphinx exec /spin/yasushi/sphinx/progs/hello hi there
+</pre>
+
+In the above example, <code>hi</code> and <code>there</code> are passed to
+the user program. In the user program, you can access them using
+familiar <code>argc</code>, <code>argv</code> protocol.
+
+<p>
+Shell variables are passed to the child proc as environment variables.
+
+<p>
+The <code>sphinx</code> shell command supports several subcommands.
+
+<dl>
+  <dt> <code>sphinx install</code>
+       
+  <dd> This command installs the sphinx extension on the
+       MachineTrap.Syscall event for any threads. This command is valid, but
+       is <strong>deprecated</strong>.
+       You really don't need to execute this command to run
+       UNIX binaries.
+       
+  <dt> <code>sphinx uninstall</code>
+  <dd> Uninstalls the extension installed by "sphinx install".
+       This command is deprecated also.
+
+  <dt> <code>sphinx ps</code>
+  <dd> Lists the active processes.
+       
+  <dt> <code>sphinx kill <var>pid</var> <var>signo</var></code>
+  <dd> Send the signal <var>signo</var> to the process <var>pid</var>.
+       This command often doesn't work especially when the process is hung
+       inside the systemcall handler.
+
+  <dt> <code>sphinx trace</code>
+  <dd> Installs a system call tracer. For each system call, the tracer
+       displays the name of the service and arguments.
+  <dt> <code>sphinx untrace</code>
+  <dd> Uninstalls the system call tracer.
+
+  <dt> <code>sphinx exec <var>PATH ARGS...</var></code>
+  <dd> starts a UNIX program <var>PATH</var>, giving arguments
+       <var>ARGS...</var>.
+       The difference between <var>exec</var>
+       shell command and this command is that
+       the "exec" shell command starts the application without setting up any
+       system call handlers. "sphinx exec" installs the sphinx syscall handler
+       before starting the application.
+  <dt> <code>sphinx texec <var>PATH ARGS...</var></code>
+  <dd> starts <var>PATH</var> with the tracer installed for the
+       process. The tracer is uninstalled after the process terminates.
+       
+  <dt> <code>sphinx pexec <var>PATH ARGS...</var></code>
+  <dd> starts <var>PATH</var> with the profiler installed for the
+       process. The tracer is uninstalled after the process terminates.
+</dl>
+
+<a name="addons"></a>
+<h2>Adding Systemcalls</h2>
+
+Sphinx has some support for nonstandard systemcall extensions.
+See <!--href="userappdemo.html"-->this document</a> for details.
+
+<a name="caveats"></a>
+<h2>Caveats</h2>
+
+Here are some tricky functions.
+
+<ul>
+  <li> <b>ioctl</b><br>
+       Yes, you can use ioctl. However, most of the requests are simply
+       ignored. System V termio requests to the console are supported
+       (like TCGETA, TCSETA, etc). See man termio.
+</ul>
+
+<a name="problems"></a>
+<h2>Problems and Future Plan</h2>
+
+<dl>
+  <dt> mobj cow now only inherits the whole memory object.
+       We should change it to inherit only part if needed.
+  <dt> exec coredumps when path does not exist.
+       
+  <dt> Sphinx.m3 is getting too big. It has to be divided.
+       
+  <dt> FreeBSD support
+  <dd> It is still very rudimentary.
+       
+  <dt> Crappy terminal interface
+  <dd> Some services related to the terminal don't work.
+       For example, <code>^C</code> is delivered only when the process is
+       executing the system call. <code>SIGIO</code> is not supported.
+       I think the real reason of these problems is that the current terminal
+       driver interface is synchronous; i.e., it is read/write, not
+       put/get(like in System V stream). We have to switch to asynchronous
+       one soon.
+       
+  <dt> User/group management
+  <dd> How does this fit into the whole spin authorization mechanisms?
+  
+  <dt> <code>/dev/kmem</code>
+  <dd> Alpha OSF/1 still uses this. FreeBSD seems to discourage the use of
+       kmem, and instead it provides <code>sysctl(2)</code>.
+       It is a system call to access kernel resources in a manner similar to
+       SNMP. It will be relatively easy to support <code>sysctl</code>.
+
+  <dt> Ad hoc conversion from exception to errno.
+  <dd> It's random now.
+       There are two ways to go. One is to continue doing random conversion.
+       The other is to make Error.E error codes conform to UNIX errno.
+       I'm inclined to latter.
+       
+  <dt> No certain way to signal kernel thread
+       
+  <dd> Our current execution model is that kernel thread is a
+       sacred entity; we can't change it's state from outside.
+
+       One problem I have is UNIX signals. To implement UNIX signal,
+       you have to wake up the target process if it's in interruptible
+       wait state. For example, when a process X is waiting in ttyread and
+       <code>^C</code> is typed, X should be dequeued and made runnable. <p>
+
+       The way UNIX implements this is that the signal delivery
+       code looks into the current thread state, and if it's in
+       interruptible wait state, the delivery code just dequeues the
+       thread from whatever queue it is waiting on.<p>
+
+       I found it's difficult to do this from M3 world.
+       To make tty signal work, I added a terrible hack in tty.c.
+       First, I added a field last_signal to struct tty. It is char.
+       When a key that raises signal is pressed, it sets
+       last_signal to be the signal number, and wakes up a thread.
+       When waking up a thread for other reasons(ex, newline pressed),
+       it sets last_signal to be -1.
+       When thread wakes up, it checks last_signal and if it's not -1,
+       it returns EINTR.<p>
+
+       This is not a right solution, because last_signal is a global
+       variable, so there is a race condition(However it would work
+       in most cases because console access is arbitrated using some
+       higher level protocol and there usually is only one thread waiting
+       on struct tty). Another problem of this "solution" is that
+       it's not generic. It works for tty, but it won't work for
+       threads waiting on select, etc.
+       
+</dl>
+
+<hr>
+<address>yasushi@cs.washington.edu</address>
+</body>

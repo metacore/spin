@@ -1,0 +1,58 @@
+<HTML>
+<head>
+<title>Virtual Memory Management in SPIN</title>
+</head>
+
+<body>
+<h1>
+<A name = "top">Virtual Memory Management in SPIN</a> </br>
+</h1>
+<date>Mon Jul  7 13:59:10 1997</date>
+</br>
+Yasushi Saito
+ <P>
+<HR>
+<P>
+
+<a name="overview"></a>
+<H2>Overview</H2>
+
+<p>SPIN manages three kinds of memory, traced heap, untraced heap and
+user virtual memory. The traced heap and untraced heap are used by
+spincore and in-kernel extensions. (the difference between traced heap
+and untraced heap is that the former is garbage collected, but the
+latter is not. The traced heap is used by Modula-3 codes, and the
+untraced heap is used primarily by C codes). User virtual memory is
+used by user space applications, but it may be used by extensions
+to store bulk data, eg, by the file cache manager.  This section describes
+the management of user virtual memory. Ask other people(i.e., Pardy)
+about the traced and the untraced heaps.
+
+<p>User virtual memory is managed by the cooperation of
+<a href="../../../kernel/spincore/src/memory/doc/index.html">Spincore</a> and
+several extensions, including
+<a
+href="../vmcore/doc/index.html">vmcore</a>.
+
+<p>Spincore manages two types of objects, <code>PhysAddr.T</code> and
+<code>Translation.T</code>. They are abstractions for a page frame and
+an address space(pmap), respectively.  Spincore supports allocation
+and deallocation of PhysAddr.Ts, and mapping and unmapping of
+PhysAddr.Ts onto Translation.Ts.
+
+<p>The
+<a href="../vmcore/doc/index.html">vmcore</a>
+extension provides <code>MemoryObject.T</code>, the memory
+object abstraction similar(but not same) to that provided by Mach.
+
+<p>There are two other extensions that subtype
+<code>MemoryObject.T</code> to provide some standard memory management
+facilities.  The <a href="../filepager/doc/index.html">default
+pager</a> extension implements a subtype of
+<code>MemoryObject.T</code> that swaps pages to disks. The <a
+href="../inodepager/doc/InodePager.html">inode pager</a> extension caches
+file contents on memory objects.
+
+<HR>
+<ADDRESS>yasushi@cs.washington.edu</ADDRESS>
+</HTML>

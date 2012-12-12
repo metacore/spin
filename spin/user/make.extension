@@ -1,0 +1,98 @@
+#
+# Copyright 1995, University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 11-Nov-97  David Becker (becker) at the University of Washington
+#	Use ENCAP definition that will search explicity rather than
+#	through a PATH variable set somewhere in the makefiles.
+#	Use new make.conf variables.
+#
+# 16-Jul-97  Tian Fung Lim (tian) at the University of Washington
+#	added writebarrier platform
+#
+# 03-Mar-97  Wilson Hsieh (whsieh) at the University of Washington
+#	fix platforms
+#
+# 29-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+#	refcount platform
+#
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Support both profiled and unprofiled versions of extensions.
+#
+# 10-Apr-96  Przemek Pardyak (pardy) at the University of Washington
+#	"clobber" removes "encap_*" files.
+#
+# 28-Mar-96  Przemek Pardyak (pardy) at the University of Washington
+#	Added "clobber".
+#
+#
+# boilerplate make directives for building extensions
+#
+
+ifndef TREEFLAGS
+you must define THISTREE and include $(THISTREE)/make.conf
+endif
+
+EXTENSION:=$(shell basename `pwd`)
+
+extension: m3sources	# make.extension has the rule to build m3sources
+
+SRC_M3ARCH:=$(M3ARCH)
+ifdef PROFILE
+    BUILD_DIR:=$(M3ARCH)_PROF
+else
+    BUILD_DIR:=$(M3ARCH)
+endif
+ifdef REFCOUNT
+    BUILD_DIR:=$(BUILD_DIR)_REF
+endif
+
+ifdef WRITEBARRIER
+    BUILD_DIR:=$(BUILD_DIR)_WB
+endif
+
+# HACK overrides everything else
+ifdef HACK
+    BUILD_DIR:=$(M3ARCH)_HACK
+endif
+M3FLAGS=-b $(BUILD_DIR) $(TREEFLAGS)
+
+#  Look for encap first in THISTREE, then in FULLTREE.
+ENCAP:=$(firstword $(wildcard $(patsubst %, %/local/$(LOCALTARGET)/bin/encap, $(THISTREE) $(FULLTREE))))
+
+include $(THISTREE)/make.m3 # for m3sources rule
+
+ifeq ($(M3ARCH),ALPHA_SPIN)
+LDFLAGS=-non_shared -L$(THISTREE)/user/$(M3ARCH)/lib -L$(FULLTREE)/user/$(M3ARCH)/lib
+endif
+
+ifeq ($(M3ARCH),IX86_SPIN)
+LDFLAGS=-Bstatic -e start -nostdlib -L$(TARGETLIB) -L$(THISTREE)/user/$(M3ARCH)/lib -L$(FULLTREE)/user/$(M3ARCH)/lib
+endif
+
+$(BUILD_DIR)/$(EXTENSION)_domain: $(BUILD_DIR)/$(EXTENSION).o \
+                               $(BUILD_DIR)/extend_$(EXTENSION).o \
+                               $(BUILD_DIR)/encap_$(EXTENSION).o
+	$(TARGETLD) $(LDFLAGS) -o $@ $(TARGETLIB)/crt0.o $^ -lc -lusyscall
+
+$(BUILD_DIR)/encap_$(EXTENSION).o: $(BUILD_DIR)/encap_$(EXTENSION).s
+	$(TARGETCC) -c -o $@ $^
+
+$(BUILD_DIR)/encap_$(EXTENSION).s: $(M3TARGET)
+	$(ENCAP) $(EXTENSION) `sed s/$(EXTENSION)/./ $(BUILD_DIR)/$(EXTENSION).conf` \
+		 > $@
+
+$(BUILD_DIR)/extend_$(EXTENSION).o: $(BUILD_DIR)/extend_$(EXTENSION).c
+	$(TARGETCC) -c -o $@ $^
+
+$(BUILD_DIR)/$(EXTENSION).o: $(EXTENSION).c
+	$(TARGETCC) -c -o $@ $^
+
+install_domain:
+	if [ -e $(M3ARCH)/$(EXTENSION)_domain ] ; then \
+	    cp $(M3ARCH)/$(EXTENSION)_domain $(THISTREE)/user/$(M3ARCH)/bin ; \
+	fi
+
+.PHONY: extension docs

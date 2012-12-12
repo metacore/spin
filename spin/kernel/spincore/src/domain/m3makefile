@@ -1,0 +1,40 @@
+#
+# Copyright 1994, 1995, 1996 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY
+# 13-Jun-97  Wilson Hsieh (whsieh) at the University of Washington
+#	add AddrUnitTbl
+#
+# 14-Feb-97  Charles Garrett (garrett) at the University of Washington
+#	Added splay tree to map address ranges to domain handles.
+#
+# 18-Apr-96  Emin Gun Sirer (egs) at the University of Washington
+#	Added m3linker. Ultimately should go to m3core.
+#
+# 10-Dec-94  Emin Gun Sirer (egs) at the University of Washington
+#	Created.
+
+Module("Domain")
+Interface("DomainRep")
+Interface("DomainPrivate")
+Interface ("M3Unit")
+Interface ("SymbolEntry")
+Module ("Range")
+Module("DomainChecks")
+
+List("Domain","Domain")
+
+Splay("RangeDomain", "Range", "Domain")
+Table("IntAuth", "Integer", "Auth")
+Table("AddrUnit", "Addr", "M3Unit")
+
+DomainExport("SpinPublic","Domain")
+DomainExport("SpinPublic","DomainList")
+DomainExport("SpinPublic","SymbolEntry")
+DomainExport("SpinTrusted","DomainPrivate")
+
+Module("TrackDomain")
+
+include_dir ("m3linker")	# should ultimately go to m3core.

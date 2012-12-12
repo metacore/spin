@@ -1,0 +1,81 @@
+\batchmode
+\documentstyle [psfig,here,11pt]{article}
+\title{Strands}
+\author{Emin G\"un Sirer}
+
+\makeatother
+\newenvironment{tex2html_wrap}{}{}
+\newwrite\lthtmlwrite
+\def\lthtmltypeout#1{{\let\protect\string\immediate\write\lthtmlwrite{#1}}}%
+\newbox\sizebox
+\begin{document}
+\pagestyle{empty}
+\stepcounter{section}
+\stepcounter{section}
+{\newpage
+\clearpage
+\samepage \begin{figure}[hbt]
+\psfig{figure=/homes/gws/egs/misc/tex/spinstrands-pic.ps}
+
+\end{figure}
+}
+
+\stepcounter{section}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+{\newpage
+\clearpage
+\samepage \begin{figure}[hbt]
+\begin{verbatim}void cthread_fork(cthread_fn_t func, any_t arg)
+{
+        register cthread_t t;
+        
+        mutex_lock(&cthread_lock);
+        t = cthread_alloc(func, arg);
+        t->func = func;
+        t->arg  = arg;
+        cthread_queue_enq(&cthreads, t);
+
+        myscheduler_register(t, MYSCHEDULER_FIFO, MYSCHEDULER_PRIO_NORMAL);
+        sched_unblock(t);
+        mutex_unlock(&cthread_lock);
+}
+\end{verbatim}
+
+\end{figure}
+}
+
+{\newpage
+\clearpage
+\samepage \begin{figure}[hbt]
+\begin{verbatim}void condition_wait(condition_t c, mutex_t m)
+{
+    Waitchannel *waitchannel;
+
+    spin_lock(&c->lock);
+    waitchannel = (Waitchannel *) cthreads_malloc(sizeof(Waitchannel));
+    if(c->wfirst)
+        c->wlast->next = waitchannel;
+    else
+        c->wfirst = waitchannel;
+    c->wlast = waitchannel;
+    waitchannel->next = NULL;
+
+    mutex_unlock(m);
+    spin_unlock(&c->lock);
+    strand_block(strand_current());
+}
+\end{verbatim}
+
+\end{figure}
+}
+
+\stepcounter{section}
+\stepcounter{section}
+
+\end{document}

@@ -1,0 +1,37 @@
+#############################################################
+# HISTORY
+# 13-Jun-96  Marc Fiuczynski (mef) at the University of Washington
+#	Merged in Trent's changes for new ip reassembly support.
+#
+# 11-Mar-96  Marc Fiuczynski (mef) at the University of Washington
+#	Removed IpGenExtern.
+#
+# 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Removed DomainExports because Module now does it automatically.
+#
+#############################################################
+
+overridepath = [ THISTREE , FULLTREE ]
+
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("SpinUnixNet","user/urt","net",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+DomainImport ("Ip6Server","user/net","ip6",overridepath)
+DomainImport ("Icmp6Server","user/net","icmp6",overridepath)
+DomainImport ("TcpServer","user/net","tcp",overridepath)
+DomainImport ("UdpServer","user/net","udp",overridepath)
+DomainImport ("EtherServer","user/net","ether",overridepath)
+DomainImport ("Ether6Client","user/net","ether6Client",overridepath)
+
+Package("Ip6Client")
+Module ("Ip6Gen")            
+Module ("Ip6Classification") 
+Interface ("Ip6Route")
+linkmodule("Ip6Client")
+Module ("Ip6Client")
+Extension({})

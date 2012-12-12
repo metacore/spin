@@ -1,0 +1,123 @@
+<head>
+<title>VMcore Extension</title>
+</head>
+<body>
+
+<h2>VMcore</h2>
+
+VM extension is built on top of <a
+href="../../../../kernel/spincore/src/memory/doc/index.html">the
+spincore VM </a> to provide more user friendly services.
+
+<p> Two objects <em>AddressSpace.T</em> and <em>MemoryObject.T</em>
+play role in the VMcore extension.
+
+<h3>AddressSpace object</h3>
+
+<p>
+A virtual address space is represented by the
+<a href="../src/AddressSpace.i3">AddressSpace.T</a> object.
+<code>AddressSpace.T</code> is a subtype of
+<a href="../../../../kernel/spincore/src/memory/doc/Translation.html">
+Translation.T</a> which is defined in the spincore.
+It allows for mapping and unmapping of memory objects, which are described
+below.
+
+
+<blockquote>
+<strong>Note:</strong>
+<code>AddressSpace.T</code> is further subtyped into
+<a href="../src/AddressSpace.i3"><em>Space.T</em></a>.
+In addition to all the functions of AddressSpace.T, Space.T provides
+easy-to-use memory allocation and deallocation routines.
+We plan to phase out Space.T soon. 
+It now exists mainly for the backward compatibility reason.
+</blockquote>
+
+<h3>Memory Object</h3>
+
+<p> <a href="../src/MemoryObject.i3">MemoryObject.T</a> is a container
+of physical page frames. Memory cannot be allocated on an address
+space directly; it first has to be allocated on a memory object, and
+then the memory object is mapped on the address space.  A memory
+object can be mapped on more than one address spaces(or more than one
+virtual address regions on a single address space). Thus, memory
+object serves as a unit of memory sharing.
+
+<h4>Internal structure of memory object</h4>
+
+<p> Internally, a memory object consists of two objects, <a
+href="../src/CacheObject.i3">cache</a> and <a
+href="../src/PagerObject.i3">pager</a>.  Cache holds a set of page
+frames. All the frames owned by a memory object is stored in the cache
+object.
+
+<p> Pager implements a mechanism to transfer pages to and from memory
+and an external I/O device(disk, network, etc).
+
+<h4>Varieties of Pagers</h4>
+
+Pager is expected to be subtyped. Currently, two types of pagers are
+provided, <em>Bogopager</em> and <em>Filepager</em>.
+
+<ul>
+  <li> Bogopager always provides a zero filled page on page fault.
+       It doesn't provide the page out operation.
+       Bogopager comes with the vmcore extension.
+  <li> Filepager provides a zero filled page on the first fault.
+       It supports page-out on generic
+       <a href="../../../fs/doc/index.html">file system</a>.
+       When loaded into memory, the default pager replaces the
+       <a href="../src/DefaultPager.i3">public procedures</a>
+       to call bogopager using the
+       <!--href="dispatcher">event</a> mechanism.
+       Thus, the bogopager and the default pager
+       are used in the same way.
+</ul>
+
+<blockquote>
+<strong>Note: </strong>
+The reason the bogopager is there is that the file pager depends on
+the file system, and file system depends on vmcore. Therefore, we
+can't put the default pager in vmcore, or we have circular dependency.
+</blockquote>
+
+<h4>Memory Object Methods</h4>
+
+<code>MemoryObject.T</code> exports two methods <code>pageIn</code>
+and <code>pageOut</code>. Although the object provides default
+implementations that looks up the cache and the pager(described
+above), you are also welcome to subtype the object and override these
+procedures (in that case, cache and pager will become dormant).
+
+<h2> Links to subcomponents</h2>
+
+<ul>
+  <li> <a href="../doc/AddressSpace.html">Address Space</a>
+  <li> <a href="../doc/MemoryObject.html">Memory Object</a>
+       <ul>
+	 <li> <a href="../doc/PagerObject.html">Pager Object</a>
+	 <li> <a href="../doc/CacheObject.html">Cache Object</a>
+       </ul>
+  <li> <a href="../../space/doc/Space.html">Space</a>, the
+       canoncial AddressSpace wrapper.
+  <li> <a href="../../filepager/doc/FilePager.html">File Pager</a>
+  <li> <a href="../../inodepager/doc/InodePager.html">Inode Pager</a>
+</ul>
+
+<h2>To-do list</h2>
+
+<ul>
+  <li> Addressmap iteration is not mutexed. 
+  <li> Implement memory object expansion / contraction.
+  <li> Make ExternRef an extension. There is nothing privileged about
+       this service.
+  <li> Delete external ref crap in Space.
+  <li> Delete <code>Space</code> altogether. I see no strong reason why
+       <code>Space</code> and <code>AddressSpace</code> has to be
+       separate.
+  <li> Reconsider the vm design, especially the role separation
+       between cache and pager.
+  <li> Burst paging(how?) and asynchronous read ahead(how?)
+</ul>
+</body>

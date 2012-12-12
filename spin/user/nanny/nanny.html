@@ -1,0 +1,114 @@
+<title>Nanny and the Professor</title>
+
+<html>
+
+<body>
+<h1>
+<IMG align=bottom src=http://www.cs.washington.edu/research/projects/spin/www/pics/nanhdr.gif>
+<A name = "top"></a> </br>
+</h1>
+<date>March 29, 1996/date>
+ <P>
+<HR>
+<P>
+
+<H2>Motivation</H2>
+
+Nanny provides a way to use system services without having to worry
+about manually loading them or without having to load everything from
+boot.
+
+
+<H2>Overview</H2>
+
+<IMG align=left src=http://www.cs.washington.edu/research/projects/spin/www/pics/nancartn.gif>
+
+The nanny provides a demand-loading service for objects, such as
+domains and devices, which have a nameserver representation.  For each
+named entity implemented by a dynamically linked server, nanny watches
+for references to the entity and executes a script associated with the
+name before the lookup is allowed to complete.
+
+<P>
+Nanny is an extension that is generally loaded at system boot time.
+
+<H2>Using Nanny</H2>
+
+Nanny can be used from the shell and directly from programs.  Both interfaces
+are described in the <A HREF="src/Nanny.i3">interface file.</A>
+
+We'll only describe the shell interface here.
+
+
+<DL>
+<DT> nanny install name script
+<DD> will execute "script" whenever anyone goes to lookup "name" in the name service.
+
+
+<DT> nanny stat
+<DD> shows all services currently being watched by nanny.
+
+
+<DT> nanny delete name
+<DD> removes name from nanny's purview.
+
+<DT> nanny touch service_name
+<DD> forces nanny to query service_name, executing any scripts that might be
+required.  (This is equivalent to "<A HREF="../ns/ns.html">ns</A> query name")
+
+
+<DT> nanny zap
+<DD> deinstall the current incarnation of nanny. (hackville USA)
+</DL>
+
+<H3>An example</H3>
+
+Here's an example that shows how to demand-load CAM whenever anyone
+tries to mount a disk.
+
+<PRE>
+
+echo Enabling fs:ufs
+nanny install fs:ufs  ~/spin/user/fs/ufs/ALPHA_SPIN/ufs.rc
+
+echo Enabling cam...
+nanny install cam ~/spin/user/scripts/caminit.rc
+
+ns install device:rz3a @cam
+ns install device:rz3b @cam
+ns install device:rz3c @cam
+ns install device:rz3d @cam
+ns install device:rz3h @cam
+
+</PRE>
+This says:
+<UL>
+<LI> 	if the device subsystem goes to look up rz3[a-h], then return
+	to it whatever happens when I follow @cam.
+
+<LI> 	Since cam is nanny'd to caminit.rc, all you have to do is
+	"mention" rz3a and you load cam.
+
+
+<LI> 	Cam will then install it's own device handles into the
+	nameserver forcing the ns install to be deleted.
+
+
+
+
+</UL>
+
+Typically, when nanny loads a script for you, that script will
+cause the name that nanny loaded to be changed in the
+nameserver.  This behavior will change.
+
+
+
+
+</body>
+<p><hr>
+<Address>
+bershad@cs.washington.edu<br>
+</address>
+</html>
+<TITLE>Nanny</TITLE>

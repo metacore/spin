@@ -1,0 +1,68 @@
+m3_option("-O")
+#m3_option("-A")
+override("tcp", "/afs/cs/home/yasushi/src/m3")
+import(m3core)
+import(libm3)
+import(tcp)
+module(Mutex)
+template (dequeue)
+Interface(GenericQ)
+Dequeue("", GenericQ)
+Interface(Types)
+Module(UNIXUtils)
+Module(VMError)
+Module(VMDebug)
+Module(ArrayUtils)
+Module(Log)
+Module(Strand)
+Module(Round)
+Module(Spy)
+Module(Clock)
+interface(WordRefTbl)
+interface(MachineTrap)
+
+#m3_option("-Z")
+m3_option("-SpinRelax")
+#m3_option("-UserSpace")
+
+# turn on gprof.
+#m3_option("-X6@-p@")
+#m3_option("-X2@-p@")
+m3_option("-keep")
+interface(RawIOExtern)
+c_source(CUtils)
+implementation(HostID)
+implementation(TransOS)
+implementation(RawIO)
+implementation(Main)
+implementation(TransDaemon)
+Module(PhysAddr)
+Module(Error)
+module(UNIXRPC)
+Interface(UNIXHostID)
+Interface(MachineCPU)
+module("TCPPeer")   # stolen from DEC m3browser
+module(CSupport)
+interface("Extern")
+interface("PagerObject")
+module("TransPager")
+module("TransCache")
+module("MemoryObject")
+module("Debugger")
+module("LightMutex")
+OTHER_LIBS_L += "-L../microbench/osf"
+OTHER_LIBS_L += "-lmicro"
+OTHER_LIBS_L += "-L../rvmbench/osf"
+OTHER_LIBS_L += "-lrvmbench"
+OTHER_LIBS_L += "-L../oo7/osf"
+OTHER_LIBS_L += "-loo7"
+OTHER_LIBS_L += "-L../malloc"
+OTHER_LIBS_L += "-lrds"
+OTHER_LIBS_L += "-L../lib/osf"
+OTHER_LIBS_L += "-ltrans"
+OTHER_LIBS_L += "-lg++"
+OTHER_LIBS_L += "-L../../sphinx/libbench"
+OTHER_LIBS_L += "-lbench"
+OTHER_LIBS_L += "-L/usr/local/.contrib/gcc-2.6.3/lib/gcc-lib/alpha-dec-osf3.2/2.6.3/"
+OTHER_LIBS_L += "-lgcc"
+%OTHER_LIBS_L += "-lmach" 

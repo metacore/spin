@@ -1,0 +1,55 @@
+*** SPIN/ioconf.c	Tue Mar 26 12:02:51 1996
+--- SPIN/ioconf.spin.c	Mon Mar 25 10:35:08 1996
+***************
+*** 88,94 ****
+  /* };	*/
+  
+  
+! struct bus bus_list[] = {
+  	{ 0,0,0,0,0,0,"tc",0,-1,"nexus",-1,tcconfl1,tcconfl2,"",0,tcint0,0,0,"",0,0,0},
+  	{ 0,0,0,0,0,0,"pci",0,-1,"nexus",-1,pciconfl1,pciconfl2,"",0,pciint0,0,0,"",0,0,0},
+  	{ 0,0,0,0,0,0,"isa",0,-1,"pci",0,isaconfl1,isaconfl2,"",0,isaint0,0,0,"",0,0,0},
+--- 88,94 ----
+  /* };	*/
+  
+  
+! struct bus sal_bus_list[] = {
+  	{ 0,0,0,0,0,0,"tc",0,-1,"nexus",-1,tcconfl1,tcconfl2,"",0,tcint0,0,0,"",0,0,0},
+  	{ 0,0,0,0,0,0,"pci",0,-1,"nexus",-1,pciconfl1,pciconfl2,"",0,pciint0,0,0,"",0,0,0},
+  	{ 0,0,0,0,0,0,"isa",0,-1,"pci",0,isaconfl1,isaconfl2,"",0,isaint0,0,0,"",0,0,0},
+***************
+*** 132,138 ****
+  
+  
+  
+! struct controller controller_list[] = {
+  	{ 0,0,0,0,&sccdriver,0,"scc",0,"tc",0,0,-1,0,"",0,sccint0,0,0,0x0,0,0x0,0,0,0,0,0,0,0},
+  	{ 0,0,0,0,&lndriver,0,"ln",0,"tc",0,0,-1,0,"",0,lnint0,0,0,0x0,0,0x0,0,0,0,0,0,0,0},
+  	{ 0,0,0,0,&fbdriver,0,"fb",0,"tc",0,0,-1,0,"",0,fbint0,0,0,0x0,0,0x0,0,0,0,0,0,0,0},
+--- 132,138 ----
+  
+  
+  
+! struct controller sal_controller_list[] = {
+  	{ 0,0,0,0,&sccdriver,0,"scc",0,"tc",0,0,-1,0,"",0,sccint0,0,0,0x0,0,0x0,0,0,0,0,0,0,0},
+  	{ 0,0,0,0,&lndriver,0,"ln",0,"tc",0,0,-1,0,"",0,lnint0,0,0,0x0,0,0x0,0,0,0,0,0,0,0},
+  	{ 0,0,0,0,&fbdriver,0,"fb",0,"tc",0,0,-1,0,"",0,fbint0,0,0,0x0,0,0x0,0,0,0,0,0,0,0},
+***************
+*** 162,167 ****
+  /* };	*/
+  
+  
+! struct device device_list[] = {
+  	{ 0,0,"",(char *)0,0,0,"",0,0,0,0,0}
+  };
+--- 162,171 ----
+  /* };	*/
+  
+  
+! struct device sal_device_list[] = {
+  	{ 0,0,"",(char *)0,0,0,"",0,0,0,0,0}
+  };
++ 
++ struct bus *bus_list = sal_bus_list;
++ struct controller *controller_list = sal_controller_list;
++ struct device *device_list = sal_device_list;

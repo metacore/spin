@@ -1,0 +1,14 @@
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+
+Package("Console")
+
+interface("ConsoleExtern")
+Module("Console")
+c_source("console")
+include_dir(BASETARGET)
+
+Extension({})

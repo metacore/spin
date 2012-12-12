@@ -1,0 +1,56 @@
+<title>RVM TPC/A benchmark</title>
+<h2>RVM TPC/A benchmark</h2>
+
+<h3>What's this?</h3>
+
+RVM TPC/A benchmark was originally developed by the RVM project team
+for use in its SOSP paper. It mimics the TPC/A benchmark in a very
+crappy way. The "database" file is a single big C struct described below.
+
+<pre>
+struct {
+    branch branch;
+    teller tellers[10];
+    account accounts[NACCOUNTS]
+    history history[NACCOUNTS*2];
+} root_struct;
+</pre>
+
+<code>branch</code>, <code>teller</code>, <code>account</code> are
+128 bytes each, and <code>history</code> is 64 bytes each.
+<code>NACCOUNTS</code> is a runtime constant that defaults to 32768.
+
+<p>
+Each transaction picks one account, and reads the branch, a teller,
+the account, and also writes onto the branch, the teller, and the account.
+Finally, it appends an entry to history. Thus, one transaction
+reads 3 * 128 bytes, and writes 3 * 128 + 64 bytes.
+
+<p>
+There are two ways the accounts are picked. <em>Random</em> version
+picks an account completely randomly. <em>Localized</em> picks an account
+randomly but with certain preference. Default is the localized, but
+<code>-r</code> command line option switches the distribution to random.
+
+<h3>Invoking RVM benchmark</h3>
+
+<pre>
+rvmbench [-rp] [-n NTRANS] [-d DEV] [-a NACCOUNTS]
+</pre>
+
+<dl>
+  <dt> -r
+  <dd> Random account distribution. Default is localized distribution.
+  <dt> -p
+  <dd> Run the kernel profiler.
+  <dt> -n 
+  <dd> Set the number of transactions executed. Default is 4000.
+  <dt> -d
+  <dd> Set the database name. Default is <code>rds_data</code> on the
+       current directory.
+  <dt> -a
+  <dd> Set the number of accounts. Default is 32768.
+</dl>
+
+<hr>
+<address>yasushi@cs.washington.edu</address>

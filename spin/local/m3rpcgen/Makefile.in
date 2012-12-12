@@ -1,0 +1,49 @@
+#
+# m3rpcgen
+# SunRPC stub generator for Modula-3.
+#
+# Copyright (c) 1991, 1992 Xerox Corporation.  All rights reserved.
+#
+# Use and copying of this software and preparation of derivative works
+# based upon this software are permitted.  Any distribution of this
+# software or derivative works must comply with all applicable United
+# States export control laws.  This software is made available AS IS, and
+# Xerox Corporation makes no warranty about the software, its performance
+# or its conformity to any specification.
+#
+
+THISTREE:=$(shell cd ../../..; pwd)
+include $(THISTREE)/make.conf   # sets FULLTREE and DECSRCM3BUILD
+
+VPATH=..
+DESTDIR=../../$(LOCALTARGET)
+CFLAGS=-g3
+# List all the .io and .mo files for your library here.
+OBJS=StringHashTable.o rpc_clntout.o rpc_cout.o rpc_hout.o rpc_main.o \
+     rpc_parse.o rpc_scan.o rpc_svcout.o rpc_util.o
+
+all: m3rpcgen
+
+m3rpcgen: $(OBJS)
+	$(CC) $(CFLAGS) -o m3rpcgen $(OBJS)
+
+install: m3rpcgen m3rpcgen.1
+	cp -p m3rpcgen $(DESTDIR)/bin
+	cp -p ../m3rpcgen.1 $(DESTDIR)/man/man1
+
+clean::
+	-rm -f $(OBJS) m3rpcgen
+
+depend:
+
+FORCE:
+
+StringHashTable.o: StringHashTable.h
+rpc_clntout.o: rpc_parse.h rpc_util.h StringHashTable.h
+rpc_cout.o: rpc_parse.h rpc_util.h StringHashTable.h
+rpc_hout.o: rpc_parse.h rpc_util.h StringHashTable.h
+rpc_main.o: rpc_scan.h rpc_parse.h rpc_util.h StringHashTable.h
+rpc_parse.o: rpc_scan.h rpc_parse.h rpc_util.h StringHashTable.h
+rpc_scan.o: rpc_scan.h rpc_util.h StringHashTable.h
+rpc_svcout.o: rpc_parse.h rpc_util.h StringHashTable.h
+rpc_util.o: rpc_scan.h rpc_parse.h rpc_util.h StringHashTable.h

@@ -1,0 +1,8 @@
+134a135
+> 
+265a267,269
+> #ifdef SPIN
+> 	(void) tcpip_output(m, (struct mbuf *)0, ro, 0, (struct ip_moptions *)0);
+> #else
+266a271
+> #endif /* SPIN */

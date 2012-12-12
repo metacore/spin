@@ -1,0 +1,23 @@
+% Copyright (C) 1989, 1992 Digital Equipment Corporation 
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+
+% 
+% Standard configuration file for Alpha/AXP running SPIN
+%
+
+%
+% HISTORY
+% 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+%	created
+%
+
+if equal(TARGET, "TARGET")
+  readonly TARGET = "ALPHA_OSF_REF"
+end
+
+include (ALPHA_OSF)
+
+readonly REFCOUNT = "TRUE"
+
+m3_option("-RefCount")

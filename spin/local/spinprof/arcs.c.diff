@@ -1,0 +1,46 @@
+69c68
+< addarc( parentp , childp , count )
+---
+> addarc( parentp , childp , count, cycles )
+72a72
+>     long        cycles;
+76d75
+< #   ifdef DEBUG
+81d79
+< #   endif /* DEBUG */
+87d84
+< #	ifdef DEBUG
+92d88
+< #	endif /* DEBUG */
+93a90
+> 	arcp -> arc_time += cycles;
+99a97
+>     arcp -> arc_time = cycles;
+143c141
+< 	parentp -> childtime = 0.0;
+---
+> 	parentp -> childtime = 0;
+191d188
+< #   ifdef DEBUG
+201d197
+< #   endif /* DEBUG */
+321d316
+< #	ifdef DEBUG
+325c320
+< 		printf( " with %f %f %d/%d\n" ,
+---
+> 		printf( " with %ld %ld %d/%d\n" ,
+332d326
+< #	endif /* DEBUG */
+395d388
+< #	ifdef DEBUG
+401d393
+< #	endif /* DEBUG */
+477d468
+< #	ifdef DEBUG
+484d474
+< #	endif /* DEBUG */
+531d520
+< #	ifdef DEBUG
+540d528
+< #	endif /* DEBUG */

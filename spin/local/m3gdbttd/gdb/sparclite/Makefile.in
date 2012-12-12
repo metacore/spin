@@ -1,0 +1,175 @@
+#Copyright 1989, 1990, 1991, 1992, 1993 Free Software Foundation, Inc.
+
+# This file is part of GDB.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+prefix = /usr/local
+
+program_transform_name =
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+libdir = $(exec_prefix)/lib
+tooldir = $(libdir)/$(target_alias)
+
+datadir = $(prefix)/lib
+mandir = $(prefix)/man
+man1dir = $(mandir)/man1
+man2dir = $(mandir)/man2
+man3dir = $(mandir)/man3
+man4dir = $(mandir)/man4
+man5dir = $(mandir)/man5
+man6dir = $(mandir)/man6
+man7dir = $(mandir)/man7
+man8dir = $(mandir)/man8
+man9dir = $(mandir)/man9
+infodir = $(prefix)/info
+includedir = $(prefix)/include
+docdir = $(datadir)/doc
+
+SHELL = /bin/sh
+
+INSTALL = install -c
+INSTALL_PROGRAM = $(INSTALL)
+INSTALL_DATA = $(INSTALL)
+
+AR = ar
+AR_FLAGS = qv
+RANLIB = ranlib
+
+# Flags that describe where you can find the termcap library.
+# This can be overridden in the host Makefile fragment file.
+TERMCAP = -ltermcap
+
+# System V: If you compile gdb with a compiler which uses the coff
+# encapsulation feature (this is a function of the compiler used, NOT
+# of the m-?.h file selected by config.gdb), you must make sure that
+# the GNU nm is the one that is used by munch.
+
+# If you are compiling with GCC, make sure that either 1) You use the
+# -traditional flag, or 2) You have the fixed include files where GCC
+# can reach them.  Otherwise the ioctl calls in inflow.c
+# will be incorrectly compiled.  The "fixincludes" script in the gcc
+# distribution will fix your include files up.
+#CC=cc
+#CC=gcc -traditional
+
+# These tools MUST be build with gcc and gnu ld.
+CC=gcc
+LD=ld
+
+# Directory containing source files.  Don't clean up the spacing,
+# this exact string is matched for by the "configure" script.
+srcdir = .
+
+# Set this up with gcc if you have gnu ld and the loader will print out
+# line numbers for undefinded refs.
+#CC-LD=gcc -static
+CC-LD=${CC}
+
+# Where is the "include" directory?  Traditionally ../include or ./include
+INCLUDE_DIR =  ${srcdir}/../../include
+INCLUDE_DEP = $$(INCLUDE_DIR)
+
+
+# Where is the source dir for the BFD library?  Traditionally ../bfd or ./bfd
+# (When we want the binary library built from it, we use ${BFD_DIR}${subdir}.)
+BFD_DIR =  ../../bfd
+BFD_DEP = $$(BFD_DIR)
+BFD_SRC = $(srcdir)/$(BFD_DIR)
+BFD_LIB = ./../../bfd${subdir}/libbfd.a
+BFD_CFLAGS = -I$(BFD_DIR) -I(BFD_SRC)
+
+# All the includes used for CFLAGS and for lint.
+# -I. for config files.
+# -I${srcdir} possibly for regex.h also.
+# -I${srcdir}/config for more generic config files.
+INCLUDE_CFLAGS = -I. -I.. -I${srcdir} -I${srcdir}/../config -I$(INCLUDE_DIR)
+
+# CFLAGS is specifically reserved for setting from the command line
+# when running make.  I.E.  "make USER_CFLAGS=-Wmissing-prototypes".
+CFLAGS = -g
+
+# INTERNAL_CFLAGS is the aggregate of all other *CFLAGS macros.
+INTERNAL_CFLAGS = $(CFLAGS) -I$(BFD_DIR) $(INCLUDE_CFLAGS) $(USER_CFLAGS)
+# None of the things in CFLAGS will do any harm, and on some systems
+#  (e.g. SunOS4) it is important to use the MH_CFLAGS.
+LDFLAGS = $(CFLAGS)
+
+# Where is the "-liberty" library, containing getopt and obstack?
+LIBIBERTY_DIR = ${srcdir}/../../libiberty
+LIBIBERTY = ./../../libiberty${subdir}/libiberty.a
+
+# Libraries and corresponding dependencies for compiling gdb.
+CLIBS = ${BFD_LIB} ${LIBIBERTY}
+CDEPS = ${BFD_LIB} ${LIBIBERTY}
+
+# Host and target-dependent makefile fragments come in here.
+####
+# End of host and target-dependent makefile fragments
+
+# Prevent Sun make from putting in the machine type.  Setting
+# TARGET_ARCH to nothing works for SunOS 3, 4.0, but not for 4.1.
+.c.o:
+	${CC} -c ${INTERNAL_CFLAGS} $<
+
+OFILES = crt0.o hello.o salib.o sparcl-stub.o
+
+# this is so that we don't build by default.  In order to build hello (the
+# sparclite target program), you will need to fix this file to use the
+# sparclite gcc and gas, and then do `make all'.
+
+.PHONY: all info install install-info
+all: aload
+info:
+# This does not use INSTALL_XFORM or anything of the sort because there
+# only needs to be one aload.  Even if aload ends up being useful for more
+# than one target, perhaps one aload binary can be useful with all of them.
+install:
+	$(INSTALL_PROGRAM) aload $(bindir)/aload
+
+install-info:
+
+progs:	aload hello
+
+hello:	$(OFILES)
+	$(LD) -N -Ttext 0x40000000 -o hello $(OFILES) -lc
+
+aload:	aload.o
+	$(CC) $(CFLAGS) -o aload aload.o $(CLIBS)
+
+sparc-stub.o: ${srcdir}/../sparc-stub.c
+	$(CC) -c ${INTERNAL_CFLAGS} ${srcdir}/../sparc-stub.c
+
+sparcl-stub.o: ${srcdir}/../sparcl-stub.c
+	$(CC) -c ${INTERNAL_CFLAGS} ${srcdir}/../sparcl-stub.c
+
+crt0.o:	crt0.s
+	$(CC) $(CFLAGS) -c ${srcdir}/crt0.s
+
+aload.o: aload.c
+
+hello.o: hello.c
+
+salib.o: salib.c sparclite.h
+
+mostlyclean:
+
+clean:		mostlyclean
+	rm -f *.o aload hello
+
+distclean:	clean
+
+realclean:	distclean

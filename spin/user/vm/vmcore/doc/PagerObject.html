@@ -1,0 +1,88 @@
+<head>
+<title>PagerObject</title>
+</head>
+<body>
+<h2>PagerObject</h2>
+<blockquote>
+<code><b>INTERFACE PagerObject;
+</b></code><br><code><b>IMPORT VMError, VMTypes;
+</b></code><br></blockquote>
+<br>
+<blockquote>
+<code><b>TYPE
+</b></code><br><code><b>&nbsp;&nbsp;ResultCode = {Success,
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AlreadyPagedIn,
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AlreadyPagedOut,
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PagerDestroyed,
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeviceFull,
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NotImplemented};
+</b></code><br></blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;PageNumber = VMTypes.PageNumber;
+</b></code><br><code><b>&nbsp;&nbsp;PageCount = VMTypes.PageCount;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;T &lt: Public;
+</b></code><br><code><b>&nbsp;&nbsp;Public = OBJECT 
+</b></code><br><code><b>&nbsp;&nbsp;METHODS
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;init(): T;
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> Called then the object is initialized. You may wonder why this
+     proc doesn't take the size argument. The reason is that, the pager
+
+     object is created using a way other than this <code><b>init</b></code> in most cases.
+
+     For example, in case of <a href="MemoryObject.html">bogopager or
+
+     file pager</a>, pager object is created using
+
+     <code><b>DefaultPager.Create</b></code>.
+
+<br>
+     This, this procedure is a nop in most cases.
+
+<br>
+     </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;destroy();
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;pageIn(offset: PageNumber; VAR data : ARRAY OF CHAR) : ResultCode;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code>Bring in the page content. <br>
+</blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;pageOut(offset : PageNumber; READONLY data : ARRAY OF CHAR;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dirty: BOOLEAN) : ResultCode;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code>Write out the page content. <br>
+</blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;getMemoryObject(): REFANY;
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code><td> Returns the memory object associated with the pager.
+     The return value is always of type <code><b>MemoryObject.T</b></code>, but we declare it
+
+     refany to avoid import loop. 
+
+     XXX is this safe? </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;info(offset: PageNumber; size: PageCount) : INTEGER
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RAISES {VMError.E};
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;</b></code>This is not used now. <br>
+</blockquote>
+<blockquote>
+<code><b>&nbsp;&nbsp;&nbsp;&nbsp;print(): TEXT;
+</b></code><br><code><b>&nbsp;&nbsp;END;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>CONST Brand = "PagerObject-1.0";
+</b></code><br></blockquote>
+<blockquote>
+<code><b>END PagerObject.
+</b></code><br></blockquote>
+<hr>
+Last updated: Sun Oct 13 16:36:49 PDT 1996
+<br>
+<address>Stefan Savage (savage@cs.washington.edu)</address>
+</body>

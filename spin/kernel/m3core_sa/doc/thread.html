@@ -1,0 +1,114 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+
+<h2> Overview </h2>
+Thread.T's are OPAQUE objects. SPIN has kept much of the original Thread
+interface while completely changing the underlying implementation of Threads.
+I will let Gun tell you about the implementation of his Strands service.
+This page will just cover the Thread interface itself.
+<p>
+
+The only changes we have made to this interface are to replace the 
+floating point arguments of Pause and AlertPause with integers. Here
+are the procedures declared in Thread.i3:
+
+<h2> The Thread interface </h2>
+<pre>
+(* A "Thread.T" is a handle on a thread.  A "Mutex" is locked by some
+   thread, or unlocked.  A "Condition" is a set of waiting threads.  A
+   newly-allocated "Mutex" is unlocked; a newly-allocated "Condition"
+   is empty.  It is a checked runtime error to pass the "NIL" "Mutex",
+   "Condition", or "T" to any procedure in this interface. *)
+
+TYPE Closure = OBJECT METHODS apply(): REFANY END;
+
+PROCEDURE Fork(cl: Closure): T;
+(* Return a handle on a newly-created thread executing "cl.apply()". *)
+
+PROCEDURE Join(t: T): REFANY;
+(* Wait until "t" has terminated and return its result. It is a
+   checked runtime error to call this more than once for any "t". *)
+
+PROCEDURE Wait(m: Mutex; c: Condition);
+(* The calling thread must have "m" locked. Atomically unlocks "m" and
+   waits on "c".  Then relocks "m" and returns. *)
+
+PROCEDURE Acquire(m: Mutex);
+(* Wait until "m" is unlocked and then lock it. *)
+
+PROCEDURE Release(m: Mutex);
+(* The calling thread must have "m" locked.  Unlocks "m". *)
+
+PROCEDURE Broadcast(c: Condition);
+(* All threads waiting on "c" become eligible to run. *)
+
+PROCEDURE Signal(c: Condition);
+(* One or more threads waiting on "c" become eligible to run. *)
+
+(* was LONGREAL *)
+PROCEDURE Pause(n: INTEGER);
+(* Wait for "n" seconds to elapse. *)
+
+(* To wait until a specified point in time in the future, say "t",
+   you can use the call
+
+| Pause(t - Time.Now())
+*)
+
+PROCEDURE Self(): T;
+(* Return the handle of the calling thread. *)
+
+EXCEPTION Alerted;
+(* Used to approximate asynchronous interrupts. *)
+
+PROCEDURE Alert(t: T);
+(* Mark "t" as an alerted thread. *)
+
+PROCEDURE TestAlert(): BOOLEAN;
+(* If the calling thread has been marked alerted, return "TRUE" and
+   unmark it. *)
+
+PROCEDURE AlertWait(m: Mutex; c: Condition) RAISES {Alerted};
+(* Like "Wait", but if the thread is marked alerted at the time of
+   call or sometime during the wait, lock "m" and raise "Alerted". *)
+
+PROCEDURE AlertJoin(t: T): REFANY RAISES {Alerted};
+(* Like "Join", but if the thread is marked alerted at the time of
+   call or sometime during the wait, raise "Alerted". *)
+
+(* was LONGREAL *)
+PROCEDURE AlertPause(n: INTEGER) RAISES {Alerted};
+(* Like "Pause", but if the thread is marked alerted at the time of
+   the call or sometime during the wait, raise "Alerted". *)
+
+(* Normally "Fork" uses a default value for the size of the stack of
+   the new thread.  It is possible to change the default value, and 
+   also to specify the value used for a particular call to "Fork" by 
+   supplying a "SizedClosure" rather than a "Closure".  Stack sizes are 
+   given as a number of "Word.T"s.
+*)
+
+PROCEDURE GetDefaultStackSize(): CARDINAL;
+(* Return the current default stack size for new threads. *)
+
+PROCEDURE MinDefaultStackSize(min: CARDINAL); 
+(* Change the default stack size for newly forked threads to the
+   greater of "min" and the current default stack size. *)
+
+PROCEDURE IncDefaultStackSize(inc: CARDINAL);
+(* Increment the default stack size for newly forked threads by "inc".
+   *)
+</pre>
+
+
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

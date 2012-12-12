@@ -1,0 +1,10 @@
+NumAssmPerAssm  3
+NumCompPerAssm  3
+NumCompPerModule 50
+NumAssmLevels  5
+TotalModules  1
+NumAtomicPerComp  10
+NumConnPerAtomic  3
+DocumentSize  200
+ManualSize  5000
+MultiSleepTime 0

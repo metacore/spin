@@ -1,0 +1,14 @@
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("FileSystem","user/fs","fscore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("UserSpaceThread","user/thread","threadcore",overridepath)
+
+Package("RWLock")
+
+Module("ReaderWriterLock")
+CommandModule("RWLock")
+
+Extension({})

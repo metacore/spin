@@ -1,0 +1,284 @@
+<html>
+<head>
+<title>Standard M3 Libraries</title>
+</head>
+
+<body>
+
+<h2> Motivation </h2>
+In Modula-3 you use the Fmt interface to transform
+data from machine representation to human readable TEXTs and 
+the Lex and Scan interfaces to go the other way.
+
+<h2> Overview </h2>
+The Fmt and Lex interfaces are rather narrow because of safety
+restrictions. For example, the "Systems Programming with Modula-3"
+book describes a Fmt.Addr procedure which would turn an address
+into a TEXT containing digits. This has been removed from the
+distributed interface because you could use it to format an
+address and read it back in as an integer, violating type safety.
+In SPIN, we have restricted them even more by disabling the support
+for floating-point numbers.
+
+<h2> The Details </h2>
+
+<h3> The Fmt interface </h3>
+
+The SRC library contains an interface called Fmt which produces
+TEXT's with nice formatting. The elementary procedures accept
+BOOLEAN's, CHAR's, INTEGER's and Word.T's and return TEXT's.
+There is also a Pad() procedure which takes a TEXT and some
+instructions for padding it and returns the padded TEXT. There
+are two procedures which implement something like printf
+functionality. Here are their descriptions:
+
+<pre>
+
+PROCEDURE F(fmt: TEXT; t1, t2, t3, t4, t5: TEXT := NIL)
+  : TEXT;
+(* Uses "fmt" as a format string. The result is a copy of "fmt" in
+   which all format specifiers have been replaced, in order, by the
+   text arguments "t1", "t2", etc. *)
+</pre>
+ A format specifier contains a field width, alignment and one of two
+   padding characters. The procedure "F" evaluates the specifier and
+   replaces it by the corresponding text argument padded as it would
+   be by a call to "Pad" with the specified field width, padding
+   character and alignment.
+<p>
+   The syntax of a format specifier is:
+| %[-]{0-9}s
+   that is, a percent character followed by an optional minus sign, an
+   optional number and a compulsory terminating "s".
+<p>
+   If the minus sign is present the alignment is "Align.Left",
+   otherwise it is "Align.Right". The alignment corresponds to the
+   "align" argument to "Pad".
+<p>
+   The number specifies the field width (this corresponds to the
+   "length" argument to "Pad"). If the number is omitted it defaults
+   to zero.
+<p>
+   If the number is present and starts with the digit "0" the padding character
+   is "'0'"; otherwise it is the space character. The padding character
+   corresponds to the "padChar" argument to "Pad".
+<p>
+   It is a checked runtime error if "fmt" is "NIL" or the number of
+   format specifiers in "fmt" is not equal to the number of non-nil
+   arguments to "F".
+<p>
+   Non-nil arguments to "F" must precede any "NIL" arguments; it is a
+   checked runtime error if they do not.
+<p>
+   If "t1" to "t5" are all "NIL" and "fmt" contains no format
+   specifiers, the result is "fmt".
+<p>
+   Examples:
+<pre>
+| F("%s %s\n", "Hello", "World") `returns` "Hello World\n".
+| F("%s", Int(3))                `returns` "3"
+| F("%2s", Int(3))               `returns` " 3"
+| F("%-2s", Int(3))              `returns` "3 "
+| F("%02s", Int(3))              `returns` "03"
+| F("%-02s", Int(3))             `returns` "30"
+| F("%s", "%s")                  `returns` "%s"
+| F("%s% tax", Int(3))           `returns` "3% tax"
+
+   The following examples are legal but pointless:
+| F("%-s", Int(3))               `returns` "3"
+| F("%0s", Int(3))               `returns` "3"
+| F("%-0s", Int(3))              `returns` "3"
+
+
+PROCEDURE FN(fmt: TEXT; READONLY texts: ARRAY OF TEXT)
+  : TEXT;
+(* Similar to "F" but accepts an array of text arguments. It is a
+   checked runtime error if the number of format specifiers in "fmt"
+   is not equal to "NUMBER(texts)" or if any element of "texts" is
+   "NIL". If "NUMBER(texts) = 0" and "fmt" contains no format
+   specifiers the result is "fmt". *)
+
+Example:
+
+| FN("%s %s %s %s %s %s %s",
+|   ARRAY OF TEXT{"Too", "many", "arguments",
+|     "for", "F", "to", "handle"})
+
+   returns {\tt \char'42Too many arguments for F to handle\char'42}.
+
+</pre>
+
+
+<h3> The Lex interface </h3>
+Here are the comments from Lex.i3:
+<p>
+ The "Lex" interface provides procedures for reading strings,
+   booleans, integers, and floating-point numbers from an input
+   stream.  Similar functionality on text strings is available
+   from the "Scan" interface.
+<p>
+
+ Each of the procedures in this interface reads a specified prefix
+   of the characters in the reader passed to the procedure, and leaves
+   the reader positioned immediately after that prefix, perhaps at
+   end-of-file.  Each procedure may call "Rd.UngetChar" after its
+   final call on "Rd.GetChar".
+
+<pre> 
+PROCEDURE Scan(
+    rd: Rd.T; READONLY cs: SET OF CHAR := NonBlanks): TEXT 
+  RAISES {Rd.Failure, Alerted};
+(* Read the longest prefix of "rd" composed of characters in "cs" and
+   return that prefix as a "TEXT".  *)
+
+PROCEDURE Skip(
+    rd: Rd.T; READONLY cs: SET OF CHAR := Blanks)
+  RAISES {Rd.Failure, Alerted};
+(* Read the longest prefix of "rd" composed of characters in "cs" and
+   discard it.  *)
+
+(* Whenever a specification of one of the procedures mentions skipping
+   blanks, this is equivalent to performing the call "Skip(rd, Blanks)". *)
+
+PROCEDURE Match(rd: Rd.T; t: TEXT)
+  RAISES {Error, Rd.Failure, Alerted};
+(* Read the longest prefix of "rd" that is also a prefix of "t".
+   Raise "Error" if that prefix is not, in fact, equal to all of "t". *)
+
+PROCEDURE Bool(rd: Rd.T): BOOLEAN RAISES {Error, Rd.Failure, Alerted};
+(* Read a boolean from "rd" and return its value. *)
+
+(* "Bool" skips blanks, then reads the longest prefix of "rd" that is
+   a prefix of a "Boolean" in the following grammar:
+
+| Boolean = "F" "A" "L" "S" "E" | "T" "R" "U" "E".
+
+   The case of letters in a "Boolean" is not significant.  If the
+   prefix read from "rd" is an entire "Boolean", "Bool" returns that
+   boolean; else it raises "Error".  *)
+
+PROCEDURE Int(rd: Rd.T; defaultBase: [2..16] := 10)
+  : INTEGER RAISES {Error, Rd.Failure, Alerted};
+PROCEDURE Unsigned(rd: Rd.T; defaultBase: [2..16] := 16)
+  : Word.T RAISES {Error, Rd.Failure, Alerted};
+(* Read a number from "rd" and return its value. *)
+</pre>
+
+ Each procedure skips blanks, then reads the longest prefix of "rd"
+   that is a prefix of a "Number" as defined by the grammar below.  If
+   "defaultBase" exceeds 10, then the procedure scans for a
+   "BigBaseNum"; otherwise it scans for a "SmallBaseNum".  The effect
+   of this rule is that the letters 'a' through 'f' and 'A' through
+   'F' stop the scan unless either the "defaultBase" or the explicitly
+   provided base exceeds 10.  "Unsigned" omits the scan for a "Sign".
+<pre>
+| Number       = [Sign] (SmallBaseNum | BigBaseNum).
+| SmallBaseNum = DecVal | BasedInt.
+| BigBaseNum   = HexVal | BasedInt.
+| BasedInt     = SmallBase "_" DecVal | BigBase "_" HexVal.
+| DecVal       = Digit {Digit}.
+| HexVal       = HexDigit {HexDigit}.
+| Sign         = "+" | "-".
+| SmallBase    = "2" | "3" | ... | "10".
+| BigBase      = "11" | "12" | ... | "16".
+| Digit        = "0" | "1" | ... | "9".
+| HexDigit     = Digit | "A" | "B" | "C" | "D" | "E" | "F"
+|                      | "a" | "b" | "c" | "d" | "e" | "f".
+</pre>
+   If the prefix read from "rd" is an entire "Number" (as described
+   above), the corresponding number is returned; else "Error" is
+   raised.
+<p>
+   If an explicit base is given with an underscore, it is interpreted
+   in decimal.  In this case, the digits in "DecVal" or "HexVal" are
+   interpreted in the explicit base, else they are interpreted in the
+   "defaultBase".
+
+<h3> The Scan interface </h3>
+<pre>
+(* The "Scan" interface provides procedures for reading strings,
+   booleans, integers, and floating-point numbers from a text string.
+   Similar functionality on readers is availble from the "Lex"
+   interface. *)
+
+(* Each of these procedures parses a string of characters and converts
+   it to a binary value.  Leading and trailing blanks (ie. characters
+   in "Lex.Blanks") are ignored.  "Lex.Error" is raised if the first
+   non-blank substring is not generated by the corresponding "Lex"
+   grammar or if there are zero or more than one non-blank substrings.
+   "FloatMode.Trap" is raised as per "Lex". *)
+
+PROCEDURE Bool(txt: TEXT): BOOLEAN
+  RAISES {Lex.Error};
+
+PROCEDURE Int(txt: TEXT; defaultBase: [2..16] := 10): INTEGER
+  RAISES {Lex.Error};
+PROCEDURE Unsigned(txt: TEXT; defaultBase: [2..16] := 16): Word.T
+  RAISES {Lex.Error};
+</pre>
+
+<h2> Using the interfaces </h2>
+
+<h3> Fmt </h3>
+Here are some examples of using Fmt to produce a TEXT from a basic
+data type:
+
+<pre>
+Procedure Call					Output TEXT
+--------------					-----------
+Fmt.Char('a');					"a"
+Fmt.Int(43);					"43"
+Fmt.Unsigned(106);				"8a"
+Fmt.Bool(TRUE);					"TRUE"
+</pre>
+
+The Pad procedure can be used to adjust the width of the TEXT
+and fill in empty space with padding characters:
+<pre>
+Procedure Call					Output TEXT
+--------------					-----------
+Fmt.Pad("9", 6, '0', Fmt.Align.Right);		"000009"
+Fmt.Pad("9", 6, '0', Fmt.Align.Left);		"900000"
+Fmt.Pad("9", 6, '_', Fmt.Align.Right);		"_____9"
+Fmt.Pad("99999", 3, '0', Fmt.Align.Right);	"99999"
+</pre>
+
+<h3> Lex </h3>
+
+You must have a <A href="rw.html">Rd.T</A> object to use the 
+Lex interface, because it gets
+its characters from that object. You can use Lex to read data from
+the Rd.T into variables of basic types, or you can read TEXT's that
+obey certain restrictions. Here are some examples:
+
+<pre>
+Lex procedure				Result (assuming no exception)
+--------------				------------------------------
+b := Lex.Bool(rd);			b set to TRUE or FALSE
+i := Lex.Int(rd);			i set to some integer
+w := Lex.Unsigned(rd);			w set to some Word.T
+t := Lex.Scan(rd, 			t set to TEXT containing longest 
+	      SET OF CHAR{'a', 'b'});	prefix of a's and b's in rd 
+Lex.Skip(rd, Lex.Blanks);		rd is advanced past leading blanks
+Lex.Match(rd, "IMPORT");		rd is advanced past the string IMPORT
+</pre>
+
+<h3> Scan </h3>
+The Scan interface differs from Lex in that it requires a TEXT rather
+than a Rd.T for an argument and it only supports reading basic data
+types from a TEXT, like this:
+
+<pre>
+Scan procedure				Result (assuming no exception)
+--------------				------------------------------
+b := Scan.Bool("TRUE");			b set to TRUE
+i := Scan.Int("88");			i set to 88
+w := Scan.Unsigned("a00");		w set to hex value a00
+</pre>
+
+</body>
+<p><hr>
+<Address>
+garrett@cs.washington.edu<br>
+</address>
+</html>

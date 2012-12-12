@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<TITLE>Writing A Protocol Client</TITLE>
+</HEAD>
+<BODY>
+
+<H1>Writing A Protocol Client</H1>
+<P>
+
+A <em>Plexus</em> protocol client installs application specific
+guard/handler procedure pair on the <i>protocol</i>.PacketArrived
+event.  The guard procedure implements a predicate that acts as a
+packet filter.  For example, the guard procedure could be used to
+filter out ethernet packets that contain ip packets as their payload.
+The protocol processing functions are implemented by a handler
+procedure that is attached to the protocol event name.  Finally, the
+guard/handler pair is installed on the protocol event name by calling
+the <i>protocol</i>.Install function.  The following code illustrates
+how an application can handle IP packets arriving on an Ethernet link.
+
+<pre>
+MODULE EtherIPClient;
+IMPORT Ether, EtherPktFormat;
+
+PROCEDURE Init() =
+  BEGIN
+    (* Install event handler on Ether.PacketArrived event. *)
+    EVAL Ether.Install(Ether.PacketArrived,Guard,Handler);
+  END Init;
+</pre>
+
+The application first installs the guard and handler procedure on the
+<code>Ether.PacketArrived</code> event by calling
+<code>Ether.Install</code>.
+
+<pre>
+PROCEDURE Guard(packet,curr: Mbuf.T; offset: CARDINAL):BOOLEAN =
+  BEGIN
+    WITH etherHeaderBuf = SUBARRAY(Mbuf.Array(packet)^,offset, eth_hdr_len),
+         etherHeader = VIEW(etherHeaderBuf,NewT) 
+     DO
+      RETURN etherHeader.type = EtherPktFormat.ETHERTYPE_IP;
+    END;
+  END Guard;
+</pre> 
+
+The <code>Guard</code> procedure returns true if the <code>type</code>
+field indicates that the ether data contains an IP packet. The packet
+is contained in a <A HREF="../../urt/doc/index.html">mbuf</A> datastructure.
+
+<pre>
+PROCEDURE Handler(packet,curr: Mbuf.T; offset: CARDINAL):BOOLEAN =
+  BEGIN
+    (* Process ether packet that contains an IP packet. *)
+  END Handler; 
+
+BEGIN
+END EtherClient;
+</pre>
+
+The <code>Handler</code> procedure is only invoked when the
+<code>Guard</code> evaluates to true. It processes the IP packet in an
+application specific way.
+
+
+
+<ADDRESS>
+<I>
+<A HREF="mailto:mef@cs.washington.edu">Marc Fiuczynski</A>
+<BR>DAY/MONTH/YEAR
+</I>
+</ADDRESS>
+
+</BODY>
+</HTML>

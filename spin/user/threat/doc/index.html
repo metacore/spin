@@ -1,0 +1,84 @@
+<title>Threat -- A Thread Tester</title>
+
+<html>
+
+<h1> THREAT </H1>
+<body>
+<h1>
+<IMG align=bottom src="http://www.cs.washington.edu/research/projects/spin/www/pics/skullt.gif">
+<A name = "top"></a> </br>
+</h1>
+<date>March 30, 1996<date>
+ <P>
+<HR>
+<P>
+
+<H2>Motivation</H2>
+
+Threat stress tests your thread system.  Run it. If the machine crashes, or it
+stops printing output, then something is seriously broken with your operating
+system.  Use it to uncover bugs.  Run it at night.  It should still be printing
+in the morning.
+
+
+<H2>Overview</H2>
+
+It's hard to debug a program that is using a broken scheduler. Threat is a
+simple program that creates and destroys lots of threads in a non-deterministic
+(pseudo) fashion.
+
+<P>
+Threat is implemented as an extension that you can load and run from the spin
+shell.
+
+<H2>Using Threat</H2>
+
+To get threat running from the shell,
+<DL>
+<DT> > script ~/spin/user/threat/ALPHA_SPIN/threat.rc
+<DD> to load threat.
+
+<DT> > threat
+
+</DL>
+
+and watch the output.
+<p>
+To terminate  threat, hit a key.
+
+<h3> The Output </h3>
+
+Here's how to interpret the output:
+
+<DL>
+<DT> n
+<DD> there are currently "n" threads running.
+
+<DT> [n]
+<DD> there are currently "n" threads running (n will be an integer)
+
+<DT> {n}
+<DD> there are currently "n" threads waiting on a central condition variable.
+
+<DT> +
+<DD> a new thread has been spawned
+
+<DT> - 
+<DD> a thread has terminated.
+
+<DT>
+
+<p>
+This legend is printed when threat first starts up.
+
+<p>
+
+
+
+
+</body>
+<p><hr>
+<Address>
+bershad@cs.washington.edu<br>
+</address>
+</html>

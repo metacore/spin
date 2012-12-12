@@ -1,0 +1,41 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+% 06-Oct-96  Robert Grimm (rgrimm) at the University of Washington
+%       Adopted m3makefile for PacketCounter module
+%
+% 27-Feb-96  Marc Fiuczynski (mef) at the University of Washington
+%	Both the HTTP and Scale module are obsolete.
+%
+% 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+%	These modules are now hidden. Change module to Module to export
+%	 the interfaces from the Plexus domain.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+DomainImport ("EtherServer","user/net","ether",overridepath)
+DomainImport ("EtherClient","user/net","etherClient",overridepath)
+DomainImport ("IpServer","user/net","ip",overridepath)
+DomainImport ("IpClient","user/net","ipClient",overridepath)
+DomainImport ("IcmpServer","user/net","icmp",overridepath)
+DomainImport ("IcmpClient","user/net","icmpClient",overridepath)
+DomainImport ("LoopbackServer","user/net","loopback",overridepath)
+DomainImport ("UdpServer","user/net","udp",overridepath)
+DomainImport ("UdpClient","user/net","udpClient",overridepath)
+DomainImport ("TcpServer","user/net","tcp",overridepath)
+DomainImport ("TcpClient","user/net","tcpClient",overridepath)
+DomainImport ("OsfNetEmulation","user/net","osfClient",overridepath)
+
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport ("TmpFileSystem","user/fs","tmpfs",overridepath)
+
+CommandModule ("PacketCounter")
+
+Extension({})

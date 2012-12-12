@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>SPIN Kernel Machine Interface</title>
+</head>
+
+<body>
+<br><h1>SPIN Kernel Machine Interface</br></h1>
+<date>31 May 1996</date>
+
+<hr>
+
+The machine dependent interfaces in the SPIN kernel are isolated in the 
+machine subdirectory.  Under the machine subdirectory are implementation
+subdirectories for each development platform.  Currently SPIN is implemented
+on the DEC Alpha platform.
+<p>
+The SPIN machine-dependent interfaces are as follows:
+<ul>
+<li><a href="../MachineAtomicOps.i3">MachineAtomicOps.i3</a>: interfaces to
+atomic operations.  These include simple increment and decrement operations
+as well as more complex operations like compare and swap and list manipulation.
+Kernel RAS Regions are also initialized here.</li>
+<li><a href="../MachineCPU.i3">MachineCPU.i3</a>: CPU manipulation
+which is exported to all clients.  This includes manipulation of user
+registers (<i>not</i> kernel registers), cache flushing, and query of the
+interrupt level.</i>
+<li><a href="../MachineCPUPrivate.i3">MachineCPUPrivate.i3</a>: CPU
+manipulation for trusted clients.  This includes privileged operations,
+such as setting the interrupt level or triggering breakpoints.</li>
+<li><a href="../MachineLinker.i3">MachineLinker.i3</a>: Modula-3 to C
+passthroughs for manipulating runtime Module structures.  This interface
+is exported to trusted clients.</li>
+<li><a href="../MachineStitcher.i3">MachineStitcher.i3</a>: interface to 
+machine-dependent <a href="../../dispatch/doc/index.html">dispatcher</a> 
+operations.  This focuses on building and optimizing stubs.</li>
+<li><a href="../MachineThread.i3">MachineThread.i3</a>: interface to 
+machine-dependent routines for <a href="../../strands/doc/index.html">
+threads</a>.  These include starting a thread and calling a continuation.</li>
+<li><a href="../MachineTrap.i3">MachineTrap.i3</a>: interface to kernel
+trap events.  These include memory faults, instruction faults, and system
+calls.  This interface is exported to all clients.</li>
+<li><a href="../MachineTrapPrivate.i3">MachineTrapPrivate.i3</a>: interface
+to kernel trap events for trusted clients.</li>
+<li><a href="../SAL.i3">SAL.i3</a>: public interface to procedures exported
+by <a href="../../../../sal/doc/index.html">SAL</a>, such as timing and
+version information.  These are available to all clients.</li>
+<li><a href="../SALDECUnix.i3">SALDECUnix.i3</a>: trusted interface which is unportable
+because it relies on details of the DEC Unix implementation of SAL.</li>
+<li><a href="../SALPrivate.i3">SALPrivate.i3</a>: interface which exports 
+privileged procedures implemented in SAL.  These range from <b>Halt()</b> 
+to <b>CopyMemory()</b>.</li>
+</ul>
+<p><hr>
+<Address>
+ddion@cs.washington.edu<br>
+</address>
+</html>

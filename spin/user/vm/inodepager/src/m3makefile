@@ -1,0 +1,11 @@
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("VMCore","user/vm","vmcore",overridepath)
+DomainImport("FileSystem","user/fs","fscore",overridepath)
+Table(FileIdMemObject, FileId, MemoryObject)
+
+Package("InodePager")
+Module("InodePager")
+Extension({})
+

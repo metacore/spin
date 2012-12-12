@@ -1,0 +1,31 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HISTORY
+% 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+%	TARGET -> BASETARGET
+%
+% 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+%	Changed to simpler spindle build functions.
+%
+% 08-Sep-95  Marc Fiuczynski (mef) at the University of Washington
+%	Created.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("NetDev","user/dev","netdev",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainLink("osf.tcp","")
+
+m3_option ("-NoLoopholeWarning")
+
+Package("SpinUnixNet")
+Interface("OsfNet")
+Module(Socket)
+Module("SpinUnixNet")
+include_dir(BASETARGET)
+Extension({})

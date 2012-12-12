@@ -1,0 +1,6 @@
+INTERFACE USTFPU;
+IMPORT CPU;
+
+PROCEDURE Setup(fpustate: REF CPU.FloatRegs);
+
+END USTFPU.

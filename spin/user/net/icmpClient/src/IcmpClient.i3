@@ -1,0 +1,2 @@
+INTERFACE IcmpClient;
+END IcmpClient.

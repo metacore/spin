@@ -1,0 +1,62 @@
+Eric Christoffersen, 10/14/96<p>
+
+<h2>List of commands to show what LFS can currently do</h2>
+<br>
+...a-and here's a <a href = "exampledump.html">dump</a> of what the below commands accomplish.<p>
+<br>
+<pre>
+b -fi "/spin/ericc/spin.boot" ez0                           "boots spin" 
+script -b                                                   "tell nanny where extensions are" 
+nanny touch lfs
+show domains                                                "heres the basic lfs domains" 
+makefs rz5b 1024                                            "writes data for empty fs to disk, 1024 block sized segments." 
+mount rz5b lfs /lfs                                         "mounts the lfs partition, connects it the the spin FileSystem object" 
+touch /lfs/test1                                            "creates empty file test1"
+touch /lfs/test2                                            "creates empty file test2"
+touch /lfs/test3                                            "creates empty file test3"
+write /lfs/test1 0 ThisIsTest1                              "Puts ThisIsTest1 into file test1" 
+cat /lfs/test1                                              "Shows contents of test1" 
+write /lfs/test1 11 ThisIsNotTest2                          "Puts ThisIsNotTest2 at end of file test 1" 
+write /lfs/test2 0 ThisIsTest2 
+cat /lfs/test1 
+cat /lfs/test2 
+write /lfs/test1 15 Isn't                                   "Replaces IsNot with Isn't in test1" 
+write /lfs/test3 0 012345678901234567890123456789012345678901234567890 
+cat /lfs/test3 
+write -t /lfs/test3 25 ThisIsTheEnd	                    "truncates file with ThisIsTheEnd"
+cat /lfs/test3
+write -t /lfs/test3 25 5678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 80 012345678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 140 012345678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 200 012345678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 260 012345678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 320 012345678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 380 012345678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 440 012345678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 500 012345678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 560 012345678901234567890123456789012345678901234567890123456789 
+write /lfs/test3 500 XXXXXXXXXXXXXXXXXXXX 
+sync /lfs/test1 
+halt                                                        "halt and reboot" 
+b -fi 
+script -b 
+nanny touch lfs
+mount rz5b lfs /lfs 
+cat /lfs/test3 
+cat /lfs/test2 
+cat /lfs/test1 
+write /lfs/test3 600 ThisIsInASeparateBlockOnASeparateSegment. 
+cat /lfs/test3 
+
+
+
+
+
+<hr>
+<a href="index.html">Main LFS Page</a><p>
+
+created 10/14/96
+<Address>
+ericc@cs.washington.edu<br>
+</address>
+</html>

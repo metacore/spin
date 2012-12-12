@@ -1,0 +1,30 @@
+echo creating "/dev/rrz3h" and "data".
+rm -f data1 data2
+
+../bin/rvmutl <<EEE
+init_log /dev/rrz3h 30000k
+quit
+EEE
+../bin/rvmutl <<EEE
+init_log /dev/rrz3f 30000k
+quit
+EEE
+
+../bin/rdsinit /dev/rrz3h data1 <<DDD
+0x500000
+0x140e00000
+0x100000
+0x100000
+100
+128
+DDD
+
+../bin/rdsinit /dev/rrz3f data2 <<DDD
+0x500000
+0x140e00000
+0x100000
+0x100000
+100
+128
+DDD
+

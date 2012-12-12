@@ -1,0 +1,46 @@
+139a140,145
+> #ifdef SPIN
+> 	do { 
+> 		extern void *tcp_output_presend;
+> 	} while(0);
+> #endif /* SPIN */
+> 
+289a296,301
+> #ifdef SPIN
+> 	do { 
+> 		extern void *tcp_output_presend;
+> 	} while(0);
+> #endif /* SPIN */
+> 
+295a308,314
+> #ifdef SPIN
+> 	do { 
+> 		extern void *tcp_output_presend;
+> 		extern void *tcp_output_send;
+> 	} while(0);
+> #endif /* SPIN */
+> 
+457a477,484
+> #if 0 /* SPIN (doesn't work, yet) */
+> 	do {
+> 		extern void * tcp_output_checksum;
+> 		SpyEnter(tcp_output_checksum);
+> 		ti->ti_sum = mbuf_URT_csum(m, 0, (int)(hdrlen + len));
+> 		SpyExit(tcp_output_checksum);
+> 	} while(0);
+> #else 
+458a486
+> #endif /* SPIN */
+529a558,567
+> #ifdef SPIN
+> 	do { 
+> 		extern void *tcp_output_send;
+> 	} while(0);
+> #endif /* SPIN */
+> 
+> #ifdef SPIN
+> 	error = tcpip_output(m, tp->t_inpcb->inp_options, &tp->t_inpcb->inp_route,
+> 	    so->so_options & SO_DONTROUTE, (struct ip_moptions *)0);
+> #else
+531a570
+> #endif /* SPIN */

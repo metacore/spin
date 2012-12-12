@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>TimeHandlers Interface</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> TimeHandlers Interface</a> </br>
+</h1>
+<date>May 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+The TimeHandlers interface handles emulation tasks related to timing.
+These include timeouts, the softclock, mapped time, and performance
+measurement.
+<ul>
+<li><b>Timeouts:</b> The timeout mechanism makes use of the SPIN alarm
+facility.  The SPIN alarm facility runs a procedure after a given amount
+of time.  For timeouts, the procedure passed to the alarm interface kicks
+a timeout semaphore.  The code setting the timeout then waits on that 
+semaphore.  After the appropriate wait, the alarm goes off, the semaphore
+is kicked, and the waiting thread continues.</li>
+<li><b>Softclock:</b> The OSF/1 server softclock is built using the Mach
+message interface.  Since SPIN does not provide the Mach message interface,
+special system calls are provided to emulate the softclock.  The softclock
+is primarily based on timeouts.  A thread drops into the kernel with a 
+timeout value.  It will either be restarted by the timeout mechanism, or
+it will be "poked" by another server thread.</li>
+<li><b>Mapped Time:</b> The OSF/1 server accesses the current time through
+a global mapped time variable.  The mapped time variable is constructed by
+using device_map() to map the time device into a kernel memory location
+and then vm_map() to map that kernel memory location into the server.  SPIN
+supports neither of these mapping features.  Hence, a server-created thread
+periodically accesses the current time through the SAL time interface and 
+writes it to the server address space.</li>
+<li><b>Measurement:</b> Finally, the TimeHandlers interface provides some
+basic procedures to time activity in the Mach/OSF/1 emulation modules.</li>
+</ul>
+
+<p>
+The TimeHandlers interface is <a href="../src/TimeHandlers.i3">TimeHandlers.i3</a>.
+
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

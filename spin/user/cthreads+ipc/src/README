@@ -1,0 +1,11 @@
+HISTORY
+ 28-Jun-95  Marc Fiuczynski (mef) at the University of Washington
+	Created.
+
+The modules in this directory implement a cross address space RPC and
+user-level Cthreads interface.  These modules are dynamically linked
+into the spin kernel.  Once loaded into the kernel they install event
+handlers on the kernel thread run/stop events, and handlers on the
+system call event.
+
+

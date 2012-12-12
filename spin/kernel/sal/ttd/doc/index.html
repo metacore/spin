@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>TTD Debugger</title>
+</head>
+
+<body>
+
+<h1>TTD Debugger</h1>
+Topaz Tele-Debugger. <br>
+
+See the <a href=../../../../doc/Debug/index.html> Debug Page </a> for
+debugging procedures and m3gdbtdd usage.
+
+<p>
+TTD is an net based remote-end for gdb.  Its client is m3gdbttd
+which makes remote-procedure calls (RPCs) to TTD over the network.
+
+<h3>Initialization</h3>
+
+TTD can operate as soon as the
+<a href=../../standalone/net/doc/index.html>
+SAL polling networking
+</a> is ready.
+When the net interface is up and the target knows its IP address,
+<a href=../../standalone/miscsupport.c> standalone/miscsupport.c </a>
+calls ttd_init().  The ttd_init routine just initializes some global ttd state.
+<p>
+If the <b>-t</b> (for ttd) boot flag was passes on the boot command line,
+ttd will stop at this point in a polling loop waiting for gdb to connect over the
+net. Otherwise the SAL calls run_program() to start the SAL client.
+
+<h3>Connection</h3>
+
+
+
+<h3>Lineage</h3>
+
+<p><hr>
+<Address>
+becker@cs.washington.edu<br>
+</address>
+</html>

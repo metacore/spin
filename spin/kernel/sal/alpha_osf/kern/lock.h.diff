@@ -1,0 +1,4 @@
+123a124,126
+> #ifdef SPIN
+> 	unsigned long turd; /* added by mef */
+> #endif /* SPIN */	

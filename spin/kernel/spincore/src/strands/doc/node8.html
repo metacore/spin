@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> User Level Schedulers and Strand Packages</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" User Level Schedulers and Strand Packages">
+<meta name="keywords" value="strands">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html96 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="next" SRC="http://www.cs.washington.edu/general/latex2html_icons//next_motif.gif"></A>   <A NAME=tex2html94 HREF="index.html"><IMG ALIGN=BOTTOM ALT="up" SRC="http://www.cs.washington.edu/general/latex2html_icons//up_motif.gif"></A>   <A NAME=tex2html88 HREF="node7.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="http://www.cs.washington.edu/general/latex2html_icons//previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html97 HREF="node9.html"> Conclusions</A>
+<B>Up:</B> <A NAME=tex2html95 HREF="index.html">Strands</A>
+<B> Previous:</B> <A NAME=tex2html89 HREF="node7.html"> Global Scheduler (trusted)</A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00060000000000000000> User Level Schedulers and Strand Packages</A></H1>
+<P>
+The user-level strand model is that the units of execution are managed
+by two separate entities: a strands package that defines what exactly a
+unit of execution is, and a strands scheduler that decides when the
+execution should occur. It is possible that the same module implements
+both functions, but this clean separation exists to allow incremental
+changes to either functionality.
+<P>
+User level schedulers are simply a collection of spindles that respond to
+the <tt> Block</tt> and <tt> Unblock</tt> events, and raise the <tt> Stop</tt> and
+<tt> Run</tt> events described above. A user-level scheduler is
+responsible for setting up the appropriate event handlers for these
+events with when clauses that match the set of strands it is managing.
+<P>
+Obviously, they are free to export more interfaces than those
+described. In particular, they will most likely want to export an
+interface by which clients can register new strands to be scheduled
+with a particular scheduler. They may also support more exotic
+features such as lotteries, etc. but no other SPIN subsystem will rely
+on the existence of such interfaces.
+<P>
+A preemptive user-level scheduler will make use of the
+<tt> Clocktick </tt> event, which is raised by spin core at appropriate
+intervals and has the same signature as the <tt> trap</tt> event, namely
+<tt> Clocktick(ss: saved_state.T, cause: Causes.T)</tt>.
+<P>
+A user level strands package responds to the <tt> Stop</tt> and <tt> Run</tt>
+events raised by various schedulers on the strands it is managing, and
+in turn raises <tt> Block</tt> and <tt> Unblock</tt> events to communicate
+with the schedulers.
+<P>
+Appendix A shows some example code from a user-level strands package
+and a synchronization module.
+<P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Emin Gun Sirer <BR>
+Sat Jun 22 19:01:37 PDT 1996</I>
+</ADDRESS>
+</BODY>

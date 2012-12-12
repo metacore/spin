@@ -1,0 +1,35 @@
+% Copyright (C) 1993, Digital Equipment Corporation
+% All rights reserved.
+% See the file COPYRIGHT for a full description.
+%
+% Makefile for tcp library (generic)
+% Last modified on Thu Feb  9 19:03:54 PST 1995 by wobber
+%      modified on Thu Aug 18 14:16:47 PDT 1994 by kalsow
+
+#############################################################
+# HISTORY
+# 11-Mar-96  Charles Garrett (garrett) at the University of Washington
+#	The name SocketRW was introduced for this extension.
+#
+# 10-Jan-96 Charlie Garrett (garrett) at the University of Washington
+#	Copied from DEC SRC distribution
+#	
+#############################################################
+
+overridepath = [THISTREE, FULLTREE]
+DomainImport("SpinPublic", "kernel", "spincore", overridepath)
+DomainImport("SpinTrusted", "kernel", "spincore", overridepath)
+DomainImport("SecurityPublic", "kernel", "spincore", overridepath)
+DomainImport("SpinUnixRunTime", "user/urt", "urtcore", overridepath)
+DomainImport("SpinUnixNet", "user/urt", "net", overridepath)
+DomainImport("NetDev", "user/dev", "netdev", overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("NetDb", "user/net","dns",overridepath)
+
+Package("SocketRW")
+
+include_dir("common")
+include_dir("SPIN")
+
+Extension({""})
+

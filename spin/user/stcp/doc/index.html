@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>owa Spin-30</TITLE>
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.01Gold (X11; I; OSF1 V3.2 alpha) [Netscape]">
+</HEAD>
+<BODY>
+
+<P><B><FONT SIZE=+2>Simple TCP and Http Service (stcp module)</FONT></B></P>
+
+<UL>
+<LI><B><FONT SIZE=+2>What it does?</FONT></B></LI>
+</UL>
+
+<UL>
+<P><B><FONT SIZE=+1>- loads extensions from a http server</FONT></B></P>
+
+<UL>
+<P>The simpilefied tcp engine and http client talk to httpd server (velvet:8080
+by default) and fetch extensions. ¼£¼£This service provides (hopefully)
+more reliable way to get extensions from the network than tftp did.</P>
+
+<P>While user/init directly calls SimpleHttp.Get() to load init.* and extensions,
+scirpt shell command loads files from /spin/username/* which is served
+by stcpfs and stcpfs calls SimpleHttp.Get().</P>
+
+<P>There are some tips to control stcp how it works. These are discribed
+below.</P>
+</UL>
+
+<LI><B><FONT SIZE=+1>How it works?</FONT></B></LI>
+
+<P><B><FONT SIZE=+1>A very simple TCP engine and a http client</FONT></B></P>
+
+<UL>
+<P>It has a very simple TCP engine which just performs active connect,
+passive close. It does not do a lot of neat things TCP/IP¼£¼£protocol usually
+provides.</P>
+
+<P><B><FONT SIZE=+1>- active connect, passive close</FONT></B></P>
+</UL>
+
+<UL>
+<P>Since stcp is used only to fetch extensions from the server, it just
+talks to the server (active connect), ask it to send a file and close the
+channel when it gets FIN (passive close). </P>
+</UL>
+
+<P><B><FONT SIZE=+1>- one channel at a time</FONT></B></P>
+
+<P><B><FONT SIZE=+1>- hardcoded http server ip address</FONT></B></P>
+
+<UL>
+<P>Since there is no way right now to tell where a http server is, the
+ip address(es) is embedded in the kernel image. You need to change and/or
+add ip address if you want to use another server.</P>
+</UL>
+
+<P><B><FONT SIZE=+1>- hardcoded passwd to access to the server</FONT></B></P>
+
+<UL>
+<P>The Netscape commerce server on velvet is configured to request passwd
+to access to extensions. The passwd is also encoded into the service.</P>
+</UL>
+
+<P><B><FONT SIZE=+1>- GET operation only</FONT></B></P>
+
+<UL>
+<P>Though http protocol defines three request types (GET, HEAD, POST),
+stcp does only GET requests.</P>
+</UL>
+</UL>
+
+<UL>
+<LI><B><FONT SIZE=+1>What to do to use it?</FONT></B></LI>
+
+<P><FONT SIZE=+1>- <B>just use it ! </B></FONT></P>
+
+<UL>
+<P><FONT SIZE=+1>By default, stcp is enabled and talks to velvet (you may
+need to update your local tree if you use spin-29 or older one.)</FONT></P>
+</UL>
+
+<P><FONT SIZE=+1>- <B>some tips</B></FONT></P>
+
+<UL>
+<LI><B><FONT SIZE=+1>commands in init.*</FONT></B></LI>
+
+<P>user/init loads init.ALPHA_SPIN (or IX86_SPIN) script from a server
+and executes it. By default, http is used to fetch extensions from velvet:8080.
+You may change http server or service (ie. http vs tftp) by adding &quot;boot&quot;
+line(s) to init.*. </P>
+
+<P><B><I><FONT SIZE=+1>boot tftp</FONT></I></B></P>
+
+<P><B><I><FONT SIZE=+1>boot http [servername]</FONT></I></B></P>
+
+<UL>
+<P><I>servername </I>should be one of hardcoded servernames. velvet, www-spin
+and some other crash machines are hardcoded right now. In case of httpd
+on SPIN, you need a sym link from www-spin to your working directory, as
+http://www-spin is mapped to /var/a/wally/spin/www/www-spin not to /spin.
+</P>
+</UL>
+</UL>
+
+<UL>
+<LI><B><FONT SIZE=+1>shell variable for stcpfs</FONT></B></LI>
+
+<P>Once console and shell are launched, you may specify a http server with
+a shell variable from where stcpfs loads extensions.</P>
+
+<P><B><FONT SIZE=+1>&gt; set HttpdServer servername</FONT></B></P>
+
+<UL>
+<P>The same restriction is applied to the servername. See above.</P>
+</UL>
+</UL>
+
+<LI><B><FONT SIZE=+1>ToDo</FONT></B></LI>
+
+<P>In order to make stcp more robust, re-transmitting should be implemented.
+Currently, itsimply discards the port and try an another one if timeout
+happens.</P>
+
+<P>Also, timeout time should be variable rather than a constant (4 sec).</P>
+
+<P>It does not have many features that normal tcp engine provides such
+as delayed acks, low start, fast Retransmit and so on. It's mainly becuase
+it's a &quot;simple&quot; tcp. </P>
+</UL>
+
+<DD>Finally, I should confess it's very messy... </DD>
+
+<P>
+<HR></P>
+
+<ADDRESS>owa@cs.washington.edu <BR>
+Last updated May, 19, 1997.</ADDRESS>
+
+</BODY>
+</HTML>

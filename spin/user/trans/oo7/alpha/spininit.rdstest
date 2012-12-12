@@ -1,0 +1,5 @@
+rm -f trans_log rds_data
+if [ -f ../rds/seg_create ]; then SEG_CREATE=../rds/seg_create; fi
+if [ -f ../../rds/seg_create ]; then SEG_CREATE=../../rds/seg_create; fi
+
+$SEG_CREATE rds_data 0x141000000 0x40000 0x10000

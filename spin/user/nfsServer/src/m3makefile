@@ -1,0 +1,22 @@
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport ("SpinPublic","kernel","spincore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("UdpServer","user/net","udp",overridepath)
+DomainImport ("IpServer","user/net","ip",overridepath)
+DomainImport ("UdpClient","user/net","udpClient",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+
+m3_option("-keep")
+
+module("XDR")
+module("RPC")
+module("PM")
+module("Nfsd")
+module("Misc")
+module("NfsdImpl")
+module("Nfsd_x")
+module("Mountd")
+commandModule("Control")
+
+Extension({""})
+

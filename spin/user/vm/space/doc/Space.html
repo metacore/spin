@@ -1,0 +1,172 @@
+<head>
+<title>Space</title>
+</head>
+<body>
+<h2>Space</h2>
+<table width=100%>
+<td><td>
+<p>
+ Space is a subtype of <a href="../../vmcore/doc/AddressSpace.html">
+
+ AddressSpace.T</a>. In addition to all the services in
+
+ AddressSpace, it provides convenient shortcut services.
+
+ Also, address space provides an access to <!--href="externref.html">
+
+ external ref table</a>.
+
+<p>
+ <strong>Note:</strong>
+
+ Space is basically a legacy module. It was once an abstraction provided
+
+ directly in the spincore, so many modules depends on its interface.
+
+ However, I see no strong reason this should not be merged into
+
+ AddressSpace module.
+
+<p>
+ Another caveat is that all the arguments in this module
+
+ are expressed by bytes, while all the procs in AddressSpace
+
+ take page size unit
+
+ arguments. They has to be unified in the future.
+
+<p>
+</table><br>
+<br>
+<br>
+<blockquote>
+<code><b>INTERFACE Space;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>IMPORT VirtAddr, PhysAddr, ExternalRef, Word;
+</b></code><br><code><b>IMPORT AddressSpace;
+</b></code><br><code><b>IMPORT VMError;
+</b></code><br><code><b>IMPORT Protection;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>TYPE
+</b></code><br><code><b>&nbsp;&nbsp;T &lt: </b></code>RECLAIMABLE <br>
+</blockquote>
+<blockquote>
+<code><b>CONST
+</b></code><br><code><b>&nbsp;&nbsp;ReadOnlyProtection = Protection.T{TRUE,FALSE,FALSE,0};
+</b></code><br><code><b>&nbsp;&nbsp;ReadWriteProtection = Protection.T{TRUE,TRUE,FALSE,0};
+</b></code><br><code><b>&nbsp;&nbsp;ExecuteOnlyProtection&nbsp;&nbsp;= Protection.T{FALSE,FALSE,TRUE,0};
+</b></code><br><code><b>&nbsp;&nbsp;ExecuteProtection = Protection.T{TRUE,FALSE,TRUE,0};
+</b></code><br></blockquote>
+<blockquote>
+<code><b>PROCEDURE Create(): T;
+</b></code><br><code><b>&nbsp;&nbsp;</b></code>Creates an empty address space. <br>
+</blockquote>
+<blockquote>
+<code><b>PROCEDURE Duplicate(space: T): T RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;</b></code><td> Create a copy of the address space. Everything is eager copied now.
+<br>
+   XXX we have to iron out the semantics of this procedure wrt vm_inherit, etc.
+
+   </table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>PROCEDURE Destroy(space: T);
+</b></code><br><code><b>&nbsp;&nbsp;</b></code>Destroy the <code><b>space</b></code> and free all the resources used by it. <br>
+</blockquote>
+<blockquote>
+<code><b>PROCEDURE Allocate(space: T; VAR addr: VirtAddr.Address; size: VirtAddr.Size;
+</b></code><br><code><b>&nbsp;&nbsp;anywhere: BOOLEAN := FALSE): VirtAddr.T 
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RAISES {VMError.E};
+</b></code><br><code><b>&nbsp;&nbsp;</b></code>Combination of allocate and memobject creation and map. <br>
+</blockquote>
+<blockquote>
+<code><b>PROCEDURE Deallocate(space:T;v: VirtAddr.T := NIL;
+</b></code><br><code><b>&nbsp;&nbsp;addr: VirtAddr.Address; size: VirtAddr.Size): VirtAddr.T
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RAISES {VMError.E};
+</b></code><br><code><b>&nbsp;&nbsp;</b></code>Combination of addressspace.unmap and deallocate. <br>
+</blockquote>
+<blockquote>
+<code><b>PROCEDURE Read(space: T; fromaddr: VirtAddr.Address;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VAR to: ARRAY OF CHAR;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; size := -1) RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;</b></code><td> Read the region that starts from <code><b>fromaddr</b></code> into <code><b>to</b></code>.
+   If <code><b>size</b></code> is omitted, the size of the region is <code><b>NUMBER(to)</b></code>.
+
+   This may cause page fault as a side effect.</table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>PROCEDURE Write(space: T; READONLY from: ARRAY OF CHAR;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to : VirtAddr.Address;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;size := -1) RAISES {VMError.E};
+</b></code><br><table width=100%>
+<td><code><b>&nbsp;&nbsp;</b></code><td> Write to the region that starts from <code><b>to</b></code> from <code><b>from</b></code>.
+   If <code><b>size</b></code> is omitted, the size of the region is <code><b>NUMBER(from)</b></code>.
+
+   This may cause page fault as a side effect.</table><br>
+</blockquote>
+<br>
+<blockquote>
+<code><b>PROCEDURE Zero(space: T; toaddr: VirtAddr.Size; size: VirtAddr.Size)
+</b></code><br><code><b>&nbsp;&nbsp;RAISES {VMError.E};
+</b></code><br><code><b>&nbsp;&nbsp;</b></code>Zero clears the region. <br>
+</blockquote>
+<blockquote>
+<code><b>PROCEDURE Protect(space: T; v: VirtAddr.T := NIL; addr: VirtAddr.Address;
+</b></code><br><code><b>&nbsp;&nbsp;size: VirtAddr.Size; prot: Protection.T) RAISES {VMError.E};
+</b></code><br><code><b>&nbsp;&nbsp;</b></code>Change the proction of the region. <code><b>v</b></code> is not used now.<br>
+</blockquote>
+<blockquote>
+<code><b>PROCEDURE Activate(space: T);
+</b></code><br><code><b>&nbsp;&nbsp;</b></code>Sets the current space. <br>
+</blockquote>
+<blockquote>
+<code><b>&lt*OBSOLETE*&gt
+</b></code><br><code><b>FUNCTIONAL PROCEDURE GetCurrent(): T;
+</b></code><br></blockquote>
+<blockquote>
+<code><b>PROCEDURE GetExternalRefTable(space : T) : ExternalRef.T;
+</b></code><br><code><b>PROCEDURE DeleteExtRef(space: T; extptr : Word.T);
+</b></code><br><code><b>PROCEDURE Externalize(space: T; intptr: REFANY; 
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pos : Word.T := ExternalRef.DontCare): Word.T;
+</b></code><br><code><b>PROCEDURE Internalize(space: T; extptr: Word.T) : REFANY;
+</b></code><br><code><b>PROCEDURE CopyExterns(src: T; dest: T);
+</b></code><br></blockquote>
+<blockquote>
+<code><b>PROCEDURE MapPhysToVirt(space: T; phys: PhysAddr.Address;
+</b></code><br><code><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;virt: VirtAddr.Address; size: VirtAddr.Size) : INTEGER;
+</b></code><br><table width=100%>
+<td><code><b></b></code><td>
+ XXX This is UNSAFE.
+
+ See implementation comments before using this routine.
+
+ </table><br>
+</blockquote>
+<br>
+<table width=100%>
+<td><td>
+ * For List generic
+
+</table><br>
+<br>
+<blockquote>
+<code><b>CONST Brand: TEXT = "Space";
+</b></code><br><code><b>PROCEDURE Equal(space1, space2: T): BOOLEAN RAISES ANY; 
+</b></code><br></blockquote>
+<br>
+<br>
+<blockquote>
+<code><b>END Space.
+</b></code><br></blockquote>
+<hr>
+Last updated: Sun Oct 13 16:15:03 PDT 1996
+<br>
+<address>Stefan Savage (savage@cs.washington.edu)</address>
+</body>

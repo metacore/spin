@@ -1,0 +1,16 @@
+# HISTORY
+# 27-Sep-96  Marc Fiuczynski (mef) at the University of Washington
+#	Created.
+# Setup the initial extent support to manage the 
+# disks swap partition.
+
+nanny touch $DISKDRV
+script $USER/dev/extent/$target/extent.rc
+set EDISKDEV e$DISKDEV$SWAPDEV
+extent mkdev $DISKDEV$SWAPDEV $EDISKDEV
+
+
+
+
+
+

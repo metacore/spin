@@ -1,0 +1,35 @@
+78a79,90
+> #ifdef SPIN
+> /* we must avoid lowering spl while in polling mode, so we check first */
+> #undef splimp
+> #define splimp() ((getspl()<SPLIMP) ?swap_ipl(SPLIMP):getspl())
+> 
+> void sal_mbuf_free_stub()
+> {
+> 	printf("sal_mbuf_free_stub called.\n");
+> }
+> void (*sal_mbuf_free)() = sal_mbuf_free_stub;
+> #endif /* SPIN */
+> 
+314c326,331
+< 			if (m->m_flags & M_FASTFREE) {
+---
+> #ifdef SPIN 
+> 			if ((m->m_flags&(M_FASTFREE|M_M3METHODS))==M_FASTFREE)
+> #else
+> 			if (m->m_flags & M_FASTFREE)
+> #endif /* SPIN */
+> 			{
+329a347,349
+> #ifdef SPIN
+> 				(*sal_mbuf_free)();
+> #else 
+330a351
+> #endif /* SPIN */
+482a504,509
+> #ifdef SPIN
+> 			/* add the m3methods bit if we are copying
+> 			   an mbuf create by Mbuf.m3.
+> 			 */
+> 			n->m_flags |= m->m_flags & M_M3METHODS;
+> #endif /* SPIN */

@@ -1,0 +1,261 @@
+<html>
+<head>
+<title>The Spin Shell</title>
+</head>
+
+<body>
+<h1>
+<IMG align=bottom src=./Shell-logo2.gif>
+<A name = "top"> The Spin Shell</a> </br>
+</h1>
+<P>
+
+
+The spinshell is a minimal shell that just raises the event Run. All
+commands are defined as event handlers for 
+<A HREF="../shellcore/src/Shell.i3">SpinShell.Run</A>. All commands are
+defined either in shell/Commands or in an extension.
+ <P>
+The shell supports variable substitution and some rudimentary syntax
+for simplifying your life. It also defines a few initial shell
+variables based on the build configuration that you can use to help
+simplify your life.
+
+
+<H2>Commands</H2>
+
+The shell directory is split into several component subdirectories,
+each of which exports a separate interface and domain.  There's no
+fundamental reason for this other than to provide a simple (and used)
+example of how to partition a bunch of code.  
+ <P>
+The different packages are:
+
+<DL>
+<DT> shellcore
+<DD> Basic parsing services and Shell.i3 interface.
+
+<DT> consoleshell
+<DD> Driver started up at boottime to attach the shell services to the console.
+
+<DT> <A HREF="../basiccmds/doc/index.html">basiccmds</A>
+<DD> A collection of useful primitive commands. Most of what you need goes here.
+
+<DT> <A HREF="../utils/doc/index.html">utils</A>
+<DD> some additional "utility" programs that are not big enough to stand on their own elsewhere so they get thrown into the shell.
+
+<DT> <A HREF="../expr/doc/index.html">expr</A>
+<DD> Commands that treat other shell commands as expressions.
+
+<DT> <A HREF="../../regress/doc/index.html">regress</A>
+<DD> Regression tests.  
+
+</DL>
+
+
+<H2>Using the Shell</H2>
+
+To use the shell, type at it.  The shell is a statically linked system
+extension.  That is, no kernel services rely on it, but it's hard to
+get much done without it.  
+
+ <P>
+Shell commands are expected to adhere to a UNIX-like invocation syntax:
+<PRE>
+command -flag1 -flag2 argument -flag3 argument  
+</PRE>
+
+Specifically, flags are prefixed with a "-" and arguments are just
+given as they are.
+
+<P> 
+IMPORTANT: Not all shell commands are so adhering.  We'll fix this
+over the next few releases.
+
+<H3>Shell Variables</H3>
+
+The shell allows you to set and access shell variables.
+Useful commands provided here are:
+<DL>
+<DT> set var value
+<DD> sets the variable var to the value value.  
+<DD> "set" by itself just dumps all the shell variables.
+
+<DT> $var 
+<DD> expands var to the last set value.  
+<DD> Variable
+expansion is done before commands are passed through to their
+handlers. So, you can even create aliases for commands that you don't
+like to type.
+
+<DT> echo $var
+<DD> shows the value of $var.
+
+</DL>
+
+<H4> Variable expansion works </H4>
+
+Variable expansion is not as powerful in real shells, but it does work ok.
+Supports $x is "foo", then
+
+<UL>
+<LI> $x expands to foo
+<LI> $x.bar expands to foo.bar (any non-alpha character terminates a shell variable)
+<LI> bar$x expands to barfoo
+<LI> $x$x expands to foofoo
+</UL>
+
+Some things you can't do. For example, if you have $x and $xy, then
+there is no way to refer to $x in the string $xy (eg, you can't
+currently do ${x}y.)  If this is annoying enough, we can fix it.
+
+
+
+<H4>Some builtin shell variables</H4>
+
+On system boot, the shell defines a few builtin shell values
+that are of general use.  If you don't like their values, you are 
+free to change them with "set."
+
+<DL>
+<DT> $user
+<DD> sets to the name of the person who built the system. eg "bershad".
+
+<DT> $home
+<DD> set to the root of the source tree from which the kernel was built, 
+eg, "/spin/bershad." 
+<DD> This is a funny kind of root, since it is assumed to be valid in
+the TFTP file namespace, which is a bit wierd. Basically, the root of
+our tftp space is /afs/cs/project, so if your home is /spin/camcam,
+that would correspond to /afs/cs/project/spin/camcam
+
+<DT> ~  (that's right, TILDE)
+<DD> equivalent to $home, eg, ~/spin/spindle/version/version.config
+would name the config file
+/afs/cs/project/spin/bershad/spin/spindle/version/version.config.
+
+<DT> $version
+<DD> expands to the version string embedded in the kernel.  Useful for
+figuring out what version of the system you are looking at.
+
+<DT> $builddir
+<DD> expands to where the kernel thinks it got stored during
+build. For example, my $builddir usually expands to
+/afs/cs/project/spin/bershad/spin/sal/SPIN.  Useful for making sure
+you're looking at the kernel you think you're looking at.
+
+</DL>
+
+
+<H3>Builtin, or nearly builtin shell commands</H3>
+
+
+Minimally, the shell supports only a few builtin operations:
+
+<DL>
+<DT> load -conf -trust file
+<DD> Load the named file as an extension. If -conf is specified, the
+file is assumed to be a configuration file that contains object files
+which should be loaded and linked into a single domain. If -trust is
+specified, the file is loaded into a trusted domain.
+
+<DT> script -i file
+
+<DD> source the named file as though the commands had been typed in
+from the shell.  The special "-i" flag can be used without a filename
+to read in the script /spin/$user/spin/scripts/$user.spininit, where
+$user is whoever built the kernel.
+
+<DT> script -b 
+<DD> runs /spin/$user/scpin/scripts/boot.rc
+
+<DT> help
+<DD> Lists all shell commands.
+</DL>
+
+
+<H3>Shell commands that are extensions</H3>
+
+Most shell commands are dynamically linked into the system once the
+system boots.  Type "help" from the spinshell prompt to discover what
+these are.
+
+
+<H2>Writing new Shell Commands</H2>
+
+It's so very easy to write a new shell command. You need only three things:
+<UL>
+<LI> A command name.
+<LI> A help string.
+<LI> An entry function that implements your new command.
+</UL>
+<P>
+
+The basic idea is to create an interface for your command, define the
+command name and help string in the interface, and also define the
+entry function.  Shazam. You feed this interface (and its
+implementation) to a template (command.tmpl from the
+sys/src/shell/Commands) directory and everything else is taken care of
+for you.
+
+Here's an example which defines the kernel's "date" command:
+<DL>
+<DT> <A HREF="../utils/src/Date.i3">src/Date.i3</A>
+<DD> The interface 
+<DT> <A HREF="../utils/src/Date.m3">src/Date.m3</A>
+<DD> The implementation
+<DT> <A HREF="../utils/src/m3makefile">src/m3makefile</A>
+<DD> The m3makefile.
+</DL>
+
+It works like magic.  When you build this stuff, you'll get four files that
+must be downloaded to implement your command:
+
+
+<DL>
+<DT> DateCmd.io, DateCmd.mo
+<DD> The interface and implementation files for the generic instantiation of
+your command.
+<DT> Date.io, Date.mo
+<DD> Your interface and implementation files.
+</DL>
+
+If you are building a config file, you should specify the order as
+DateCmd.io, DateCmd.mo, Date.io, Date.mo.
+
+<H2>How does it work?</H2>
+
+Your command module is providing an implementation for the generic
+Command module. Three files are involved:
+
+<DL>
+<DT> <A HREF="../shellcore/src/Command.mg">Command.mg</A>.
+<DD> Generic implementation.
+
+<DT> <A HREF="../shellcore/src/Command.ig">Command.ig</A>.
+<DD> Generic interface.
+
+<DT> <A HREF="../shellcore/src/command.tmpl">command.tmpl</A>.
+<DD> The quake directives that instantiate your generic from the
+CommandModule directive.
+
+</DL>
+
+<H3>Generics make it all easy</H3>
+
+This generic takes your "Run" command and installs it as a handler on
+the SpinShell's exported Run event.  It also creates and installs a
+"Help" handler for the SpinShell.
+
+
+
+
+
+
+</body>
+<p><hr>
+<Address>
+bershad@cs.washington.edu<br>
+<date>Last modified June 10, 1996</date>
+</address>
+</html>

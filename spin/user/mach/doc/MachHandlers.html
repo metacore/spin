@@ -1,0 +1,36 @@
+<html>
+<head>
+<title>MachHandlers Interface</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> MachHandlers Interface</a> </br>
+</h1>
+<date>March 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+The MachHandlers interface provides some of the functionality related to
+Mach data structures and names.  For instance, syscalls related to port
+names and access rights are supported by MachHandlers.  On the more
+complex side, creation and destruction of Mach tasks is handled through
+MachHandlers.
+<p>
+Much of the support required by syscalls in the MachHandlers interfaces 
+is simply not provided in SPIN.  Although this apparent lack of 
+functionality is not currently an obstacle to progress, it may be worth
+reviewing in the future.
+<p>
+The MachHandlers interface is <a href="../src/MachHandlers.i3">
+MachHandlers.i3</a>.
+
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

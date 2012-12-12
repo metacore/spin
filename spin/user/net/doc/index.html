@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<TITLE>Plexus: Extensible Protocol Architecture</TITLE>
+</HEAD>
+<BODY>
+<HR>
+<P>
+
+<H2><em>plexus (plek'sus)</em> n.<BR> an exceedingly complex organization
+or network syn: web, tapestry, jungle, labyrinth.</H2>
+
+
+Plexus is a networking architecture that enables applications to
+achieve high performance with customized protocols.
+<em>Application-specific</em> protocols are written in
+<em>Modula-3</em> as extensions to the SPIN operating system.
+Extensions are then dynamically installed into the operating system
+kernel, where they can access the network interface and other
+operating system services with low overhead.  <P>
+
+The spin/user/net directory contains a set of subdirectories that
+implement various protocols.  Extensible communication protocols are
+in a <i>protocol</i> directory and they only define protocol headers
+and SPIN events; clients of these protocols implement the protocol
+processing functions in separate directories.  Currently the following
+standard communication protocols are defined: 
+
+<A HREF="./ether.html">Ethernet</A>, 
+
+<A HREF="./ip.html">IP</A>, 
+
+<A HREF="./udp.html">UDP</A>, 
+
+<A HREF="./icmp.html">ICMP</A>, 
+
+<A HREF="./tcp.html">TCP</A>.
+
+It is simple to <A HREF="newprt.html"> create a new
+<i>protocol</i></A> within Plexus.
+
+The <i>protocol</i>Client directories implement the processing
+functions of the extensible <i>protocol</i>.  It is simple to <A
+HREF="newclt.html">create a <i>protocol</i>Client</A>.  The following
+clients have been created that implement the basic processing
+functions of a protocol and provide a few other servers.
+
+<UL>
+
+<LI><A HREF="./etherClient.html">etherClient</A>: provides
+functionality to send and receive ethernet packets.  It raises the
+IP.PacketArrived event and implements both ARP resolution and responds
+to ARP requests.
+
+<LI><A HREF="./ipClient.html">ipClient</A>: provides functionality to
+send and receive IP packets, has support for both packet fragmentation
+and reassembly, and raises the Icmp.PacketArrived, Udp.PacketArrived,
+and Tcp.PacketArrived event.  It also implements the IP routing
+support.
+
+<LI><A HREF="./icmpClient.html">icmpClient</A>: provides functionality
+to send and receive Icmp packets.  Handles icmp echo request packets
+(i.e., it responds to <i>ping</i> packets).
+
+<LI><A HREF="./tcpClient.html">tcpClient</A>: provides functionality
+to send and receive TCP packets.  It implements TCP packet
+redirection, which can be used to forward TCP packets without going
+through the full TCP processing. For example, it could be used to
+build a low overhead firewall that filters connections on a per TCP
+port basis.
+
+<LI><A HREF="./udpClient.html">udpClient</A>: provides functionality
+to send and receive UDP packets.  It implements UDP packet
+redirection, which can be used to forward UDP.  This has also been
+used to build a firewall benchmark
+
+<LI><A HREF="./osfClient.html">osfClient</A>: this is a special client
+that interfaces with the DEC UNIX networking code.  It provides
+specialized send functions for both UDP and TCP, and installs handlers
+on the Udp.PacketArrived and Tcp.PacketArrived based on the local port
+a <em>socket</em> is bound to.  The osfClient calls into URT's OsfNet
+module to register special TCP and UDP send functions that should be
+used by the Digital Unix networking code.
+
+</UL>
+
+Abstractly, a protocol stack is structured as a graph of event raisers
+and event handlers.  Nodes in the graph represent protocols for which
+protocol events are raised to announce or request the passage of a
+packet through the node.  The protocol processing functions are
+implemented by event handlers that are <i>attached</i> to the protocol
+event name.  <P>
+
+<b>HERE WILL BE A BIG FIGURE THAT ILLUSTRATES THE PROTOCOL GRAPH</b><P>
+
+Each incoming packet is <em>pushed</em> through the protocol graph by
+events and <em>pulled</em> by handlers.  We have describe the
+motivation and implementation of Plexus in a 
+<A HREF="http://www.cs.washington.edu/research/projects/spin/www/papers/Usenix96/extprotarch.ps">Usenix
+paper</a> which should provide more detail.
+
+<HR>
+<ADDRESS>
+
+<I>
+<A HREF="mailto:mef@cs.washington.edu">Marc Fiuczynski</A>
+<BR>DAY/MONTH/YEAR
+</I>
+
+</ADDRESS>
+
+</BODY>
+</HTML>

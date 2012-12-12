@@ -1,0 +1,5 @@
+
+interface("MbufExtern")
+Module("MbufDep")
+c_source("in_checksum")
+c_source("byteswap")

@@ -1,0 +1,12 @@
+
+
+Module("Register")
+Module("Instruction")
+Module("Assembler")
+implementation("AssemblerJT")
+Interface("AssemblerPrivate")
+Module("Disassembler")
+Module (InstructionKey)
+Table (Instruction, InstructionKey, Procedure)
+Sequence (Instruction, InstructionKey)
+s_source("Barrier")

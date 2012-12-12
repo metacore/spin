@@ -1,0 +1,53 @@
+74a75,78
+> #ifndef SPIN
+> 	/*
+> 	 * SPIN uses relative gp and doesn't support backpatching
+> 	 */	
+78a83
+> #endif /* SPIN */	
+86a92,95
+> #ifndef SPIN
+> 	/*
+> 	 * SPIN uses relative gp and doesn't support backpatching
+> 	 */	
+91a101,103
+> #else /* SPIN */
+> 	mb
+> #endif /* SPIN */	
+96a109,112
+> #ifndef SPIN
+> 	/*
+> 	 * SPIN uses relative gp and doesn't support backpatching
+> 	 */	
+101a118,120
+> #else /* SPIN */
+> 	wmb
+> #endif /* SPIN */		
+112a132,135
+> #ifndef SPIN
+> 	/*
+> 	 * SPIN uses relative gp and doesn't support backpatching
+> 	 */	
+114a138
+> #endif /* SPIN */	
+150a175,178
+> #ifndef SPIN
+> 	/*
+> 	 * SPIN uses relative gp and doesn't support backpatching
+> 	 */	
+153a182
+> #endif /* SPIN */
+265a295,298
+> #ifndef SPIN
+> 	/*
+> 	 * SPIN uses relative gp and doesn't support backpatching
+> 	 */	
+268a302
+> #endif /* SPIN */	
+295a330,333
+> #ifndef SPIN
+> 	/*
+> 	 * SPIN uses relative gp and doesn't support backpatching
+> 	 */	
+298a337
+> #endif /* SPIN */	

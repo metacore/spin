@@ -1,0 +1,22 @@
+*** final.c	Wed Nov 13 15:06:42 1996
+--- ../gcc-2.6.x/final.c	Wed Nov 13 15:08:13 1996
+***************
+*** 920,925 ****
+--- 906,922 ----
+      leaf_renumber_regs (first);
+  #endif
+  
++ 
++ /* SPIN Change.
++    We want the profiling code to be emitted before any of the procedure
++    body, so we define PROFILE_BEFORE_PROLOGUE and FUNCTION_NAME. */
++ 
++ #ifdef FUNCTION_NAME
++   /* Output the name of the function so that it precedes any profiling
++      code. */
++   FUNCTION_NAME (file);
++ #endif 
++ 
+    /* The Sun386i and perhaps other machines don't work right
+       if the profiling code comes after the prologue.  */
+  #ifdef PROFILE_BEFORE_PROLOGUE

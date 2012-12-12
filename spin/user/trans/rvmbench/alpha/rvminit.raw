@@ -1,0 +1,16 @@
+echo creating "/dev/rrz3h" and "data".
+
+../bin/rvmutl <<EEE
+init_log /dev/rrz3h 30000k
+#init_log /dev/rrz3h 800k
+quit
+EEE
+
+../bin/rdsinit /dev/rrz3h /dev/rrz3f <<DDD
+0x2a00000
+0x140e00000
+0x10000
+0x2900000
+100
+128
+DDD

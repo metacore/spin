@@ -1,0 +1,128 @@
+#
+# Copyright 1994, 1995 University of Washington
+# All rights reserved.
+# See COPYRIGHT file for a full description
+#
+# HISTORY 
+# 28-Feb-97  Wilson Hsieh (whsieh) at the University of Washington
+#	change ident
+#
+# 08-May-96  Charles Garrett (garrett) at the University of Washington
+#	Split off from regular DRIVER file to enable profiling.
+#
+# 21-Sep-95  Stefan Savage (savage) at the University of Washington
+#	Created to define SPIN kernel
+#
+# *****************************************************************
+# *                                                               *
+# *    Copyright (c) Digital Equipment Corporation, 1991, 1994    *
+# *                                                               *
+# *   All Rights Reserved.  Unpublished rights  reserved  under   *
+# *   the copyright laws of the United States.                    *
+# *                                                               *
+# *   The software contained on this media  is  proprietary  to   *
+# *   and  embodies  the  confidential  technology  of  Digital   *
+# *   Equipment Corporation.  Possession, use,  duplication  or   *
+# *   dissemination of the software and media is authorized only  *
+# *   pursuant to a valid written license from Digital Equipment  *
+# *   Corporation.                                                *
+# *                                                               *
+# *   RESTRICTED RIGHTS LEGEND   Use, duplication, or disclosure  *
+# *   by the U.S. Government is subject to restrictions  as  set  *
+# *   forth in Subparagraph (c)(1)(ii)  of  DFARS  252.227-7013,  *
+# *   or  in  FAR 52.227-19, as applicable.                       *
+# *                                                               *
+# *****************************************************************
+# 
+ident		"DRIVER_PROF"
+
+options		MACH
+options		OSF
+options		DECOSF1	# for fore driver
+options		COMPAT_43
+options		KDEBUG
+options		SPIN
+options		TTD
+options		STAT_TIME
+options		LABELS
+options		BSD_TTY
+
+options		TCP_SPINDLE
+options		CAM_SPINDLE
+
+#
+#	makeoptions	CDEBUGOPTS="-g3"
+makeoptions	CCOPTS="-DLANGUAGE_C"
+makeoptions	BUILD_DIR="ALPHA_SPIN_PROF"
+makeoptions	KCC="InsertMcount.perl"
+
+#
+# Max number of processors in the system (DO NOT CHANGE)
+#
+processors	1
+
+#
+# Special options (see configuring the kernel chapter
+# in the Guide to System Administration)
+#
+cpu		"DEC3000_500"
+cpu		"DEC3000_300"
+cpu		"DEC2100_A50"
+
+#
+# Stuff to shut config up
+#
+timezone        0 dst 0
+maxusers        32
+max_vnodes      10000
+min_free_vnodes 150
+options		UFS
+
+machine		alpha
+
+config		spin_kernel	swap generic
+
+# Turbo Channel
+bus             tc0        at nexus?    
+callout after_c "mkdata tc"
+bus             tcds0      at tc0       slot  ? vector    tcdsintr 
+#controller      bba0       at tc0      slot  ? vector   bbaintr 
+controller      scc0       at tc0       slot  ? vector    sccintr 
+controller      ln0        at tc0       slot  ? vector    lnintr 
+controller      fb0        at tc0       slot  ? vector    fbint 
+scs_sysid	1
+pseudo-device	ether
+
+#
+#	AlphaStation
+bus		pci0       at nexus?
+callout after_c "mkdata pci"
+bus		psiop0     at pci0	slot ? vector	psiopintr
+bus		isa0       at pci0	slot ?
+callout after_c "mkdata isa"
+controller	gpc0       at isa0	slot ? vector	gpcintr
+controller	ace0       at isa0	slot ? vector	aceintr
+controller	ace1       at isa0	slot ? vector	aceintr
+#controller	lp0        at isa0	slot ? vector	lpintr
+#controller	fdi0       at isa0	slot ? vector	fdintr
+#controller	msb0       at isa0	slot ? vector	msbintr
+controller	tu0        at pci0	slot ? vector	tuintr
+controller	tga0       at pci0	slot ? vector	tgaintr
+
+
+# SCSI will search for a bus (psiop or tcds)
+controller      scsi0      at * vector scsiintr
+device disk     rz0        at scsi0     drive     0 
+device disk     rz1        at scsi0     drive     8 
+device disk     rz2        at scsi0     drive     16 
+device disk     rz3        at scsi0     drive     24 
+device disk     rz4        at scsi0     drive     32 
+device disk     rz5        at scsi0     drive     40 
+device disk     rz6        at scsi0     drive     48 
+device disk     rz7        at scsi0     drive     56
+
+#
+# Max number of processors in the system (DO NOT CHANGE)
+#
+pseudo-device	cpus	1
+pseudo-device	ws

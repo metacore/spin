@@ -1,0 +1,311 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage 2.0">
+<title>File Data Cache Documentation</title>
+</head>
+
+<body>
+
+<p><!--webbot bot="PurpleText"
+preview="Write a brief description of the product's highlights for the Summary section. Then create a list of the most important differentiating features. Finally, present the major benefits of your product in separate sections below. Some products may require a list of specifications at the end of the document."
+--> </p>
+
+<h1>File Data Cache Documentation</h1>
+
+<hr>
+
+<h2>Contents:</h2>
+
+<ul>
+    <li><a href="#summary"><strong>Summary</strong></a></li>
+    <li><a href="#implcomponents"><strong>Implementation
+        Components</strong></a></li>
+    <li><a href="#locks"><strong>Locking</strong></a></li>
+    <li><a href="#fs"><strong>File Systems</strong></a></li>
+    <li><a href="#commands"><strong>Commands</strong></a></li>
+    <li><a href="#todo"><strong>ToDo List</strong></a></li>
+</ul>
+
+<hr>
+
+<h2><a name="summary">Summary</a></h2>
+
+<p>The file data cache stores recently accessed file data in pages 
+of <a href="../../../../kernel/spincore/src/memory/doc/index.html">
+physical memory</a>.  It can 
+potentially cache data for any file system.  It provides an easy
+interface by which any file system can add, delete, read, and write 
+cached files.  The default implementation of the cache uses a global
+LRU policy to choose victim blocks for replacement.  However, the
+replacement mechanism is implemented with events that can be caught
+and handled to define different replacment schemes.  Although mapping
+is not yet implemented, the cache is designed to provide a mappable 
+memory object per cached file.  In this initial implementation, all
+physical pages of memory are pinned -- <i>the cache is not paged</i>.</p>
+
+<hr>
+
+<h2><a name="implcomponents">Implementation Components</a></h2>
+
+The following is a description of the components that make up the
+cache implementation.  It is organized by module/interface name.
+<ul>
+
+<li><a name="filedatacache"><a href="../src/FileDataCache.i3">
+FileDataCache</a>: the external
+interface to the cache.  <b>FileDataCache</b> allows clients to 
+interact with the cache using a file-like interface.  <b>FileDataCache</b>
+carries out file system requests by dividing the region to be accessed 
+into cache blocks and then calling 
+<a href="filemobjcache">per-file</a> access methods for those blocks.</li>
+
+<li><a name="buffer"><a href="../src/Buffer.i3">Buffer</a>: the 
+container for pages of data. <b>Buffer</b> encapsulates 
+<a href="../../../../kernel/spincore/src/memory/doc/index.html">physical
+pages of memory</a>.  <b>Buffer</b>s are analogous to cache blocks.  
+<b>Buffer</b> is a subtype of <a href="#doublelist">DoubleList.EltT</a>, 
+allowing it to easily be stored in linked lists.
+<b>Buffer</b>s are the basic unit of allocation, deallocation, and 
+replacement in the cache.</li>
+
+<li><a name="basemobjcache"><a href="../src/BaseMObjCache.i3">
+BaseMObjCache.i3</a>: the container for unallocated 
+<a href=#buffer>buffers</a>.  Initially, all buffers are stored in the
+<b>BaseMObjCache</b>.  As file data is cached, these buffers are allocated
+to <a href="#filemobjcache">per-file containers</a>.  When files abandon
+allocated buffers, they are returned to the free pool in the 
+<b>BaseMObjCache</b>.</li>
+
+<li><a name="filemobjcache"><a href="../src/FileMObjCache.i3">
+FileMObjCache.i3</a>: the per-file container for <a href="#buffer">buffers</a>.
+When a file is <a href="#filedatacache">added</a> to the cache, a 
+<b>FileMObjCache</b> object is created.  The <b>FileMObjCache</b> maintains 
+the buffers for a file along with any metadata for the file (e.g. size, 
+backing file system, etc.) and buffer (e.g. locks, offset into file, etc.).
+This data is maintained in an array of <i>block descriptors</i>.</li>
+
+<li><a name="victim"><a href="../src/Victim.i3">Victim.i3</a>: controls
+cache block replacement.  <b>Victim</b> exports an interface to control
+<a href="#buffer">cache block</a> replacement.  <b>Victim</b> tracks all
+allocated buffers.  Whenever a buffer is accessed, <b>Victim</b> is 
+notified by the <a href="#filemobjcache">per-file</a> container.  When 
+new data must be cached and no buffers are available in the 
+<a href="#basemobjcache">free pool</a>, the file container asks <b>Victim</b>
+to steal a block.  <b>Victim</b> then causes a file container to release
+an allocated buffer.  It chooses the file container and the buffer based
+on the reported access patterns.  The default implementation of <b>Victim</b>
+is a global LRU strategy.  However, the <b>Victim</b> interface was designed
+so that its events could be interposed and different schemes could be 
+developed.</li>
+
+<li><a name="doublelist"><a href="../src/DoubleList.i3">DoubleList.i3</a>:
+implements a doubly-linked list, providing <i>O(1)</i> insertion and 
+deletion.  <b>DoubleList</b>s are used to maintain the 
+<a href="#basemobjcache">free pool</a>, as well as in the default 
+implementation of <a href="#victim">Victim</a> to maintain the LRU list.  
+Members of <b>DoubleList</b>s must be subtypes of <b>DoubleList.EltT</b>, 
+such as <a href="#buffer">buffers</a>.  Although
+<a href="#filemobjcache">FileMObjCache.T</a>s are not subtypes of 
+<b>DoubleList.EltT</b>, they contain a public <b>DoubleList.EltT</b>
+subtype field that allows them to be inserted (somewhat awkwardly) into 
+<b>DoubleList</b>s.  Although this functionality is not used, it may be
+helpful in a dynamically installed implementation of 
+<a href=#victim">Victim</a>.  Both FileMObjCache.T and BaseMObjCache.T 
+contain <b>DoubleList</b> fields, providing for easily accessible per-file
+or per-cache lists.</li>
+
+</ul>
+
+<hr>
+
+<h2><a name="locks">Locking</a></h2>
+
+The cache locking scheme can be somewhat confusing.  The expected locks
+are present to avoid data races when multiple threads access 
+<a href="#doublelist">DoubleList</a>s as well as the 
+file-to-<a href="#filemobjcache">FileMObjCache table in
+<a href="#filedatacache">FileDataCache.m3</a>.  FileMObjCache, however,
+has a more interesting locking scheme.  FileMObjCache locks are on 
+three levels:
+
+<ul>
+
+<li>Block: there is a <a href="../../../sync/rwlock/src/ReaderWriterLock.i3">
+ReaderWriterLock</a> associated with each <a href="#filemobjcache">block
+descriptor</a>.  ReaderLocks allow multiple readers and no writers, while
+WriterLocks allow only a single writer.  ReaderLocks must be obtained
+when the data or metadata of a block is being read.  WriterLocks must be
+obtained when the data or metadata of a block is being written, and if the
+block is being swapped in or swapped out.  Holding a ReaderLock or WriterLock
+does not inhibit access to other blocks in the file.</li>
+
+<li>File Metadata: there is a MUTEX associated with each 
+<a href="#filemobjcache">FileMObjCache.T</a>.  This MUTEX is used to 
+protect against concurrent access to the metadata associated with a file
+(including size, number of resident pages, number of hits and misses, etc.).
+The MUTEX must be grabbed when reading or writing file metadata.  It should
+not be held while, e.g., swapping out a block.   In fact, holding the MUTEX
+does not prevent access to blocks.</li>
+
+<li>File Access: there is a monitor-like object associated with each 
+<a href="#filemobjcache">FileMObjCache.T</a>.  It can be used to restrict
+access to the entire file, such as to delete it from the cache or 
+restructure its array of block descriptors.  This lock allows for multiple
+readers and writers unless access is explicitly disallowed.  When access is 
+explicitly disallowed, any ongoing accesses can run to completion.</li>
+
+</ul>
+
+<hr>
+
+<h2><a name="fs">File Systems</a></h2>
+
+<p>There are two obstacles to caching a file system.  The first is 
+ensuring that file objects are of the proper type, and the second is 
+ensuring that the cache is interposed between the file system and the
+disk (or other storage device).</p>
+
+<p>File objects must be of the proper type because of the cache's reliance
+on Modula-3 
+<a href="http://www.research.digital.com/SRC/m3sources/html/table/src/Table.ig.html">table generic</a>.  A table is used in 
+<a href="#filedatacache">FileDataCache</a> to translate from a file system
+<a href="../../fscore/doc/index.html">File.T</a> object to a 
+<a href="#filemobjcache">FileMObjCache.T</a> object.  Since File.T is the
+table key, the <a href="../../fscore/src/File.i3">File.i3</a> interface
+must have a Hash() and Equal() procedure.  The File.i3 does not have these
+procedures.  Instead, the File.T object has a public datafield of type
+<a href="../../fscore/src/FileId.i3">FileId.T</a>, and the 
+<a href="../../fscore/src/FileId.i3">FileId.i3</a> interface does have
+Hash() and Equal() procedures.  Unfortunately, my experiences have 
+indicated that the FileId field does not provide unique identification
+for files (for some file systems, every file had a FileId field consisting
+entirely of zeroes).</p>
+
+<p>There are many approaches to fixing the file type problem.  A few are
+suggested below:</p>
+
+<ul>
+
+<li>The first approach is the one currently in use (although not checked
+into the potato).  The cache implementation provides the 
+<a href="../src/CacheFile.i3">CacheFile</a> object whose 
+interface defines Hash() and Equal() procedures.  A CacheFile.T is 
+a File.FileT with the additional methods hash() and equal().  The Hash()
+and Equal() procedures simply call these methods (hence they can be 
+overridden in subtypes).  No other File.FileT methods are overridden in
+the CacheFile.T object.  
+
+<p>All files stored in the cache must be subtypes of CacheFile.T.  
+Cacheable file systems can be created easily by modifying existing file
+systems, subtyping the FileT object from CacheFile.T rather than
+<a href="../../fscore/src/File.i3">File.FileT</a>.  One example is the 
+CacheUFS file system in <tt>/spin/ddion/spin/user/fs/cufs</tt>.</p></li>
+
+<li>The second approach also involves the 
+<a href="../src/CacheFile.i3">CacheFile</a> object.  In this case, 
+though, rather than subtyping CacheFile.T from the
+<a href="../../fscore/src/File.i3">File.FileT</a> object, File.FileT
+would be a subtype of CacheFile.T.  That way, all file systems can
+be cacheable by default.</li>
+
+<li>The third approach is to fix 
+<a href="../../fscore/src/FileId.i3">FileId</a>. This would
+        remove the need for the Hash() and Equal() procedures in
+        the <a href="../src/CacheFile.i3">CacheFile</a>
+        interface.Rather than use a table mapping CacheFile.Ts to
+        FileMObjCache.Ts, the cache implementation would use a
+        mapping from FileId.Ts to FileMObjCache.Ts.</li>
+
+</ul>
+
+<p>There are also several approaches to interposing the cache
+into the filing service. A few are suggested below:</p>
+
+<ul>
+    <li>The first approach is currently in use and corresponds to
+        the first approach to fixing the file type problem above.
+        The file system to be cached is copied. Its existing
+        read() and write() methods are used as the swapin and
+        swapout parameters to AddFile() in the 
+<a href="../src/FileDataCache.i3">FileDataCache</a>
+        interface.The read() and write() methods are then
+        replaced with methods that invoke cache routines. An
+        example of this approach is the CacheUFS file system in <tt>/spin/ddion/spin/user/fs/cufs</tt>.</li>
+    <li>A second approach is much more efficient in its code
+        reuse. Rather than copying an entire file system, a new 
+<a href="../../fscore/src/File.i3">File</a> object can be
+        created that is a subtype of the File object of the file
+        system being cached. The read() and write() methods can
+        be overridden to invoke the cache, and the supertype
+        read() and write() methods can be used as the swapin and
+        swapout parameters to AddFile().</li>
+    <li>A third approach uses the 
+<a href="../../../../kernel/spincore/src/dispatch/doc/index.html">dispatcher</a>
+        to interpose on the read() and write() methods of a file,
+        inserting calls to the cache. Unfortunately, this
+        approach is not yet possible since the dispatcher is
+        unable to interpose on object methods.</li>
+</ul>
+
+<hr>
+
+<h2><a name="commands">Commands</a></h2>
+
+<p>The cache implementation comes with a shell interface.  Currently,
+the shell commands are very limited.  A collection of cache
+statistics is available with the command:<br>
+<tt>cache stat</tt><br>
+at the <i>SPIN</i> shell.  In order to keep statistics, the KeepStats
+constant must be TRUE at compile time.
+
+<hr>
+
+<h2><a name="todo">Todo List</a></h2>
+
+<p>There are a number of enhancements that would improve the file data
+cache implementation.  These are not limited to the following:
+
+<ul>
+<li><b>Invalidation by timeout:</b>  Sometimes a block of data should
+be invalidated or refreshed after a period of time.  NFS is an example
+of a file system that invalidates its cache with timeouts.  Incorporating
+timeouts into the cache implementation would not be difficult.  In fact,
+since the <i>SPIN</i> kernel provides an interface to setting alarms, it
+would be quite easy.  Timeouts could be implemented directly into the 
+default cache, with the timeout value set as a parameter to the AddFile()
+call.  Alternatively, and preferably, timeouts could be implemented 
+entirely through the Victim interface.  By interposing a new Victim 
+implementation via event-handling, a timeout mechanism could be dynamically
+installed.  The timer would begin when the alloc buffer event is raised.
+It would be cleared at each ref event.  If the alarm fires, the Victim
+module could cause the FileMObjCache module to release the offending buffer.</li>
+
+<li><b>Asynchronous Flushes:</b>  In the currently implementation, writes
+are stored in the cache until the block is purged or the flush() method is
+invoked.  A more interesting approach would be to provide an asynchronous
+flush.  This would allow a flush to be invoked frequently without hurting
+the latency of file operations.</li>
+
+<li><b>Cleanup file containers:</b>  FileMObjCache.T objects currently are
+not cleaned up.  Once AddFile() is called, FileMObjCache.T objects live in
+the cache table until they are explicity deleted.  This is an unnecessary
+waste of memory.  An alternate approach would be to move FileMObjCache.T
+objects into an alternate data structure once they have no resident pages.
+If this alternate structure reaches a certain threshold, FileMObjCache.T
+objects are purged and picked up by the kernel garbage collector.  The
+alternate data structure could be a doubly-linked list.  FileMObjCache.T
+objects contain a DoubleList.EltT field that enables them to belong to a
+list structure.  The list could be ordered by least recently abandoned, 
+making the victim choice clear.</li>
+
+</ul>
+
+<hr>
+<address>ddion@cs.washington.edu<br>
+Last Modified: 21 June 1997</address>
+</body>
+</html>

@@ -1,0 +1,40 @@
+24a25,28
+>  * 02-May-96  Marc Fiuczynski (mef) at the University of Washington
+>  *	Reenabled some of the original OSF code to block when we run out
+>  *	of space, and wakeup threads that are blocked.  
+>  *
+344a349,355
+> #ifdef SPIN
+> 	do { 
+> 		/* Hack city [savage]: # pages for zone_map */
+> 		extern int NumZonePages; /* defined in SalCommon.[ch] */
+> 		zone_map_size = NumZonePages * PAGE_SIZE;
+> 	} while(0);
+> #else /* SPIN */
+364a376
+> #endif /* SPIN */
+392a405,407
+> #ifdef SPIN
+> 	int spl;
+> #endif /* SPIN */	
+414a430,433
+> #ifdef SPIN
+> 			/* prevent SPIN from preempting between assert_wait and thread_block */
+> 			spl = splhigh();
+> #endif /* SPIN */
+418a438,440
+> #ifdef SPIN
+> 			splx(spl);
+> #endif /* SPIN */
+492a515
+> #ifndef SPIN
+493a517,519
+> #else /* SPIN */
+> 	printf("O Moj Boze! Mam siekiere w glowie! Call savage (zalloc4)\n");
+> #endif /* SPIN */
+514a541
+> #ifndef SPIN
+515a543,545
+> #else /* SPIN */
+> 	printf("O Moj Boze! Mam siekiere w glowie! Call savage (zalloc6)\n");
+> #endif /* SPIN */

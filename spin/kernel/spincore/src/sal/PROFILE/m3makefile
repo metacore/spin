@@ -1,0 +1,9 @@
+#
+# HISTORY
+# 16-Dec-96  Charles Garrett (garrett) at the University of Washington
+#	Created. Including this interface turns on the profiling specific
+#	 code in Strands and Dispatcher.
+#
+#
+
+Interface("ProfileSupport")	

@@ -1,0 +1,3 @@
+# Motorola Delta Seris sysV68 R3V7.1
+HDEFINES=-DTRAD_CORE
+HDEPFILES=trad-core.o

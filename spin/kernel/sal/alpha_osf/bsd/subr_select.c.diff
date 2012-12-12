@@ -1,0 +1,22 @@
+89a90
+> #ifndef SPIN
+95a97
+> #endif
+116a119,121
+> #ifdef SPIN
+> 	qp->event = current_thread();
+> #else
+117a123
+> #endif
+139a146,148
+> #ifdef SPIN
+> 	target = (struct thread *)current_thread();
+> #else
+140a150
+> #endif
+188a199,201
+> #ifdef SPIN
+> 		thread_wakeup((vm_offset_t)qp->event);
+> #else
+189a203
+> #endif

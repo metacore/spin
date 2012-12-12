@@ -1,0 +1,31 @@
+#############################################################
+# HISTORY
+# 22-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	Switched to simpler spindle build functions.
+#
+# 17-Oct-95  Marc Fiuczynski (mef) at the University of Washington
+#	Using DomainImport instead of import to get access to interface.
+#	Added bootstrapping support.
+#
+# 14-Oct-95  Marc Fiuczynski (mef) at the University of Washington
+#	Added spindle creation support.
+#
+# 13-Oct-95  Marc Fiuczynski (mef) at the University of Washington
+#	Updated with domain management support.
+#
+# 08-Mar-95  Marc Fiuczynski (mef) at the University of Washington
+#	Created.
+#############################################################
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+
+
+Generic_module("Protocol")
+Generic_module("Trusted")
+Generic_module("Link")
+template("protocol")
+
+c_source(Dummy)
+
+library("dummy")

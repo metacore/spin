@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>VMHandlers Interface</title>
+</head>
+
+<body>
+<h1>
+<A name = "top"> VMHandlers Interface</a> </br>
+</h1>
+<date>March 31, 1996</date>
+</br>
+David Dion
+ <P>
+<HR>
+<P>
+
+The VMHandlers interface provides VM support to the OSF/1 server
+extensions.  When the Syscall module catches a syscall event corresponding
+to a VM request, it is redirected to the VMHandlers module.
+<p>
+Not all procedures in the interface provide a complete Mach emulation.  
+The following are implemented just enough for basic execution of the OSF/1
+server:
+<li>vm_inherit</li>
+<li>vm_region</li>
+<li>vm_statistics</li>
+<li>vm_map</li>
+<li>vm_deallocate</li>
+<p>
+The VMHandlers module relies somewhat on the VMTaskSupport interface.  The
+VMHandlers module will soon be obsolete as the Mach VM extensions will 
+provide exactly
+The VMHandlers interface is <a href="../src/VMHandlers.i3">
+VMHandlers.i3</a>.
+
+
+<P>
+<HR>
+<P>
+<ADDRESS>ddion@cs.washington.edu</ADDRESS>
+</HTML>

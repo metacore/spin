@@ -1,0 +1,60 @@
+<HTML>
+<TITLE>Plexus IP protocol support</TITLE>
+<BODY>
+<H1>Plexus IP protocol support</H1>
+
+<H2>IP</H2>
+
+The IPClassification module raises the Udp, Tcp, and Icmp
+PacketArrived events for their corresponding packets.  The IPFrag
+module currently handles all of the reassembling of UDP and TCP
+packets.  It should probably be generalized to just re-raise the
+Ip.PacketArrived event after reassembling an ip packet.  Finally, the
+IpGen module sends ip packets using a route from the IpRoute module.
+IpGen will fragment packets based on the MTU of the outgoing device.
+
+<H2>IP Reassembly Notes</H2>
+
+The IpFrag module reassembles incoming IP fragments.  It shallow
+copies fragments into new mbufs, and then puts these new mbufs into a
+sorted list.  When all the fragments have arrived the mbufs are
+chained together to create the reassembled datagram.  A generic hash
+table is used to hold the linked lists, and non-reassembled fragments
+are flushed from the table after 30 seconds.
+
+<H3>Problems and Bugs</H3>
+
+<DL>
+<DT> SIZE
+<DD>There are some disadvantages the current implementation,
+notably the open-ended size of the hash table.  While this is good in
+some respects, as you never have to drop a packet because you ran out
+of room, its disadvantage is that an unlimited number of outstanding
+packets can take quite a bit of memory to buffer.  This is a problem
+if the system is attacked with a flood of many large datagrams.  A
+good solution to this problem would be to set a high and low water
+mark.  When the amount of data in buffered packets reaches the high
+water mark, the buffer space is pruned back down to the low water
+mark.
+
+<DT>MBUF WEIRDNESS
+<DD>One possible bug with the code is involved with mbuf weirdness.
+The first mbuf of the first packet (packets can come in as multiple
+chained mbufs) needs to be a packet header type mbuf.  If it isn't, I
+create an mbuf that is, and prepend it to the front of the chain.
+Unfortunately, the mbuf code doesn't like an mbuf with no data of its
+own.  The first mbuf of the first packet <EM>should</EM> always be of
+the packet header type, so this isn't causing problems now.
+
+<DT>ICMP reassembly timeout
+<DD> Another lacking is that no ICMP reassembly timeout messages are
+sent back when the reassembly of a datagram times out.</P>
+
+<H3>Design decisions</H3>
+
+<P> Packets are timed out using the Clock.SetAlarm procedure which is
+called every 30 seconds if there are any non-reassembled packets in
+the hash table.  If the table is empty, there will be no alarm set.</P>
+
+</BODY>
+</HTML>

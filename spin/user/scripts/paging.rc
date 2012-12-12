@@ -1,0 +1,25 @@
+#
+# HISTORY
+#  13-Sep-96  Marc Fiuczynski (mef) at the University of Washington
+#	Created.
+
+#
+# load support to page to local disk file
+#
+
+nanny touch FilePager
+nanny touch Extent
+nanny touch efs
+
+echo mount efs filesystem on /efs
+extent mkdev $EDISKDEV efsextent -size 167772160
+
+mkdir /efs
+mount efs efsextent /efs
+
+echo creating swap file (/efs/swap 8MB)
+touch /efs/swap
+mkfile /efs/swap 8388608
+swapon /efs/swap
+
+

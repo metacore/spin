@@ -1,0 +1,155 @@
+<HTML>
+<TITLE> m3rpcgen - an RPC protocol compiler for Modula-3 </TITLE>
+
+<BODY>
+<img align=right src="../../../doc/at-work.gif">
+<h1>  m3rpcgen - an RPC protocol compiler for Modula-3 </h1>
+
+m3rpcgen is based on the stub generator from Xerox Parc by Marvin
+Theimer.  It was updated to work with Modula-3 version 3.x and SPIN by
+<A HREF=http://www.cs.washington.edu/homes/mef>Marc E. Fiuczynski</A>
+
+<h2> Synopsis </h2>
+<pre>
+  m3rpcgen [options] infile
+  m3rpcgen [options] [ -c|-h|-l|-s ] [ -o outfile ] [ infile ]
+</pre>
+
+<h2> Overview </h2>
+
+m3rpcgen is a tool that generates Modula-3 code to implement an RPC
+protocol.  The input to m3rpcgen is a language similar to C known as
+<A HREF="../../../user/oncrpc/doc/rfc1014.html">eXternal Data
+Representation (XDR) language</A>.
+
+m3rpcgen is normally used as in the first synopsis where it takes an
+input file and generates up to five output files. If the infile is
+named proto.x, then m3rpcgen will generate an interface file in
+proto.i3, marshalling routines in proto_x.i3 and proto_x.m3,
+server-side stubs in proto_s.m3, and client-side stubs in proto_c.m3.
+
+If proto.x contains no type definitions in it then the files
+proto_x.i3 and proto_x.m3 will not be produced since there will be no
+marshalling routines.  If proto.x does not contain any program
+definitions (i.e. it contains only constant and/or type definitions)
+then the files proto_c.m3 and proto_s.m3 will not be produced since
+there will be no client or server stubs.
+
+The other synopses shown above are used when one does not want to
+generate all the output files, but only a particular one.  Their usage
+is described in the USAGE section below.
+
+The C-preprocessor, cpp(1), is run on all input files before they are
+actually interpreted by m3rpcgen, so all the cpp directives are
+legal within an m3rpcgen input file.  For each type of output file,
+m3rpcgen defines a special cpp symbol for use by the m3rpcgen
+programmer:
+
+<pre>
+  RPC_HDR     defined when compiling into interface files
+  RPC_XDR     defined when compiling into marshalling routines
+  RPC_SVC     defined when compiling into server-side stubs
+  RPC_CLNT    defined when compiling into client-side stubs
+</pre>
+
+In addition, m3rpcgen does a little preprocessing of its own.  Any line
+beginning with `%' is passed directly into the output file, uninterpreted
+by m3rpcgen.
+
+In order to satisfy the type safety requirements of Modula-3, m3rpcgen must
+support explicit importation of other .x interface files.  This is achieved
+by having m3rpcgen recognize the line
+
+<pre>
+       %#include "proto1.h"
+</pre>
+
+(yes, proto1.h) as meaning IMPORT the interface file proto1.i3 into
+the various files emitted.  Note that most interface files will
+actually contain line sequences of the form:
+
+<pre>
+       #if RPC_HDR
+       %#ifndef proto1_h
+       %#define proto1_h
+       %#include "proto1_h"
+       %#endif proto1_h
+       #endif RPC_HDR
+</pre>
+
+in order to accomodate the generation of C code for an interface file.
+
+<h2>Options</h2>
+<DL>
+
+<DT> -c 
+
+<DD> Emit only the marshalling routine files (e.g. proto_x.i3 and
+proto_x.m3).
+
+<DT>  -h
+<DD>   Emit only the Modula-3 data-definitions file (e.g. proto.i3).
+
+<DT>  -l
+<DD>   Emit only the client-side stubs file (e.g. proto_c.m3).
+
+<DT>  -s   
+<DD>   Emit only the server-side stubs file (e.g. proto_s.m3).
+
+<DT>  -o outfile
+<DD>   Specify the name of the output file.  If none is specified, standard
+       output is used (-h, -l, -s modes only).  NOTE: Only the base name
+       should be specified when this option is used in conjunction with -c
+       (which generates two files).  For example, -s -o proto_xdr will yield
+       the output files proto_xdr.i3 and proto_xdr.m3.
+
+<DT>  -p 
+<DD>   Strip module prefix names from all symbol names encountered.  Whereas
+       RPC interface symbols exist in a single name space, Modula-3 symbols
+       are defined relative to the modules they are defined.  Without this
+       option symbols in an interface file proto.x of the form proto_foo will
+       turn into Modula-3 names of the form proto.proto_foo.  When this
+       option is specified m3rpcgen will strip the proto_ off each symbol
+       name encountered.  That is, the symbol proto_foo will be turned into
+       the Modula-3 symbol proto.foo.
+
+<DT>  -e
+<DD>   Expand input structure parameters.  RPC Language allows only one
+       parameter to each routine.  If this flag is specified, and the parame-
+       ter to a routine is a structure, then the corresponding client and
+       server stub routines produced will expect one parameter for each field
+       of the structure.
+
+<DT>  -f
+<DD>   Emit all five files, even if they are not needed.  This option is use-
+       ful when dependency makefiles are generated automatically using facil-
+       ities such as imake.
+
+<DT>  -r
+<DD>   Emit code in the client stubs to assist recovery from failed RPC
+       calls.  When creating the client object, the application can provide a
+       routine to be called when an RPC fails.  This routine can attempt
+       application-specific recovery and return a new connection that the
+       stub will use for the retry.
+
+
+</DL>
+
+<HR>
+<pre>
+AUTHOR OF DOCUMENTATION
+  Marc E. Fiuczynski, University of Washington, from Xerox's man page.
+</pre>
+
+
+<ADDRESS>
+
+<I>
+<A HREF="mailto:mef@cs.washington.edu">Marc Fiuczynski</A>
+<BR>DAY/MONTH/YEAR
+</I>
+
+</ADDRESS>
+
+</BODY>
+</HTML>

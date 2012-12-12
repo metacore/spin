@@ -1,0 +1,25 @@
+1158c1158,1166
+< 
+---
+> #ifdef SPIN
+> 	/*
+>          * SPIN zones seem to be compiled with MACH_ASSERT on.
+>          * zcram fails if not labeled foreign -- should be foreign anyhow.
+>          */
+> 	if (cam_zone[i] != ZONE_NULL) {
+> 	    cam_zone[i]->z_flags |= Z_FOREIGN;
+> 	}
+> #endif
+1273a1282,1285
+> #ifndef SPN
+> 	/*
+> 	 * this would fail miserably under SPIN.
+> 	 */
+1274a1287
+> #endif
+1706c1719,1721
+< 
+---
+> #if SPIN
+>       if ( cam_memory_daemons )
+> #endif

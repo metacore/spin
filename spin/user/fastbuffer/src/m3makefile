@@ -1,0 +1,12 @@
+#
+# HISTORY
+# 24-Jul-97  Yasushi Saito (yasushi) at the University of Washington
+#	Created.
+#
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+m3_option("-A")
+Package("FastBuffer")
+Module("CharArray")
+
+Extension({})

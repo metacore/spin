@@ -1,0 +1,16 @@
+# HISTORY
+# 19-Apr-96  Emin Gun Sirer (egs) at the University of Washington
+#       Created.
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+
+Package("AutoExec")
+
+#
+# This is where all the modules and interfaces are listed.
+Module("AutoExec")
+
+Extension({})

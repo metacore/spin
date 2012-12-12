@@ -1,0 +1,191 @@
+<html>
+<head>
+<title>Building the OSF/1 Server for SPIN</title>
+</head>
+
+<body>
+
+<h1>Building the OSF/1 Server for SPIN</br></h1>
+<date>22 March 1996</date>
+
+<hr>
+
+<p>
+
+<h2>So you want to build the OSF/1 Unix server for SPIN</h2>
+
+These instructions will tell you what to do.  Some steps may be unpolished
+and rather ugly, but this is a starting point to allow more people to work
+on the OSF/1 server.
+
+<h3>Historical Perspective</h3>
+
+In the dark ages, there was ODE.  This is where SPIN lived when it was
+a "wart" on the side of Mach.  This is also where the OSF/1 server lived.
+<p>
+Since those days, SPIN has migrated to CVS.  The OSF/1 server has never
+actually migrated to CVS, but it maintains partial residence there. 
+That is, you still need the ODE environment to build the OSF/1 server,
+but server code can be checked in and checked out using CVS.  
+<p>
+Although the ODE environment is often considered difficult to use, the 
+server build depends on it.  For instance, thanks to ODE code-backing, you
+don't have to check out the entire source tree for compiling and editing.
+<p>
+In the future, the OSF/1 server will most likely be migrated to
+CVS.  This cannot happen until reliances on ODE functionality, such as
+backing trees, are eliminated.
+
+
+<h3>Making your sandbox</h3>
+
+If you don't already have a sandbox (and hence a ~/.sandboxrc file), you
+will need to run the full mksb command:
+<pre>
+mksb -back /afs/cs/project/spin/build/release-7 -dir /afs/cs/project/spin/{login} -m alpha {sbname}
+</pre>
+If you already have a ~/.sandboxrc file, you can just run
+<pre>
+mksb -def {sbname}
+</pre>
+Make sure your sandbox is backed off release-7.  Also, you will want to
+choose "b" for all of the backing options.  If you do not have mksb in 
+your path, use
+<pre>
+/afs/cs/project/spin/build/release-7/export/alpha/bin/mksb
+</pre>
+<p>
+In order to use the ODE build tools, you will need to make some additions
+to your path.  Namely, you will want the following two entries:
+<pre>
+/afs/cs/project/spin/{login}/{sbname}/export/alpha/bin
+/afs/cs/project/spin/{login}/{sbname}/link/export/alpha/bin
+</pre>
+When you type "which build" at the prompt, you should see
+<pre>
+/afs/cs/project/spin/{login}/{sbname}/link/export/alpha/bin/build
+</pre>
+
+
+<h3>Setting up your sandbox for CVS</h3>
+
+Sometime in the transition from the dark ages to the modern era, the entire
+OSF/1 server was entered into CVS under the trunk "release-7".  The OSF/1 
+server which runs on SPIN is a branch off this trunk.
+<p>
+Just as we always check out SPIN code relative to the trunk name "spin",
+it is necessary to check out OSF/1 server code relative to the trunk name
+"release-7".  However, the sandbox directory hierarchy is important to 
+the ODE build process -- you don't want your code an extra level deep in
+a "release-7" directory.  Hence,
+<pre>
+cd /afs/cs/project/spin/{login}/{sbname}
+ln -s src release-7
+</pre>
+
+
+<h3>Checking out the OSF/1 server code</h3>
+
+You will not be checking out the entire OSF/1 Unix server.  Instead, you
+will be checking out a superset of those files which have been modified
+in order to run the OSF/1 server on SPIN.  You will rely on the ODE code
+backing mechanism to account for any source files which you do not check
+out.
+<p>
+The files you check out are located in two major areas:
+<ul>
+<li>mk/user:  libmach and libcthreads.  libmach is where the most 
+    significant changes have occurred.  Here, IPC messages are converted 
+    into syscalls.</li>
+<li>osf/server:  the bulk of the Unix server.
+</ul>
+
+Currently, you will be checking out significantly more files than you
+actually need to check out (i.e. files which have not changed since the
+original release-7).  There are two reasons for this excessive checkout:
+<ul>
+<li>No easy CVS trick has been found to locate precisely those files 
+    which have changed.</li>
+<li>There is still debugging information in many files which can be
+    removed.</li>
+</ul>
+These are not difficult obstacles to overcome; they just take time and
+will take effect in future releases.
+<p>
+The tag to use in checking out is spinux-3.  The actual checkout command is
+<pre>
+cd /afs/cs/project/spin/{login}/{sbname}
+cvs checkout -r spinux-3 release-7/mk/user release-7/osf/server
+</pre>
+
+
+<h3>Building the OSF/1 Unix server for SPIN</h3>
+
+The build has a two step process.  First, you must build libmach and
+libcthreads.  If you do not, the backing libs will be used when the 
+server is linked.  To build libmach and libcthreads
+<pre>
+cd /afs/cs/project/spin/{login}/{sbname}/src/mk/user
+build
+</pre>
+This step should take several minutes.  Afterwards, you should have an
+export/alpha/lib directory under your sandbox with libmach and libcthreads.
+<p>
+The second step is building the server.  This step will take much longer,
+on the order of a half hour to an hour.
+<pre>
+cd /afs/cs/project/spin/{login}/{sbname}/src/osf/server
+build
+</pre>
+<p>
+There are a couple things to keep in mind to speed up builds:
+<ul>
+<li> Use a fast machine with plenty of memory (of course).</li>
+<li> You can fork off multiple processes to compile files.  Use the build
+     flag "-j {n}" to fork off n build processes.  Be courteous when 
+     using build -j.</li>
+<li> AFS will be relinked every time you build the server.  This is 
+     annoying because it takes a while and you will probably never change
+     it.  After you have built libafs at least once, you can specify that it
+     not be built again.  To do this, edit src/osf/server/Makefile:  grep
+     for the definition of SUBDIRS (approx line 70) and take out afs.</li>
+</ul>
+
+
+<h3>Preparing the OSF/1 Unix server for SPIN</h3>
+
+After the build completes, you will have a server.  The server will live
+under export and under obj in your sandbox.  The problem is that this 
+server is unnecessarily huge since it has not been stripped.  I usually 
+strip a copy of the server and place it in my project directory for easy 
+tftp'ing:
+<pre>
+strip /afs/cs/project/spin/{login}/{sbname}/obj/alpha/osf/server/DEFAULT/vmunix.OSFSRV1.DEFAULT 
+cp /afs/cs/project/spin/{login}/{sbname}/obj/alpha/osf/server/DEFAULT/vmunix.OSFSRV1.DEFAULT /afs/cs/project/spin/ddion/vmunix.OSFSRV1.DEFAULT
+</pre>
+Another helpful hint:  if you're going to be doing this a lot, look into 
+X cut buffers.
+<p>
+When debugging, make sure you use vmunix.OSFSRV1.DEFAULT.unstripped.
+
+
+<h3>Running the OSF/1 Unix server on SPIN</h3>
+
+To learn how to run the server, click <a href="./userlevel.html">here</a>.
+This Web page is targeted toward using my copy of the server binary.  
+Yours should fit right in.
+<p>
+
+
+<h3>What do you mean it doesn't work?</h3>
+
+Please mail me bug reports, or use PRMS entry machsux.
+
+
+</body>
+<p>
+<hr>
+<Address>
+ddion@cs.washington.edu<br>
+</address>
+</html>

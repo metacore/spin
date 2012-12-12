@@ -1,0 +1,131 @@
+<html>
+<body>
+<h1>Pelican - The SPIN Web Server</h1>
+
+Pelican is an integrated web server that achieves high
+performance through its unique design. What sets Pelican
+apart from conventional servers is that it is a <i>kernel
+extension</i>, i.e. it is injected into the operating system. The
+operating system in question is SPIN, a new, extensible operating
+system we have been developing at the University of Washington for the
+last two years. SPIN provides high-performance, extensibility, and
+safety to applications. By this, we mean that SPIN allows applications
+to modify the operating system implementation in order to support
+new functionality that they require. SPIN extensibility mechanisms
+ensure that the composition does not violate overall system integrity.
+(See the <a href="http://www-spin.cs.washington.edu">SPIN</a>
+home page for more details).
+
+<p>
+The job of a web server is to act as a conduit between networked
+clients and the data. Conventional web servers execute in their own 
+separate address space, isolated from the system services that they
+rely on. The SPIN web server is dynamically linked into the operating
+system, and executes in the kernel's privileged address space. Since
+it is physically closer to the systems it uses, it can be better
+integrated with them. This close integration allows the web server to
+deliver high performance.
+
+<p>
+NEED A PICTURE HERE
+
+<p>
+The server consists of two components - an HTTP 1.0 protocol engine
+and a cache. The web server relies on SPIN in-kernel
+sockets for its interactions with the networking layer, and on the
+SPIN filesystem for locating URLs. It also uses disk extents to
+implement a swap partition as a backing store for its buffer cache.
+
+<p>
+The protocol engine forms the heart of the web server. It parses
+client requests and directs the splicer and the cache to satisfy the
+requests. Upon reception of a request, the web server first determines
+the protocol number and version being used (it supports 1.0 and is
+backwards compatible with 0.9). It then logs the access and the
+referer fields, and checks to see if the URL being accessed is already
+in the cache. If so, it pins the blocks in the cache, and sends them
+out through the networking interface. As the blocks are acknowledged,
+they are unpinned so that they can be replaced when memory runs
+short. If the file is not in the cache, it retrieves it from the
+filesystem and sends it out. The blocks are placed in the cache as
+they are sent out. The current implementation spawns off a thread for
+each URL request.
+
+<p>
+The web server cache has two components - a name cache and a block
+cache. The name cache provides a fast translation from a string name
+provided by the client into a block list. A block list consists of a
+set of blocks, which may be in memory or on secondary storage. A block
+in memory directly holds the data that was stored in it. However, as
+memory runs out, blocks may be swapped out to secondary storage. The
+web server goes through the list of all cached files, and selects the
+least frequently accessed pages for swapout. A selected page will be
+swapped out in its entireity, as it is not possible to perform block
+accesses through the HTTP protocol. The storage medium is represented
+as a huge extent. During swapout, smaller extents that are large
+enough to hold each block are allocated, and the blocks are written
+out to the disk through the extents. The block headers are then
+updated to hold the extent offsets for the swapped out files.
+
+<p>
+In order to reduce latency of common operations, the web server relies
+on optimistic concurrency controls. In particular, no mutual exclusion
+locks are acquired on any path in the server. Instead, carefully
+ordered atomic quadword updates are used to synchronize with
+changes to global data structures. The block cache uses a
+readers/writers lock implementation that is based on atomic increment
+and decrement operations. The atomic increment and decrement
+operations are implemented on our current uniprocessor server 
+as restartable atomic sequences. The readers/writers locks use a
+heavier weight mechanism, namely semaphores, to block in the uncommon
+case of contention for a lock.
+
+<h2>Web Server Interface</h2>
+
+<br><b>www showconf</b>
+
+Display the internal configuration parameters of the web server.
+
+<br><b>www swapon rz0b</b>
+
+Enable the server cache, and designate device rz0b as the backing
+store for web server data.
+
+<br><b>www swapoff</b>
+
+Disable caching in the server.
+
+<br><b>www flush</b>
+
+Flush out all the data blocks in the server's memory to backing store.
+
+<br><b>www logon</b>
+
+Enable logging.
+
+<br><b>www logoff</b>
+
+Disable logging.
+
+<br><b>www dumplog</b>
+
+Print out the log.
+
+<br><b>www verbose</b>
+
+Make the web server print messages to the console about what it is
+doing.
+
+<br><b>www quiet</b>
+
+Disable verbose output.
+
+<br><b>www debug</b>
+
+Toggle debugging output on and off.
+
+</body>
+<hr>
+<address>
+Emin Gun Sirer, egs@cs.washington.edu
+</html>

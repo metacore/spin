@@ -1,0 +1,23 @@
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport("SpinUnixNet","user/urt","net",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+importfrompath("user/net","plexus",overridepath)
+
+DomainImport("IpServer","user/net","ip",overridepath)
+DomainImport("IpClient","user/net","ipClient",overridepath)
+DomainImport("NetDb", "user/net","dns",overridepath)
+DomainImport("OsfNetEmulation", "user/net","osfClient",overridepath)
+Package("Vmtp")
+
+Module(Vmtp)
+Interface(VmtpPktFormat)
+Module(VmtpNameServer)
+Module(VmtpUtils)
+linkmodule(Vmtp)
+implementation(VmtpCmd)
+
+Extension({})
+

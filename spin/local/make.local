@@ -1,0 +1,50 @@
+#
+# Makefile for the SPIN tools
+# These are programs that run on the local host.
+#
+
+#
+# HISTORY
+# 11-Nov-97  David Becker (becker) at the University of Washington
+#	Use the new make.conf variables.  Removed a bunch of usused targets.
+#
+# 28-Feb-97  Wilson Hsieh (whsieh) at the University of Washington
+#	fix platforms
+#
+# 11-Feb-97  Przemek Pardyak (pardy) at the University of Washington
+#	Better clean-up and multiple platforms.
+#
+
+M3ARCH=$(LOCALTARGET)
+BUILD_DIR=$(M3ARCH)
+
+M3FLAGS+=-b $(BUILD_DIR) $(TREEFLAGS)
+
+#
+# FIXME: the SPIN compiler is unable to generate correct code for LINUX
+#        therefore we must use the pristine compiler. Ask mef if you want
+#	 to know the convoluted historical reasosns for that 
+#
+ifeq ($(LOCALTARGET), LINUXELF)
+ifndef M3BUILD
+   M3BUILD = $(ORIGINAL_M3BUILD)
+endif
+endif
+
+
+clobber::
+	-rm -rf $(THISTREE)/local/$(BUILD_DIR)/lib/pkg/$(TARGET)
+
+clobber_all::
+	@for i in $(LOCALTARGETS); do \
+		echo -n "rm -rf $(THISTREE)/local/$$i/lib/m3/pkg/$(TARGET)\n" ; \
+		rm -rf $(THISTREE)/local/$$i/lib/m3/pkg/$(TARGET) ; \
+		echo -n "rm -rf $(THISTREE)/local/$$i/lib/m3/$$i/lib$(TARGET).so\n" ; \
+		rm -rf $(THISTREE)/local/$$i/lib/m3/$$i/lib$(TARGET).so ; \
+		rm -rf $(THISTREE)/local/$$i/lib/m3/$$i/$(TARGET).so ; \
+		echo -n "rm -rf $(THISTREE)/local/$$i/bin/$(TARGET)\n" ; \
+		rm -rf $(THISTREE)/local/$$i/bin/$(TARGET) ; \
+	done
+
+
+include $(THISTREE)/make.m3

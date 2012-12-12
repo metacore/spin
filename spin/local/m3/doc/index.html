@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>SPIN Modula-3</title>
+<!-- Changed by: Wilson Hsieh, 27-Sep-1996 -->
+</head>
+
+<body>
+<h1>SPIN Modula-3</h1>
+
+We've made a bunch of changes to Modula-3.  We also have a bunch
+of recommendations on safe programming in our version of M3.
+<p>
+
+<h2>Style guide</h2>
+
+Certain <a href="style.html">guidelines</a> should be followed when
+programming using objects.
+<p>
+
+<H2>Language changes</H2>
+
+Here are the changes we have made from standard Modula-3, including
+motivation for the change, new syntax and some examples.  A 
+<a href="http://www.cs.washington.edu:80/research/projects/spin/www/papers/WCS/language.ps">paper</a>
+describes most of these changes in more detail.
+
+<dl>
+<dt> <A HREF="view.html">VIEW</a>
+<dd> Typesafe casting
+
+<dt> <A HREF="ephemeral.html">EPHEMERAL procedures</a>
+<dd> Procedures which guarantee they won't screw up the system
+     even if they are terminated at an arbitrary point.
+
+<dt> <A HREF="functional.html">FUNCTIONAL procedures</a>
+<dd> Procedures which don't modify any global state.
+
+<dt> <A HREF="procany.html">PROCANY type</a>
+<dd> A supertype for all PROCEDURE types.
+
+<dt> <A HREF="rtcode.html">RTCode interface</a>
+<dd> An way to talk about Modula-3 modules and interfaces at runtime.
+
+<dt> <A HREF="external.html">EXTERNAL is UNSAFE</a>
+<dd> Any interface containing <*EXTERNAL*> declarations must be
+     UNSAFE. 
+
+<dt> <a href="implicit.html">IMPLICIT exceptions</a>
+<dd> Exceptions that every procedure may raise, and that
+do not need to be declared.
+
+<dt> <a href="aligned.html">ALIGNED FOR</a>
+<dd> You can boost the alignment of types that need it.
+
+<dt> <a href="objects.html">Object methods</a>
+<dd> Calling and naming object methods explicitly is restricted.
+
+<dt> <a href="cvar.html">CVAR</a>
+<dd> Calling C functions with call-by-reference.
+
+</dl>
+
+<h2>Compiler options</h2>
+
+We have added the following compiler options:
+
+<dl>
+
+<dt> -NoLoopholeWarnings
+<dd> Do not give warnings for <code>LOOPHOLE</code>.  Our compiler issues
+a warning for every loophole.
+
+<dt> -SpinRelax
+<dd> Turn off SPIN restrictions, so that standard code can be compiled.
+For example, turn off the requirement that <code>EXTERNAL</code> be
+<code>UNSAFE</code>.
+
+</dl>
+ 
+<P>
+
+</body>
+<p>
+<hr>Last changed <date>July 17, 1996</date> <br>
+<Address>whsieh@cs.washington.edu</address>
+</html>

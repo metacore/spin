@@ -1,0 +1,2 @@
+rvmbench -d data1 -l /dev/rrz3f & rvmbench -d data2 -l /dev/rrz3h
+

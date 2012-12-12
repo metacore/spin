@@ -1,0 +1,34 @@
+This directory contains target (.mt) and host (.mh) specific Makefile
+fragments.  They get added to the Makefile that configure builds.
+They are used by {bfd,opcodes,binutils}/configure.in.
+
+make variables that can be set in *.mt:
+
+configure.in figures out which .o files to compile into libbfd.a, and
+sets make variable TDEFAULTS, based on these first three variables:
+
+DEFAULT_VECTOR=icoff_little_vec
+	The default target; if not specified, there is no default.
+	Used in targets.c.
+	Not used if the target is an argument to --enable-targets.
+SELECT_VECS=icoff_big_vec b_out_vec_little_host b_out_vec_big_host
+	Any additional targets to support when this target is
+	configured in.  Used in targets.c.
+	Not used if configured with --enable-targets=all.
+SELECT_ARCHITECTURES=bfd_h8500_arch
+	Architectures to support; used in archures.c.
+	Not used if configured with --enable-targets=all.
+TDEFINES = target-specific cc flags for BFD
+
+make variables that can be set in *.mh:
+
+AR = ar program
+AR_FLAGS = cq if the default rc runs out of memory
+CC = cc program
+CFLAGS = cc flags that also get passed to mkdep and used to compile
+	gen-aout and subdirectories
+HDEFINES = host-specific cc flags for BFD
+HDEPFILES = .o files to add to libbfd.a (trad-core.o)
+INSTALL = install program
+LDFLAGS = used to compile chew in doc subdirectory (-lmalloc)
+RANLIB = ranlib program or dummy (echo or true, they're equivalent)

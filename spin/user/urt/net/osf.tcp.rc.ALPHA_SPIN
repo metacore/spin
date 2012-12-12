@@ -1,0 +1,19 @@
+# osf.tcp
+domain create osf.tcp
+domain addfile osf.tcp ~/spin/user/urt/net/$target/net_upcalls.o
+domain addfile osf.tcp ~/spin/user/urt/net/$target/socksupport.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/in.o 
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/in_pcb.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/udp_usrreq.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/tcp_debug.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/tcp_input.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/tcp_output.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/tcp_subr.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/tcp_timer.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/tcp_usrreq.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/uipc_socket.o
+domain addfile osf.tcp ~/spin/kernel/sal/alpha_osf/DRIVER/uipc_socket2.o
+domain link osf.tcp osf.tcp
+domain link osf.tcp SpinPublic
+domain link osf.tcp SpinTrusted
+domain initialize osf.tcp

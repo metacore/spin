@@ -1,0 +1,13 @@
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("VMCore","user/vm","vmcore",overridepath)
+DomainImport ("Space","user/vm","space",overridepath)
+DomainImport ("UserSpaceThread","user/thread","threadcore",overridepath)
+
+Package("Sieg")
+
+template("sieg")
+Module("Sieg")
+Extension({})

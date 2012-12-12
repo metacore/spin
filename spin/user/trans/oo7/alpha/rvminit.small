@@ -1,0 +1,19 @@
+echo CLEANING UP
+LOG=/local/yasushi/log
+rm -f $LOG OO7_data_file* swapfile*
+echo CREATING LOG
+../bin/rvmutl <<DDD
+init_log /local/yasushi/log 80M
+quit
+DDD
+echo CREATING OO7 data file.
+rm -f OO7_data_file
+touch OO7_data_file
+../bin/rdsinit $LOG OO7_data_file <<DDD
+ 0x2000000
+0x140300000
+0x1e00000
+0x100000
+100
+128
+DDD

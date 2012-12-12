@@ -1,0 +1,42 @@
+############################################################
+# HISTORY
+# 30-Jan-97  Wilson Hsieh (whsieh) at the University of Washington
+#	TARGET -> BASETARGET
+#
+# 08-Feb-96  Charles Garrett (garrett) at the University of Washington
+#	DomainExports removed because Module now does it automatically.
+#
+# 06-Feb-96  Marc Fiuczynski (mef) at the University of Washington
+#	Changed commands over the new style shell commands.
+#
+# 25-Mar-95  Marc Fiuczynski (mef) at the University of Washington
+#	Created.
+#
+############################################################
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport ("Shell","user/shell","shellcore",overridepath)
+DomainImport ("SpinUnixRunTime","user/urt","urtcore",overridepath)
+DomainImport ("SpinUnixNet","user/urt","net",overridepath)
+DomainImport ("Device","user/dev","devcore",overridepath)
+DomainImport ("NetDev","user/dev","netdev",overridepath)
+DomainImport ("EtherServer","user/net","ether",overridepath)
+DomainImport ("IpServer","user/net","ip",overridepath)
+importfrompath ("user/net","plexus",overridepath)
+
+m3_option("-Y3@true@")
+m3_option("-Y4@touch@")
+
+Package("EtherClient")
+Module("EtherDefault")
+interface("ArpPktFormat")
+Module("EtherArp")
+module("EtherArpKey")
+table("EtherArp", "EtherArpKey", "EtherArp")
+Module("EtherClassification")
+Module("EtherGen")
+linkmodule("EtherClient")
+module("EtherClient")
+Extension({})

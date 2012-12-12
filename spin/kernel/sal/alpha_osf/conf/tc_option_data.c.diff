@@ -1,0 +1,27 @@
+*** data/tc_option_data.c	Sat Mar 23 13:13:39 1996
+--- SPIN/tc_option_data.c	Tue Mar 26 12:05:11 1996
+***************
+*** 90,96 ****
+   * string "option [" with a space between the "n" and the "[".
+   */
+  
+! struct tc_option tc_option [] =
+  {
+      /*	module		driver	intr_b4	itr_aft		adpt	*/
+      /*	name		name	probe	attach	type	config	*/
+--- 90,96 ----
+   * string "option [" with a space between the "n" and the "[".
+   */
+  
+! struct tc_option sal_tc_option [] =
+  {
+      /*	module		driver	intr_b4	itr_aft		adpt	*/
+      /*	name		name	probe	attach	type	config	*/
+***************
+*** 158,160 ****
+--- 158,162 ----
+       */
+      {	"",		""	}	/* Null terminator in the table */
+  };
++ 
++ struct tc_option *tc_option = sal_tc_option;

@@ -1,0 +1,24 @@
+67a68,72
+> #if SPIN
+> extern	struct bus *bus_list;
+> extern	struct controller *controller_list;
+> extern	struct device	*device_list;
+> #else
+70a76
+> #endif
+319a326
+> void (*conn_ctlr_hook)() = 0;
+337a345,346
+> 	if (conn_ctlr_hook)
+> 		(*conn_ctlr_hook)( ctlr->ctlr_name, ctlr->ctlr_num);
+370a380,381
+> 
+> void (*conn_device_hook)() = 0;
+388a400,402
+> 
+> 	if (conn_device_hook)
+> 		(*conn_device_hook)( device->dev_name, device->logunit);
+1429a1444
+> #ifndef SPIN
+1430a1446
+> #endif /* SPIN */

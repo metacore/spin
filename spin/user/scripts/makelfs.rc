@@ -1,0 +1,12 @@
+# HISTORY
+# 16-Dec-97  Przemek Pardyak (pardy) at the University of Washington
+#	Created.
+#
+
+#
+# create a default lfs partition
+#
+
+script ~/spin/user/fs/lfs/fsutils/makefs/$target/makefs.rc
+makefs lfsextent 1024 Format
+

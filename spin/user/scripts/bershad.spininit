@@ -1,0 +1,31 @@
+#
+# System boot script.
+#
+# 
+## HISTORY
+# 05-May-96  Charles Garrett (garrett) at the University of Washington
+#	Change ALPHA_SPIN to variable $target which can be either
+#	 ALPHA_SPIN or ALPHA_SPIN_PROF.
+#
+## 27-Mar-96  Brian Bershad (bershad) at the University of Washington
+##	Created.
+##
+
+echo Loading ns ...
+script ~/spin/user/ns/$target/ns.rc
+
+echo Getting host name...
+script ~/spin/user/scripts/hostmap.d/$ipaddr
+
+echo Booting $hostname @ $ipaddr
+
+echo Loading host specific info...
+script ~/spin/user/scripts/hostboot.d/generic.rc
+
+echo Loading host specific info...
+script ~/spin/user/scripts/hostboot.d/$hostname.rc
+
+echo Starting nanny....
+script ~/spin/user/scripts/nanny-init.rc
+
+

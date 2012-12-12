@@ -1,0 +1,4 @@
+# ESIX 5.3.2 D (one of the 3 zillion variants of sysv3 for the 386).
+RANLIB = /bin/true
+HDEFINES = -DTRAD_CORE
+HDEPFILES = trad-core.o

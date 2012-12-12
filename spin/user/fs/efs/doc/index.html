@@ -1,0 +1,90 @@
+<html>
+<head>
+<title>Extent File System</title>
+</head>
+
+<body>
+<h1>
+<A name = "top">EFS : Extent File System</a> </br>
+</h1>
+<date>Thu Nov 21 18:41:30 1996</date>
+</br>
+Yasushi Saito
+ <P>
+<HR>
+<P>
+
+<!menu>
+
+<a name="overview"></a>
+<H2>Overview</H2>
+
+EFS is a <a href="../../doc/index.html">file system</a> interface to
+the <a href="../../../dev/extent/doc/index.html">extent</a>.
+It provides a flat, persistent naming on the extent block.
+All the files on the EFS occupy contiguous blocks on the disk.
+
+<p>
+EFS is mainly used for <a href="../../../vm/doc/index.html">swapping</a>.
+
+<a name="design"></a>
+<H2>Design and Implementation</H2>
+
+<p>
+Each mount point of EFS uses a single local disk partition, much like
+other file systems. EFS uses the first 8192 bytes of the partition
+as the metadata region. The metadata records what files are located
+where. Since the size of metadata is fixed, the maximum number of
+files on a partition is also fixed.
+
+All the files occupy contiguous blocks on the disk, and although EFS
+supports file resizing, it is very inefficient. So you might want to
+fix the size of a file right after it is created.
+
+<a name="using"></a>
+<H2>Using the service</H2>
+
+Since EFS is a file system, it is mounted in the usual way.
+
+<pre>
+mount <var>extentdev</var> efs <var>directory</var>
+</pre>
+
+In the above, <var>extentdev</var> is an
+<a href="../../../dev/extent/doc/index.html">extent</a> device name
+that is created beforehand. <var>directory</var> is a
+path that points to a preexisting directory.
+
+Below is an example.
+
+<pre>
+extent mkdev rz3a efsextent -size 167772160
+newfs efs efsextent
+mkdir /efs
+mount efs efsextent /efs
+touch /efs/swap
+mkfile /efs/swap 8388608
+</pre>
+
+<h3>Reading and Writing</h3>
+
+Once a file is created, it can be read and written
+(yes, it's writable!) using the <a href="../../doc">file system methods</a>.
+
+<p>
+The read/write position and size <em>must</em> be multiple of
+the disk block size(usually 512 bytes). 
+
+<p>
+The overhead of file system methods versas direct extent manipulation is
+just one procedure call, so you usually don't have to care about it.
+However, if you want to save that teeny overhead, use
+<a href="../src/EFS.i3">getExtent</a> method defined on
+<code>EFS.T</code> object, which is a subtype of
+<a href="../../fscore/src/File.i3"><code>File.T</code></a>.
+
+<P>
+<HR>
+<P>
+<ADDRESS>yasushi@cs.washington.edu</ADDRESS>
+</HTML>

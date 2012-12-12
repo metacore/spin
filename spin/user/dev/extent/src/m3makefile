@@ -1,0 +1,16 @@
+#############################################################
+# HISTORY
+# 23-Aug-95  Emin Gun Sirer (egs) at the University of Washington
+#	Created. Disk extents.
+#############################################################
+
+overridepath = [ THISTREE , FULLTREE ]
+DomainImport("SpinPublic","kernel","spincore",overridepath)
+DomainImport("SpinTrusted","kernel","spincore",overridepath)
+DomainImport("Shell","user/shell","shellcore",overridepath)
+DomainImport("Device","user/dev","devcore",overridepath)
+DomainImport("SpinUnixRunTime","user/urt","urtcore",overridepath)
+
+Package("Extent")
+CommandModule("Extent")
+Extension({""})

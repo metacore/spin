@@ -1,0 +1,9 @@
+# Dlib socket setup script.
+nanny touch OsfNetEmulation
+nanny touch EtherClient
+nanny touch IcmpClient
+nanny touch IpClient
+nanny touch Sphinx
+echo --- ifconfig (for $hostnamefull) ---
+ifconfig $ETHERDEV $ipaddr 255.255.255.255 255.255.255.0
+route add default 128.95.2.100

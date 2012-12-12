@@ -1,0 +1,3 @@
+#!/bin/sh
+#/spin/build/merge/spin/local/ALPHA_OSF/bin/m3build $* -T /spin/lib/m3/pkg/m3build/templates
+/spin/build/merge/spin/local/ALPHA_OSF/bin/m3build $*
