@@ -1,0 +1,17 @@
+Introduction
+
+The SPIN operating system has been under development at the University of Washington for approximately two years. SPIN combines research in systems, languages, and compilers to achieve the three fundamental goals of modern operating systems:
+
+    Flexibility: Arbitrary users may customize SPIN by writing and installing new kernel code. User-defined extensions are linked into the kernel's address space and dynamically integrated with the executing system.
+    Safety: Ignorant and malicious kernel extensions are isolated from critical kernel interfaces via restricted dynamic linking. Restrictions are enforced using the type-safe properties of Modula-3, the programming language in which SPIN and its extensions are written.
+    Performance: Application-specific extensions access system resources and services with low latency since there are no expensive protection boundaries within the kernel.
+
+SPIN is designed around a core set of services including threads, virtual memory primitives, device drivers, and the extension mechanism. These modules are the foundation for the rest of the system are required for the machine to boot. Additional features, such as file systems and networking, are implemented in SPIN extensions and dynamically installed into the system while it is running.
+
+Applications
+
+SPIN applications can exist entirely in user-level address spaces, partly in user space and partly in extensions, or entirely in an extensions. Unix applications, for instance, execute entirely in user-level address spaces. They are supported by a set of extensions which emulate the Digital Unix system call interface. On the other hand, the SPIN Web Server is implemented entirely in kernel extensions. This eliminates the need to transfer data and control across the user-kernel protection boundary.
+
+Modula-3
+
+SPIN and its extensions are written in Modula-3, a type-safe programming language developed at DEC SRC. Modula-3 offers modern language features such as objects, garbage collection, and threads. We rely on its type-safe properties to protect sensitive kernel data and interfaces from malicious or errant extensions.
